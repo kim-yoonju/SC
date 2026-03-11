@@ -1,0 +1,1112 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+`torch_dtype` is deprecated! Use `dtype` instead!
+[generate] 모델 로드 중: Qwen/Qwen2.5-7B
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<00:53,  6.31it/s]Loading weights:   1%|          | 2/339 [00:00<00:51,  6.57it/s]Loading weights:   5%|▌         | 18/339 [00:00<00:05, 57.15it/s]Loading weights:  12%|█▏        | 41/339 [00:00<00:02, 107.39it/s]Loading weights:  16%|█▌        | 54/339 [00:00<00:02, 107.93it/s]Loading weights:  22%|██▏       | 76/339 [00:00<00:01, 133.50it/s]Loading weights:  27%|██▋       | 90/339 [00:00<00:02, 119.26it/s]Loading weights:  33%|███▎      | 112/339 [00:01<00:01, 139.65it/s]Loading weights:  37%|███▋      | 127/339 [00:01<00:01, 124.95it/s]Loading weights:  44%|████▎     | 148/339 [00:01<00:01, 143.53it/s]Loading weights:  48%|████▊     | 164/339 [00:01<00:01, 131.24it/s]Loading weights:  54%|█████▍    | 184/339 [00:01<00:01, 130.66it/s]Loading weights:  60%|██████    | 204/339 [00:01<00:00, 145.63it/s]Loading weights:  65%|██████▍   | 220/339 [00:01<00:00, 135.58it/s]Loading weights:  69%|██████▉   | 235/339 [00:01<00:00, 126.01it/s]Loading weights:  76%|███████▌  | 256/339 [00:02<00:00, 137.75it/s]Loading weights:  80%|███████▉  | 271/339 [00:02<00:00, 127.04it/s]Loading weights:  86%|████████▌ | 292/339 [00:02<00:00, 140.47it/s]Loading weights:  91%|█████████ | 307/339 [00:02<00:00, 129.13it/s]Loading weights:  97%|█████████▋| 328/339 [00:02<00:00, 140.22it/s]Loading weights: 100%|██████████| 339/339 [00:02<00:00, 124.71it/s]
+[generate] stop token ids: [[522, 59419, 29], [522, 19928, 29], [522, 408, 29]]
+[generate] 데이터셋 로드 중: datasets/math7500.parquet (train)
+Map:   0%|          | 0/7500 [00:00<?, ? examples/s]Map:  27%|██▋       | 2000/7500 [00:00<00:00, 6781.74 examples/s]Map:  56%|█████▌    | 4213/7500 [00:00<00:00, 11789.32 examples/s]Map:  88%|████████▊ | 6582/7500 [00:00<00:00, 15572.49 examples/s]Map: 100%|██████████| 7500/7500 [00:00<00:00, 13601.82 examples/s]
+[generate] 처리 범위: [3750, 5625) → 1875개 문제
+[generate] problem_batch_size=8, n_rollouts=8
+롤아웃 생성:   0%|          | 0/235 [00:00<?, ?it/s][3750] step 0: 유효하지 않은 action → 종료
+[3751] step 0: 유효하지 않은 action → 종료
+[3752] step 0: 유효하지 않은 action → 종료
+[3753] step 0: <solve>
+[3753] step 0: MC 0/8 temp=0.000 final=0.000
+[3754] step 0: 유효하지 않은 action → 종료
+[3755] step 0: <solve>
+[3755] step 0: MC 3/8 temp=0.375 final=0.375
+[3756] step 0: <solve>
+[3756] step 0: MC 1/8 temp=0.125 final=0.125
+[3757] step 0: <solve>
+[3757] step 0: MC 0/8 temp=0.000 final=0.000
+[3753] step 1: <solve>
+[3753] step 1: MC 0/8 temp=0.000 final=0.000
+[3755] step 1: <solve>
+[3755] step 1: MC 0/8 temp=0.000 final=0.000
+[3756] step 1: 유효하지 않은 action → 종료
+[3757] step 1: <solve>
+[3757] step 1: MC 0/8 temp=0.000 final=0.000
+[3753] step 2: <solve>
+[3753] step 2: MC 0/8 temp=0.000 final=0.000
+[3755] step 2: <solve>
+[3755] step 2: MC 0/8 temp=0.000 final=0.000
+[3757] step 2: <solve>
+[3757] step 2: MC 0/8 temp=0.000 final=0.000
+[3753] step 3: <end>
+[3753] <end> 정답=False reward=-100.0
+[3755] step 3: <solve>
+[3755] step 3: MC 0/8 temp=0.000 final=0.000
+[3757] step 3: <solve>
+[3757] step 3: MC 0/8 temp=0.000 final=0.000
+[3755] step 4: <end>
+[3755] <end> 정답=False reward=-100.0
+[3757] step 4: <solve>
+[3757] step 4: MC 0/8 temp=0.000 final=0.000
+[3757] step 5: <solve>
+[3757] step 5: MC 0/8 temp=0.000 final=0.000
+[3757] step 6: <solve>
+[3757] step 6: MC 0/8 temp=0.000 final=0.000
+[3757] step 7: <solve>
+[3757] step 7: MC 0/8 temp=0.000 final=0.000
+[3757] step 8: <solve>
+[3757] step 8: MC 0/8 temp=0.000 final=0.000
+[3757] step 9: 유효하지 않은 action → 종료
+롤아웃 생성:   0%|          | 1/235 [29:37<115:30:49, 1777.13s/it][3758] step 0: <solve>
+[3758] step 0: MC 0/8 temp=0.000 final=0.000
+[3759] step 0: 유효하지 않은 action → 종료
+[3760] step 0: 유효하지 않은 action → 종료
+[3761] step 0: 유효하지 않은 action → 종료
+[3762] step 0: <solve>
+[3762] step 0: MC 0/8 temp=0.000 final=0.000
+[3763] step 0: <solve>
+[3763] step 0: MC 1/8 temp=0.125 final=0.125
+[3764] step 0: <solve>
+[3764] step 0: MC 0/8 temp=0.000 final=0.000
+[3765] step 0: <solve>
+[3765] step 0: MC 0/8 temp=0.000 final=0.000
+[3758] step 1: 유효하지 않은 action → 종료
+[3762] step 1: <solve>
+[3762] step 1: MC 0/8 temp=0.000 final=0.000
+[3763] step 1: <solve>
+[3763] step 1: MC 0/8 temp=0.000 final=0.000
+[3764] step 1: <solve>
+[3764] step 1: MC 0/8 temp=0.000 final=0.000
+[3765] step 1: <solve>
+[3765] step 1: MC 0/8 temp=0.000 final=0.000
+[3762] step 2: <solve>
+[3762] step 2: MC 0/8 temp=0.000 final=0.000
+[3763] step 2: <solve>
+[3763] step 2: MC 0/8 temp=0.000 final=0.000
+[3764] step 2: <solve>
+[3764] step 2: MC 0/8 temp=0.000 final=0.000
+[3765] step 2: <solve>
+[3765] step 2: MC 0/8 temp=0.000 final=0.000
+[3762] step 3: <solve>
+[3762] step 3: MC 0/8 temp=0.000 final=0.000
+[3763] step 3: <solve>
+[3763] step 3: MC 0/8 temp=0.000 final=0.000
+[3764] step 3: <solve>
+[3764] step 3: MC 0/8 temp=0.000 final=0.000
+[3765] step 3: <solve>
+[3765] step 3: MC 0/8 temp=0.000 final=0.000
+[3762] step 4: <solve>
+[3762] step 4: MC 0/8 temp=0.000 final=0.000
+[3763] step 4: <solve>
+[3763] step 4: MC 0/8 temp=0.000 final=0.000
+[3764] step 4: <solve>
+[3764] step 4: MC 0/8 temp=0.000 final=0.000
+[3765] step 4: <solve>
+[3765] step 4: MC 0/8 temp=0.000 final=0.000
+[3762] step 5: <solve>
+[3762] step 5: MC 0/8 temp=0.000 final=0.000
+[3763] step 5: <solve>
+[3763] step 5: MC 0/8 temp=0.000 final=0.000
+[3764] step 5: <solve>
+[3764] step 5: MC 0/8 temp=0.000 final=0.000
+[3765] step 5: <solve>
+[3765] step 5: MC 0/8 temp=0.000 final=0.000
+[3762] step 6: <solve>
+[3762] step 6: MC 0/8 temp=0.000 final=0.000
+[3763] step 6: <solve>
+[3763] step 6: MC 0/8 temp=0.000 final=0.000
+[3764] step 6: <solve>
+[3764] step 6: MC 0/8 temp=0.000 final=0.000
+[3765] step 6: <solve>
+[3765] step 6: MC 0/8 temp=0.000 final=0.000
+[3762] step 7: <solve>
+[3762] step 7: MC 0/8 temp=0.000 final=0.000
+[3763] step 7: <solve>
+[3763] step 7: MC 0/8 temp=0.000 final=0.000
+[3764] step 7: 유효하지 않은 action → 종료
+[3765] step 7: <solve>
+[3765] step 7: MC 0/8 temp=0.000 final=0.000
+[3762] step 8: <solve>
+[3762] step 8: MC 0/8 temp=0.000 final=0.000
+[3763] step 8: 유효하지 않은 action → 종료
+[3765] step 8: <solve>
+[3765] step 8: MC 1/8 temp=0.125 final=0.125
+[3762] step 9: <solve>
+[3762] step 9: MC 0/8 temp=0.000 final=0.000
+[3765] step 9: <solve>
+[3765] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   1%|          | 2/235 [1:33:44<193:51:07, 2995.14s/it][3766] step 0: 유효하지 않은 action → 종료
+[3767] step 0: 유효하지 않은 action → 종료
+[3768] step 0: <solve>
+[3768] step 0: MC 0/8 temp=0.000 final=0.000
+[3769] step 0: <solve>
+[3769] step 0: MC 0/8 temp=0.000 final=0.000
+[3770] step 0: 유효하지 않은 action → 종료
+[3771] step 0: <solve>
+[3771] step 0: MC 0/8 temp=0.000 final=0.000
+[3772] step 0: <solve>
+[3772] step 0: MC 3/8 temp=0.375 final=0.375
+[3773] step 0: <solve>
+[3773] step 0: MC 0/8 temp=0.000 final=0.000
+[3768] step 1: <solve>
+[3768] step 1: MC 1/8 temp=0.125 final=0.125
+[3769] step 1: <solve>
+[3769] step 1: MC 5/8 temp=0.625 final=0.625
+[3771] step 1: <solve>
+[3771] step 1: MC 0/8 temp=0.000 final=0.000
+[3772] step 1: <end>
+[3772] <end> 정답=True reward=98.0
+[3773] step 1: <end>
+[3773] <end> 정답=False reward=-100.0
+[3768] step 2: <solve>
+[3768] step 2: MC 2/8 temp=0.250 final=0.250
+[3769] step 2: <solve>
+[3769] step 2: MC 4/8 temp=0.500 final=0.500
+[3771] step 2: 유효하지 않은 action → 종료
+[3768] step 3: <solve>
+[3768] step 3: MC 0/8 temp=0.000 final=0.000
+[3769] step 3: <correct>
+[3769] step 3: MC 4/8 temp=0.500 final=0.000
+[3768] step 4: <solve>
+[3768] step 4: MC 0/8 temp=0.000 final=0.000
+[3769] step 4: 유효하지 않은 action → 종료
+[3768] step 5: <solve>
+[3768] step 5: MC 0/8 temp=0.000 final=0.000
+[3768] step 6: <solve>
+[3768] step 6: MC 0/8 temp=0.000 final=0.000
+[3768] step 7: <solve>
+[3768] step 7: MC 0/8 temp=0.000 final=0.000
+[3768] step 8: 유효하지 않은 action → 종료
+롤아웃 생성:   1%|▏         | 3/235 [1:59:40<150:39:32, 2337.81s/it][3774] step 0: <end>
+[3774] <end> 정답=False reward=-100.0
+[3775] step 0: <solve>
+[3775] step 0: MC 0/8 temp=0.000 final=0.000
+[3776] step 0: 유효하지 않은 action → 종료
+[3777] step 0: <solve>
+[3777] step 0: MC 0/8 temp=0.000 final=0.000
+[3778] step 0: 유효하지 않은 action → 종료
+[3779] step 0: <solve>
+[3779] step 0: MC 0/8 temp=0.000 final=0.000
+[3780] step 0: <solve>
+[3780] step 0: MC 0/8 temp=0.000 final=0.000
+[3781] step 0: 유효하지 않은 action → 종료
+[3775] step 1: <solve>
+[3775] step 1: MC 2/8 temp=0.250 final=0.250
+[3777] step 1: 유효하지 않은 action → 종료
+[3779] step 1: <solve>
+[3779] step 1: MC 0/8 temp=0.000 final=0.000
+[3780] step 1: <solve>
+[3780] step 1: MC 0/8 temp=0.000 final=0.000
+[3775] step 2: <correct>
+[3775] step 2: MC 0/8 temp=0.000 final=0.000
+[3779] step 2: 유효하지 않은 action → 종료
+[3780] step 2: <solve>
+[3780] step 2: MC 0/8 temp=0.000 final=0.000
+[3775] step 3: <solve>
+[3775] step 3: MC 3/8 temp=0.375 final=0.375
+[3780] step 3: 유효하지 않은 action → 종료
+[3775] step 4: <solve>
+[3775] step 4: MC 2/8 temp=0.250 final=0.250
+[3775] step 5: <solve>
+[3775] step 5: MC 4/8 temp=0.500 final=0.500
+[3775] step 6: <solve>
+[3775] step 6: MC 5/8 temp=0.625 final=0.625
+[3775] step 7: <solve>
+[3775] step 7: MC 2/8 temp=0.250 final=0.250
+[3775] step 8: <solve>
+[3775] step 8: MC 2/8 temp=0.250 final=0.250
+[3775] step 9: <solve>
+[3775] step 9: MC 4/8 temp=0.500 final=0.500
+롤아웃 생성:   2%|▏         | 4/235 [2:26:37<131:44:34, 2053.14s/it][3782] step 0: <solve>
+[3782] step 0: MC 0/8 temp=0.000 final=0.000
+[3783] step 0: 유효하지 않은 action → 종료
+[3784] step 0: <solve>
+[3784] step 0: MC 4/8 temp=0.500 final=0.500
+[3785] step 0: 유효하지 않은 action → 종료
+[3786] step 0: <solve>
+[3786] step 0: MC 1/8 temp=0.125 final=0.125
+[3787] step 0: <solve>
+[3787] step 0: MC 0/8 temp=0.000 final=0.000
+[3788] step 0: 유효하지 않은 action → 종료
+[3789] step 0: 유효하지 않은 action → 종료
+[3782] step 1: <solve>
+[3782] step 1: MC 0/8 temp=0.000 final=0.000
+[3784] step 1: <solve>
+[3784] step 1: MC 3/8 temp=0.375 final=0.375
+[3786] step 1: <solve>
+[3786] step 1: MC 0/8 temp=0.000 final=0.000
+[3787] step 1: 유효하지 않은 action → 종료
+[3782] step 2: <end>
+[3782] <end> 정답=False reward=-100.0
+[3784] step 2: <solve>
+[3784] step 2: MC 4/8 temp=0.500 final=0.500
+[3786] step 2: <solve>
+[3786] step 2: MC 0/8 temp=0.000 final=0.000
+[3784] step 3: 유효하지 않은 action → 종료
+[3786] step 3: <solve>
+[3786] step 3: MC 0/8 temp=0.000 final=0.000
+[3786] step 4: <solve>
+[3786] step 4: MC 0/8 temp=0.000 final=0.000
+[3786] step 5: <solve>
+[3786] step 5: MC 0/8 temp=0.000 final=0.000
+[3786] step 6: <solve>
+[3786] step 6: MC 0/8 temp=0.000 final=0.000
+[3786] step 7: <solve>
+[3786] step 7: MC 0/8 temp=0.000 final=0.000
+[3786] step 8: <solve>
+[3786] step 8: MC 2/8 temp=0.250 final=0.250
+[3786] step 9: <solve>
+[3786] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   2%|▏         | 5/235 [2:53:45<121:22:39, 1899.82s/it][3790] step 0: 유효하지 않은 action → 종료
+[3791] step 0: <solve>
+[3791] step 0: MC 0/8 temp=0.000 final=0.000
+[3792] step 0: <solve>
+[3792] step 0: MC 7/8 temp=0.875 final=0.875
+[3793] step 0: 유효하지 않은 action → 종료
+[3794] step 0: <solve>
+[3794] step 0: MC 0/8 temp=0.000 final=0.000
+[3795] step 0: <solve>
+[3795] step 0: MC 2/8 temp=0.250 final=0.250
+[3796] step 0: 유효하지 않은 action → 종료
+[3797] step 0: 유효하지 않은 action → 종료
+[3791] step 1: <solve>
+[3791] step 1: MC 0/8 temp=0.000 final=0.000
+[3792] step 1: <solve>
+[3792] step 1: MC 5/8 temp=0.625 final=0.625
+[3794] step 1: <solve>
+[3794] step 1: MC 0/8 temp=0.000 final=0.000
+[3795] step 1: <solve>
+[3795] step 1: MC 2/8 temp=0.250 final=0.250
+[3791] step 2: 유효하지 않은 action → 종료
+[3792] step 2: <end>
+[3792] <end> 정답=True reward=97.0
+[3794] step 2: <solve>
+[3794] step 2: MC 0/8 temp=0.000 final=0.000
+[3795] step 2: <solve>
+[3795] step 2: MC 1/8 temp=0.125 final=0.125
+[3794] step 3: <solve>
+[3794] step 3: MC 0/8 temp=0.000 final=0.000
+[3795] step 3: <solve>
+[3795] step 3: MC 2/8 temp=0.250 final=0.250
+[3794] step 4: <solve>
+[3794] step 4: MC 0/8 temp=0.000 final=0.000
+[3795] step 4: <solve>
+[3795] step 4: MC 1/8 temp=0.125 final=0.125
+[3794] step 5: <solve>
+[3794] step 5: MC 0/8 temp=0.000 final=0.000
+[3795] step 5: <solve>
+[3795] step 5: MC 0/8 temp=0.000 final=0.000
+[3794] step 6: <solve>
+[3794] step 6: MC 0/8 temp=0.000 final=0.000
+[3795] step 6: <solve>
+[3795] step 6: MC 0/8 temp=0.000 final=0.000
+[3794] step 7: <solve>
+[3794] step 7: MC 0/8 temp=0.000 final=0.000
+[3795] step 7: <end>
+[3795] <end> 정답=False reward=-100.0
+[3794] step 8: 유효하지 않은 action → 종료
+롤아웃 생성:   3%|▎         | 6/235 [3:19:47<113:33:39, 1785.24s/it][3798] step 0: 유효하지 않은 action → 종료
+[3799] step 0: 유효하지 않은 action → 종료
+[3800] step 0: 유효하지 않은 action → 종료
+[3801] step 0: <end>
+[3801] <end> 정답=False reward=-100.0
+[3802] step 0: 유효하지 않은 action → 종료
+[3803] step 0: 유효하지 않은 action → 종료
+[3804] step 0: 유효하지 않은 action → 종료
+[3805] step 0: <solve>
+[3805] step 0: MC 0/8 temp=0.000 final=0.000
+[3805] step 1: 유효하지 않은 action → 종료
+롤아웃 생성:   3%|▎         | 7/235 [3:20:34<77:03:31, 1216.72s/it] [3806] step 0: 유효하지 않은 action → 종료
+[3807] step 0: <solve>
+[3807] step 0: MC 5/8 temp=0.625 final=0.625
+[3808] step 0: 유효하지 않은 action → 종료
+[3809] step 0: <solve>
+[3809] step 0: MC 7/8 temp=0.875 final=0.875
+[3810] step 0: 유효하지 않은 action → 종료
+[3811] step 0: <solve>
+[3811] step 0: MC 0/8 temp=0.000 final=0.000
+[3812] step 0: <solve>
+[3812] step 0: MC 1/8 temp=0.125 final=0.125
+[3813] step 0: <solve>
+[3813] step 0: MC 0/8 temp=0.000 final=0.000
+[3807] step 1: <solve>
+[3807] step 1: MC 6/8 temp=0.750 final=0.750
+[3809] step 1: <end>
+[3809] <end> 정답=True reward=98.0
+[3811] step 1: <correct>
+[3811] step 1: MC 0/8 temp=0.000 final=0.000
+[3812] step 1: <solve>
+[3812] step 1: MC 0/8 temp=0.000 final=0.000
+[3813] step 1: <solve>
+[3813] step 1: MC 1/8 temp=0.125 final=0.125
+[3807] step 2: <end>
+[3807] <end> 정답=True reward=97.0
+[3811] step 2: <solve>
+[3811] step 2: MC 0/8 temp=0.000 final=0.000
+[3812] step 2: 유효하지 않은 action → 종료
+[3813] step 2: 유효하지 않은 action → 종료
+[3811] step 3: 유효하지 않은 action → 종료
+롤아웃 생성:   3%|▎         | 8/235 [3:34:18<68:50:09, 1091.67s/it][3814] step 0: 유효하지 않은 action → 종료
+[3815] step 0: <solve>
+[3815] step 0: MC 0/8 temp=0.000 final=0.000
+[3816] step 0: 유효하지 않은 action → 종료
+[3817] step 0: 유효하지 않은 action → 종료
+[3818] step 0: <solve>
+[3818] step 0: MC 0/8 temp=0.000 final=0.000
+[3819] step 0: <solve>
+[3819] step 0: MC 0/8 temp=0.000 final=0.000
+[3820] step 0: 유효하지 않은 action → 종료
+[3821] step 0: 유효하지 않은 action → 종료
+[3815] step 1: <end>
+[3815] <end> 정답=False reward=-100.0
+[3818] step 1: <solve>
+[3818] step 1: MC 0/8 temp=0.000 final=0.000
+[3819] step 1: 유효하지 않은 action → 종료
+[3818] step 2: 유효하지 않은 action → 종료
+롤아웃 생성:   4%|▍         | 9/235 [3:41:03<55:04:16, 877.24s/it] [3822] step 0: 유효하지 않은 action → 종료
+[3823] step 0: <solve>
+[3823] step 0: MC 2/8 temp=0.250 final=0.250
+[3824] step 0: 유효하지 않은 action → 종료
+[3825] step 0: <solve>
+[3825] step 0: MC 0/8 temp=0.000 final=0.000
+[3826] step 0: 유효하지 않은 action → 종료
+[3827] step 0: <correct>
+[3827] step 0: MC 0/8 temp=0.000 final=0.000
+[3828] step 0: 유효하지 않은 action → 종료
+[3829] step 0: 유효하지 않은 action → 종료
+[3823] step 1: <solve>
+[3823] step 1: MC 2/8 temp=0.250 final=0.250
+[3825] step 1: <solve>
+[3825] step 1: MC 4/8 temp=0.500 final=0.500
+[3827] step 1: <solve>
+[3827] step 1: MC 2/8 temp=0.250 final=0.250
+[3823] step 2: <solve>
+[3823] step 2: MC 4/8 temp=0.500 final=0.500
+[3825] step 2: 유효하지 않은 action → 종료
+[3827] step 2: <solve>
+[3827] step 2: MC 0/8 temp=0.000 final=0.000
+[3823] step 3: <solve>
+[3823] step 3: MC 5/8 temp=0.625 final=0.625
+[3827] step 3: <solve>
+[3827] step 3: MC 0/8 temp=0.000 final=0.000
+[3823] step 4: 유효하지 않은 action → 종료
+[3827] step 4: <solve>
+[3827] step 4: MC 0/8 temp=0.000 final=0.000
+[3827] step 5: <solve>
+[3827] step 5: MC 0/8 temp=0.000 final=0.000
+[3827] step 6: 유효하지 않은 action → 종료
+롤아웃 생성:   4%|▍         | 10/235 [3:58:55<58:34:30, 937.20s/it][3830] step 0: <solve>
+[3830] step 0: MC 0/8 temp=0.000 final=0.000
+[3831] step 0: <solve>
+[3831] step 0: MC 0/8 temp=0.000 final=0.000
+[3832] step 0: <solve>
+[3832] step 0: MC 0/8 temp=0.000 final=0.000
+[3833] step 0: <solve>
+[3833] step 0: MC 0/8 temp=0.000 final=0.000
+[3834] step 0: <solve>
+[3834] step 0: MC 0/8 temp=0.000 final=0.000
+[3835] step 0: <solve>
+[3835] step 0: MC 0/8 temp=0.000 final=0.000
+[3836] step 0: <solve>
+[3836] step 0: MC 0/8 temp=0.000 final=0.000
+[3837] step 0: 유효하지 않은 action → 종료
+[3830] step 1: <solve>
+[3830] step 1: MC 0/8 temp=0.000 final=0.000
+[3831] step 1: <solve>
+[3831] step 1: MC 0/8 temp=0.000 final=0.000
+[3832] step 1: <solve>
+[3832] step 1: MC 0/8 temp=0.000 final=0.000
+[3833] step 1: <solve>
+[3833] step 1: MC 0/8 temp=0.000 final=0.000
+[3834] step 1: 유효하지 않은 action → 종료
+[3835] step 1: <solve>
+[3835] step 1: MC 0/8 temp=0.000 final=0.000
+[3836] step 1: <solve>
+[3836] step 1: MC 0/8 temp=0.000 final=0.000
+[3830] step 2: <solve>
+[3830] step 2: MC 0/8 temp=0.000 final=0.000
+[3831] step 2: <solve>
+[3831] step 2: MC 0/8 temp=0.000 final=0.000
+[3832] step 2: <solve>
+[3832] step 2: MC 0/8 temp=0.000 final=0.000
+[3833] step 2: <solve>
+[3833] step 2: MC 0/8 temp=0.000 final=0.000
+[3835] step 2: <solve>
+[3835] step 2: MC 0/8 temp=0.000 final=0.000
+[3836] step 2: <solve>
+[3836] step 2: MC 0/8 temp=0.000 final=0.000
+[3830] step 3: 유효하지 않은 action → 종료
+[3831] step 3: <solve>
+[3831] step 3: MC 0/8 temp=0.000 final=0.000
+[3832] step 3: <solve>
+[3832] step 3: MC 0/8 temp=0.000 final=0.000
+[3833] step 3: <solve>
+[3833] step 3: MC 1/8 temp=0.125 final=0.125
+[3835] step 3: <solve>
+[3835] step 3: MC 0/8 temp=0.000 final=0.000
+[3836] step 3: <solve>
+[3836] step 3: MC 0/8 temp=0.000 final=0.000
+[3831] step 4: <solve>
+[3831] step 4: MC 0/8 temp=0.000 final=0.000
+[3832] step 4: <solve>
+[3832] step 4: MC 0/8 temp=0.000 final=0.000
+[3833] step 4: <solve>
+[3833] step 4: MC 1/8 temp=0.125 final=0.125
+[3835] step 4: <solve>
+[3835] step 4: MC 0/8 temp=0.000 final=0.000
+[3836] step 4: 유효하지 않은 action → 종료
+[3831] step 5: <solve>
+[3831] step 5: MC 0/8 temp=0.000 final=0.000
+[3832] step 5: <solve>
+[3832] step 5: MC 0/8 temp=0.000 final=0.000
+[3833] step 5: <solve>
+[3833] step 5: MC 2/8 temp=0.250 final=0.250
+[3835] step 5: <solve>
+[3835] step 5: MC 1/8 temp=0.125 final=0.125
+[3831] step 6: <end>
+[3831] <end> 정답=False reward=-100.0
+[3832] step 6: <solve>
+[3832] step 6: MC 0/8 temp=0.000 final=0.000
+[3833] step 6: <solve>
+[3833] step 6: MC 0/8 temp=0.000 final=0.000
+[3835] step 6: <solve>
+[3835] step 6: MC 1/8 temp=0.125 final=0.125
+[3832] step 7: <solve>
+[3832] step 7: MC 0/8 temp=0.000 final=0.000
+[3833] step 7: <solve>
+[3833] step 7: MC 0/8 temp=0.000 final=0.000
+[3835] step 7: <solve>
+[3835] step 7: MC 0/8 temp=0.000 final=0.000
+[3832] step 8: <solve>
+[3832] step 8: MC 0/8 temp=0.000 final=0.000
+[3833] step 8: <end>
+[3833] <end> 정답=True reward=91.0
+[3835] step 8: <solve>
+[3835] step 8: MC 2/8 temp=0.250 final=0.250
+[3832] step 9: <solve>
+[3832] step 9: MC 0/8 temp=0.000 final=0.000
+[3835] step 9: <solve>
+[3835] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   5%|▍         | 11/235 [5:09:02<120:34:34, 1937.83s/it][3838] step 0: 유효하지 않은 action → 종료
+[3839] step 0: <solve>
+[3839] step 0: MC 4/8 temp=0.500 final=0.500
+[3840] step 0: 유효하지 않은 action → 종료
+[3841] step 0: 유효하지 않은 action → 종료
+[3842] step 0: 유효하지 않은 action → 종료
+[3843] step 0: <solve>
+[3843] step 0: MC 6/8 temp=0.750 final=0.750
+[3844] step 0: <solve>
+[3844] step 0: MC 0/8 temp=0.000 final=0.000
+[3845] step 0: <solve>
+[3845] step 0: MC 0/8 temp=0.000 final=0.000
+[3839] step 1: <end>
+[3839] <end> 정답=True reward=98.0
+[3843] step 1: <solve>
+[3843] step 1: MC 2/8 temp=0.250 final=0.250
+[3844] step 1: <solve>
+[3844] step 1: MC 0/8 temp=0.000 final=0.000
+[3845] step 1: <solve>
+[3845] step 1: MC 0/8 temp=0.000 final=0.000
+[3843] step 2: 유효하지 않은 action → 종료
+[3844] step 2: <solve>
+[3844] step 2: MC 0/8 temp=0.000 final=0.000
+[3845] step 2: <solve>
+[3845] step 2: MC 0/8 temp=0.000 final=0.000
+[3844] step 3: <end>
+[3844] <end> 정답=False reward=-100.0
+[3845] step 3: <correct>
+[3845] step 3: MC 1/8 temp=0.125 final=0.125
+[3845] step 4: <solve>
+[3845] step 4: MC 0/8 temp=0.000 final=0.000
+[3845] step 5: <end>
+[3845] <end> 정답=False reward=-100.0
+롤아웃 생성:   5%|▌         | 12/235 [5:23:39<100:03:45, 1615.36s/it][3846] step 0: 유효하지 않은 action → 종료
+[3847] step 0: 유효하지 않은 action → 종료
+[3848] step 0: <solve>
+[3848] step 0: MC 0/8 temp=0.000 final=0.000
+[3849] step 0: <solve>
+[3849] step 0: MC 1/8 temp=0.125 final=0.125
+[3850] step 0: 유효하지 않은 action → 종료
+[3851] step 0: <solve>
+[3851] step 0: MC 0/8 temp=0.000 final=0.000
+[3852] step 0: <solve>
+[3852] step 0: MC 0/8 temp=0.000 final=0.000
+[3853] step 0: 유효하지 않은 action → 종료
+[3848] step 1: <solve>
+[3848] step 1: MC 2/8 temp=0.250 final=0.250
+[3849] step 1: <solve>
+[3849] step 1: MC 1/8 temp=0.125 final=0.125
+[3851] step 1: <solve>
+[3851] step 1: MC 0/8 temp=0.000 final=0.000
+[3852] step 1: <solve>
+[3852] step 1: MC 0/8 temp=0.000 final=0.000
+[3848] step 2: <solve>
+[3848] step 2: MC 1/8 temp=0.125 final=0.125
+[3849] step 2: <solve>
+[3849] step 2: MC 1/8 temp=0.125 final=0.125
+[3851] step 2: <solve>
+[3851] step 2: MC 1/8 temp=0.125 final=0.125
+[3852] step 2: <solve>
+[3852] step 2: MC 0/8 temp=0.000 final=0.000
+[3848] step 3: <solve>
+[3848] step 3: MC 0/8 temp=0.000 final=0.000
+[3849] step 3: <solve>
+[3849] step 3: MC 1/8 temp=0.125 final=0.125
+[3851] step 3: <end>
+[3851] <end> 정답=False reward=-100.0
+[3852] step 3: <solve>
+[3852] step 3: MC 0/8 temp=0.000 final=0.000
+[3848] step 4: <solve>
+[3848] step 4: MC 0/8 temp=0.000 final=0.000
+[3849] step 4: <solve>
+[3849] step 4: MC 2/8 temp=0.250 final=0.250
+[3852] step 4: <solve>
+[3852] step 4: MC 0/8 temp=0.000 final=0.000
+[3848] step 5: <solve>
+[3848] step 5: MC 1/8 temp=0.125 final=0.125
+[3849] step 5: <solve>
+[3849] step 5: MC 4/8 temp=0.500 final=0.500
+[3852] step 5: <solve>
+[3852] step 5: MC 0/8 temp=0.000 final=0.000
+[3848] step 6: <solve>
+[3848] step 6: MC 0/8 temp=0.000 final=0.000
+[3849] step 6: <solve>
+[3849] step 6: MC 0/8 temp=0.000 final=0.000
+[3852] step 6: <solve>
+[3852] step 6: MC 0/8 temp=0.000 final=0.000
+[3848] step 7: <solve>
+[3848] step 7: MC 0/8 temp=0.000 final=0.000
+[3849] step 7: <solve>
+[3849] step 7: MC 4/8 temp=0.500 final=0.500
+[3852] step 7: <solve>
+[3852] step 7: MC 0/8 temp=0.000 final=0.000
+[3848] step 8: 유효하지 않은 action → 종료
+[3849] step 8: <solve>
+[3849] step 8: MC 4/8 temp=0.500 final=0.500
+[3852] step 8: <solve>
+[3852] step 8: MC 0/8 temp=0.000 final=0.000
+[3849] step 9: 유효하지 않은 action → 종료
+[3852] step 9: <solve>
+[3852] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   6%|▌         | 13/235 [6:13:37<125:26:15, 2034.12s/it][3854] step 0: 유효하지 않은 action → 종료
+[3855] step 0: 유효하지 않은 action → 종료
+[3856] step 0: 유효하지 않은 action → 종료
+[3857] step 0: 유효하지 않은 action → 종료
+[3858] step 0: 유효하지 않은 action → 종료
+[3859] step 0: 유효하지 않은 action → 종료
+[3860] step 0: <solve>
+[3860] step 0: MC 0/8 temp=0.000 final=0.000
+[3861] step 0: 유효하지 않은 action → 종료
+[3860] step 1: <solve>
+[3860] step 1: MC 0/8 temp=0.000 final=0.000
+[3860] step 2: <solve>
+[3860] step 2: MC 0/8 temp=0.000 final=0.000
+[3860] step 3: 유효하지 않은 action → 종료
+롤아웃 생성:   6%|▌         | 14/235 [6:18:18<92:21:29, 1504.48s/it] [3862] step 0: <solve>
+[3862] step 0: MC 0/8 temp=0.000 final=0.000
+[3863] step 0: <solve>
+[3863] step 0: MC 6/8 temp=0.750 final=0.750
+[3864] step 0: 유효하지 않은 action → 종료
+[3865] step 0: <solve>
+[3865] step 0: MC 0/8 temp=0.000 final=0.000
+[3866] step 0: <solve>
+[3866] step 0: MC 0/8 temp=0.000 final=0.000
+[3867] step 0: 유효하지 않은 action → 종료
+[3868] step 0: 유효하지 않은 action → 종료
+[3869] step 0: <solve>
+[3869] step 0: MC 0/8 temp=0.000 final=0.000
+[3862] step 1: <solve>
+[3862] step 1: MC 0/8 temp=0.000 final=0.000
+[3863] step 1: <solve>
+[3863] step 1: MC 5/8 temp=0.625 final=0.625
+[3865] step 1: <solve>
+[3865] step 1: MC 0/8 temp=0.000 final=0.000
+[3866] step 1: <solve>
+[3866] step 1: MC 0/8 temp=0.000 final=0.000
+[3869] step 1: <solve>
+[3869] step 1: MC 7/8 temp=0.875 final=0.875
+[3862] step 2: <solve>
+[3862] step 2: MC 0/8 temp=0.000 final=0.000
+[3863] step 2: <solve>
+[3863] step 2: MC 5/8 temp=0.625 final=0.625
+[3865] step 2: <solve>
+[3865] step 2: MC 0/8 temp=0.000 final=0.000
+[3866] step 2: <solve>
+[3866] step 2: MC 0/8 temp=0.000 final=0.000
+[3869] step 2: 유효하지 않은 action → 종료
+[3862] step 3: <solve>
+[3862] step 3: MC 0/8 temp=0.000 final=0.000
+[3863] step 3: <solve>
+[3863] step 3: MC 4/8 temp=0.500 final=0.500
+[3865] step 3: 유효하지 않은 action → 종료
+[3866] step 3: <solve>
+[3866] step 3: MC 0/8 temp=0.000 final=0.000
+[3862] step 4: <solve>
+[3862] step 4: MC 0/8 temp=0.000 final=0.000
+[3863] step 4: 유효하지 않은 action → 종료
+[3866] step 4: <solve>
+[3866] step 4: MC 0/8 temp=0.000 final=0.000
+[3862] step 5: <solve>
+[3862] step 5: MC 0/8 temp=0.000 final=0.000
+[3866] step 5: <solve>
+[3866] step 5: MC 0/8 temp=0.000 final=0.000
+[3862] step 6: <solve>
+[3862] step 6: MC 0/8 temp=0.000 final=0.000
+[3866] step 6: <solve>
+[3866] step 6: MC 0/8 temp=0.000 final=0.000
+[3862] step 7: 유효하지 않은 action → 종료
+[3866] step 7: <solve>
+[3866] step 7: MC 0/8 temp=0.000 final=0.000
+[3866] step 8: <solve>
+[3866] step 8: MC 0/8 temp=0.000 final=0.000
+[3866] step 9: <solve>
+[3866] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   6%|▋         | 15/235 [6:58:36<108:46:05, 1779.84s/it][3870] step 0: <solve>
+[3870] step 0: MC 1/8 temp=0.125 final=0.125
+[3871] step 0: 유효하지 않은 action → 종료
+[3872] step 0: 유효하지 않은 action → 종료
+[3873] step 0: <solve>
+[3873] step 0: MC 0/8 temp=0.000 final=0.000
+[3874] step 0: <end>
+[3874] <end> 정답=False reward=-100.0
+[3875] step 0: <solve>
+[3875] step 0: MC 0/8 temp=0.000 final=0.000
+[3876] step 0: 유효하지 않은 action → 종료
+[3877] step 0: <solve>
+[3877] step 0: MC 1/8 temp=0.125 final=0.125
+[3870] step 1: 유효하지 않은 action → 종료
+[3873] step 1: <correct>
+[3873] step 1: MC 1/8 temp=0.125 final=0.125
+[3875] step 1: <solve>
+[3875] step 1: MC 0/8 temp=0.000 final=0.000
+[3877] step 1: <end>
+[3877] <end> 정답=False reward=-100.0
+[3873] step 2: <solve>
+[3873] step 2: MC 1/8 temp=0.125 final=0.125
+[3875] step 2: <solve>
+[3875] step 2: MC 0/8 temp=0.000 final=0.000
+[3873] step 3: <solve>
+[3873] step 3: MC 2/8 temp=0.250 final=0.250
+[3875] step 3: 유효하지 않은 action → 종료
+[3873] step 4: <solve>
+[3873] step 4: MC 1/8 temp=0.125 final=0.125
+[3873] step 5: <solve>
+[3873] step 5: MC 1/8 temp=0.125 final=0.125
+[3873] step 6: 유효하지 않은 action → 종료
+롤아웃 생성:   7%|▋         | 16/235 [7:07:45<85:44:23, 1409.42s/it] [3878] step 0: 유효하지 않은 action → 종료
+[3879] step 0: 유효하지 않은 action → 종료
+[3880] step 0: <solve>
+[3880] step 0: MC 0/8 temp=0.000 final=0.000
+[3881] step 0: 유효하지 않은 action → 종료
+[3882] step 0: 유효하지 않은 action → 종료
+[3883] step 0: 유효하지 않은 action → 종료
+[3884] step 0: <solve>
+[3884] step 0: MC 4/8 temp=0.500 final=0.500
+[3885] step 0: <solve>
+[3885] step 0: MC 2/8 temp=0.250 final=0.250
+[3880] step 1: <solve>
+[3880] step 1: MC 0/8 temp=0.000 final=0.000
+[3884] step 1: <correct>
+[3884] step 1: MC 8/8 temp=1.000 final=0.500
+[3885] step 1: <solve>
+[3885] step 1: MC 2/8 temp=0.250 final=0.250
+[3880] step 2: <solve>
+[3880] step 2: MC 0/8 temp=0.000 final=0.000
+[3884] step 2: <solve>
+[3884] step 2: MC 6/8 temp=0.750 final=0.750
+[3885] step 2: <solve>
+[3885] step 2: MC 2/8 temp=0.250 final=0.250
+[3880] step 3: <correct>
+[3880] step 3: MC 1/8 temp=0.125 final=0.125
+[3884] step 3: <solve>
+[3884] step 3: MC 7/8 temp=0.875 final=0.875
+[3885] step 3: <solve>
+[3885] step 3: MC 2/8 temp=0.250 final=0.250
+[3880] step 4: <solve>
+[3880] step 4: MC 0/8 temp=0.000 final=0.000
+[3884] step 4: <solve>
+[3884] step 4: MC 8/8 temp=1.000 final=1.000
+[3885] step 4: <solve>
+[3885] step 4: MC 4/8 temp=0.500 final=0.500
+[3880] step 5: <solve>
+[3880] step 5: MC 0/8 temp=0.000 final=0.000
+[3884] step 5: <end>
+[3884] <end> 정답=True reward=94.0
+[3885] step 5: <solve>
+[3885] step 5: MC 3/8 temp=0.375 final=0.375
+[3880] step 6: <solve>
+[3880] step 6: MC 0/8 temp=0.000 final=0.000
+[3885] step 6: <solve>
+[3885] step 6: MC 4/8 temp=0.500 final=0.500
+[3880] step 7: <solve>
+[3880] step 7: MC 0/8 temp=0.000 final=0.000
+[3885] step 7: <solve>
+[3885] step 7: MC 6/8 temp=0.750 final=0.750
+[3880] step 8: <solve>
+[3880] step 8: MC 0/8 temp=0.000 final=0.000
+[3885] step 8: <solve>
+[3885] step 8: MC 6/8 temp=0.750 final=0.750
+[3880] step 9: 유효하지 않은 action → 종료
+[3885] step 9: <end>
+[3885] <end> 정답=True reward=90.0
+롤아웃 생성:   7%|▋         | 17/235 [7:39:05<93:55:02, 1550.93s/it][3886] step 0: 유효하지 않은 action → 종료
+[3887] step 0: <solve>
+[3887] step 0: MC 0/8 temp=0.000 final=0.000
+[3888] step 0: <solve>
+[3888] step 0: MC 0/8 temp=0.000 final=0.000
+[3889] step 0: 유효하지 않은 action → 종료
+[3890] step 0: 유효하지 않은 action → 종료
+[3891] step 0: <solve>
+[3891] step 0: MC 3/8 temp=0.375 final=0.375
+[3892] step 0: <solve>
+[3892] step 0: MC 5/8 temp=0.625 final=0.625
+[3893] step 0: <solve>
+[3893] step 0: MC 0/8 temp=0.000 final=0.000
+[3887] step 1: <solve>
+[3887] step 1: MC 0/8 temp=0.000 final=0.000
+[3888] step 1: <solve>
+[3888] step 1: MC 0/8 temp=0.000 final=0.000
+[3891] step 1: <solve>
+[3891] step 1: MC 7/8 temp=0.875 final=0.875
+[3892] step 1: <solve>
+[3892] step 1: MC 6/8 temp=0.750 final=0.750
+[3893] step 1: <solve>
+[3893] step 1: MC 0/8 temp=0.000 final=0.000
+[3887] step 2: <solve>
+[3887] step 2: MC 0/8 temp=0.000 final=0.000
+[3888] step 2: <solve>
+[3888] step 2: MC 0/8 temp=0.000 final=0.000
+[3891] step 2: <solve>
+[3891] step 2: MC 3/8 temp=0.375 final=0.375
+[3892] step 2: <end>
+[3892] <end> 정답=True reward=97.0
+[3893] step 2: <solve>
+[3893] step 2: MC 0/8 temp=0.000 final=0.000
+[3887] step 3: <solve>
+[3887] step 3: MC 1/8 temp=0.125 final=0.125
+[3888] step 3: <solve>
+[3888] step 3: MC 0/8 temp=0.000 final=0.000
+[3891] step 3: <solve>
+[3891] step 3: MC 8/8 temp=1.000 final=1.000
+[3893] step 3: <solve>
+[3893] step 3: MC 0/8 temp=0.000 final=0.000
+[3887] step 4: <solve>
+[3887] step 4: MC 0/8 temp=0.000 final=0.000
+[3888] step 4: <correct>
+[3888] step 4: MC 0/8 temp=0.000 final=0.000
+[3891] step 4: <solve>
+[3891] step 4: MC 1/8 temp=0.125 final=0.125
+[3893] step 4: <solve>
+[3893] step 4: MC 0/8 temp=0.000 final=0.000
+[3887] step 5: <solve>
+[3887] step 5: MC 0/8 temp=0.000 final=0.000
+[3888] step 5: <solve>
+[3888] step 5: MC 0/8 temp=0.000 final=0.000
+[3891] step 5: <solve>
+[3891] step 5: MC 3/8 temp=0.375 final=0.375
+[3893] step 5: <solve>
+[3893] step 5: MC 0/8 temp=0.000 final=0.000
+[3887] step 6: <solve>
+[3887] step 6: MC 0/8 temp=0.000 final=0.000
+[3888] step 6: <solve>
+[3888] step 6: MC 0/8 temp=0.000 final=0.000
+[3891] step 6: 유효하지 않은 action → 종료
+[3893] step 6: <solve>
+[3893] step 6: MC 0/8 temp=0.000 final=0.000
+[3887] step 7: <solve>
+[3887] step 7: MC 1/8 temp=0.125 final=0.125
+[3888] step 7: <solve>
+[3888] step 7: MC 0/8 temp=0.000 final=0.000
+[3893] step 7: <solve>
+[3893] step 7: MC 0/8 temp=0.000 final=0.000
+[3887] step 8: <solve>
+[3887] step 8: MC 0/8 temp=0.000 final=0.000
+[3888] step 8: <solve>
+[3888] step 8: MC 0/8 temp=0.000 final=0.000
+[3893] step 8: <solve>
+[3893] step 8: MC 0/8 temp=0.000 final=0.000
+[3887] step 9: <solve>
+[3887] step 9: MC 0/8 temp=0.000 final=0.000
+[3888] step 9: <solve>
+[3888] step 9: MC 0/8 temp=0.000 final=0.000
+[3893] step 9: <solve>
+[3893] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   8%|▊         | 18/235 [8:39:59<131:35:10, 2183.00s/it][3894] step 0: <solve>
+[3894] step 0: MC 1/8 temp=0.125 final=0.125
+[3895] step 0: <solve>
+[3895] step 0: MC 1/8 temp=0.125 final=0.125
+[3896] step 0: <solve>
+[3896] step 0: MC 0/8 temp=0.000 final=0.000
+[3897] step 0: <solve>
+[3897] step 0: MC 0/8 temp=0.000 final=0.000
+[3898] step 0: <solve>
+[3898] step 0: MC 1/8 temp=0.125 final=0.125
+[3899] step 0: 유효하지 않은 action → 종료
+[3900] step 0: 유효하지 않은 action → 종료
+[3901] step 0: <end>
+[3901] <end> 정답=False reward=-100.0
+[3894] step 1: <solve>
+[3894] step 1: MC 7/8 temp=0.875 final=0.875
+[3895] step 1: 유효하지 않은 action → 종료
+[3896] step 1: 유효하지 않은 action → 종료
+[3897] step 1: <solve>
+[3897] step 1: MC 0/8 temp=0.000 final=0.000
+[3898] step 1: 유효하지 않은 action → 종료
+[3894] step 2: <solve>
+[3894] step 2: MC 1/8 temp=0.125 final=0.125
+[3897] step 2: 유효하지 않은 action → 종료
+[3894] step 3: <solve>
+[3894] step 3: MC 6/8 temp=0.750 final=0.750
+[3894] step 4: <end>
+[3894] <end> 정답=True reward=95.0
+롤아웃 생성:   8%|▊         | 19/235 [8:53:24<106:08:47, 1769.11s/it][3902] step 0: 유효하지 않은 action → 종료
+[3903] step 0: <solve>
+[3903] step 0: MC 0/8 temp=0.000 final=0.000
+[3904] step 0: <solve>
+[3904] step 0: MC 0/8 temp=0.000 final=0.000
+[3905] step 0: <solve>
+[3905] step 0: MC 4/8 temp=0.500 final=0.500
+[3906] step 0: <solve>
+[3906] step 0: MC 3/8 temp=0.375 final=0.375
+[3907] step 0: <end>
+[3907] <end> 정답=False reward=-100.0
+[3908] step 0: <solve>
+[3908] step 0: MC 1/8 temp=0.125 final=0.125
+[3909] step 0: <solve>
+[3909] step 0: MC 0/8 temp=0.000 final=0.000
+[3903] step 1: <solve>
+[3903] step 1: MC 0/8 temp=0.000 final=0.000
+[3904] step 1: 유효하지 않은 action → 종료
+[3905] step 1: <solve>
+[3905] step 1: MC 1/8 temp=0.125 final=0.125
+[3906] step 1: <solve>
+[3906] step 1: MC 0/8 temp=0.000 final=0.000
+[3908] step 1: 유효하지 않은 action → 종료
+[3909] step 1: <solve>
+[3909] step 1: MC 1/8 temp=0.125 final=0.125
+[3903] step 2: <solve>
+[3903] step 2: MC 0/8 temp=0.000 final=0.000
+[3905] step 2: <solve>
+[3905] step 2: MC 3/8 temp=0.375 final=0.375
+[3906] step 2: <solve>
+[3906] step 2: MC 0/8 temp=0.000 final=0.000
+[3909] step 2: <solve>
+[3909] step 2: MC 0/8 temp=0.000 final=0.000
+[3903] step 3: 유효하지 않은 action → 종료
+[3905] step 3: <solve>
+[3905] step 3: MC 3/8 temp=0.375 final=0.375
+[3906] step 3: <solve>
+[3906] step 3: MC 0/8 temp=0.000 final=0.000
+[3909] step 3: <solve>
+[3909] step 3: MC 0/8 temp=0.000 final=0.000
+[3905] step 4: <solve>
+[3905] step 4: MC 4/8 temp=0.500 final=0.500
+[3906] step 4: <solve>
+[3906] step 4: MC 0/8 temp=0.000 final=0.000
+[3909] step 4: <solve>
+[3909] step 4: MC 0/8 temp=0.000 final=0.000
+[3905] step 5: <solve>
+[3905] step 5: MC 6/8 temp=0.750 final=0.750
+[3906] step 5: <correct>
+[3906] step 5: MC 0/8 temp=0.000 final=0.000
+[3909] step 5: <solve>
+[3909] step 5: MC 1/8 temp=0.125 final=0.125
+[3905] step 6: <solve>
+[3905] step 6: MC 7/8 temp=0.875 final=0.875
+[3906] step 6: <end>
+[3906] <end> 정답=False reward=-100.0
+[3909] step 6: <solve>
+[3909] step 6: MC 1/8 temp=0.125 final=0.125
+[3905] step 7: <solve>
+[3905] step 7: MC 4/8 temp=0.500 final=0.500
+[3909] step 7: <solve>
+[3909] step 7: MC 1/8 temp=0.125 final=0.125
+[3905] step 8: <solve>
+[3905] step 8: MC 2/8 temp=0.250 final=0.250
+[3909] step 8: <solve>
+[3909] step 8: MC 3/8 temp=0.375 final=0.375
+[3905] step 9: <solve>
+[3905] step 9: MC 5/8 temp=0.625 final=0.625
+[3909] step 9: <end>
+[3909] <end> 정답=False reward=-100.0
+롤아웃 생성:   9%|▊         | 20/235 [9:41:11<125:20:29, 2098.74s/it][3910] step 0: 유효하지 않은 action → 종료
+[3911] step 0: <solve>
+[3911] step 0: MC 0/8 temp=0.000 final=0.000
+[3912] step 0: <solve>
+[3912] step 0: MC 0/8 temp=0.000 final=0.000
+[3913] step 0: <solve>
+[3913] step 0: MC 1/8 temp=0.125 final=0.125
+[3914] step 0: <solve>
+[3914] step 0: MC 2/8 temp=0.250 final=0.250
+[3915] step 0: 유효하지 않은 action → 종료
+[3916] step 0: <solve>
+[3916] step 0: MC 0/8 temp=0.000 final=0.000
+[3917] step 0: <solve>
+[3917] step 0: MC 1/8 temp=0.125 final=0.125
+[3911] step 1: <solve>
+[3911] step 1: MC 0/8 temp=0.000 final=0.000
+[3912] step 1: <correct>
+[3912] step 1: MC 0/8 temp=0.000 final=0.000
+[3913] step 1: <solve>
+[3913] step 1: MC 1/8 temp=0.125 final=0.125
+[3914] step 1: <solve>
+[3914] step 1: MC 2/8 temp=0.250 final=0.250
+[3916] step 1: <solve>
+[3916] step 1: MC 0/8 temp=0.000 final=0.000
+[3917] step 1: <solve>
+[3917] step 1: MC 0/8 temp=0.000 final=0.000
+[3911] step 2: <solve>
+[3911] step 2: MC 1/8 temp=0.125 final=0.125
+[3912] step 2: <solve>
+[3912] step 2: MC 0/8 temp=0.000 final=0.000
+[3913] step 2: <solve>
+[3913] step 2: MC 6/8 temp=0.750 final=0.750
+[3914] step 2: <solve>
+[3914] step 2: MC 2/8 temp=0.250 final=0.250
+[3916] step 2: <solve>
+[3916] step 2: MC 0/8 temp=0.000 final=0.000
+[3917] step 2: <solve>
+[3917] step 2: MC 0/8 temp=0.000 final=0.000
+[3911] step 3: <solve>
+[3911] step 3: MC 0/8 temp=0.000 final=0.000
+[3912] step 3: <solve>
+[3912] step 3: MC 0/8 temp=0.000 final=0.000
+[3913] step 3: <solve>
+[3913] step 3: MC 4/8 temp=0.500 final=0.500
+[3914] step 3: <solve>
+[3914] step 3: MC 2/8 temp=0.250 final=0.250
+[3916] step 3: <solve>
+[3916] step 3: MC 0/8 temp=0.000 final=0.000
+[3917] step 3: <solve>
+[3917] step 3: MC 0/8 temp=0.000 final=0.000
+[3911] step 4: <solve>
+[3911] step 4: MC 0/8 temp=0.000 final=0.000
+[3912] step 4: <solve>
+[3912] step 4: MC 0/8 temp=0.000 final=0.000
+[3913] step 4: <solve>
+[3913] step 4: MC 0/8 temp=0.000 final=0.000
+[3914] step 4: <solve>
+[3914] step 4: MC 2/8 temp=0.250 final=0.250
+[3916] step 4: <solve>
+[3916] step 4: MC 0/8 temp=0.000 final=0.000
+[3917] step 4: <correct>
+[3917] step 4: MC 1/8 temp=0.125 final=0.125
+[3911] step 5: <solve>
+[3911] step 5: MC 0/8 temp=0.000 final=0.000
+[3912] step 5: <solve>
+[3912] step 5: MC 0/8 temp=0.000 final=0.000
+[3913] step 5: <solve>
+[3913] step 5: MC 0/8 temp=0.000 final=0.000
+[3914] step 5: <solve>
+[3914] step 5: MC 6/8 temp=0.750 final=0.750
+[3916] step 5: <solve>
+[3916] step 5: MC 0/8 temp=0.000 final=0.000
+[3917] step 5: <solve>
+[3917] step 5: MC 0/8 temp=0.000 final=0.000
+[3911] step 6: <solve>
+[3911] step 6: MC 0/8 temp=0.000 final=0.000
+[3912] step 6: <solve>
+[3912] step 6: MC 0/8 temp=0.000 final=0.000
+[3913] step 6: 유효하지 않은 action → 종료
+[3914] step 6: <solve>
+[3914] step 6: MC 8/8 temp=1.000 final=1.000
+[3916] step 6: <solve>
+[3916] step 6: MC 0/8 temp=0.000 final=0.000
+[3917] step 6: 유효하지 않은 action → 종료
+[3911] step 7: <solve>
+[3911] step 7: MC 0/8 temp=0.000 final=0.000
+[3912] step 7: <solve>
+[3912] step 7: MC 0/8 temp=0.000 final=0.000
+[3914] step 7: <end>
+[3914] <end> 정답=True reward=92.0
+[3916] step 7: <end>
+[3916] <end> 정답=False reward=-100.0
+[3911] step 8: <solve>
+[3911] step 8: MC 0/8 temp=0.000 final=0.000
+[3912] step 8: <solve>
+[3912] step 8: MC 0/8 temp=0.000 final=0.000
+[3911] step 9: <solve>
+[3911] step 9: MC 0/8 temp=0.000 final=0.000
+[3912] step 9: <solve>
+[3912] step 9: MC 0/8 temp=0.000 final=0.000
+롤아웃 생성:   9%|▉         | 21/235 [10:48:52<159:46:00, 2687.67s/it][3918] step 0: <end>
+[3918] <end> 정답=False reward=-100.0
+[3919] step 0: <solve>
+[3919] step 0: MC 0/8 temp=0.000 final=0.000
+[3920] step 0: <solve>
+[3920] step 0: MC 0/8 temp=0.000 final=0.000
+[3921] step 0: <solve>
+[3921] step 0: MC 5/8 temp=0.625 final=0.625
+[3922] step 0: <solve>
+[3922] step 0: MC 1/8 temp=0.125 final=0.125
+[3923] step 0: 유효하지 않은 action → 종료
+[3924] step 0: <solve>
+[3924] step 0: MC 1/8 temp=0.125 final=0.125
+[3925] step 0: 유효하지 않은 action → 종료
+[3919] step 1: <solve>
+[3919] step 1: MC 0/8 temp=0.000 final=0.000
+[3920] step 1: <solve>
+[3920] step 1: MC 0/8 temp=0.000 final=0.000
+[3921] step 1: <solve>
+[3921] step 1: MC 6/8 temp=0.750 final=0.750
+[3922] step 1: <solve>
+[3922] step 1: MC 0/8 temp=0.000 final=0.000
+[3924] step 1: <solve>
+[3924] step 1: MC 0/8 temp=0.000 final=0.000
+[3919] step 2: 유효하지 않은 action → 종료
+[3920] step 2: <solve>
+[3920] step 2: MC 0/8 temp=0.000 final=0.000
+[3921] step 2: <solve>
+[3921] step 2: MC 5/8 temp=0.625 final=0.625
+[3922] step 2: <solve>
+[3922] step 2: MC 0/8 temp=0.000 final=0.000
+[3924] step 2: <solve>
+[3924] step 2: MC 0/8 temp=0.000 final=0.000
+[3920] step 3: <solve>
+[3920] step 3: MC 0/8 temp=0.000 final=0.000
+[3921] step 3: <solve>
+[3921] step 3: MC 3/8 temp=0.375 final=0.375
+[3922] step 3: <solve>
+[3922] step 3: MC 0/8 temp=0.000 final=0.000
+[3924] step 3: <solve>
+[3924] step 3: MC 0/8 temp=0.000 final=0.000
+[3920] step 4: <solve>
+[3920] step 4: MC 0/8 temp=0.000 final=0.000
+[3921] step 4: <solve>
+[3921] step 4: MC 4/8 temp=0.500 final=0.500
+[3922] step 4: <solve>
+[3922] step 4: MC 1/8 temp=0.125 final=0.125
+[3924] step 4: <solve>
+[3924] step 4: MC 0/8 temp=0.000 final=0.000
+[3920] step 5: <solve>
+[3920] step 5: MC 0/8 temp=0.000 final=0.000
+[3921] step 5: <solve>
+[3921] step 5: MC 4/8 temp=0.500 final=0.500
+[3922] step 5: <solve>
+[3922] step 5: MC 0/8 temp=0.000 final=0.000
+[3924] step 5: <solve>
+[3924] step 5: MC 0/8 temp=0.000 final=0.000
+[3920] step 6: <solve>
+[3920] step 6: MC 0/8 temp=0.000 final=0.000
+[3921] step 6: <solve>
+[3921] step 6: MC 3/8 temp=0.375 final=0.375
+[3922] step 6: <solve>
+[3922] step 6: MC 0/8 temp=0.000 final=0.000
+[3924] step 6: <solve>
+[3924] step 6: MC 0/8 temp=0.000 final=0.000
+[3920] step 7: <end>
+[3920] <end> 정답=False reward=-100.0
+[3921] step 7: <solve>
+[3921] step 7: MC 5/8 temp=0.625 final=0.625
+[3922] step 7: 유효하지 않은 action → 종료
+[3924] step 7: <solve>
+[3924] step 7: MC 0/8 temp=0.000 final=0.000
+[3921] step 8: <solve>
+[3921] step 8: MC 2/8 temp=0.250 final=0.250
+[3924] step 8: <end>
+[3924] <end> 정답=False reward=-100.0
+[3921] step 9: <end>
+[3921] <end> 정답=True reward=90.0
+롤아웃 생성:   9%|▉         | 22/235 [11:42:36<168:32:51, 2848.69s/it][3926] step 0: <solve>
+[3926] step 0: MC 3/8 temp=0.375 final=0.375
+[3927] step 0: 유효하지 않은 action → 종료
+[3928] step 0: <solve>
+[3928] step 0: MC 0/8 temp=0.000 final=0.000
+[3929] step 0: 유효하지 않은 action → 종료
+[3930] step 0: 유효하지 않은 action → 종료
+[3931] step 0: 유효하지 않은 action → 종료
+[3932] step 0: <solve>

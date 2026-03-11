@@ -1,0 +1,11 @@
+{
+  "start_idx": 1875,
+  "end_idx": 3750,
+  "n_total": 1875,
+  "n_done": 128,
+  "n_remaining": 1747,
+  "pct_done": 6.8,
+  "avg_final_reward": 0.3962,
+  "current_problem_id": "2002",
+  "last_saved_id": "2002"
+}
