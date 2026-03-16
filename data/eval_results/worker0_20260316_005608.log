@@ -1,0 +1,26 @@
+[eval] 모델 로드: checkpoints/offline_reinforce/epoch-1
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<00:44,  7.56it/s]Loading weights:   5%|▌         | 17/339 [00:00<00:04, 79.65it/s]Loading weights:   9%|▉         | 30/339 [00:00<00:03, 95.42it/s]Loading weights:  14%|█▎        | 46/339 [00:00<00:02, 116.18it/s]Loading weights:  19%|█▉        | 64/339 [00:00<00:02, 127.77it/s]Loading weights:  23%|██▎       | 77/339 [00:00<00:02, 123.22it/s]Loading weights:  27%|██▋       | 90/339 [00:00<00:02, 115.65it/s]Loading weights:  33%|███▎      | 111/339 [00:00<00:01, 131.29it/s]Loading weights:  37%|███▋      | 126/339 [00:01<00:01, 125.52it/s]Loading weights:  44%|████▎     | 148/339 [00:01<00:01, 148.12it/s]Loading weights:  48%|████▊     | 164/339 [00:01<00:01, 131.61it/s]Loading weights:  53%|█████▎    | 180/339 [00:01<00:01, 138.47it/s]Loading weights:  58%|█████▊    | 196/339 [00:01<00:01, 127.01it/s]Loading weights:  62%|██████▏   | 210/339 [00:01<00:01, 120.17it/s]Loading weights:  68%|██████▊   | 232/339 [00:01<00:00, 135.62it/s]Loading weights:  73%|███████▎  | 246/339 [00:02<00:00, 119.38it/s]Loading weights:  77%|███████▋  | 262/339 [00:02<00:00, 128.67it/s]Loading weights:  81%|████████▏ | 276/339 [00:02<00:00, 120.67it/s]Loading weights:  86%|████████▋ | 293/339 [00:02<00:00, 125.26it/s]Loading weights:  90%|█████████ | 306/339 [00:02<00:00, 119.00it/s]Loading weights:  95%|█████████▌| 323/339 [00:02<00:00, 125.50it/s]Loading weights:  99%|█████████▉| 336/339 [00:02<00:00, 119.29it/s]Loading weights: 100%|██████████| 339/339 [00:02<00:00, 122.98it/s]
+[eval] Classifier head 로드: checkpoints/offline_reinforce/epoch-1/classifier_head.pt
+       (3584 → 2 classes: {'0': 'solve', '1': 'correct'})
+[eval] 데이터셋 로드: datasets/math500.parquet (test)
+[eval] 워커 0/2: 250문제 담당 (전체 500)
+배치 평가:   0%|          | 0/16 [00:00<?, ?it/s]배치 평가:   0%|          | 0/16 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/source/evaluate.py", line 379, in <module>
+    main()
+  File "/mnt/yoonju/SC/source/evaluate.py", line 313, in main
+    batch_results = solve_batch(
+                    ^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/evaluate.py", line 124, in solve_batch
+    logits = classifier(boundary_hidden.to(dtype=cls_dtype, device=boundary_hidden.device))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but got mat1 is on cuda:1, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA_addmm)

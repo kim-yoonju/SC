@@ -1,0 +1,22 @@
+{
+  "model": "checkpoints/offline_reinforce/epoch-1",
+  "cls_head": "checkpoints/offline_reinforce/epoch-1/classifier_head.pt",
+  "dataset": "datasets/math500.parquet",
+  "split": "test",
+  "batch_size": 16,
+  "n_total": 250,
+  "n_correct": 144,
+  "accuracy": 0.576,
+  "n_terminated": 218,
+  "termination_rate": 0.872,
+  "action_counts": {
+    "solve": 834,
+    "correct": 10,
+    "end": 218,
+    "invalid": 0
+  },
+  "predicted_action_counts": {
+    "solve": 1052,
+    "correct": 10
+  }
+}

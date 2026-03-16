@@ -1,0 +1,40 @@
+[eval] 모델 로드: checkpoints/offline_reinforce/epoch-1
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<01:04,  5.26it/s]Loading weights:   5%|▍         | 16/339 [00:00<00:05, 56.91it/s]Loading weights:   9%|▉         | 30/339 [00:00<00:03, 77.27it/s]Loading weights:  14%|█▍        | 47/339 [00:00<00:02, 105.67it/s]Loading weights:  18%|█▊        | 62/339 [00:00<00:02, 114.44it/s]Loading weights:  22%|██▏       | 75/339 [00:00<00:02, 107.73it/s]Loading weights:  29%|██▉       | 100/339 [00:00<00:01, 130.39it/s]Loading weights:  34%|███▎      | 114/339 [00:01<00:01, 126.27it/s]Loading weights:  37%|███▋      | 127/339 [00:01<00:01, 125.35it/s]Loading weights:  42%|████▏     | 143/339 [00:01<00:01, 133.89it/s]Loading weights:  46%|████▋     | 157/339 [00:01<00:01, 129.20it/s]Loading weights:  51%|█████     | 173/339 [00:01<00:01, 131.89it/s]Loading weights:  55%|█████▌    | 187/339 [00:01<00:01, 126.26it/s]Loading weights:  61%|██████▏   | 208/339 [00:01<00:00, 138.65it/s]Loading weights:  65%|██████▌   | 222/339 [00:01<00:00, 124.22it/s]Loading weights:  71%|███████▏  | 242/339 [00:02<00:00, 142.92it/s]Loading weights:  76%|███████▌  | 257/339 [00:02<00:00, 129.09it/s]Loading weights:  80%|███████▉  | 271/339 [00:02<00:00, 128.14it/s]Loading weights:  85%|████████▍ | 287/339 [00:02<00:00, 121.34it/s]Loading weights:  90%|█████████ | 306/339 [00:02<00:00, 134.91it/s]Loading weights:  97%|█████████▋| 328/339 [00:02<00:00, 147.64it/s]Loading weights: 100%|██████████| 339/339 [00:02<00:00, 124.27it/s]
+[eval] Classifier head 로드: checkpoints/offline_reinforce/epoch-1/classifier_head.pt
+       (3584 → 2 classes: {'0': 'solve', '1': 'correct'})
+[eval] 데이터셋 로드: datasets/math500.parquet (test)
+[eval] 워커 0/2: 250문제 담당 (전체 500)
+배치 평가:   0%|          | 0/16 [00:00<?, ?it/s]배치 평가:   0%|          | 0/16 [00:02<?, ?it/s]
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/source/evaluate.py", line 379, in <module>
+    main()
+  File "/mnt/yoonju/SC/source/evaluate.py", line 313, in main
+    batch_results = solve_batch(
+                    ^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/evaluate.py", line 117, in solve_batch
+    model(**prompt_enc)
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 193, in new_forward
+    return module._hf_hook.post_forward(module, output)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 50, in wrapper
+    return wrapper._compiled_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1044, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 419, in post_forward
+    output = send_to_device(output, self.input_device, skip_keys=self.skip_keys)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 180, in send_to_device
+    k: t if k in skip_keys else send_to_device(t, device, non_blocking=non_blocking, skip_keys=skip_keys)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 154, in send_to_device
+    return tensor.to(device, non_blocking=non_blocking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.84 GiB. GPU 0 has a total capacity of 94.97 GiB of which 1.88 GiB is free. Process 964006 has 56.48 GiB memory in use. Process 976571 has 29.30 GiB memory in use. Including non-PyTorch memory, this process has 7.29 GiB memory in use. Of the allocated memory 6.46 GiB is allocated by PyTorch, and 192.19 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
