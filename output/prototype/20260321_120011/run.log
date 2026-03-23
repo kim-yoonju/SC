@@ -1,0 +1,22 @@
+2026-03-21 12:00:11,299 [INFO] 로그 파일: ../datasets/prototype/20260321_120011/run.log
+2026-03-21 12:00:20,335 [INFO] [load_problems] 16000개 로드 (../datasets/deepmath_16k.parquet)
+2026-03-21 12:00:20,624 [INFO] [load_math500] 500개 로드 (../datasets/math500.parquet)
+2026-03-21 12:00:20,645 [INFO] Generator 로드 중: Qwen/Qwen2.5-7B-Instruct  (cache: /mnt/.cache/huggingface)
+2026-03-21 12:00:21,822 [INFO]   스페셜 토큰 2개 추가됨: ['<|solve|>', '<|correct|>']
+2026-03-21 12:00:21,822 [INFO]   모델 weights 로드: Qwen/Qwen2.5-7B-Instruct
+2026-03-21 12:00:33,456 [INFO]   임베딩 리사이즈: 151667 vocab
+2026-03-21 12:00:33,458 [INFO] Generator 로드 완료.
+2026-03-21 12:00:33,460 [INFO] Generator 로드 중: Qwen/Qwen2.5-7B-Instruct  (cache: /mnt/.cache/huggingface)
+2026-03-21 12:00:34,604 [INFO]   스페셜 토큰 2개 추가됨: ['<|solve|>', '<|correct|>']
+2026-03-21 12:00:34,604 [INFO]   모델 weights 로드: Qwen/Qwen2.5-7B-Instruct
+2026-03-21 12:00:39,247 [INFO]   임베딩 리사이즈: 151667 vocab
+2026-03-21 12:00:39,249 [INFO] Generator 로드 완료.
+2026-03-21 12:00:40,768 [INFO] PPOTrainer 초기화 완료 (cuda:4)  training → ../datasets/prototype/20260321_120011/training.jsonl
+2026-03-21 12:00:40,792 [INFO] 문제 16000개  |  ts=20260321_120011
+2026-03-21 12:00:40,792 [INFO]   rollout  → ../datasets/prototype/20260321_120011/rollouts_worker_0.jsonl
+2026-03-21 12:00:40,792 [INFO]   rollout  → ../datasets/prototype/20260321_120011/rollouts_worker_1.jsonl
+2026-03-21 12:00:40,792 [INFO]   rollout  → ../datasets/prototype/20260321_120011/rollouts_worker_2.jsonl
+2026-03-21 12:00:40,792 [INFO]   rollout  → ../datasets/prototype/20260321_120011/rollouts_worker_3.jsonl
+2026-03-21 12:00:40,792 [INFO]   training → ../datasets/prototype/20260321_120011/training.jsonl
+2026-03-21 12:12:22,408 [WARNING] socket.send() raised exception.
+2026-03-21 12:12:22,408 [WARNING] socket.send() raised exception.

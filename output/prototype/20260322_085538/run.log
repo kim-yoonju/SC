@@ -1,0 +1,58 @@
+2026-03-22 08:55:38,611 [INFO] 로그 파일: ../output/prototype/20260322_085538/run.log
+2026-03-22 08:55:47,245 [INFO] [load_problems] 16000개 로드 (../datasets/deepmath_16k.parquet)
+2026-03-22 08:55:47,558 [INFO] [load_math500] 500개 로드 (../datasets/math500.parquet)
+2026-03-22 08:55:47,587 [INFO] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 08:55:47,879 [INFO]   스페셜 토큰 1개 추가됨: ['<|solve|>', '<|correct|>', '<|end|>']
+2026-03-22 08:55:56,396 [INFO]   임베딩 리사이즈: 151668 vocab
+2026-03-22 08:55:56,397 [INFO] Generator 로드 완료.
+2026-03-22 08:55:56,398 [INFO] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 08:55:56,669 [INFO]   스페셜 토큰 1개 추가됨: ['<|solve|>', '<|correct|>', '<|end|>']
+2026-03-22 08:55:59,389 [INFO]   임베딩 리사이즈: 151668 vocab
+2026-03-22 08:55:59,391 [INFO] Generator 로드 완료.
+2026-03-22 08:56:00,965 [INFO] PPOTrainer 체크포인트 로드: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 08:56:00,965 [INFO] PPOTrainer 초기화 완료 (cuda:4)  training → ../output/prototype/20260322_085538/training.jsonl
+2026-03-22 08:56:00,996 [INFO] 문제 16000개  |  ts=20260322_085538
+2026-03-22 08:56:00,996 [INFO]   rollout  → ../output/prototype/20260322_085538/rollouts_worker_0.jsonl
+2026-03-22 08:56:00,996 [INFO]   rollout  → ../output/prototype/20260322_085538/rollouts_worker_1.jsonl
+2026-03-22 08:56:00,996 [INFO]   rollout  → ../output/prototype/20260322_085538/rollouts_worker_2.jsonl
+2026-03-22 08:56:00,996 [INFO]   rollout  → ../output/prototype/20260322_085538/rollouts_worker_3.jsonl
+2026-03-22 08:56:00,996 [INFO]   training → ../output/prototype/20260322_085538/training.jsonl
+2026-03-22 09:27:49,794 [INFO] [iter    0]  generated=544  ppo_usable=512  timeout=32  correct=58  boxed=121  total_ppo=512
+2026-03-22 09:35:19,849 [INFO]            PPO → loss=0.5060  pg=0.5069  kl=-0.018123  entropy=1.0643
+2026-03-22 09:35:19,850 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 10:12:07,952 [INFO] [validate_math500] accuracy=239/500 (47.8%)
+2026-03-22 10:12:07,954 [INFO]            val accuracy=0.4780  (239/500)
+2026-03-22 10:15:01,770 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0000
+2026-03-22 10:28:04,481 [INFO] [iter    1]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=119  total_ppo=1024
+2026-03-22 10:32:29,235 [INFO]            PPO → loss=-0.0215  pg=-0.0168  kl=-0.092806  entropy=0.7936
+2026-03-22 10:32:29,236 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 11:23:58,074 [INFO] [validate_math500] accuracy=166/500 (33.2%)
+2026-03-22 11:23:58,076 [INFO]            val accuracy=0.3320  (166/500)
+2026-03-22 11:26:29,640 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0001
+2026-03-22 11:39:54,961 [INFO] [iter    2]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=171  total_ppo=1536
+2026-03-22 11:44:25,751 [INFO]            PPO → loss=-0.0586  pg=-0.0568  kl=-0.036089  entropy=0.8778
+2026-03-22 11:44:25,753 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 12:36:19,713 [INFO] [validate_math500] accuracy=151/500 (30.2%)
+2026-03-22 12:36:19,715 [INFO]            val accuracy=0.3020  (151/500)
+2026-03-22 12:38:43,016 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0002
+2026-03-22 12:52:24,808 [INFO] [iter    3]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=210  total_ppo=2048
+2026-03-22 12:56:49,438 [INFO]            PPO → loss=-0.0637  pg=-0.0614  kl=-0.045805  entropy=1.4522
+2026-03-22 12:56:49,439 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 13:19:25,424 [INFO] [validate_math500] accuracy=144/500 (28.8%)
+2026-03-22 13:19:25,426 [INFO]            val accuracy=0.2880  (144/500)
+2026-03-22 13:21:38,952 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0003
+2026-03-22 13:35:43,226 [INFO] [iter    4]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=302  total_ppo=2560
+2026-03-22 13:40:06,097 [INFO]            PPO → loss=-0.0579  pg=-0.0561  kl=-0.036661  entropy=0.9874
+2026-03-22 13:40:06,098 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 14:29:38,236 [INFO] [validate_math500] accuracy=122/500 (24.4%)
+2026-03-22 14:29:38,238 [INFO]            val accuracy=0.2440  (122/500)
+2026-03-22 14:31:52,520 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0004
+2026-03-22 14:46:13,933 [INFO] [iter    5]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=276  total_ppo=3072
+2026-03-22 14:50:29,023 [INFO]            PPO → loss=0.1518  pg=0.1529  kl=-0.022336  entropy=1.3070
+2026-03-22 14:50:29,024 [INFO]            validation 시작 (MATH-500)...
+2026-03-22 15:43:44,050 [INFO] [validate_math500] accuracy=111/500 (22.2%)
+2026-03-22 15:43:44,052 [INFO]            val accuracy=0.2220  (111/500)
+2026-03-22 15:45:54,373 [INFO]            ckpt → /mnt/yoonju/SC/prototype/../checkpoints/prototype/20260322_085538/iter_0005
+2026-03-22 15:58:36,454 [INFO] [iter    6]  generated=512  ppo_usable=512  timeout=0  correct=0  boxed=295  total_ppo=3584
+2026-03-22 16:02:26,363 [INFO]            PPO → loss=0.0092  pg=0.0101  kl=-0.017315  entropy=1.8252
+2026-03-22 16:02:26,364 [INFO]            validation 시작 (MATH-500)...

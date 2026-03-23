@@ -1,0 +1,19 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "extractor_model": "gpt-4.1-nano",
+  "n_total": 500,
+  "n_correct": 188,
+  "n_correct_boxed": 188,
+  "n_correct_llm": 0,
+  "accuracy": 0.376,
+  "accuracy_boxed": 0.376,
+  "batch_size": 128,
+  "max_steps": 30,
+  "max_new_tokens": 2048,
+  "gpus": [
+    2,
+    3,
+    4,
+    5
+  ]
+}

@@ -1,0 +1,4 @@
+
+[#   0] gt_actions   = ['solve', 'verify']
+        pred_actions = ['correct', 'verify/end']
+        answer=X  | 누적 cls_acc=0.000  ans_acc=0.000

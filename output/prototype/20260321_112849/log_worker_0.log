@@ -1,0 +1,76 @@
+2026-03-21 11:29:01,312 [Worker0] Generator 로드 중: Qwen/Qwen2.5-7B-Instruct  (cache: /mnt/.cache/huggingface)
+2026-03-21 11:29:02,425 [Worker0]   스페셜 토큰 2개 추가됨: ['<|solve|>', '<|correct|>']
+2026-03-21 11:29:02,425 [Worker0]   모델 weights 로드: Qwen/Qwen2.5-7B-Instruct
+2026-03-21 11:29:09,338 [Worker0] We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-03-21 11:29:13,232 [Worker0]   임베딩 리사이즈: 151667 vocab
+2026-03-21 11:29:13,234 [Worker0] Generator 로드 완료.
+2026-03-21 11:29:13,234 [Worker0] Rollout 파일 생성: ../datasets/prototype/20260321_112849/rollouts_worker_0.jsonl
+2026-03-21 11:29:13,234 [Worker0] 준비 완료  rollout → ../datasets/prototype/20260321_112849/rollouts_worker_0.jsonl  log → ../datasets/prototype/20260321_112849/log_worker_0.log
+2026-03-21 11:29:32,086 [Worker0] [batch] [I000] GPU_GEN  batch=8  elapsed=12.33s  pids=['26665', '8588', '99349', '62500', '13810', '95398', '1322', '11293']
+2026-03-21 11:29:32,097 [Worker0] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=12.4s
+2026-03-21 11:29:33,233 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:33,234 [Worker0] [batch] [I001] done=0  gen=0  api=8  patch=0  elapsed=13.5s
+2026-03-21 11:29:33,235 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:33,272 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:33,330 [Worker0] [batch] [I002] log_probs  n=1  elapsed=0.10s
+2026-03-21 11:29:33,330 [Worker0] [P62500] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:33,379 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:33,870 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:33,874 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:34,506 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:34,652 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:36,870 [Worker0] [batch] [I002] GPU_GEN  batch=1  elapsed=3.54s  pids=['62500']
+2026-03-21 11:29:36,870 [Worker0] [batch] [I002] done=0  gen=0  api=8  patch=0  elapsed=17.1s
+2026-03-21 11:29:37,210 [Worker0] [batch] [I003] log_probs  n=7  elapsed=0.34s
+2026-03-21 11:29:37,210 [Worker0] [P26665] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P08588] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P99349] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P13810] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P95398] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P01322] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,210 [Worker0] [P11293] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-21 11:29:37,474 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:51,596 [Worker0] [batch] [I003] GPU_GEN  batch=7  elapsed=14.38s  pids=['26665', '8588', '99349', '13810', '95398', '1322', '11293']
+2026-03-21 11:29:51,596 [Worker0] [batch] [I003] done=0  gen=0  api=8  patch=0  elapsed=31.9s
+2026-03-21 11:29:51,596 [Worker0] [P62500] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:51,676 [Worker0] [batch] [I004] log_probs  n=1  elapsed=0.08s
+2026-03-21 11:29:51,677 [Worker0] [P62500] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:51,677 [Worker0] [batch] [I004] done=0  gen=0  api=7  patch=1  elapsed=31.9s
+2026-03-21 11:29:52,256 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:52,257 [Worker0] [batch] [I005] done=0  gen=0  api=7  patch=1  elapsed=32.5s
+2026-03-21 11:29:52,257 [Worker0] [P11293] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:52,322 [Worker0] [batch] [I006] log_probs  n=1  elapsed=0.06s
+2026-03-21 11:29:52,322 [Worker0] [P11293] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:52,322 [Worker0] [batch] [I006] done=0  gen=0  api=6  patch=2  elapsed=32.6s
+2026-03-21 11:29:52,429 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:52,429 [Worker0] [batch] [I007] done=0  gen=0  api=6  patch=2  elapsed=32.7s
+2026-03-21 11:29:52,429 [Worker0] [P26665] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:52,497 [Worker0] [batch] [I008] log_probs  n=1  elapsed=0.07s
+2026-03-21 11:29:52,498 [Worker0] [P26665] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:52,498 [Worker0] [batch] [I008] done=0  gen=0  api=5  patch=3  elapsed=32.8s
+2026-03-21 11:29:52,730 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:52,730 [Worker0] [batch] [I009] done=0  gen=0  api=5  patch=3  elapsed=33.0s
+2026-03-21 11:29:52,730 [Worker0] [P95398] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:52,816 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:52,826 [Worker0] [batch] [I010] log_probs  n=1  elapsed=0.10s
+2026-03-21 11:29:52,827 [Worker0] [P95398] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:52,827 [Worker0] [batch] [I010] done=0  gen=0  api=4  patch=4  elapsed=33.1s
+2026-03-21 11:29:52,827 [Worker0] [P13810] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:52,879 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:52,930 [Worker0] [batch] [I011] log_probs  n=1  elapsed=0.10s
+2026-03-21 11:29:52,930 [Worker0] [P13810] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:52,930 [Worker0] [batch] [I011] done=0  gen=0  api=3  patch=5  elapsed=33.2s
+2026-03-21 11:29:52,930 [Worker0] [P01322] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:52,987 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:53,035 [Worker0] [batch] [I012] log_probs  n=1  elapsed=0.10s
+2026-03-21 11:29:53,035 [Worker0] [P01322] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:53,035 [Worker0] [batch] [I012] done=0  gen=0  api=2  patch=6  elapsed=33.3s
+2026-03-21 11:29:53,036 [Worker0] [P99349] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:53,071 [Worker0] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-21 11:29:53,143 [Worker0] [batch] [I013] log_probs  n=1  elapsed=0.11s
+2026-03-21 11:29:53,144 [Worker0] [P99349] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:53,144 [Worker0] [batch] [I013] done=0  gen=0  api=1  patch=7  elapsed=33.4s
+2026-03-21 11:29:53,144 [Worker0] [P08588] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-21 11:29:53,214 [Worker0] [batch] [I014] log_probs  n=1  elapsed=0.07s
+2026-03-21 11:29:53,214 [Worker0] [P08588] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-21 11:29:53,214 [Worker0] [batch] [I014] done=0  gen=0  api=0  patch=8  elapsed=33.5s

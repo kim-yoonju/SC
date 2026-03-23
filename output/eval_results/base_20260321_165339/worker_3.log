@@ -1,0 +1,10 @@
+[16:53:40][GPU 5] output → /mnt/yoonju/SC/output/eval_results/base_20260321_165339/worker_3.jsonl
+[16:53:40][GPU 5] log    → /mnt/yoonju/SC/output/eval_results/base_20260321_165339/worker_3.log
+[16:53:40][GPU 5] 125문제 시작  model=Qwen/Qwen2.5-7B-Instruct
+[16:53:40][GPU 5] tokenizer 로딩 중...
+[16:53:41][GPU 5] tokenizer 로딩 완료
+[16:53:41][GPU 5] model 로딩 중...
+[16:53:50][GPU 5] model 로딩 완료
+[16:53:50][GPU 5] 배치 수: 1  batch_size=128
+[16:53:50][GPU 5] batch 1/1 시작 (문제 0~124)
+[16:58:37][GPU 5] 종료

@@ -1,0 +1,15 @@
+2026-03-22 00:43:18,960 [INFO] 로그 파일: ../output/prototype/20260322_004318/run.log
+2026-03-22 00:43:27,540 [INFO] [load_problems] 16000개 로드 (../datasets/deepmath_16k.parquet)
+2026-03-22 00:43:27,829 [INFO] [load_math500] 500개 로드 (../datasets/math500.parquet)
+2026-03-22 00:43:27,851 [INFO] Generator 로드 중: /mnt/yoonju/SC/output/sft_checkpoints/20260321_215307/epoch2
+2026-03-22 00:43:33,888 [INFO] Generator 로드 완료.
+2026-03-22 00:43:33,889 [INFO] Generator 로드 중: /mnt/yoonju/SC/output/sft_checkpoints/20260321_215307/epoch2
+2026-03-22 00:43:37,523 [INFO] Generator 로드 완료.
+2026-03-22 00:43:39,084 [INFO] PPOTrainer 초기화 완료 (cuda:4)  training → ../output/prototype/20260322_004318/training.jsonl
+2026-03-22 00:43:39,109 [INFO] 문제 16000개  |  ts=20260322_004318
+2026-03-22 00:43:39,110 [INFO]   rollout  → ../output/prototype/20260322_004318/rollouts_worker_0.jsonl
+2026-03-22 00:43:39,110 [INFO]   rollout  → ../output/prototype/20260322_004318/rollouts_worker_1.jsonl
+2026-03-22 00:43:39,111 [INFO]   rollout  → ../output/prototype/20260322_004318/rollouts_worker_2.jsonl
+2026-03-22 00:43:39,111 [INFO]   rollout  → ../output/prototype/20260322_004318/rollouts_worker_3.jsonl
+2026-03-22 00:43:39,111 [INFO]   training → ../output/prototype/20260322_004318/training.jsonl
+2026-03-22 01:56:23,700 [INFO] [iter    0]  collected=64  correct=31  sub_iters=12  total_boxed=64

@@ -1,0 +1,7 @@
+{
+  "model_id": "Qwen/Qwen2.5-7B-Instruct",
+  "n_samples": 100,
+  "step_stop_rate": 0.2,
+  "action_accuracy": 0.2,
+  "boxed_presence": 0.3
+}

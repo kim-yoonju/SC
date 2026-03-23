@@ -1,0 +1,28 @@
+[34m[1mwandb[0m: Detected [openai] in use.
+[34m[1mwandb[0m: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[34m[1mwandb[0m: For more information, check out the docs at: https://weave-docs.wandb.ai/
+PPO:   0%|                                                                                                                                                                                                                           | 0/1000 [02:32<?, ?iter/s]
+Traceback (most recent call last):                                                                                                                                                                                                     | 0/64 [00:00<?, ?traj/s]
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 520, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 452, in main
+    finished_trajs.extend(t for t in new_trajs if _finished_without_timeout(t))
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 452, in <genexpr>
+    finished_trajs.extend(t for t in new_trajs if _finished_without_timeout(t))
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 62, in _finished_without_timeout
+    return bool(traj.steps) and len(traj.steps) < MAX_STEPS
+                                                  ^^^^^^^^^
+NameError: name 'MAX_STEPS' is not defined
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 520, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 452, in main
+    finished_trajs.extend(t for t in new_trajs if _finished_without_timeout(t))
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 452, in <genexpr>
+    finished_trajs.extend(t for t in new_trajs if _finished_without_timeout(t))
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 62, in _finished_without_timeout
+    return bool(traj.steps) and len(traj.steps) < MAX_STEPS
+                                                  ^^^^^^^^^
+NameError: name 'MAX_STEPS' is not defined

@@ -1,0 +1,12 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "n_total": 100,
+  "n_correct": 36,
+  "accuracy": 0.36,
+  "avg_tokens": 871.8,
+  "batch_size": 64,
+  "max_new_tokens": 2048,
+  "gpus": [
+    2
+  ]
+}

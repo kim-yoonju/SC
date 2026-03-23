@@ -58,7 +58,7 @@ cd "$(dirname "$0")/.."
     --learning_rate $LR \
     --critic_lr $CRITIC_LR \
     --clip_eps 0.2 \
-    --kl_coef 0.01 \
+    --kl_coef 0.1 \
     --vf_coef 0.1 \
     --entropy_coef 0.01 \
     --gamma 0.99 \

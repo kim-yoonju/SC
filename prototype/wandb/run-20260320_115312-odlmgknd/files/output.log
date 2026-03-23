@@ -1,0 +1,406 @@
+wandb: Detected [openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[36m(RolloutWorker pid=2024596)[0m The following generation flags are not valid and may be ignored: ['top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:53:06,210 [Worker0] We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+Loading checkpoint shards:  75%|███████▌  | 3/4 [00:02<00:00,  1.06it/s][32m [repeated 5x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+Loading checkpoint shards: 100%|██████████| 4/4 [00:03<00:00,  1.03it/s]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:53:40,661 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=26665  steps=4
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:53:10,690 [Worker0]   임베딩 리사이즈: 151667 vocab
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:53:10,691 [Worker0] Generator 로드 완료.
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:53:10,692 [Worker0] Rollout 파일 생성: ../datasets/prototype/rollouts_20260320_115248_worker0.jsonl
+[36m(RolloutWorker pid=2024610)[0m The following generation flags are not valid and may be ignored: ['top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 11:55:00,355 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=13810  steps=5
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 1.0, 0.1, 0.0, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 11:55:33,770 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=95398  steps=4
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 11:58:50,220 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=8588  steps=6
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.1, 0.0, 0.5, 0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:01:38,424 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [ANSWER] problem_id=1322  steps=10
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, False, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0]
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=99349  steps=7
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:02:05,800 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.0, 0.0, 1.0, 0.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:06:06,945 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=62500  steps=9
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 1.0, 0.5, 0.0, 0.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=11293  steps=14
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False, True, True, True, True, False, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:07:04,608 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 0.1, 1.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.1, 0.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:09:12,864 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=55198  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [1.0, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=12600  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:10:41,823 [Worker1] ────────────────────────────────────────────────────────────[32m [repeated 2x across cluster][0m
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 0.1, 1.0, 0.1, 0.1, 0.1][32m [repeated 2x across cluster][0m
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=69452  steps=6
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=11250  steps=6
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:13:42,564 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.0, 0.5, 0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:14:34,674 [Worker0] [reward] GPT 실패 (Error code: 400 - {'error': {'message': "We could not parse the JSON body of your request. (HINT: This likely means you aren't using your HTTP library correctly. The OpenAI API expects a JSON payload, but what was sent was not valid JSON. If you have trouble figuring out how to fix this, please contact us through our help center at help.openai.com.)", 'type': 'invalid_request_error', 'param': None, 'code': None}}), 0.0 반환
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:14:34,757 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=94222  steps=3
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:15:39,336 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=575  steps=8
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 1.0, 0.5, 0.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:15:46,663 [Worker1] Retrying request to /chat/completions in 0.456482 seconds
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:17:51,318 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [ANSWER] problem_id=71065  steps=6
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 1.0, 0.5, 0.0, 0.0, 0.5]
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=85342  steps=7
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:19:31,633 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 0.5, 0.0, 0.5, 1.0, 0.1, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:20:10,355 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=96495  steps=3
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=84233  steps=6
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:22:17,525 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 0.1, 1.0, 0.1, 0.0, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:23:55,701 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=26322  steps=6
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:26:02,475 [Worker1] Retrying request to /chat/completions in 0.490740 seconds
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:27:18,534 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [ANSWER] problem_id=41740  steps=8
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 1.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:28:03,624 [Worker1] Retrying request to /chat/completions in 0.493303 seconds
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:28:19,520 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=96850  steps=6
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:28:25,127 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=5718  steps=8
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:29:43,411 [Worker1] Retrying request to /chat/completions in 0.465929 seconds
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:31:40,468 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=17364  steps=7
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.5, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, False, True, True, False, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:33:43,918 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=47134  steps=11
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.0, 0.1, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:35:39,288 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=1045  steps=5
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.1, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m [ANSWER] problem_id=27758  steps=7
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, True, True]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:36:06,227 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 0.5, 0.0, 1.0, 0.1, 1.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:36:54,004 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=46411  steps=7
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [1.0, 0.1, 0.1, 0.5, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:39:17,811 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=48327  steps=6
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.1, 1.0, 0.1, 0.1, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:39:56,347 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=51766  steps=4
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:42:36,468 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=22056  steps=8
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:44:03,196 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=24804  steps=3
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:44:55,474 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=99827  steps=7
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 0.5, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:45:20,983 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=101450  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:46:20,201 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=59363  steps=7
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.1, 0.5, 0.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:48:15,695 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=66383  steps=5
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.0, 0.1, 0.0]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:50:18,490 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=90238  steps=6
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 0.0, 1.0, 0.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:52:10,859 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=11373  steps=6
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:53:16,996 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=84980  steps=8
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.5, 0.0, 0.0, 1.0, 0.0, 0.1, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:54:23,772 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [ANSWER] problem_id=33283  steps=4
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.0, 0.0, 1.0]
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=39292  steps=9
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:56:52,994 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 0.5, 0.5, 0.5, 0.0, 0.5, 0.1, 0.1, 0.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:57:55,707 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=31895  steps=4
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=28144  steps=3
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:58:15,946 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.1, 0.0, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:59:08,979 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [ANSWER] problem_id=46832  steps=5
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.0, 0.0, 1.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 12:59:37,823 [Worker0] [reward] GPT 실패 (Error code: 400 - {'error': {'message': "We could not parse the JSON body of your request. (HINT: This likely means you aren't using your HTTP library correctly. The OpenAI API expects a JSON payload, but what was sent was not valid JSON. If you have trouble figuring out how to fix this, please contact us through our help center at help.openai.com.)", 'type': 'invalid_request_error', 'param': None, 'code': None}}), 0.0 반환
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 12:59:51,652 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=68642  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:01:33,261 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=53399  steps=6
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.0, 0.5, 0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:04:17,883 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=33222  steps=8
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 1.0, 0.0, 0.5, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False, True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:05:12,219 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=42047  steps=13
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 0.1, 0.0, 1.0, 0.0, 1.0, 0.1, 0.1, 0.5, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:07:08,110 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=44399  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 0.0, 0.0, 0.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:09:54,793 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=56079  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 0.5, 0.1, 0.1, 0.0]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:10:25,878 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=27963  steps=8
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:10:37,297 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=96201  steps=6
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.5, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:11:28,148 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=101084  steps=5
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.1, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:12:11,515 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=29837  steps=6
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.1, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:14:26,328 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=23445  steps=7
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 0.1, 0.0, 0.5, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:15:26,627 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=44850  steps=6
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.0, 0.0, 1.0, 0.1, 0.1, 0.1]
+[36m(RolloutWorker pid=2024596)[0m 2026-03-20 13:18:57,503 [Worker0] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024596)[0m [PATCHER_WRONG] problem_id=9853  steps=9
+[36m(RolloutWorker pid=2024596)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024596)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024596)[0m   is_gen  : [True, True, True, True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024596)[0m   rewards : [0.5, 1.0, 0.5, 0.0, 0.0, 1.0, 1.0, 0.1, 0.1]
+[36m(RolloutWorker pid=2024610)[0m [ANSWER] problem_id=76116  steps=6
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, False, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:20:42,705 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.0, 0.0, 1.0, 0.1, 0.1, 1.0]
+[36m(RolloutWorker pid=2024610)[0m 2026-03-20 13:22:39,073 [Worker1] ────────────────────────────────────────────────────────────
+[36m(RolloutWorker pid=2024610)[0m [PATCHER_WRONG] problem_id=77696  steps=7
+[36m(RolloutWorker pid=2024610)[0m   pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+[36m(RolloutWorker pid=2024610)[0m   gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+[36m(RolloutWorker pid=2024610)[0m   is_gen  : [True, True, True, True, True, True, False]
+[36m(RolloutWorker pid=2024610)[0m   rewards : [0.5, 1.0, 0.1, 0.5, 0.0, 0.1, 0.1]
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 484, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 431, in main
+    traj_lists = ray.get([f1, f2])
+                 ^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 104, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 2981, in get
+    values, debugger_breakpoint = worker.get_objects(
+                                  ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 982, in get_objects
+    ] = self.core_worker.get_objects(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 2976, in ray._raylet.CoreWorker.get_objects
+  File "python/ray/includes/common.pxi", line 104, in ray._raylet.check_status
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 484, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 431, in main
+    traj_lists = ray.get([f1, f2])
+                 ^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 104, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 2981, in get
+    values, debugger_breakpoint = worker.get_objects(
+                                  ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 982, in get_objects
+    ] = self.core_worker.get_objects(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 2976, in ray._raylet.CoreWorker.get_objects
+  File "python/ray/includes/common.pxi", line 104, in ray._raylet.check_status
+KeyboardInterrupt

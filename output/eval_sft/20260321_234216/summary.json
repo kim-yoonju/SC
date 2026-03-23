@@ -1,0 +1,17 @@
+{
+  "model_id": "/mnt/yoonju/SC/output/sft_checkpoints/20260321_215307/epoch2",
+  "n_samples": 100,
+  "gpus": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "step_stop_rate": 0.0,
+  "reach_end_rate": 0.0,
+  "boxed_rate": 0.0,
+  "avg_steps": 20.0,
+  "avg_tokens": 1700.62
+}

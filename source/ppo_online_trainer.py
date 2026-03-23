@@ -133,6 +133,7 @@ def generate_steps_batch(model, tokenizer, stop_ids, prompts, max_new_tokens=512
             do_sample=True,
             pad_token_id=tokenizer.eos_token_id,
             stopping_criteria=stopping_criteria,
+            repetition_penalty=1.2,
         )
 
     results = []
@@ -345,8 +346,14 @@ class RolloutWorker:
 
                 if action == "end":
                     is_correct = check_answer_correct(content or step_text, gold_answers[i])
+                    has_boxed = parse_boxed(step_text) is not None
                     num_steps = step_idx + 1
-                    final_reward = (1.0 - (num_steps - 1) * 0.05) if is_correct else -1.0
+                    if is_correct:
+                        final_reward = 1.0
+                    elif has_boxed:
+                        final_reward = -0.5   # 형식은 맞췄지만 오답
+                    else:
+                        final_reward = -1.0   # 형식도 틀림
                     rec = {
                         "problem_id": pid,
                         "problem": problems[i],
@@ -416,6 +423,23 @@ class RolloutWorker:
                 still_active.append(i)
 
             active = still_active
+
+        # B. 스파르타식 감점: max_steps 도달 후에도 종료 못 한 문제들
+        # → 해당 문제의 마지막 step record의 reward를 페널티로 덮어씀
+        if active:
+            # problem_id → 마지막 레코드 인덱스 매핑
+            last_idx: dict[str, int] = {}
+            for idx, rec in enumerate(all_step_records):
+                if not rec["is_teacher"]:
+                    last_idx[rec["problem_id"]] = idx
+
+            for i in active:
+                pid = problem_ids[i]
+                if pid not in last_idx:
+                    continue
+                rec = all_step_records[last_idx[pid]]
+                has_boxed = parse_boxed(rec["step_text"]) is not None
+                rec["final_reward"] = -0.5 if has_boxed else -1.0
 
         return all_step_records
 

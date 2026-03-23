@@ -1,0 +1,47 @@
+[34m[1mwandb[0m: Detected [openai] in use.
+[34m[1mwandb[0m: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[34m[1mwandb[0m: For more information, check out the docs at: https://weave-docs.wandb.ai/
+PPO:   0%|        | 2/1000 [48:01<399:28:30, 1440.99s/iter, correct=37/64, kl=0.00201, loss=0.0569, val_acc=0.362]                                                                                              
+Traceback (most recent call last):                                                                                                                                                                              
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 517, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 485, in main
+    val_metrics = validate_math500(trainer.model, trainer.tokenizer, val_problems)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/prototype/utils.py", line 1491, in validate_math500
+    for s in mini
+
+  File "/mnt/yoonju/SC/prototype/utils.py", line 892, in generate_steps_batched
+    max_input_len = inputs["input_ids"].shape[1]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/transformers/generation/utils.py", line 2566, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/transformers/generation/utils.py", line 2781, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 517, in <module>
+    main()
+  File "/mnt/yoonju/SC/prototype/ppo_prototype.py", line 485, in main
+    val_metrics = validate_math500(trainer.model, trainer.tokenizer, val_problems)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/prototype/utils.py", line 1491, in validate_math500
+    for s in mini
+
+  File "/mnt/yoonju/SC/prototype/utils.py", line 892, in generate_steps_batched
+    max_input_len = inputs["input_ids"].shape[1]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/transformers/generation/utils.py", line 2566, in generate
+    result = decoding_method(
+             ^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/transformers/generation/utils.py", line 2781, in _sample
+    while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,20 @@
+2026-03-22 22:37:17,478 [INFO] 로그 파일: ../output/prototype/20260322_223717/run.log
+2026-03-22 22:37:26,357 [INFO] [load_problems] 16000개 로드 (../datasets/deepmath_16k.parquet)
+2026-03-22 22:37:26,636 [INFO] [load_math500] 500개 로드 (../datasets/math500.parquet)
+2026-03-22 22:37:26,648 [INFO] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_202515/epoch3
+2026-03-22 22:37:36,829 [INFO] Generator 로드 완료.
+2026-03-22 22:37:36,830 [INFO] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 22:37:37,127 [INFO]   스페셜 토큰 1개 추가됨: ['<|solve|>', '<|correct|>', '<|end|>']
+2026-03-22 22:37:41,546 [INFO]   임베딩 리사이즈: 151668 vocab
+2026-03-22 22:37:41,547 [INFO] Generator 로드 완료.
+2026-03-22 22:37:43,076 [INFO] PPOTrainer 체크포인트 로드: /mnt/yoonju/SC/checkpoints/sft/20260322_202515/epoch3
+2026-03-22 22:37:43,076 [INFO] PPOTrainer 초기화 완료 (cuda:4)  training → ../output/prototype/20260322_223717/training.jsonl
+2026-03-22 22:37:43,105 [INFO] 문제 16000개  |  ts=20260322_223717
+2026-03-22 22:37:43,105 [INFO]   rollout  → ../output/prototype/20260322_223717/rollouts_worker_0.jsonl
+2026-03-22 22:37:43,106 [INFO]   rollout  → ../output/prototype/20260322_223717/rollouts_worker_1.jsonl
+2026-03-22 22:37:43,106 [INFO]   rollout  → ../output/prototype/20260322_223717/rollouts_worker_2.jsonl
+2026-03-22 22:37:43,107 [INFO]   rollout  → ../output/prototype/20260322_223717/rollouts_worker_3.jsonl
+2026-03-22 22:37:43,107 [INFO]   training → ../output/prototype/20260322_223717/training.jsonl
+2026-03-22 22:38:50,196 [INFO] [iter    0]  generated=64  ppo_usable=64/64  timeout=0  correct=0  boxed=2  total_ppo=64
+2026-03-22 22:39:15,633 [INFO]            PPO → loss=84792.4927  pg=84792.4936  kl=-0.017869  entropy=0.8934
+2026-03-22 22:39:15,634 [INFO]            validation 시작 (MATH-500)...

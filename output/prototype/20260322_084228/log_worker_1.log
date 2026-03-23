@@ -1,0 +1,865 @@
+2026-03-22 08:42:40,171 [Worker1] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 08:42:40,453 [Worker1]   스페셜 토큰 1개 추가됨: ['<|solve|>', '<|correct|>', '<|end|>']
+2026-03-22 08:42:47,440 [Worker1] We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-03-22 08:42:50,693 [Worker1]   임베딩 리사이즈: 151668 vocab
+2026-03-22 08:42:50,694 [Worker1] Generator 로드 완료.
+2026-03-22 08:42:50,695 [Worker1] Rollout 파일 생성: ../output/prototype/20260322_084228/rollouts_worker_1.jsonl
+2026-03-22 08:42:50,695 [Worker1] 준비 완료  rollout → ../output/prototype/20260322_084228/rollouts_worker_1.jsonl  log → ../output/prototype/20260322_084228/log_worker_1.log
+2026-03-22 08:42:54,666 [Worker1] [batch] [I000] GPU_GEN  batch=8  elapsed=1.85s  pids=['12600', '94222', '575', '71065', '55198', '69452', '11250', '85342']
+2026-03-22 08:42:54,684 [Worker1] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=1.9s
+2026-03-22 08:42:56,002 [Worker1] [reward][SAMPLE] messages=
+[
+  {
+    "role": "system",
+    "content": "You are a strict mathematical reasoning evaluator.\nEvaluate ONLY the single CURRENT STEP — not the whole solution.\n\nScoring rules (return a single float, nothing else):\n  0.0  — ANY error: wrong arithmetic, wrong algebra, incorrect logic,\n         or contradicts previous steps.\n  0.1  — correct but trivial (restates something already said).\n  0.5  — correct and makes meaningful progress.\n  1.0  — correct, significant progress, or reaches the right final answer.\n\nIMPORTANT: If the current step merely repeats or rephrases what was already\nestablished, assign at most 0.1 even if correct.\nBe strict. Return ONLY the numeric score."
+  },
+  {
+    "role": "user",
+    "content": "[Problem]\nLet \\( D \\) be the portion of \\( z = 1 - x^2 - y^2 \\) above the xy-plane, oriented upwards. Given the vector field \\( \\vec{F} = \\langle xy^2, -x^2y, xyz \\rangle \\), compute the surface integral \\[ \\iint_{D} (\\nabla \\times \\vec{F}) \\cdot \\hat{n} \\, dS. \\]"
+  },
+  {
+    "role": "assistant",
+    "content": "Understood. Show me each step to evaluate."
+  },
+  {
+    "role": "user",
+    "content": "[SOLVE]\nFirst, compute the curl of the vector field \\(\\vec{F} = \\langle xy^2, -x^2y, xyz \\rangle\\).<|im_end|>"
+  }
+]
+[reward][SAMPLE] raw_response='0.1'
+2026-03-22 08:42:56,002 [Worker1] [batch] [I001] done=0  gen=0  api=8  patch=0  elapsed=3.2s
+2026-03-22 08:42:56,238 [Worker1] [batch] [I002] log_probs  n=1  elapsed=0.23s
+2026-03-22 08:42:56,238 [Worker1] [P71065] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:42:59,803 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:01,269 [Worker1] [batch] [I002] GPU_GEN  batch=1  elapsed=5.03s  pids=['71065']
+2026-03-22 08:43:01,270 [Worker1] [batch] [I002] done=0  gen=0  api=8  patch=0  elapsed=8.5s
+2026-03-22 08:43:01,351 [Worker1] [batch] [I003] log_probs  n=5  elapsed=0.08s
+2026-03-22 08:43:01,352 [Worker1] [P12600] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:01,352 [Worker1] [P00575] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:01,352 [Worker1] [P55198] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:01,352 [Worker1] [P69452] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:01,352 [Worker1] [P11250] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:03,539 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:04,164 [Worker1] [batch] [I003] GPU_GEN  batch=5  elapsed=2.81s  pids=['12600', '575', '55198', '69452', '11250']
+2026-03-22 08:43:04,164 [Worker1] [batch] [I003] done=0  gen=0  api=8  patch=0  elapsed=11.4s
+2026-03-22 08:43:04,292 [Worker1] [batch] [I004] log_probs  n=3  elapsed=0.13s
+2026-03-22 08:43:04,292 [Worker1] [P94222] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:04,292 [Worker1] [P71065] [S01] CORRECT  reward=1.00  next=solve  answer=False
+2026-03-22 08:43:04,292 [Worker1] [P85342] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:09,149 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:14,920 [Worker1] [batch] [I004] GPU_GEN  batch=3  elapsed=10.63s  pids=['94222', '71065', '85342']
+2026-03-22 08:43:14,920 [Worker1] [batch] [I004] done=0  gen=0  api=8  patch=0  elapsed=22.1s
+2026-03-22 08:43:14,920 [Worker1] [P55198] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:43:14,920 [Worker1] [P69452] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:43:15,072 [Worker1] [batch] [I005] log_probs  n=5  elapsed=0.15s
+2026-03-22 08:43:15,072 [Worker1] [P12600] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:15,072 [Worker1] [P00575] [S01] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:15,072 [Worker1] [P55198] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:43:15,072 [Worker1] [P69452] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:43:15,072 [Worker1] [P11250] [S01] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:17,336 [Worker1] [batch] [I005] GPU_GEN  batch=3  elapsed=2.26s  pids=['12600', '575', '11250']
+2026-03-22 08:43:17,336 [Worker1] [batch] [I005] done=0  gen=0  api=6  patch=2  elapsed=24.5s
+2026-03-22 08:43:18,117 [Worker1] [batch] [I006] done=0  gen=0  api=6  patch=2  elapsed=25.3s
+2026-03-22 08:43:20,833 [Worker1] [P69452] [S02] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:43:20,870 [Worker1] [batch] [I007] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:43:20,870 [Worker1] [P69452] [S02] PATCHER  reward=1.00  answer=False
+2026-03-22 08:43:20,965 [Worker1] [batch] [I007] GPU_GEN  batch=1  elapsed=0.10s  pids=['69452']
+2026-03-22 08:43:20,966 [Worker1] [batch] [I007] done=0  gen=0  api=7  patch=1  elapsed=28.2s
+2026-03-22 08:43:20,966 [Worker1] [P11250] [S02] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:43:20,966 [Worker1] [P85342] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:43:21,563 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:23,006 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:24,280 [Worker1] [P55198] [S02] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:43:24,474 [Worker1] [batch] [I008] log_probs  n=5  elapsed=0.19s
+2026-03-22 08:43:24,475 [Worker1] [P12600] [S02] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:24,475 [Worker1] [P00575] [S02] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:43:24,475 [Worker1] [P11250] [S02] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:43:24,475 [Worker1] [P85342] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:43:24,475 [Worker1] [P55198] [S02] PATCHER  reward=1.00  answer=False
+2026-03-22 08:43:26,715 [Worker1] [batch] [I008] GPU_GEN  batch=3  elapsed=2.24s  pids=['12600', '575', '55198']
+2026-03-22 08:43:26,715 [Worker1] [batch] [I008] done=0  gen=0  api=6  patch=2  elapsed=33.9s
+2026-03-22 08:43:26,715 [Worker1] [P94222] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:43:30,058 [Worker1] [P11250] [S03] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:43:30,324 [Worker1] [batch] [I009] log_probs  n=4  elapsed=0.27s
+2026-03-22 08:43:30,324 [Worker1] [P94222] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:43:30,324 [Worker1] [P71065] [S02] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:30,324 [Worker1] [P69452] [S03] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:30,324 [Worker1] [P11250] [S03] PATCHER  reward=0.50  answer=False
+2026-03-22 08:43:40,876 [Worker1] [batch] [I009] GPU_GEN  batch=3  elapsed=10.55s  pids=['71065', '69452', '11250']
+2026-03-22 08:43:40,877 [Worker1] [batch] [I009] done=0  gen=0  api=6  patch=2  elapsed=48.1s
+2026-03-22 08:43:50,624 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:50,625 [Worker1] [P94222] [S02] PATCHER_ARRIVED  reward=0.00  gt=correct
+2026-03-22 08:43:58,040 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:43:58,044 [Worker1] [P85342] [S02] PATCHER_ARRIVED  reward=0.00  gt=correct
+2026-03-22 08:43:58,252 [Worker1] [batch] [I010] log_probs  n=5  elapsed=0.21s
+2026-03-22 08:43:58,252 [Worker1] [P12600] [S03] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:43:58,253 [Worker1] [P00575] [S03] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:43:58,253 [Worker1] [P55198] [S03] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:43:58,253 [Worker1] [P94222] [S02] PATCHER  reward=0.00  → WRONG  total=3
+2026-03-22 08:43:58,253 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=94222  steps=3
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False]
+  rewards : [0.0, 0.0, 0.0]
+2026-03-22 08:43:58,253 [Worker1] [P85342] [S02] PATCHER  reward=0.00  → WRONG  total=3
+2026-03-22 08:43:58,253 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=85342  steps=3
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False]
+  rewards : [0.0, 0.0, 0.0]
+2026-03-22 08:44:01,248 [Worker1] [batch] [I010] GPU_GEN  batch=3  elapsed=2.99s  pids=['12600', '575', '55198']
+2026-03-22 08:44:01,248 [Worker1] [batch] [I010] done=2  gen=0  api=6  patch=0  elapsed=68.4s
+2026-03-22 08:44:01,248 [Worker1] [P71065] [S03] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:44:01,248 [Worker1] [P69452] [S04] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:44:01,629 [Worker1] [batch] [I011] log_probs  n=3  elapsed=0.38s
+2026-03-22 08:44:01,629 [Worker1] [P71065] [S03] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:44:01,629 [Worker1] [P69452] [S04] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:44:01,629 [Worker1] [P11250] [S04] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:02,498 [Worker1] [batch] [I011] GPU_GEN  batch=1  elapsed=0.87s  pids=['11250']
+2026-03-22 08:44:02,498 [Worker1] [batch] [I011] done=2  gen=0  api=4  patch=2  elapsed=69.7s
+2026-03-22 08:44:02,498 [Worker1] [P12600] [S04] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:44:02,544 [Worker1] [batch] [I012] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:44:02,544 [Worker1] [P12600] [S04] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:44:02,544 [Worker1] [batch] [I012] done=2  gen=0  api=3  patch=3  elapsed=69.7s
+2026-03-22 08:44:03,511 [Worker1] [batch] [I013] done=2  gen=0  api=3  patch=3  elapsed=70.7s
+2026-03-22 08:44:03,552 [Worker1] [batch] [I014] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:44:03,552 [Worker1] [P00575] [S04] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:04,208 [Worker1] [batch] [I014] GPU_GEN  batch=1  elapsed=0.66s  pids=['575']
+2026-03-22 08:44:04,208 [Worker1] [batch] [I014] done=2  gen=0  api=3  patch=3  elapsed=71.4s
+2026-03-22 08:44:04,666 [Worker1] [batch] [I015] done=2  gen=0  api=3  patch=3  elapsed=71.9s
+2026-03-22 08:44:04,711 [Worker1] [batch] [I016] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:44:04,711 [Worker1] [P11250] [S05] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:06,198 [Worker1] [batch] [I016] GPU_GEN  batch=1  elapsed=1.49s  pids=['11250']
+2026-03-22 08:44:06,198 [Worker1] [batch] [I016] done=2  gen=0  api=3  patch=3  elapsed=73.4s
+2026-03-22 08:44:09,802 [Worker1] [P69452] [S05] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:44:09,886 [Worker1] [batch] [I017] log_probs  n=2  elapsed=0.08s
+2026-03-22 08:44:09,886 [Worker1] [P00575] [S05] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:09,886 [Worker1] [P69452] [S05] PATCHER  reward=0.50  answer=False
+2026-03-22 08:44:10,695 [Worker1] [batch] [I017] GPU_GEN  batch=2  elapsed=0.81s  pids=['575', '69452']
+2026-03-22 08:44:10,695 [Worker1] [batch] [I017] done=2  gen=0  api=4  patch=2  elapsed=77.9s
+2026-03-22 08:44:10,695 [Worker1] [P55198] [S04] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:44:14,431 [Worker1] [P12600] [S05] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:44:14,612 [Worker1] [batch] [I018] log_probs  n=3  elapsed=0.18s
+2026-03-22 08:44:14,613 [Worker1] [P55198] [S04] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:44:14,613 [Worker1] [P11250] [S06] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:44:14,613 [Worker1] [P12600] [S05] PATCHER  reward=1.00  answer=False
+2026-03-22 08:44:17,184 [Worker1] [batch] [I018] GPU_GEN  batch=2  elapsed=2.57s  pids=['12600', '11250']
+2026-03-22 08:44:17,184 [Worker1] [batch] [I018] done=2  gen=0  api=4  patch=2  elapsed=84.4s
+2026-03-22 08:44:20,321 [Worker1] [P71065] [S04] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:44:20,730 [Worker1] [batch] [I019] log_probs  n=3  elapsed=0.41s
+2026-03-22 08:44:20,731 [Worker1] [P00575] [S06] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:44:20,731 [Worker1] [P69452] [S06] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:44:20,731 [Worker1] [P71065] [S04] PATCHER  reward=0.50  answer=False
+2026-03-22 08:44:22,580 [Worker1] [batch] [I019] GPU_GEN  batch=3  elapsed=1.85s  pids=['575', '71065', '69452']
+2026-03-22 08:44:22,581 [Worker1] [batch] [I019] done=2  gen=0  api=5  patch=1  elapsed=89.8s
+2026-03-22 08:44:28,145 [Worker1] [P55198] [S05] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:44:28,345 [Worker1] [batch] [I020] log_probs  n=3  elapsed=0.20s
+2026-03-22 08:44:28,346 [Worker1] [P12600] [S06] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:44:28,346 [Worker1] [P11250] [S07] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:28,346 [Worker1] [P55198] [S05] PATCHER  reward=1.00  answer=False
+2026-03-22 08:44:30,670 [Worker1] [batch] [I020] GPU_GEN  batch=3  elapsed=2.32s  pids=['12600', '55198', '11250']
+2026-03-22 08:44:30,670 [Worker1] [batch] [I020] done=2  gen=0  api=6  patch=0  elapsed=97.9s
+2026-03-22 08:44:30,670 [Worker1] [P00575] [S07] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:44:30,670 [Worker1] [P69452] [S07] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:44:30,998 [Worker1] [batch] [I021] log_probs  n=3  elapsed=0.33s
+2026-03-22 08:44:30,999 [Worker1] [P00575] [S07] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:44:30,999 [Worker1] [P71065] [S05] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:44:30,999 [Worker1] [P69452] [S07] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:44:38,601 [Worker1] [batch] [I021] GPU_GEN  batch=1  elapsed=7.60s  pids=['71065']
+2026-03-22 08:44:38,602 [Worker1] [batch] [I021] done=2  gen=0  api=4  patch=2  elapsed=105.8s
+2026-03-22 08:44:39,983 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:44:42,315 [Worker1] [P00575] [S08] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:44:43,668 [Worker1] [P69452] [S08] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:44:43,935 [Worker1] [batch] [I022] log_probs  n=4  elapsed=0.27s
+2026-03-22 08:44:43,936 [Worker1] [P12600] [S07] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:44:43,936 [Worker1] [P55198] [S06] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:44:43,936 [Worker1] [P00575] [S08] PATCHER  reward=1.00  answer=False
+2026-03-22 08:44:43,936 [Worker1] [P69452] [S08] PATCHER  reward=0.10  → WRONG  total=9
+2026-03-22 08:44:43,936 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=69452  steps=9
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False, True, True, False, True, True, False]
+  rewards : [0.0, 0.0, 1.0, 0.0, 0.1, 0.5, 0.1, 0.1, 0.1]
+2026-03-22 08:44:46,014 [Worker1] [batch] [I022] GPU_GEN  batch=3  elapsed=2.08s  pids=['12600', '575', '55198']
+2026-03-22 08:44:46,014 [Worker1] [batch] [I022] done=3  gen=0  api=5  patch=0  elapsed=113.2s
+2026-03-22 08:44:46,015 [Worker1] [P71065] [S06] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:44:46,308 [Worker1] [batch] [I023] log_probs  n=2  elapsed=0.29s
+2026-03-22 08:44:46,308 [Worker1] [P71065] [S06] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:44:46,308 [Worker1] [P11250] [S08] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:44:47,892 [Worker1] [batch] [I023] GPU_GEN  batch=1  elapsed=1.58s  pids=['11250']
+2026-03-22 08:44:47,892 [Worker1] [batch] [I023] done=3  gen=0  api=4  patch=1  elapsed=115.1s
+2026-03-22 08:44:47,892 [Worker1] [P12600] [S08] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:44:48,030 [Worker1] [batch] [I024] log_probs  n=2  elapsed=0.14s
+2026-03-22 08:44:48,030 [Worker1] [P12600] [S08] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:44:48,030 [Worker1] [P00575] [S09] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:44:48,894 [Worker1] [batch] [I024] GPU_GEN  batch=1  elapsed=0.86s  pids=['575']
+2026-03-22 08:44:48,895 [Worker1] [batch] [I024] done=3  gen=0  api=3  patch=2  elapsed=116.1s
+2026-03-22 08:44:48,895 [Worker1] [P55198] [S07] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:44:48,964 [Worker1] [batch] [I025] log_probs  n=1  elapsed=0.07s
+2026-03-22 08:44:48,965 [Worker1] [P55198] [S07] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:44:48,965 [Worker1] [batch] [I025] done=3  gen=0  api=2  patch=3  elapsed=116.2s
+2026-03-22 08:44:51,163 [Worker1] [batch] [I026] done=3  gen=0  api=2  patch=3  elapsed=118.4s
+2026-03-22 08:44:51,163 [Worker1] [P11250] [S09] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:44:51,243 [Worker1] [batch] [I027] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:44:51,243 [Worker1] [P11250] [S09] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:44:51,243 [Worker1] [batch] [I027] done=3  gen=0  api=1  patch=4  elapsed=118.4s
+2026-03-22 08:44:52,040 [Worker1] [batch] [I028] done=3  gen=0  api=1  patch=4  elapsed=119.2s
+2026-03-22 08:44:52,095 [Worker1] [batch] [I029] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:44:52,095 [Worker1] [P00575] [S10] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:44:52,346 [Worker1] [batch] [I029] GPU_GEN  batch=1  elapsed=0.25s  pids=['575']
+2026-03-22 08:44:52,346 [Worker1] [batch] [I029] done=3  gen=0  api=1  patch=4  elapsed=119.5s
+2026-03-22 08:44:52,416 [Worker1] [batch] [I030] done=3  gen=0  api=1  patch=4  elapsed=119.6s
+2026-03-22 08:44:54,589 [Worker1] [P55198] [S08] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:44:54,660 [Worker1] [batch] [I031] log_probs  n=1  elapsed=0.07s
+2026-03-22 08:44:54,660 [Worker1] [P55198] [S08] PATCHER  reward=0.10  → WRONG  total=9
+2026-03-22 08:44:54,660 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=55198  steps=9
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False, True, True, False, True, True, False]
+  rewards : [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.1]
+2026-03-22 08:44:54,661 [Worker1] [batch] [I031] done=4  gen=0  api=1  patch=3  elapsed=121.9s
+2026-03-22 08:44:55,848 [Worker1] [P12600] [S09] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:44:59,724 [Worker1] [P71065] [S07] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:45:00,038 [Worker1] [batch] [I032] log_probs  n=2  elapsed=0.31s
+2026-03-22 08:45:00,038 [Worker1] [P12600] [S09] PATCHER  reward=0.10  → WRONG  total=10
+2026-03-22 08:45:00,038 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=12600  steps=10
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, True, False, True, True, True, False]
+  rewards : [0.5, 0.5, 0.5, 0.1, 0.1, 1.0, 1.0, 0.1, 0.1, 0.1]
+2026-03-22 08:45:00,039 [Worker1] [P71065] [S07] PATCHER  reward=0.10  → WRONG  total=8
+2026-03-22 08:45:00,039 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=71065  steps=8
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, False, True, True, False]
+  rewards : [0.1, 1.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.1]
+2026-03-22 08:45:00,039 [Worker1] [batch] [I032] done=6  gen=0  api=1  patch=1  elapsed=127.2s
+2026-03-22 08:45:02,704 [Worker1] [P11250] [S10] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:45:02,891 [Worker1] [batch] [I033] log_probs  n=2  elapsed=0.19s
+2026-03-22 08:45:02,892 [Worker1] [P00575] [S11] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:45:02,892 [Worker1] [P11250] [S10] PATCHER  reward=0.50  answer=False
+2026-03-22 08:45:04,747 [Worker1] [batch] [I033] GPU_GEN  batch=2  elapsed=1.85s  pids=['575', '11250']
+2026-03-22 08:45:04,747 [Worker1] [batch] [I033] done=6  gen=0  api=2  patch=0  elapsed=131.9s
+2026-03-22 08:45:06,785 [Worker1] [batch] [I034] done=6  gen=0  api=2  patch=0  elapsed=134.0s
+2026-03-22 08:45:06,875 [Worker1] [batch] [I035] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:45:06,875 [Worker1] [P11250] [S11] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:45:08,141 [Worker1] [batch] [I035] GPU_GEN  batch=1  elapsed=1.27s  pids=['11250']
+2026-03-22 08:45:08,142 [Worker1] [batch] [I035] done=6  gen=0  api=2  patch=0  elapsed=135.3s
+2026-03-22 08:45:08,203 [Worker1] [batch] [I036] log_probs  n=1  elapsed=0.06s
+2026-03-22 08:45:08,203 [Worker1] [P00575] [S12] CORRECT  reward=0.50  next=solve  answer=True
+2026-03-22 08:45:08,203 [Worker1] [P00575] DONE  status=ANSWER  total_steps=13
+2026-03-22 08:45:08,203 [Worker1] [batch] [I036] done=7  gen=0  api=1  patch=0  elapsed=135.4s
+2026-03-22 08:45:10,054 [Worker1] [batch] [I037] done=7  gen=0  api=1  patch=0  elapsed=137.3s
+2026-03-22 08:45:10,145 [Worker1] [batch] [I038] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:45:10,146 [Worker1] [P11250] [S12] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:45:11,415 [Worker1] [batch] [I038] GPU_GEN  batch=1  elapsed=1.27s  pids=['11250']
+2026-03-22 08:45:11,415 [Worker1] [batch] [I038] done=7  gen=0  api=1  patch=0  elapsed=138.6s
+2026-03-22 08:45:12,610 [Worker1] [batch] [I039] done=7  gen=0  api=1  patch=0  elapsed=139.8s
+2026-03-22 08:45:12,703 [Worker1] [batch] [I040] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:45:12,704 [Worker1] [P11250] [S13] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:45:13,972 [Worker1] [batch] [I040] GPU_GEN  batch=1  elapsed=1.27s  pids=['11250']
+2026-03-22 08:45:13,972 [Worker1] [batch] [I040] done=7  gen=0  api=1  patch=0  elapsed=141.2s
+2026-03-22 08:45:15,844 [Worker1] [batch] [I041] done=7  gen=0  api=1  patch=0  elapsed=143.0s
+2026-03-22 08:45:15,955 [Worker1] [batch] [I042] log_probs  n=1  elapsed=0.11s
+2026-03-22 08:45:15,955 [Worker1] [P11250] [S14] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:45:17,239 [Worker1] [batch] [I042] GPU_GEN  batch=1  elapsed=1.28s  pids=['11250']
+2026-03-22 08:45:17,240 [Worker1] [batch] [I042] done=7  gen=0  api=1  patch=0  elapsed=144.4s
+2026-03-22 08:45:19,995 [Worker1] [batch] [I043] done=7  gen=0  api=1  patch=0  elapsed=147.2s
+2026-03-22 08:45:20,107 [Worker1] [batch] [I044] log_probs  n=1  elapsed=0.11s
+2026-03-22 08:45:20,107 [Worker1] [P11250] [S15] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:45:21,398 [Worker1] [batch] [I044] GPU_GEN  batch=1  elapsed=1.29s  pids=['11250']
+2026-03-22 08:45:21,398 [Worker1] [batch] [I044] done=7  gen=0  api=1  patch=0  elapsed=148.6s
+2026-03-22 08:45:24,127 [Worker1] [batch] [I045] done=7  gen=0  api=1  patch=0  elapsed=151.3s
+2026-03-22 08:45:24,244 [Worker1] [batch] [I046] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:45:24,244 [Worker1] [P11250] [S16] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:45:25,731 [Worker1] [batch] [I046] GPU_GEN  batch=1  elapsed=1.49s  pids=['11250']
+2026-03-22 08:45:25,731 [Worker1] [batch] [I046] done=7  gen=0  api=1  patch=0  elapsed=152.9s
+2026-03-22 08:45:27,563 [Worker1] [batch] [I047] done=7  gen=0  api=1  patch=0  elapsed=154.8s
+2026-03-22 08:45:27,563 [Worker1] [P11250] [S17] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:45:27,684 [Worker1] [batch] [I048] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:45:27,684 [Worker1] [P11250] [S17] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:45:27,684 [Worker1] [batch] [I048] done=7  gen=0  api=0  patch=1  elapsed=154.9s
+2026-03-22 08:45:32,942 [Worker1] [batch] [I049] done=7  gen=0  api=0  patch=1  elapsed=160.1s
+2026-03-22 08:45:34,865 [Worker1] [P11250] [S18] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:45:35,001 [Worker1] [batch] [I050] log_probs  n=1  elapsed=0.14s
+2026-03-22 08:45:35,001 [Worker1] [P11250] [S18] PATCHER  reward=0.50  answer=False
+2026-03-22 08:45:36,496 [Worker1] [batch] [I050] GPU_GEN  batch=1  elapsed=1.50s  pids=['11250']
+2026-03-22 08:45:36,497 [Worker1] [batch] [I050] done=7  gen=0  api=1  patch=0  elapsed=163.7s
+2026-03-22 08:45:38,331 [Worker1] [batch] [I051] done=7  gen=0  api=1  patch=0  elapsed=165.5s
+2026-03-22 08:45:38,467 [Worker1] [batch] [I052] log_probs  n=1  elapsed=0.14s
+2026-03-22 08:45:38,467 [Worker1] [P11250] [S19] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:45:39,996 [Worker1] [batch] [I052] GPU_GEN  batch=1  elapsed=1.53s  pids=['11250']
+2026-03-22 08:45:39,996 [Worker1] [batch] [I052] done=7  gen=0  api=1  patch=0  elapsed=167.2s
+2026-03-22 08:45:41,400 [Worker1] [batch] [I053] done=7  gen=0  api=1  patch=0  elapsed=168.6s
+2026-03-22 08:45:41,400 [Worker1] [P11250] [S20] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:45:41,547 [Worker1] [batch] [I054] log_probs  n=1  elapsed=0.15s
+2026-03-22 08:45:41,547 [Worker1] [P11250] [S20] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:45:41,547 [Worker1] [batch] [I054] done=7  gen=0  api=0  patch=1  elapsed=168.7s
+2026-03-22 08:45:47,947 [Worker1] [batch] [I055] done=7  gen=0  api=0  patch=1  elapsed=175.1s
+2026-03-22 08:45:50,681 [Worker1] [P11250] [S21] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:45:50,837 [Worker1] [batch] [I056] log_probs  n=1  elapsed=0.16s
+2026-03-22 08:45:50,837 [Worker1] [P11250] [S21] PATCHER  reward=0.10  → WRONG  total=22
+2026-03-22 08:45:50,837 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=11250  steps=22
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, False, True, True, True, True, True, True, False, True, True, True, True, True, True, True, False, True, True, False]
+  rewards : [0.5, 0.0, 0.1, 0.5, 0.5, 0.5, 1.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.1, 0.1, 0.5, 0.1, 0.1, 0.1]
+2026-03-22 08:45:50,837 [Worker1] [batch] BATCH_DONE  problems=8  answered=1  total_steps=77  iters=56  elapsed=178.0s
+2026-03-22 08:48:44,992 [Worker1] [batch] [I000] GPU_GEN  batch=8  elapsed=2.58s  pids=['28144', '46832', '53399', '33222', '31895', '68642', '42047', '44399']
+2026-03-22 08:48:44,998 [Worker1] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=2.6s
+2026-03-22 08:48:46,307 [Worker1] [batch] [I001] done=0  gen=0  api=8  patch=0  elapsed=3.9s
+2026-03-22 08:48:46,331 [Worker1] [batch] [I002] log_probs  n=1  elapsed=0.02s
+2026-03-22 08:48:46,331 [Worker1] [P46832] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:48:46,836 [Worker1] [batch] [I002] GPU_GEN  batch=1  elapsed=0.50s  pids=['46832']
+2026-03-22 08:48:46,836 [Worker1] [batch] [I002] done=0  gen=0  api=8  patch=0  elapsed=4.4s
+2026-03-22 08:48:46,881 [Worker1] [batch] [I003] log_probs  n=2  elapsed=0.04s
+2026-03-22 08:48:46,881 [Worker1] [P31895] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:46,881 [Worker1] [P44399] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:48:48,871 [Worker1] [batch] [I003] GPU_GEN  batch=2  elapsed=1.99s  pids=['31895', '44399']
+2026-03-22 08:48:48,872 [Worker1] [batch] [I003] done=0  gen=0  api=8  patch=0  elapsed=6.5s
+2026-03-22 08:48:48,872 [Worker1] [P46832] [S01] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:48:48,966 [Worker1] [batch] [I004] log_probs  n=5  elapsed=0.09s
+2026-03-22 08:48:48,966 [Worker1] [P46832] [S01] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:48:48,966 [Worker1] [P53399] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:48,966 [Worker1] [P33222] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:48:48,966 [Worker1] [P68642] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:48,966 [Worker1] [P42047] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:48:50,247 [Worker1] [batch] [I004] GPU_GEN  batch=4  elapsed=1.28s  pids=['53399', '33222', '68642', '42047']
+2026-03-22 08:48:50,247 [Worker1] [batch] [I004] done=0  gen=0  api=7  patch=1  elapsed=7.8s
+2026-03-22 08:48:50,247 [Worker1] [P44399] [S01] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:48:50,323 [Worker1] [batch] [I005] log_probs  n=2  elapsed=0.08s
+2026-03-22 08:48:50,323 [Worker1] [P28144] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:48:50,323 [Worker1] [P44399] [S01] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:48:52,180 [Worker1] [batch] [I005] GPU_GEN  batch=1  elapsed=1.86s  pids=['28144']
+2026-03-22 08:48:52,180 [Worker1] [batch] [I005] done=0  gen=0  api=6  patch=2  elapsed=9.8s
+2026-03-22 08:48:52,180 [Worker1] [P33222] [S01] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:48:52,180 [Worker1] [P42047] [S01] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:48:52,277 [Worker1] [batch] [I006] log_probs  n=4  elapsed=0.10s
+2026-03-22 08:48:52,277 [Worker1] [P53399] [S01] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:48:52,277 [Worker1] [P33222] [S01] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:48:52,277 [Worker1] [P31895] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:52,277 [Worker1] [P42047] [S01] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:48:53,420 [Worker1] [batch] [I006] GPU_GEN  batch=2  elapsed=1.14s  pids=['53399', '31895']
+2026-03-22 08:48:53,420 [Worker1] [batch] [I006] done=0  gen=0  api=4  patch=4  elapsed=11.0s
+2026-03-22 08:48:53,449 [Worker1] [batch] [I007] log_probs  n=1  elapsed=0.03s
+2026-03-22 08:48:53,449 [Worker1] [P68642] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:53,797 [Worker1] [batch] [I007] GPU_GEN  batch=1  elapsed=0.35s  pids=['68642']
+2026-03-22 08:48:53,797 [Worker1] [batch] [I007] done=0  gen=0  api=4  patch=4  elapsed=11.4s
+2026-03-22 08:48:53,832 [Worker1] [batch] [I008] done=0  gen=0  api=4  patch=4  elapsed=11.4s
+2026-03-22 08:48:54,819 [Worker1] [P46832] [S02] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:48:54,854 [Worker1] [batch] [I009] log_probs  n=1  elapsed=0.03s
+2026-03-22 08:48:54,854 [Worker1] [P46832] [S02] PATCHER  reward=0.10  → WRONG  total=3
+2026-03-22 08:48:54,854 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=46832  steps=3
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False]
+  rewards : [0.1, 0.1, 0.1]
+2026-03-22 08:48:54,854 [Worker1] [batch] [I009] done=1  gen=0  api=4  patch=3  elapsed=12.4s
+2026-03-22 08:48:55,342 [Worker1] [batch] [I010] done=1  gen=0  api=4  patch=3  elapsed=12.9s
+2026-03-22 08:48:55,380 [Worker1] [batch] [I011] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:48:55,380 [Worker1] [P31895] [S02] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:48:56,908 [Worker1] [batch] [I011] GPU_GEN  batch=1  elapsed=1.53s  pids=['31895']
+2026-03-22 08:48:56,908 [Worker1] [batch] [I011] done=1  gen=0  api=4  patch=3  elapsed=14.5s
+2026-03-22 08:48:58,942 [Worker1] [P33222] [S02] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:48:59,479 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:49:01,303 [Worker1] [P42047] [S02] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:49:02,561 [Worker1] [P44399] [S02] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:49:02,725 [Worker1] [batch] [I012] log_probs  n=4  elapsed=0.16s
+2026-03-22 08:49:02,727 [Worker1] [P68642] [S02] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:49:02,727 [Worker1] [P33222] [S02] PATCHER  reward=0.50  answer=False
+2026-03-22 08:49:02,727 [Worker1] [P42047] [S02] PATCHER  reward=0.50  answer=False
+2026-03-22 08:49:02,727 [Worker1] [P44399] [S02] PATCHER  reward=0.10  → WRONG  total=3
+2026-03-22 08:49:02,727 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=44399  steps=3
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False]
+  rewards : [0.1, 0.1, 0.1]
+2026-03-22 08:49:06,333 [Worker1] [batch] [I012] GPU_GEN  batch=3  elapsed=3.61s  pids=['33222', '68642', '42047']
+2026-03-22 08:49:06,333 [Worker1] [batch] [I012] done=2  gen=0  api=6  patch=0  elapsed=23.9s
+2026-03-22 08:49:06,333 [Worker1] [P53399] [S02] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:49:06,456 [Worker1] [batch] [I013] log_probs  n=3  elapsed=0.12s
+2026-03-22 08:49:06,456 [Worker1] [P28144] [S01] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:49:06,456 [Worker1] [P53399] [S02] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:49:06,456 [Worker1] [P31895] [S03] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:49:09,101 [Worker1] [batch] [I013] GPU_GEN  batch=2  elapsed=2.64s  pids=['28144', '31895']
+2026-03-22 08:49:09,101 [Worker1] [batch] [I013] done=2  gen=0  api=5  patch=1  elapsed=26.7s
+2026-03-22 08:49:09,231 [Worker1] [batch] [I014] done=2  gen=0  api=5  patch=1  elapsed=26.8s
+2026-03-22 08:49:09,266 [Worker1] [batch] [I015] log_probs  n=1  elapsed=0.03s
+2026-03-22 08:49:09,266 [Worker1] [P42047] [S03] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:49:09,940 [Worker1] [batch] [I015] GPU_GEN  batch=1  elapsed=0.67s  pids=['42047']
+2026-03-22 08:49:09,940 [Worker1] [batch] [I015] done=2  gen=0  api=5  patch=1  elapsed=27.5s
+2026-03-22 08:49:09,984 [Worker1] [batch] [I016] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:49:09,984 [Worker1] [P33222] [S03] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:49:12,915 [Worker1] [batch] [I016] GPU_GEN  batch=1  elapsed=2.93s  pids=['33222']
+2026-03-22 08:49:12,915 [Worker1] [batch] [I016] done=2  gen=0  api=5  patch=1  elapsed=30.5s
+2026-03-22 08:49:12,915 [Worker1] [P68642] [S03] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:49:12,982 [Worker1] [batch] [I017] log_probs  n=2  elapsed=0.07s
+2026-03-22 08:49:12,982 [Worker1] [P68642] [S03] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:49:12,982 [Worker1] [P42047] [S04] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:49:14,285 [Worker1] [batch] [I017] GPU_GEN  batch=1  elapsed=1.30s  pids=['42047']
+2026-03-22 08:49:14,286 [Worker1] [batch] [I017] done=2  gen=0  api=4  patch=2  elapsed=31.9s
+2026-03-22 08:49:14,329 [Worker1] [batch] [I018] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:49:14,329 [Worker1] [P31895] [S04] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:49:15,443 [Worker1] [batch] [I018] GPU_GEN  batch=1  elapsed=1.11s  pids=['31895']
+2026-03-22 08:49:15,443 [Worker1] [batch] [I018] done=2  gen=0  api=4  patch=2  elapsed=33.0s
+2026-03-22 08:49:15,489 [Worker1] [batch] [I019] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:49:15,490 [Worker1] [P28144] [S02] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:49:17,190 [Worker1] [batch] [I019] GPU_GEN  batch=1  elapsed=1.70s  pids=['28144']
+2026-03-22 08:49:17,191 [Worker1] [batch] [I019] done=2  gen=0  api=4  patch=2  elapsed=34.8s
+2026-03-22 08:49:17,191 [Worker1] [P42047] [S05] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:49:17,344 [Worker1] [batch] [I020] log_probs  n=3  elapsed=0.15s
+2026-03-22 08:49:17,345 [Worker1] [P33222] [S04] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:49:17,345 [Worker1] [P31895] [S05] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:49:17,345 [Worker1] [P42047] [S05] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:49:21,971 [Worker1] [batch] [I020] GPU_GEN  batch=2  elapsed=4.63s  pids=['33222', '31895']
+2026-03-22 08:49:21,971 [Worker1] [batch] [I020] done=2  gen=0  api=3  patch=3  elapsed=39.6s
+2026-03-22 08:49:24,215 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:49:31,716 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:49:31,718 [Worker1] [P53399] [S03] PATCHER_ARRIVED  reward=0.00  gt=correct
+2026-03-22 08:49:39,178 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:49:39,181 [Worker1] [P42047] [S06] PATCHER_ARRIVED  reward=0.00  gt=correct
+2026-03-22 08:49:39,292 [Worker1] [batch] [I021] log_probs  n=2  elapsed=0.11s
+2026-03-22 08:49:39,292 [Worker1] [P53399] [S03] PATCHER  reward=0.00  → WRONG  total=4
+2026-03-22 08:49:39,292 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=53399  steps=4
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, False]
+  rewards : [0.5, 0.1, 0.0, 0.0]
+2026-03-22 08:49:39,293 [Worker1] [P42047] [S06] PATCHER  reward=0.00  → WRONG  total=7
+2026-03-22 08:49:39,293 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=42047  steps=7
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False, True, True, True, False]
+  rewards : [0.1, 0.1, 0.5, 1.0, 0.1, 0.1, 0.0]
+2026-03-22 08:49:39,293 [Worker1] [batch] [I021] done=4  gen=0  api=3  patch=1  elapsed=56.9s
+2026-03-22 08:49:39,293 [Worker1] [P28144] [S03] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:49:39,294 [Worker1] [P33222] [S05] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:49:42,616 [Worker1] [P68642] [S04] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:49:42,937 [Worker1] [batch] [I022] log_probs  n=4  elapsed=0.32s
+2026-03-22 08:49:42,938 [Worker1] [P28144] [S03] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:49:42,938 [Worker1] [P33222] [S05] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:49:42,938 [Worker1] [P31895] [S06] SOLVE  reward=1.00  next=correct  answer=False
+2026-03-22 08:49:42,938 [Worker1] [P68642] [S04] PATCHER  reward=1.00  answer=False
+2026-03-22 08:49:47,176 [Worker1] [batch] [I022] GPU_GEN  batch=2  elapsed=4.24s  pids=['31895', '68642']
+2026-03-22 08:49:47,176 [Worker1] [batch] [I022] done=4  gen=0  api=2  patch=2  elapsed=64.8s
+2026-03-22 08:49:51,059 [Worker1] [P28144] [S04] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:49:53,180 [Worker1] [P33222] [S06] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:49:53,374 [Worker1] [batch] [I023] log_probs  n=2  elapsed=0.19s
+2026-03-22 08:49:53,375 [Worker1] [P28144] [S04] PATCHER  reward=0.50  answer=False
+2026-03-22 08:49:53,375 [Worker1] [P33222] [S06] PATCHER  reward=0.50  answer=False
+2026-03-22 08:49:56,735 [Worker1] [batch] [I023] GPU_GEN  batch=2  elapsed=3.36s  pids=['28144', '33222']
+2026-03-22 08:49:56,735 [Worker1] [batch] [I023] done=4  gen=0  api=4  patch=0  elapsed=74.3s
+2026-03-22 08:49:56,835 [Worker1] [batch] [I024] log_probs  n=2  elapsed=0.10s
+2026-03-22 08:49:56,835 [Worker1] [P31895] [S07] CORRECT  reward=1.00  next=solve  answer=True
+2026-03-22 08:49:56,835 [Worker1] [P31895] DONE  status=ANSWER  total_steps=8
+2026-03-22 08:49:56,836 [Worker1] [P68642] [S05] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:49:59,916 [Worker1] [batch] [I024] GPU_GEN  batch=1  elapsed=3.08s  pids=['68642']
+2026-03-22 08:49:59,916 [Worker1] [batch] [I024] done=5  gen=0  api=3  patch=0  elapsed=77.5s
+2026-03-22 08:49:59,978 [Worker1] [batch] [I025] log_probs  n=1  elapsed=0.06s
+2026-03-22 08:49:59,978 [Worker1] [P28144] [S05] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:01,423 [Worker1] [batch] [I025] GPU_GEN  batch=1  elapsed=1.44s  pids=['28144']
+2026-03-22 08:50:01,423 [Worker1] [batch] [I025] done=5  gen=0  api=3  patch=0  elapsed=79.0s
+2026-03-22 08:50:01,423 [Worker1] [P68642] [S06] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:50:01,592 [Worker1] [batch] [I026] log_probs  n=2  elapsed=0.17s
+2026-03-22 08:50:01,592 [Worker1] [P33222] [S07] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:01,592 [Worker1] [P68642] [S06] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:50:02,994 [Worker1] [batch] [I026] GPU_GEN  batch=1  elapsed=1.40s  pids=['33222']
+2026-03-22 08:50:02,994 [Worker1] [batch] [I026] done=5  gen=0  api=2  patch=1  elapsed=80.6s
+2026-03-22 08:50:03,354 [Worker1] [batch] [I027] done=5  gen=0  api=2  patch=1  elapsed=80.9s
+2026-03-22 08:50:03,423 [Worker1] [batch] [I028] log_probs  n=1  elapsed=0.07s
+2026-03-22 08:50:03,424 [Worker1] [P28144] [S06] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:04,835 [Worker1] [batch] [I028] GPU_GEN  batch=1  elapsed=1.41s  pids=['28144']
+2026-03-22 08:50:04,836 [Worker1] [batch] [I028] done=5  gen=0  api=2  patch=1  elapsed=82.4s
+2026-03-22 08:50:05,044 [Worker1] [batch] [I029] done=5  gen=0  api=2  patch=1  elapsed=82.6s
+2026-03-22 08:50:05,134 [Worker1] [batch] [I030] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:50:05,135 [Worker1] [P33222] [S08] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:06,427 [Worker1] [batch] [I030] GPU_GEN  batch=1  elapsed=1.29s  pids=['33222']
+2026-03-22 08:50:06,428 [Worker1] [batch] [I030] done=5  gen=0  api=2  patch=1  elapsed=84.0s
+2026-03-22 08:50:07,034 [Worker1] [batch] [I031] done=5  gen=0  api=2  patch=1  elapsed=84.6s
+2026-03-22 08:50:07,113 [Worker1] [batch] [I032] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:50:07,113 [Worker1] [P28144] [S07] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:08,537 [Worker1] [batch] [I032] GPU_GEN  batch=1  elapsed=1.42s  pids=['28144']
+2026-03-22 08:50:08,537 [Worker1] [batch] [I032] done=5  gen=0  api=2  patch=1  elapsed=86.1s
+2026-03-22 08:50:08,537 [Worker1] [P33222] [S09] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:50:12,375 [Worker1] [P68642] [S07] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:50:12,588 [Worker1] [batch] [I033] log_probs  n=2  elapsed=0.21s
+2026-03-22 08:50:12,588 [Worker1] [P33222] [S09] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:50:12,588 [Worker1] [P68642] [S07] PATCHER  reward=0.10  → WRONG  total=8
+2026-03-22 08:50:12,588 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=68642  steps=8
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, False, True, True, False]
+  rewards : [0.5, 0.5, 0.1, 0.1, 1.0, 0.1, 0.1, 0.1]
+2026-03-22 08:50:12,589 [Worker1] [batch] [I033] done=6  gen=0  api=1  patch=1  elapsed=90.2s
+2026-03-22 08:50:12,675 [Worker1] [batch] [I034] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:50:12,676 [Worker1] [P28144] [S08] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:15,413 [Worker1] [batch] [I034] GPU_GEN  batch=1  elapsed=2.74s  pids=['28144']
+2026-03-22 08:50:15,414 [Worker1] [batch] [I034] done=6  gen=0  api=1  patch=1  elapsed=93.0s
+2026-03-22 08:50:16,421 [Worker1] [P33222] [S10] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:50:16,532 [Worker1] [batch] [I035] log_probs  n=1  elapsed=0.11s
+2026-03-22 08:50:16,532 [Worker1] [P33222] [S10] PATCHER  reward=0.10  → WRONG  total=11
+2026-03-22 08:50:16,532 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=33222  steps=11
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False, True, True, True, False, True, True, True, False]
+  rewards : [0.1, 0.1, 0.5, 0.5, 0.1, 0.1, 0.5, 0.5, 0.1, 0.1, 0.1]
+2026-03-22 08:50:16,532 [Worker1] [batch] [I035] done=7  gen=0  api=1  patch=0  elapsed=94.1s
+2026-03-22 08:50:19,513 [Worker1] [batch] [I036] done=7  gen=0  api=1  patch=0  elapsed=97.1s
+2026-03-22 08:50:19,514 [Worker1] [P28144] [S09] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:50:19,609 [Worker1] [batch] [I037] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:50:19,609 [Worker1] [P28144] [S09] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:50:19,609 [Worker1] [batch] [I037] done=7  gen=0  api=0  patch=1  elapsed=97.2s
+2026-03-22 08:50:25,655 [Worker1] [batch] [I038] done=7  gen=0  api=0  patch=1  elapsed=103.2s
+2026-03-22 08:50:29,785 [Worker1] [P28144] [S10] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:50:29,902 [Worker1] [batch] [I039] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:50:29,902 [Worker1] [P28144] [S10] PATCHER  reward=1.00  answer=False
+2026-03-22 08:50:30,178 [Worker1] [batch] [I039] GPU_GEN  batch=1  elapsed=0.28s  pids=['28144']
+2026-03-22 08:50:30,178 [Worker1] [batch] [I039] done=7  gen=0  api=1  patch=0  elapsed=107.8s
+2026-03-22 08:50:33,979 [Worker1] [batch] [I040] done=7  gen=0  api=1  patch=0  elapsed=111.6s
+2026-03-22 08:50:34,090 [Worker1] [batch] [I041] log_probs  n=1  elapsed=0.11s
+2026-03-22 08:50:34,090 [Worker1] [P28144] [S11] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:34,307 [Worker1] [batch] [I041] GPU_GEN  batch=1  elapsed=0.22s  pids=['28144']
+2026-03-22 08:50:34,307 [Worker1] [batch] [I041] done=7  gen=0  api=1  patch=0  elapsed=111.9s
+2026-03-22 08:50:36,021 [Worker1] [batch] [I042] done=7  gen=0  api=1  patch=0  elapsed=113.6s
+2026-03-22 08:50:36,022 [Worker1] [P28144] [S12] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:50:36,134 [Worker1] [batch] [I043] log_probs  n=1  elapsed=0.11s
+2026-03-22 08:50:36,134 [Worker1] [P28144] [S12] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:50:36,134 [Worker1] [batch] [I043] done=7  gen=0  api=0  patch=1  elapsed=113.7s
+2026-03-22 08:50:39,976 [Worker1] [batch] [I044] done=7  gen=0  api=0  patch=1  elapsed=117.6s
+2026-03-22 08:50:42,348 [Worker1] [P28144] [S13] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:50:42,465 [Worker1] [batch] [I045] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:50:42,465 [Worker1] [P28144] [S13] PATCHER  reward=0.10  → WRONG  total=14
+2026-03-22 08:50:42,465 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=28144  steps=14
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, False, True, True, True, True, True, False, True, True, False]
+  rewards : [0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.1, 0.0, 1.0, 0.1, 0.1, 0.1]
+2026-03-22 08:50:42,465 [Worker1] [batch] BATCH_DONE  problems=8  answered=1  total_steps=58  iters=45  elapsed=120.1s
+2026-03-22 08:50:44,367 [Worker1] [batch] [I000] GPU_GEN  batch=8  elapsed=1.74s  pids=['23239', '10791', '52173', '83552', '44524', '47337', '24586', '16644']
+2026-03-22 08:50:44,372 [Worker1] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=1.7s
+2026-03-22 08:50:45,563 [Worker1] [batch] [I001] done=0  gen=0  api=8  patch=0  elapsed=2.9s
+2026-03-22 08:50:45,586 [Worker1] [batch] [I002] log_probs  n=1  elapsed=0.02s
+2026-03-22 08:50:45,587 [Worker1] [P83552] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:47,456 [Worker1] [batch] [I002] GPU_GEN  batch=1  elapsed=1.87s  pids=['83552']
+2026-03-22 08:50:47,457 [Worker1] [batch] [I002] done=0  gen=0  api=8  patch=0  elapsed=4.8s
+2026-03-22 08:50:47,590 [Worker1] [batch] [I003] log_probs  n=6  elapsed=0.13s
+2026-03-22 08:50:47,590 [Worker1] [P10791] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:47,590 [Worker1] [P52173] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:47,590 [Worker1] [P44524] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:47,590 [Worker1] [P47337] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:47,590 [Worker1] [P24586] [S00] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:47,590 [Worker1] [P16644] [S00] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:49,464 [Worker1] [batch] [I003] GPU_GEN  batch=6  elapsed=1.87s  pids=['10791', '52173', '44524', '47337', '24586', '16644']
+2026-03-22 08:50:49,464 [Worker1] [batch] [I003] done=0  gen=0  api=8  patch=0  elapsed=6.8s
+2026-03-22 08:50:49,507 [Worker1] [batch] [I004] log_probs  n=1  elapsed=0.04s
+2026-03-22 08:50:49,508 [Worker1] [P23239] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:50:51,497 [Worker1] [batch] [I004] GPU_GEN  batch=1  elapsed=1.99s  pids=['23239']
+2026-03-22 08:50:51,497 [Worker1] [batch] [I004] done=0  gen=0  api=8  patch=0  elapsed=8.9s
+2026-03-22 08:50:51,497 [Worker1] [P52173] [S01] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:50:51,497 [Worker1] [P83552] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:50:51,596 [Worker1] [batch] [I005] log_probs  n=4  elapsed=0.10s
+2026-03-22 08:50:51,597 [Worker1] [P10791] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:51,597 [Worker1] [P52173] [S01] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:50:51,597 [Worker1] [P83552] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:50:51,597 [Worker1] [P16644] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:55,181 [Worker1] [batch] [I005] GPU_GEN  batch=2  elapsed=3.58s  pids=['10791', '16644']
+2026-03-22 08:50:55,181 [Worker1] [batch] [I005] done=0  gen=0  api=6  patch=2  elapsed=12.6s
+2026-03-22 08:50:55,279 [Worker1] [batch] [I006] log_probs  n=4  elapsed=0.10s
+2026-03-22 08:50:55,279 [Worker1] [P23239] [S01] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:55,279 [Worker1] [P44524] [S01] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:50:55,279 [Worker1] [P47337] [S01] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:55,279 [Worker1] [P24586] [S01] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:50:58,086 [Worker1] [batch] [I006] GPU_GEN  batch=4  elapsed=2.81s  pids=['23239', '44524', '47337', '24586']
+2026-03-22 08:50:58,086 [Worker1] [batch] [I006] done=0  gen=0  api=6  patch=2  elapsed=15.5s
+2026-03-22 08:51:00,777 [Worker1] [P83552] [S02] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:51:00,863 [Worker1] [batch] [I007] log_probs  n=2  elapsed=0.09s
+2026-03-22 08:51:00,863 [Worker1] [P16644] [S02] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:00,863 [Worker1] [P83552] [S02] PATCHER  reward=0.50  answer=False
+2026-03-22 08:51:02,159 [Worker1] [batch] [I007] GPU_GEN  batch=2  elapsed=1.30s  pids=['83552', '16644']
+2026-03-22 08:51:02,160 [Worker1] [batch] [I007] done=0  gen=0  api=7  patch=1  elapsed=19.5s
+2026-03-22 08:51:04,886 [Worker1] [P52173] [S02] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:51:05,042 [Worker1] [batch] [I008] log_probs  n=5  elapsed=0.16s
+2026-03-22 08:51:05,043 [Worker1] [P10791] [S02] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:05,043 [Worker1] [P44524] [S02] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:05,043 [Worker1] [P47337] [S02] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:05,043 [Worker1] [P24586] [S02] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:05,043 [Worker1] [P52173] [S02] PATCHER  reward=1.00  answer=False
+2026-03-22 08:51:08,756 [Worker1] [batch] [I008] GPU_GEN  batch=5  elapsed=3.71s  pids=['10791', '52173', '44524', '47337', '24586']
+2026-03-22 08:51:08,757 [Worker1] [batch] [I008] done=0  gen=0  api=8  patch=0  elapsed=26.1s
+2026-03-22 08:51:08,757 [Worker1] [P16644] [S03] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:51:08,895 [Worker1] [batch] [I009] log_probs  n=3  elapsed=0.14s
+2026-03-22 08:51:08,895 [Worker1] [P23239] [S02] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:08,895 [Worker1] [P83552] [S03] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:08,895 [Worker1] [P16644] [S03] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:51:11,709 [Worker1] [batch] [I009] GPU_GEN  batch=2  elapsed=2.81s  pids=['23239', '83552']
+2026-03-22 08:51:11,709 [Worker1] [batch] [I009] done=0  gen=0  api=7  patch=1  elapsed=29.1s
+2026-03-22 08:51:11,887 [Worker1] [batch] [I010] log_probs  n=4  elapsed=0.18s
+2026-03-22 08:51:11,888 [Worker1] [P10791] [S03] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:11,888 [Worker1] [P44524] [S03] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:11,888 [Worker1] [P47337] [S03] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:11,888 [Worker1] [P24586] [S03] CORRECT  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:14,042 [Worker1] [batch] [I010] GPU_GEN  batch=4  elapsed=2.15s  pids=['10791', '44524', '47337', '24586']
+2026-03-22 08:51:14,043 [Worker1] [batch] [I010] done=0  gen=0  api=7  patch=1  elapsed=31.4s
+2026-03-22 08:51:15,542 [Worker1] [P16644] [S04] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:51:15,588 [Worker1] [batch] [I011] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:51:15,588 [Worker1] [P16644] [S04] PATCHER  reward=1.00  answer=False
+2026-03-22 08:51:16,155 [Worker1] [batch] [I011] GPU_GEN  batch=1  elapsed=0.57s  pids=['16644']
+2026-03-22 08:51:16,155 [Worker1] [batch] [I011] done=0  gen=0  api=8  patch=0  elapsed=33.5s
+2026-03-22 08:51:16,156 [Worker1] [P83552] [S04] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:16,355 [Worker1] [batch] [I012] log_probs  n=4  elapsed=0.20s
+2026-03-22 08:51:16,355 [Worker1] [P83552] [S04] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:16,355 [Worker1] [P44524] [S04] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:16,355 [Worker1] [P47337] [S04] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:16,355 [Worker1] [P24586] [S04] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:17,612 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:51:18,788 [Worker1] [batch] [I012] GPU_GEN  batch=3  elapsed=2.43s  pids=['44524', '47337', '24586']
+2026-03-22 08:51:18,788 [Worker1] [batch] [I012] done=0  gen=0  api=7  patch=1  elapsed=36.2s
+2026-03-22 08:51:18,788 [Worker1] [P23239] [S03] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:18,943 [Worker1] [batch] [I013] log_probs  n=3  elapsed=0.16s
+2026-03-22 08:51:18,943 [Worker1] [P23239] [S03] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:18,943 [Worker1] [P52173] [S03] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:18,943 [Worker1] [P16644] [S05] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:19,785 [Worker1] [batch] [I013] GPU_GEN  batch=2  elapsed=0.84s  pids=['52173', '16644']
+2026-03-22 08:51:19,785 [Worker1] [batch] [I013] done=0  gen=0  api=6  patch=2  elapsed=37.2s
+2026-03-22 08:51:19,838 [Worker1] [batch] [I014] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:51:19,838 [Worker1] [P10791] [S04] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:21,793 [Worker1] [batch] [I014] GPU_GEN  batch=1  elapsed=1.95s  pids=['10791']
+2026-03-22 08:51:21,793 [Worker1] [batch] [I014] done=0  gen=0  api=6  patch=2  elapsed=39.2s
+2026-03-22 08:51:21,793 [Worker1] [P44524] [S05] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:51:21,793 [Worker1] [P16644] [S06] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:51:24,137 [Worker1] [P83552] [S05] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:51:24,295 [Worker1] [batch] [I015] log_probs  n=3  elapsed=0.16s
+2026-03-22 08:51:24,295 [Worker1] [P44524] [S05] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:51:24,295 [Worker1] [P16644] [S06] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:51:24,295 [Worker1] [P83552] [S05] PATCHER  reward=0.50  answer=True
+2026-03-22 08:51:24,295 [Worker1] [P83552] DONE  status=ANSWER  total_steps=6
+2026-03-22 08:51:24,295 [Worker1] [batch] [I015] done=1  gen=0  api=4  patch=3  elapsed=41.7s
+2026-03-22 08:51:24,296 [Worker1] [P24586] [S05] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:24,404 [Worker1] [batch] [I016] log_probs  n=2  elapsed=0.11s
+2026-03-22 08:51:24,404 [Worker1] [P47337] [S05] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:24,404 [Worker1] [P24586] [S05] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:25,900 [Worker1] [batch] [I016] GPU_GEN  batch=1  elapsed=1.50s  pids=['47337']
+2026-03-22 08:51:25,900 [Worker1] [batch] [I016] done=1  gen=0  api=3  patch=4  elapsed=43.3s
+2026-03-22 08:51:25,900 [Worker1] [P10791] [S05] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:25,970 [Worker1] [batch] [I017] log_probs  n=1  elapsed=0.07s
+2026-03-22 08:51:25,970 [Worker1] [P10791] [S05] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:25,970 [Worker1] [batch] [I017] done=1  gen=0  api=2  patch=5  elapsed=43.3s
+2026-03-22 08:51:26,264 [Worker1] [batch] [I018] done=1  gen=0  api=2  patch=5  elapsed=43.6s
+2026-03-22 08:51:27,166 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:51:28,236 [Worker1] [P23239] [S04] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:51:28,299 [Worker1] [batch] [I019] log_probs  n=1  elapsed=0.06s
+2026-03-22 08:51:28,300 [Worker1] [P23239] [S04] PATCHER  reward=1.00  answer=False
+2026-03-22 08:51:30,134 [Worker1] [batch] [I019] GPU_GEN  batch=1  elapsed=1.83s  pids=['23239']
+2026-03-22 08:51:30,134 [Worker1] [batch] [I019] done=1  gen=0  api=3  patch=4  elapsed=47.5s
+2026-03-22 08:51:30,134 [Worker1] [P52173] [S04] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:31,733 [Worker1] [P24586] [S06] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:51:34,307 [Worker1] [P16644] [S07] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:51:34,535 [Worker1] [batch] [I020] log_probs  n=4  elapsed=0.23s
+2026-03-22 08:51:34,535 [Worker1] [P52173] [S04] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:34,535 [Worker1] [P47337] [S06] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:34,535 [Worker1] [P24586] [S06] PATCHER  reward=1.00  answer=False
+2026-03-22 08:51:34,535 [Worker1] [P16644] [S07] PATCHER  reward=0.10  → WRONG  total=8
+2026-03-22 08:51:34,535 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=16644  steps=8
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, False, True, True, False]
+  rewards : [0.5, 0.5, 0.1, 0.1, 1.0, 0.1, 0.1, 0.1]
+2026-03-22 08:51:36,693 [Worker1] [batch] [I020] GPU_GEN  batch=2  elapsed=2.16s  pids=['47337', '24586']
+2026-03-22 08:51:36,693 [Worker1] [batch] [I020] done=2  gen=0  api=3  patch=3  elapsed=54.1s
+2026-03-22 08:51:38,693 [Worker1] [P10791] [S06] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:51:39,181 [Worker1] [reward] 숫자 없는 응답: "''", 0.0 반환
+2026-03-22 08:51:41,270 [Worker1] [P52173] [S05] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:51:42,634 [Worker1] [P44524] [S06] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:51:42,855 [Worker1] [batch] [I021] log_probs  n=3  elapsed=0.22s
+2026-03-22 08:51:42,855 [Worker1] [P10791] [S06] PATCHER  reward=0.50  answer=False
+2026-03-22 08:51:42,855 [Worker1] [P52173] [S05] PATCHER  reward=0.50  answer=False
+2026-03-22 08:51:42,855 [Worker1] [P44524] [S06] PATCHER  reward=0.50  answer=False
+2026-03-22 08:51:47,976 [Worker1] [batch] [I021] GPU_GEN  batch=3  elapsed=5.12s  pids=['10791', '52173', '44524']
+2026-03-22 08:51:47,976 [Worker1] [batch] [I021] done=2  gen=0  api=6  patch=0  elapsed=65.3s
+2026-03-22 08:51:47,976 [Worker1] [P47337] [S07] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:48,196 [Worker1] [batch] [I022] log_probs  n=3  elapsed=0.22s
+2026-03-22 08:51:48,196 [Worker1] [P23239] [S05] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:51:48,196 [Worker1] [P47337] [S07] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:51:48,196 [Worker1] [P24586] [S07] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:51:50,857 [Worker1] [batch] [I022] GPU_GEN  batch=2  elapsed=2.66s  pids=['23239', '24586']
+2026-03-22 08:51:50,857 [Worker1] [batch] [I022] done=2  gen=0  api=5  patch=1  elapsed=68.2s
+2026-03-22 08:51:50,940 [Worker1] [batch] [I023] log_probs  n=2  elapsed=0.08s
+2026-03-22 08:51:50,940 [Worker1] [P52173] [S06] SOLVE  reward=1.00  next=correct  answer=False
+2026-03-22 08:51:50,940 [Worker1] [P44524] [S07] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:51:51,903 [Worker1] [batch] [I023] GPU_GEN  batch=2  elapsed=0.96s  pids=['52173', '44524']
+2026-03-22 08:51:51,903 [Worker1] [batch] [I023] done=2  gen=0  api=5  patch=1  elapsed=69.3s
+2026-03-22 08:51:51,985 [Worker1] [batch] [I024] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:51:51,985 [Worker1] [P10791] [S07] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:51:55,440 [Worker1] [batch] [I024] GPU_GEN  batch=1  elapsed=3.45s  pids=['10791']
+2026-03-22 08:51:55,441 [Worker1] [batch] [I024] done=2  gen=0  api=5  patch=1  elapsed=72.8s
+2026-03-22 08:51:55,441 [Worker1] [P23239] [S06] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:51:55,441 [Worker1] [P52173] [S07] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:51:55,441 [Worker1] [P24586] [S08] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:52:00,984 [Worker1] [P47337] [S08] PATCHER_ARRIVED  reward=0.50  gt=solve
+2026-03-22 08:52:01,376 [Worker1] [batch] [I025] log_probs  n=5  elapsed=0.39s
+2026-03-22 08:52:01,376 [Worker1] [P23239] [S06] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:52:01,376 [Worker1] [P52173] [S07] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:52:01,376 [Worker1] [P44524] [S08] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:01,376 [Worker1] [P24586] [S08] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:52:01,376 [Worker1] [P47337] [S08] PATCHER  reward=0.50  answer=False
+2026-03-22 08:52:02,938 [Worker1] [batch] [I025] GPU_GEN  batch=2  elapsed=1.56s  pids=['44524', '47337']
+2026-03-22 08:52:02,938 [Worker1] [batch] [I025] done=2  gen=0  api=3  patch=3  elapsed=80.3s
+2026-03-22 08:52:05,016 [Worker1] [P52173] [S08] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:52:07,094 [Worker1] [P24586] [S09] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:52:07,406 [Worker1] [batch] [I026] log_probs  n=3  elapsed=0.31s
+2026-03-22 08:52:07,407 [Worker1] [P10791] [S08] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:07,407 [Worker1] [P52173] [S08] PATCHER  reward=0.10  → WRONG  total=9
+2026-03-22 08:52:07,407 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=52173  steps=9
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, False, True, True, False, True, True, False]
+  rewards : [0.1, 0.1, 1.0, 0.0, 0.0, 0.5, 1.0, 0.1, 0.1]
+2026-03-22 08:52:07,407 [Worker1] [P24586] [S09] PATCHER  reward=1.00  answer=False
+2026-03-22 08:52:10,084 [Worker1] [batch] [I026] GPU_GEN  batch=2  elapsed=2.68s  pids=['10791', '24586']
+2026-03-22 08:52:10,084 [Worker1] [batch] [I026] done=3  gen=0  api=4  patch=1  elapsed=87.5s
+2026-03-22 08:52:13,681 [Worker1] [P23239] [S07] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:52:13,938 [Worker1] [batch] [I027] log_probs  n=3  elapsed=0.26s
+2026-03-22 08:52:13,939 [Worker1] [P44524] [S09] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:13,939 [Worker1] [P47337] [S09] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:13,939 [Worker1] [P23239] [S07] PATCHER  reward=1.00  answer=False
+2026-03-22 08:52:15,814 [Worker1] [batch] [I027] GPU_GEN  batch=3  elapsed=1.87s  pids=['23239', '44524', '47337']
+2026-03-22 08:52:15,814 [Worker1] [batch] [I027] done=3  gen=0  api=5  patch=0  elapsed=93.2s
+2026-03-22 08:52:16,031 [Worker1] [batch] [I028] log_probs  n=2  elapsed=0.22s
+2026-03-22 08:52:16,031 [Worker1] [P10791] [S09] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:52:16,031 [Worker1] [P24586] [S10] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:52:18,383 [Worker1] [batch] [I028] GPU_GEN  batch=2  elapsed=2.35s  pids=['10791', '24586']
+2026-03-22 08:52:18,383 [Worker1] [batch] [I028] done=3  gen=0  api=5  patch=0  elapsed=95.8s
+2026-03-22 08:52:18,544 [Worker1] [batch] [I029] log_probs  n=2  elapsed=0.16s
+2026-03-22 08:52:18,544 [Worker1] [P44524] [S10] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:18,544 [Worker1] [P47337] [S10] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:19,905 [Worker1] [batch] [I029] GPU_GEN  batch=2  elapsed=1.36s  pids=['44524', '47337']
+2026-03-22 08:52:19,906 [Worker1] [batch] [I029] done=3  gen=0  api=5  patch=0  elapsed=97.3s
+2026-03-22 08:52:19,987 [Worker1] [batch] [I030] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:52:19,987 [Worker1] [P23239] [S08] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:52:21,198 [Worker1] [batch] [I030] GPU_GEN  batch=1  elapsed=1.21s  pids=['23239']
+2026-03-22 08:52:21,199 [Worker1] [batch] [I030] done=3  gen=0  api=5  patch=0  elapsed=98.6s
+2026-03-22 08:52:21,199 [Worker1] [P24586] [S11] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:52:21,281 [Worker1] [batch] [I031] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:52:21,281 [Worker1] [P24586] [S11] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:52:21,281 [Worker1] [batch] [I031] done=3  gen=0  api=4  patch=1  elapsed=98.7s
+2026-03-22 08:52:21,540 [Worker1] [batch] [I032] done=3  gen=0  api=4  patch=1  elapsed=98.9s
+2026-03-22 08:52:21,594 [Worker1] [batch] [I033] log_probs  n=1  elapsed=0.05s
+2026-03-22 08:52:21,594 [Worker1] [P44524] [S11] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:22,547 [Worker1] [batch] [I033] GPU_GEN  batch=1  elapsed=0.95s  pids=['44524']
+2026-03-22 08:52:22,547 [Worker1] [batch] [I033] done=3  gen=0  api=4  patch=1  elapsed=99.9s
+2026-03-22 08:52:22,814 [Worker1] [batch] [I034] log_probs  n=2  elapsed=0.27s
+2026-03-22 08:52:22,814 [Worker1] [P10791] [S10] CORRECT  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:22,814 [Worker1] [P47337] [S11] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:52:24,651 [Worker1] [batch] [I034] GPU_GEN  batch=2  elapsed=1.84s  pids=['10791', '47337']
+2026-03-22 08:52:24,651 [Worker1] [batch] [I034] done=3  gen=0  api=4  patch=1  elapsed=102.0s
+2026-03-22 08:52:25,692 [Worker1] [batch] [I035] done=3  gen=0  api=4  patch=1  elapsed=103.1s
+2026-03-22 08:52:25,693 [Worker1] [P23239] [S09] PATCHER_SUBMIT  reward=0.00
+2026-03-22 08:52:25,784 [Worker1] [batch] [I036] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:52:25,784 [Worker1] [P23239] [S09] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 08:52:25,784 [Worker1] [batch] [I036] done=3  gen=0  api=3  patch=2  elapsed=103.2s
+2026-03-22 08:52:26,350 [Worker1] [batch] [I037] done=3  gen=0  api=3  patch=2  elapsed=103.7s
+2026-03-22 08:52:28,970 [Worker1] [P24586] [S12] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:52:29,061 [Worker1] [batch] [I038] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:52:29,061 [Worker1] [P24586] [S12] PATCHER  reward=1.00  answer=False
+2026-03-22 08:52:30,377 [Worker1] [batch] [I038] GPU_GEN  batch=1  elapsed=1.32s  pids=['24586']
+2026-03-22 08:52:30,377 [Worker1] [batch] [I038] done=3  gen=0  api=4  patch=1  elapsed=107.8s
+2026-03-22 08:52:30,377 [Worker1] [P47337] [S12] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:52:33,550 [Worker1] [reward] GPT 실패 (Error code: 400 - {'error': {'message': 'Failed to generate output due to special tokens in the input.', 'type': 'invalid_request_error', 'param': None, 'code': None}}), 0.0 반환
+2026-03-22 08:52:34,948 [Worker1] [P23239] [S10] PATCHER_ARRIVED  reward=0.00  gt=correct
+2026-03-22 08:52:35,148 [Worker1] [batch] [I039] log_probs  n=2  elapsed=0.20s
+2026-03-22 08:52:35,149 [Worker1] [P47337] [S12] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:52:35,149 [Worker1] [P23239] [S10] PATCHER  reward=0.00  → WRONG  total=11
+2026-03-22 08:52:35,149 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=23239  steps=11
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, False, True, True, False, True, True, False]
+  rewards : [0.0, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+2026-03-22 08:52:35,149 [Worker1] [batch] [I039] done=4  gen=0  api=3  patch=1  elapsed=112.5s
+2026-03-22 08:52:35,540 [Worker1] [batch] [I040] log_probs  n=3  elapsed=0.39s
+2026-03-22 08:52:35,540 [Worker1] [P10791] [S11] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 08:52:35,540 [Worker1] [P44524] [S12] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:35,540 [Worker1] [P24586] [S13] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:37,848 [Worker1] [batch] [I040] GPU_GEN  batch=3  elapsed=2.31s  pids=['10791', '44524', '24586']
+2026-03-22 08:52:37,848 [Worker1] [batch] [I040] done=4  gen=0  api=3  patch=1  elapsed=115.2s
+2026-03-22 08:52:42,463 [Worker1] [P47337] [S13] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:52:42,554 [Worker1] [batch] [I041] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:52:42,554 [Worker1] [P47337] [S13] PATCHER  reward=0.10  → WRONG  total=14
+2026-03-22 08:52:42,554 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=47337  steps=14
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, True, True, True, True, False, True, True, True, True, False]
+  rewards : [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.1, 0.0, 0.5, 1.0, 1.0, 0.1, 0.1, 0.1]
+2026-03-22 08:52:42,554 [Worker1] [batch] [I041] done=5  gen=0  api=3  patch=0  elapsed=119.9s
+2026-03-22 08:52:42,971 [Worker1] [batch] [I042] log_probs  n=3  elapsed=0.42s
+2026-03-22 08:52:42,971 [Worker1] [P10791] [S12] CORRECT  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:42,971 [Worker1] [P44524] [S13] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:42,971 [Worker1] [P24586] [S14] SOLVE  reward=0.10  next=correct  answer=False
+2026-03-22 08:52:44,812 [Worker1] [batch] [I042] GPU_GEN  batch=3  elapsed=1.84s  pids=['10791', '44524', '24586']
+2026-03-22 08:52:44,812 [Worker1] [batch] [I042] done=5  gen=0  api=3  patch=0  elapsed=122.2s
+2026-03-22 08:52:46,865 [Worker1] [batch] [I043] done=5  gen=0  api=3  patch=0  elapsed=124.2s
+2026-03-22 08:52:46,983 [Worker1] [batch] [I044] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:52:46,984 [Worker1] [P10791] [S13] SOLVE  reward=1.00  next=correct  answer=False
+2026-03-22 08:52:47,216 [Worker1] [batch] [I044] GPU_GEN  batch=1  elapsed=0.23s  pids=['10791']
+2026-03-22 08:52:47,217 [Worker1] [batch] [I044] done=5  gen=0  api=3  patch=0  elapsed=124.6s
+2026-03-22 08:52:47,287 [Worker1] [batch] [I045] log_probs  n=1  elapsed=0.07s
+2026-03-22 08:52:47,287 [Worker1] [P44524] [S14] SOLVE  reward=0.50  next=solve  answer=False
+2026-03-22 08:52:48,085 [Worker1] [batch] [I045] GPU_GEN  batch=1  elapsed=0.80s  pids=['44524']
+2026-03-22 08:52:48,085 [Worker1] [batch] [I045] done=5  gen=0  api=3  patch=0  elapsed=125.5s
+2026-03-22 08:52:49,803 [Worker1] [batch] [I046] done=5  gen=0  api=3  patch=0  elapsed=127.2s
+2026-03-22 08:52:49,803 [Worker1] [P24586] [S15] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:52:49,897 [Worker1] [batch] [I047] log_probs  n=1  elapsed=0.09s
+2026-03-22 08:52:49,897 [Worker1] [P24586] [S15] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:52:49,897 [Worker1] [batch] [I047] done=5  gen=0  api=2  patch=1  elapsed=127.3s
+2026-03-22 08:52:50,572 [Worker1] [batch] [I048] done=5  gen=0  api=2  patch=1  elapsed=127.9s
+2026-03-22 08:52:50,650 [Worker1] [batch] [I049] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:52:50,650 [Worker1] [P44524] [S15] SOLVE  reward=1.00  next=solve  answer=False
+2026-03-22 08:52:50,893 [Worker1] [batch] [I049] GPU_GEN  batch=1  elapsed=0.24s  pids=['44524']
+2026-03-22 08:52:50,893 [Worker1] [batch] [I049] done=5  gen=0  api=2  patch=1  elapsed=128.3s
+2026-03-22 08:52:52,184 [Worker1] [batch] [I050] done=5  gen=0  api=2  patch=1  elapsed=129.6s
+2026-03-22 08:52:52,261 [Worker1] [batch] [I051] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:52:52,262 [Worker1] [P44524] [S16] SOLVE  reward=1.00  next=correct  answer=False
+2026-03-22 08:52:52,445 [Worker1] [batch] [I051] GPU_GEN  batch=1  elapsed=0.18s  pids=['44524']
+2026-03-22 08:52:52,445 [Worker1] [batch] [I051] done=5  gen=0  api=2  patch=1  elapsed=129.8s
+2026-03-22 08:52:53,473 [Worker1] [batch] [I052] done=5  gen=0  api=2  patch=1  elapsed=130.8s
+2026-03-22 08:52:53,473 [Worker1] [P10791] [S14] PATCHER_SUBMIT  reward=0.10
+2026-03-22 08:52:53,593 [Worker1] [batch] [I053] log_probs  n=1  elapsed=0.12s
+2026-03-22 08:52:53,593 [Worker1] [P10791] [S14] CORRECT(fail)  reward=0.10  → patcher
+2026-03-22 08:52:53,593 [Worker1] [batch] [I053] done=5  gen=0  api=1  patch=2  elapsed=131.0s
+2026-03-22 08:52:55,731 [Worker1] [batch] [I054] done=5  gen=0  api=1  patch=2  elapsed=133.1s
+2026-03-22 08:52:59,940 [Worker1] [P24586] [S16] PATCHER_ARRIVED  reward=0.10  gt=correct
+2026-03-22 08:53:00,036 [Worker1] [batch] [I055] log_probs  n=1  elapsed=0.10s
+2026-03-22 08:53:00,036 [Worker1] [P24586] [S16] PATCHER  reward=0.10  → WRONG  total=17
+2026-03-22 08:53:00,036 [Worker1] ────────────────────────────────────────────────────────────
+[PATCHER_WRONG] problem_id=24586  steps=17
+  pred    : ['<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>', '<|solve|>']
+  gt      : ['<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|correct|>', '<|correct|>', '<|solve|>', '<|solve|>', '<|correct|>', '<|correct|>']
+  is_gen  : [True, True, True, True, True, True, False, True, True, False, True, True, False, True, True, True, False]
+  rewards : [0.1, 0.5, 0.1, 0.5, 0.0, 0.0, 1.0, 0.1, 0.0, 1.0, 0.1, 0.0, 1.0, 0.5, 0.1, 0.1, 0.1]
+2026-03-22 08:53:00,036 [Worker1] [batch] [I055] done=6  gen=0  api=1  patch=1  elapsed=137.4s
+2026-03-22 08:53:01,729 [Worker1] [P10791] [S15] PATCHER_ARRIVED  reward=1.00  gt=solve
+2026-03-22 08:53:01,857 [Worker1] [batch] [I056] log_probs  n=1  elapsed=0.13s
+2026-03-22 08:53:01,857 [Worker1] [P10791] [S15] PATCHER  reward=1.00  answer=True
+2026-03-22 08:53:01,857 [Worker1] [P10791] DONE  status=ANSWER  total_steps=16
+2026-03-22 08:53:01,857 [Worker1] [batch] [I056] done=7  gen=0  api=1  patch=0  elapsed=139.2s
+2026-03-22 08:53:01,941 [Worker1] [batch] [I057] log_probs  n=1  elapsed=0.08s
+2026-03-22 08:53:01,941 [Worker1] [P44524] [S17] CORRECT  reward=1.00  next=solve  answer=True
+2026-03-22 08:53:01,941 [Worker1] [P44524] DONE  status=ANSWER  total_steps=18
+2026-03-22 08:53:01,941 [Worker1] [batch] BATCH_DONE  problems=8  answered=3  total_steps=99  iters=57  elapsed=139.3s

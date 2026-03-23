@@ -1,0 +1,164 @@
+2026-03-22 22:29:20,293 [Worker3] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039/epoch2
+2026-03-22 22:29:20,579 [Worker3]   스페셜 토큰 1개 추가됨: ['<|solve|>', '<|correct|>', '<|end|>']
+2026-03-22 22:29:28,254 [Worker3] We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2026-03-22 22:29:31,755 [Worker3]   임베딩 리사이즈: 151668 vocab
+2026-03-22 22:29:31,756 [Worker3] Generator 로드 완료.
+2026-03-22 22:29:31,756 [Worker3] Rollout 파일 생성: ../output/prototype/20260322_222906/rollouts_worker_3.jsonl
+2026-03-22 22:29:31,756 [Worker3] 준비 완료  rollout → ../output/prototype/20260322_222906/rollouts_worker_3.jsonl  log → ../output/prototype/20260322_222906/log_worker_3.log
+2026-03-22 22:29:48,967 [Worker3] [batch] [I000] GPU_GEN  batch=8  elapsed=9.56s  pids=['1045', '46411', '48327', '51766', '27758', '22056', '24804', '99827']
+2026-03-22 22:29:48,977 [Worker3] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=9.6s
+2026-03-22 22:29:49,388 [Worker3] Retrying request to /chat/completions in 0.483643 seconds
+2026-03-22 22:29:49,390 [Worker3] Retrying request to /chat/completions in 0.412504 seconds
+2026-03-22 22:29:49,391 [Worker3] Retrying request to /chat/completions in 0.426690 seconds
+2026-03-22 22:29:49,394 [Worker3] Retrying request to /chat/completions in 0.389211 seconds
+2026-03-22 22:29:49,416 [Worker3] Retrying request to /chat/completions in 0.473419 seconds
+2026-03-22 22:29:49,427 [Worker3] Retrying request to /chat/completions in 0.414540 seconds
+2026-03-22 22:29:49,744 [Worker3] Retrying request to /chat/completions in 0.433160 seconds
+2026-03-22 22:29:49,992 [Worker3] Retrying request to /chat/completions in 0.939355 seconds
+2026-03-22 22:29:49,997 [Worker3] Retrying request to /chat/completions in 0.968192 seconds
+2026-03-22 22:29:50,041 [Worker3] Retrying request to /chat/completions in 0.825552 seconds
+2026-03-22 22:29:50,064 [Worker3] Retrying request to /chat/completions in 0.806684 seconds
+2026-03-22 22:29:50,090 [Worker3] Retrying request to /chat/completions in 0.820187 seconds
+2026-03-22 22:29:50,099 [Worker3] Retrying request to /chat/completions in 0.940342 seconds
+2026-03-22 22:29:50,370 [Worker3] Retrying request to /chat/completions in 0.793892 seconds
+2026-03-22 22:29:51,072 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,073 [Worker3] [batch] [I001] done=0  gen=0  api=8  patch=0  elapsed=11.7s
+2026-03-22 22:29:51,075 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,105 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,157 [Worker3] [truncate] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), hard truncation 사용
+2026-03-22 22:29:51,168 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,233 [Worker3] [batch] [I002] log_probs  n=1  elapsed=0.16s
+2026-03-22 22:29:51,233 [Worker3] [P51766] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:51,237 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,398 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:51,416 [Worker3] Retrying request to /chat/completions in 0.451335 seconds
+2026-03-22 22:29:51,417 [Worker3] Retrying request to /chat/completions in 0.485406 seconds
+2026-03-22 22:29:52,098 [Worker3] Retrying request to /chat/completions in 0.862524 seconds
+2026-03-22 22:29:52,134 [Worker3] Retrying request to /chat/completions in 0.799453 seconds
+2026-03-22 22:29:52,258 [Worker3] [batch] [I002] GPU_GEN  batch=1  elapsed=1.02s  pids=['51766']
+2026-03-22 22:29:52,258 [Worker3] [batch] [I002] done=0  gen=0  api=8  patch=0  elapsed=12.9s
+2026-03-22 22:29:52,344 [Worker3] [batch] [I003] log_probs  n=5  elapsed=0.09s
+2026-03-22 22:29:52,344 [Worker3] [P01045] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:52,344 [Worker3] [P46411] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:52,344 [Worker3] [P48327] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:52,344 [Worker3] [P27758] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:52,344 [Worker3] [P22056] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:52,558 [Worker3] Retrying request to /chat/completions in 0.419078 seconds
+2026-03-22 22:29:53,137 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:53,200 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:53,205 [Worker3] Retrying request to /chat/completions in 0.948667 seconds
+2026-03-22 22:29:54,360 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:56,431 [Worker3] [batch] [I003] GPU_GEN  batch=5  elapsed=4.09s  pids=['1045', '46411', '48327', '27758', '22056']
+2026-03-22 22:29:56,431 [Worker3] [batch] [I003] done=0  gen=0  api=8  patch=0  elapsed=17.0s
+2026-03-22 22:29:56,431 [Worker3] [P51766] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:29:56,571 [Worker3] [batch] [I004] log_probs  n=3  elapsed=0.14s
+2026-03-22 22:29:56,571 [Worker3] [P51766] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:29:56,571 [Worker3] [P24804] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:56,571 [Worker3] [P99827] [S00] SOLVE  reward=0.00  next=correct  answer=False
+2026-03-22 22:29:56,754 [Worker3] Retrying request to /chat/completions in 0.493076 seconds
+2026-03-22 22:29:56,766 [Worker3] Retrying request to /chat/completions in 0.490687 seconds
+2026-03-22 22:29:56,767 [Worker3] Retrying request to /chat/completions in 0.416744 seconds
+2026-03-22 22:29:56,770 [Worker3] Retrying request to /chat/completions in 0.453291 seconds
+2026-03-22 22:29:56,771 [Worker3] Retrying request to /chat/completions in 0.433085 seconds
+2026-03-22 22:29:56,773 [Worker3] Retrying request to /chat/completions in 0.472500 seconds
+2026-03-22 22:29:57,411 [Worker3] Retrying request to /chat/completions in 0.972613 seconds
+2026-03-22 22:29:57,413 [Worker3] Retrying request to /chat/completions in 0.815317 seconds
+2026-03-22 22:29:57,431 [Worker3] Retrying request to /chat/completions in 0.856581 seconds
+2026-03-22 22:29:57,459 [Worker3] Retrying request to /chat/completions in 0.793953 seconds
+2026-03-22 22:29:57,460 [Worker3] Retrying request to /chat/completions in 0.940888 seconds
+2026-03-22 22:29:57,479 [Worker3] Retrying request to /chat/completions in 0.989651 seconds
+2026-03-22 22:29:58,459 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:58,487 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:58,522 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:58,588 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:58,638 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:29:58,697 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:05,705 [Worker3] [batch] [I004] GPU_GEN  batch=2  elapsed=9.13s  pids=['24804', '99827']
+2026-03-22 22:30:05,705 [Worker3] [batch] [I004] done=0  gen=0  api=7  patch=1  elapsed=26.3s
+2026-03-22 22:30:05,705 [Worker3] [P01045] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:05,705 [Worker3] [P46411] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:05,705 [Worker3] [P48327] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:05,705 [Worker3] [P27758] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:05,707 [Worker3] [P22056] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:05,707 [Worker3] [P51766] teacher=None → skipped
+2026-03-22 22:30:05,913 [Worker3] [batch] [I005] log_probs  n=5  elapsed=0.20s
+2026-03-22 22:30:05,913 [Worker3] [P01045] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:05,913 [Worker3] [P46411] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:05,913 [Worker3] [P48327] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:05,913 [Worker3] [P27758] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:05,913 [Worker3] [P22056] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:05,913 [Worker3] [batch] [I005] done=1  gen=0  api=2  patch=5  elapsed=26.5s
+2026-03-22 22:30:06,012 [Worker3] Retrying request to /chat/completions in 0.381232 seconds
+2026-03-22 22:30:06,014 [Worker3] Retrying request to /chat/completions in 0.411951 seconds
+2026-03-22 22:30:06,018 [Worker3] Retrying request to /chat/completions in 0.395377 seconds
+2026-03-22 22:30:06,036 [Worker3] Retrying request to /chat/completions in 0.452462 seconds
+2026-03-22 22:30:06,041 [Worker3] Retrying request to /chat/completions in 0.484923 seconds
+2026-03-22 22:30:06,057 [Worker3] Retrying request to /chat/completions in 0.490962 seconds
+2026-03-22 22:30:06,623 [Worker3] Retrying request to /chat/completions in 0.922960 seconds
+2026-03-22 22:30:06,626 [Worker3] Retrying request to /chat/completions in 0.860009 seconds
+2026-03-22 22:30:06,643 [Worker3] Retrying request to /chat/completions in 0.925010 seconds
+2026-03-22 22:30:06,687 [Worker3] Retrying request to /chat/completions in 0.772478 seconds
+2026-03-22 22:30:06,752 [Worker3] Retrying request to /chat/completions in 0.865757 seconds
+2026-03-22 22:30:06,782 [Worker3] Retrying request to /chat/completions in 0.870868 seconds
+2026-03-22 22:30:07,690 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:07,690 [Worker3] [batch] [I006] done=1  gen=0  api=2  patch=5  elapsed=28.3s
+2026-03-22 22:30:07,690 [Worker3] [P01045] teacher=None → skipped
+2026-03-22 22:30:07,691 [Worker3] [batch] [I007] done=2  gen=0  api=2  patch=4  elapsed=28.3s
+2026-03-22 22:30:07,726 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:07,726 [Worker3] [batch] [I008] done=2  gen=0  api=2  patch=4  elapsed=28.3s
+2026-03-22 22:30:07,727 [Worker3] [P27758] teacher=None → skipped
+2026-03-22 22:30:07,727 [Worker3] [batch] [I009] done=3  gen=0  api=2  patch=3  elapsed=28.3s
+2026-03-22 22:30:07,775 [Worker3] [truncate] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), hard truncation 사용
+2026-03-22 22:30:07,779 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:07,780 [Worker3] [batch] [I010] done=3  gen=0  api=2  patch=3  elapsed=28.4s
+2026-03-22 22:30:07,780 [Worker3] [P46411] teacher=None → skipped
+2026-03-22 22:30:07,780 [Worker3] [batch] [I011] done=4  gen=0  api=2  patch=2  elapsed=28.4s
+2026-03-22 22:30:07,814 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:07,814 [Worker3] [batch] [I012] done=4  gen=0  api=2  patch=2  elapsed=28.4s
+2026-03-22 22:30:07,814 [Worker3] [P48327] teacher=None → skipped
+2026-03-22 22:30:07,815 [Worker3] [batch] [I013] done=5  gen=0  api=2  patch=1  elapsed=28.4s
+2026-03-22 22:30:07,895 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:07,895 [Worker3] [batch] [I014] done=5  gen=0  api=2  patch=1  elapsed=28.5s
+2026-03-22 22:30:07,895 [Worker3] [P22056] teacher=None → skipped
+2026-03-22 22:30:07,896 [Worker3] [batch] [I015] done=6  gen=0  api=2  patch=0  elapsed=28.5s
+2026-03-22 22:30:08,077 [Worker3] Retrying request to /chat/completions in 0.466293 seconds
+2026-03-22 22:30:08,090 [Worker3] Retrying request to /chat/completions in 0.382046 seconds
+2026-03-22 22:30:08,677 [Worker3] Retrying request to /chat/completions in 0.887400 seconds
+2026-03-22 22:30:08,778 [Worker3] Retrying request to /chat/completions in 0.938579 seconds
+2026-03-22 22:30:09,800 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:30:09,800 [Worker3] [batch] [I016] done=6  gen=0  api=2  patch=0  elapsed=30.4s
+2026-03-22 22:30:09,800 [Worker3] [P99827] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:09,845 [Worker3] [batch] [I017] log_probs  n=1  elapsed=0.04s
+2026-03-22 22:30:09,845 [Worker3] [P99827] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:09,845 [Worker3] [batch] [I017] done=6  gen=0  api=1  patch=1  elapsed=30.5s
+2026-03-22 22:30:09,950 [Worker3] [reward] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), 0.0 반환
+2026-03-22 22:30:09,950 [Worker3] [batch] [I018] done=6  gen=0  api=1  patch=1  elapsed=30.6s
+2026-03-22 22:30:09,950 [Worker3] [P24804] [S01] PATCHER_SUBMIT  reward=0.00
+2026-03-22 22:30:10,052 [Worker3] [batch] [I019] log_probs  n=1  elapsed=0.10s
+2026-03-22 22:30:10,052 [Worker3] [P24804] [S01] CORRECT(fail)  reward=0.00  → patcher
+2026-03-22 22:30:10,052 [Worker3] [batch] [I019] done=6  gen=0  api=0  patch=2  elapsed=30.7s
+2026-03-22 22:30:10,138 [Worker3] Retrying request to /chat/completions in 0.465486 seconds
+2026-03-22 22:30:10,221 [Worker3] Retrying request to /chat/completions in 0.414512 seconds
+2026-03-22 22:30:10,832 [Worker3] Retrying request to /chat/completions in 0.779767 seconds
+2026-03-22 22:30:10,857 [Worker3] Retrying request to /chat/completions in 0.765504 seconds
+2026-03-22 22:30:11,820 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:11,820 [Worker3] [batch] [I020] done=6  gen=0  api=0  patch=2  elapsed=32.4s
+2026-03-22 22:30:11,820 [Worker3] [P99827] teacher=None → skipped
+2026-03-22 22:30:11,821 [Worker3] [batch] [I021] done=7  gen=0  api=0  patch=1  elapsed=32.4s
+2026-03-22 22:30:11,837 [Worker3] [teacher_correct] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}})
+2026-03-22 22:30:11,838 [Worker3] [batch] [I022] done=7  gen=0  api=0  patch=1  elapsed=32.4s
+2026-03-22 22:30:11,838 [Worker3] [P24804] teacher=None → skipped
+2026-03-22 22:30:11,838 [Worker3] [batch] BATCH_DONE  problems=8  answered=0  total_steps=16  iters=23  elapsed=32.4s
+2026-03-22 22:30:34,235 [Worker3] [batch] [I000] GPU_GEN  batch=8  elapsed=12.49s  pids=['92161', '39596', '102926', '17539', '76116', '77696', '62503', '35475']
+2026-03-22 22:30:34,238 [Worker3] [batch] [I000] done=0  gen=0  api=8  patch=0  elapsed=12.5s
+2026-03-22 22:30:34,530 [Worker3] Retrying request to /chat/completions in 0.438664 seconds
+2026-03-22 22:30:35,202 [Worker3] Retrying request to /chat/completions in 0.818759 seconds
+2026-03-22 22:30:36,244 [Worker3] [truncate] GPT 실패 (Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}), hard truncation 사용
+2026-03-22 22:30:36,527 [Worker3] Retrying request to /chat/completions in 0.392687 seconds
+2026-03-22 22:30:36,529 [Worker3] Retrying request to /chat/completions in 0.467323 seconds
+2026-03-22 22:30:36,531 [Worker3] Retrying request to /chat/completions in 0.486481 seconds
+2026-03-22 22:30:36,558 [Worker3] Retrying request to /chat/completions in 0.463984 seconds
+2026-03-22 22:30:36,561 [Worker3] Retrying request to /chat/completions in 0.410265 seconds
+2026-03-22 22:30:36,562 [Worker3] Retrying request to /chat/completions in 0.378032 seconds
+2026-03-22 22:30:36,568 [Worker3] Retrying request to /chat/completions in 0.378694 seconds
+2026-03-22 22:30:36,592 [Worker3] Retrying request to /chat/completions in 0.462468 seconds
