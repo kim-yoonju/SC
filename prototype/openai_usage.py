@@ -1,31 +1,6 @@
 #!/usr/bin/env python3
 """
 OpenAI usage summary by model for a given project + API key name (or API key ID) + period.
-
-What it prints:
-- model
-- number of requests
-- estimated total cost (USD)
-- estimated average cost per request (USD)
-- token breakdown
-
-Requirements:
-    pip install requests
-
-Examples:
-python openai_usage.py \
-    --admin-key "REDACTED_OPENAI_ADMIN_KEY" \
-    --project-id proj_5WCNtDZa3wCoARByJJib2DD7 \
-    --start 2026-03-19 \
-    --end 2026-03-24 \
-    --debug
-
-Notes:
-- This uses organization/project management + usage endpoints, which require an ADMIN API key.
-- --api-key-name is the key name shown in the UI, e.g. "caching2".
-- --api-key-id is the internal API key ID, e.g. "key_...".
-- Average price is estimated from usage tokens × the pricing table below.
-- Update MODEL_PRICING_PER_1M when OpenAI pricing changes.
 """
 
 from __future__ import annotations

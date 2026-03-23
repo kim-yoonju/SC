@@ -39,7 +39,7 @@ GENERATOR_TEMPERATURE    = 0.8
 GENERATOR_MAX_NEW_TOKENS = 512   # 1024→512: 어차피 TRUNCATE_TOKEN_LIMIT으로 잘리고, 생성 자체를 짧게
 
 # GPT API
-GPT_API_KEY = os.environ.get("OPENAI_API_KEY", "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")
+GPT_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 TRUNCATOR   = "gpt-5.4-nano"   # 트런케이션 전용
 REWARD      = "o3"             # 스텝 리워드 평가
 PATCHER     = "o3-mini"        # teacher fallback (correction 생성)
