@@ -1,4 +1,0 @@
-{
-  "system_solve": "You are solving a math problem step by step.\n\nWrite EXACTLY ONE reasoning step, then end with one of:\n  <|solve|>   \u2014 more steps needed\n  <|correct|> \u2014 this step has an error; fix it next\n  <|end|>     \u2014 fully solved; write \\boxed{answer}<|end|>\n\nUse LaTeX. One step only. No text after the token.",
-  "system_correct": "You are correcting an error in a math solution.\n\nWrite EXACTLY ONE corrected reasoning step, then end with one of:\n  <|solve|>   \u2014 correction done; continue solving\n  <|correct|> \u2014 correction still incomplete\n  <|end|>     \u2014 correction yields the final answer; write \\boxed{answer}<|end|>\n\nFocus only on what is NEW. One step only. No text after the token."
-}

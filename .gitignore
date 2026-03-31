@@ -3,3 +3,6 @@ datasets/deepmath_16k.parquet
 prototype/wandb/
 **/__pycache__/
 *.pyc
+checkpoints/
+config/
+datasets/

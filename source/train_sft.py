@@ -12,17 +12,17 @@ SFT 학습 스크립트 - Qwen2.5-7B-Instruct
 
 import argparse
 import datetime
-import json
 import os
-import re
 import sys
+from functools import partial
 from pathlib import Path
 
 import torch
 import torch.distributed as dist
+import yaml
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import Dataset, DataLoader, DistributedSampler
-from transformers import AutoTokenizer, AutoModelForCausalLM, get_cosine_schedule_with_warmup
+from transformers import AutoConfig, AutoModelForCausalLM, get_cosine_schedule_with_warmup
 from torch.optim import AdamW
 from tqdm import tqdm
 
@@ -31,114 +31,59 @@ from tqdm import tqdm
 # ─────────────────────────────────────────────────────────────────────────────
 
 _ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from utils import (
+    SYSTEM_SOLVE,
+    SYSTEM_CORRECT,
+    build_chat_prompt,
+    extract_boxed,
+    load_raw_data,
+    setup_tokenizer,
+    extract_step_content,
+    build_target_text,
+    pick_system,
+    collate_fn,
+    _solve_user,
+    _correct_user,
+)
 
-MODEL_ID       = "Qwen/Qwen2.5-7B-Instruct"
-CACHE_DIR      = "/mnt/.cache/huggingface"
-DATA_PATH      = str(_ROOT / "datasets/sft_data.jsonl")
-OUTPUT_DIR     = str(_ROOT / "output/sft_checkpoints")
+
+def load_config() -> dict:
+    config_path = _ROOT / "config" / "config.yaml"
+    with open(config_path) as f:
+        return yaml.safe_load(f)
+
+
+_CFG = load_config()
+
+MODEL_ID   = _CFG["checkpoint"]["base"]
+CACHE_DIR  = _CFG["checkpoint"].get("cache_dir", None)
+DATA_PATH  = str(_ROOT / _CFG["data_path"]["sft_data"])
+OUTPUT_DIR = str(_ROOT / _CFG["output_path"]["sft_checkpoints"])
 
 # 특수 토큰: 텍스트 뒤에 append되어 다음 행동을 나타낸다
 # <|end|>은 강화학습용 커스텀 종료 토큰 (Qwen vocab에 없어 별도 등록 필요)
-SPECIAL_TOKENS = ["<|solve|>", "<|correct|>", "<|end|>"]
+SPECIAL_TOKENS = [
+    _CFG["model"]["token_solve"],
+    _CFG["model"]["token_correct"],
+    _CFG["model"]["token_end"],
+]
 
-# 학습 하이퍼파라미터
-LEARNING_RATE  = 2e-5
-NUM_EPOCHS     = 3          # 데이터 1818개로 적으므로 3 epoch
-BATCH_SIZE     = 1          # per GPU (배치 4는 OOM)
-GRAD_ACCUM     = 32         # effective batch = 3 GPUs × 1 × 32 = 96
-MAX_LENGTH     = 3072
-WARMUP_RATIO   = 0.05
-WEIGHT_DECAY   = 0.01
-MAX_GRAD_NORM  = 1.0
-SAVE_STEPS     = 100        # 몇 스텝마다 체크포인트 저장
-
-# 프롬프트는 source/prompts.json에서 로드 (모든 스크립트가 동일한 프롬프트 공유)
-_PROMPTS_PATH = _ROOT / "source" / "prompts.json"
-with open(_PROMPTS_PATH) as _f:
-    _PROMPTS = json.load(_f)
-
-SYSTEM_SOLVE   = _PROMPTS["system_solve"]
-SYSTEM_CORRECT = _PROMPTS["system_correct"]
-
-
-def _build_chat_prefix(tokenizer, system: str, problem: str, history: list) -> str:
-    """prototype의 build_chat_prompt + _solve_user와 동일한 포맷으로 prefix 생성."""
-    lines = [f"[Problem]\n{problem}"]
-    if history:
-        lines.append("\n[Steps so far]")
-        for i, s in enumerate(history, 1):
-            lines.append(f"Step {i}: {s}")
-    lines.append("\nWrite the next step.")
-    user_msg = "\n".join(lines)
-
-    messages = [{"role": "system", "content": system}, {"role": "user", "content": user_msg}]
-    if getattr(tokenizer, "chat_template", None):
-        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    return f"System: {system}\n\nUser: {user_msg}\n\nAssistant:"
+_sft = _CFG.get("sft", {})
+LEARNING_RATE = _sft.get("learning_rate", 2e-5)
+NUM_EPOCHS    = _sft.get("num_epochs", 3)
+BATCH_SIZE    = _sft.get("batch_size", 1)
+GRAD_ACCUM    = _sft.get("grad_accum", 32)
+MAX_LENGTH    = _sft.get("max_length", 3072)
+WARMUP_RATIO  = _sft.get("warmup_ratio", 0.05)
+WEIGHT_DECAY  = _sft.get("weight_decay", 0.01)
+MAX_GRAD_NORM = _sft.get("max_grad_norm", 1.0)
+SAVE_STEPS    = _sft.get("save_steps", 100)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 데이터 전처리
 # ─────────────────────────────────────────────────────────────────────────────
-
-def extract_boxed(text: str) -> str | None:
-    """텍스트에서 마지막 \\boxed{...} 내용을 추출한다 (중첩 괄호 처리)."""
-    marker = r"\boxed{"
-    pos = text.rfind(marker)
-    if pos == -1:
-        return None
-    start = pos + len(marker)
-    depth = 1
-    i = start
-    while i < len(text) and depth > 0:
-        if text[i] == "{":
-            depth += 1
-        elif text[i] == "}":
-            depth -= 1
-        i += 1
-    if depth != 0:
-        return None
-    return text[start : i - 1].strip()
-
-
-def extract_step_content(step: dict) -> tuple[str, str]:
-    """
-    step dict에서 (action, clean_text)를 추출한다.
-    두 가지 포맷 모두 처리:
-      - 구 포맷: action 필드 + text 필드 (text에 <|im_end|> 포함)
-      - 신 포맷: action 필드 + content 필드 + text 필드 (<solve>...</solve> 임베드)
-    반환: action 문자열, 순수 텍스트 (태그/im_end 제거)
-    """
-    action = step["action"]
-
-    # 신 포맷: content 필드가 있으면 우선 사용 (None 체크 포함)
-    if "content" in step and step["content"] is not None:
-        text = step["content"].strip()
-    else:
-        text = step.get("text", "")
-        # <|end|> / <|im_end|> 제거
-        text = text.replace("<|end|>", "").replace("<|im_end|>", "").strip()
-        # <action>...</action> 태그가 임베드된 경우 내용만 추출
-        for act in ["solve", "correct", "end", "review"]:
-            m = re.search(rf"<{act}>(.*?)</{act}>", text, re.DOTALL)
-            if m:
-                text = m.group(1).strip()
-                break
-
-    return action, text
-
-
-def build_target_text(action: str, text: str) -> str:
-    """텍스트 + 액션 특수 토큰을 하나의 타겟 문자열로 합친다.
-    예: "reasoning...<|solve|>"  또는  "\\boxed{42}<|end|>"
-    """
-    return f"{text}<|{action}|>"
-
-
-def pick_system(action: str) -> str:
-    """현재 스텝의 액션에 맞는 system 프롬프트 반환."""
-    return SYSTEM_CORRECT if action == "correct" else SYSTEM_SOLVE
-
 
 def build_plain_prefix(system: str, problem: str, prev_steps: list) -> str:
     """chat template 없이 plain text prefix 생성.
@@ -160,26 +105,6 @@ def build_plain_prefix(system: str, problem: str, prev_steps: list) -> str:
     parts.append("")   # 마지막 개행 → 모델 생성 시작점
     return "\n".join(parts)
 
-
-def setup_tokenizer(model_id: str, cache_dir: str):
-    """토크나이저를 로드하고 특수 토큰을 추가한다."""
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_id, cache_dir=cache_dir, trust_remote_code=True,
-    )
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.add_special_tokens({"additional_special_tokens": SPECIAL_TOKENS})
-    return tokenizer
-
-
-def load_raw_data(data_path: str) -> list[dict]:
-    items = []
-    with open(data_path) as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                items.append(json.loads(line))
-    return items
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -228,7 +153,11 @@ class SFTDataset(Dataset):
             system = pick_system(action)
             # history: 이전 스텝들의 텍스트 (액션 토큰 미포함) — prototype 추론 시와 동일 포맷
             history = [t for _, t in step_pairs[:k]]
-            prefix_str = _build_chat_prefix(tokenizer, system, problem, history)
+            if action == "correct":
+                reason = history[-1] if history else ""
+                prefix_str = build_chat_prompt(tokenizer, system, _correct_user(problem, history, reason))
+            else:
+                prefix_str = build_chat_prompt(tokenizer, system, _solve_user(problem, history))
 
             if action == "end":
                 # 최종 단계: \boxed{} 형식
@@ -269,33 +198,6 @@ class SFTDataset(Dataset):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 콜레이터
-# ─────────────────────────────────────────────────────────────────────────────
-
-def collate_fn(batch, pad_token_id: int):
-    """가변 길이 시퀀스를 패딩해 배치로 묶는다."""
-    input_ids_list, labels_list = zip(*batch)
-
-    max_len = max(x.size(0) for x in input_ids_list)
-
-    padded_input  = torch.full((len(batch), max_len), pad_token_id, dtype=torch.long)
-    padded_labels = torch.full((len(batch), max_len), -100,         dtype=torch.long)
-    attention_mask = torch.zeros(len(batch), max_len, dtype=torch.long)
-
-    for i, (inp, lbl) in enumerate(zip(input_ids_list, labels_list)):
-        seq_len = inp.size(0)
-        padded_input[i, :seq_len]   = inp
-        padded_labels[i, :seq_len]  = lbl
-        attention_mask[i, :seq_len] = 1
-
-    return {
-        "input_ids":      padded_input,
-        "attention_mask": attention_mask,
-        "labels":         padded_labels,
-    }
-
-
-# ─────────────────────────────────────────────────────────────────────────────
 # 프리뷰: 실제 모델에 들어가는 input/output 쌍 출력
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -319,7 +221,7 @@ def preview_sample(data_path: str, tokenizer):
     action, text = step_pairs[k]
     system       = pick_system(action)
     history      = [t for _, t in step_pairs[:k]]
-    full_prefix  = _build_chat_prefix(tokenizer, system, problem, history)
+    full_prefix  = build_chat_prompt(tokenizer, system, _solve_user(problem, history))
 
     if action == "end":
         boxed = extract_boxed(text)
@@ -369,7 +271,7 @@ def train(args):
     if is_main:
         print(f"[{global_rank}] 토크나이저 로드: {MODEL_ID}")
         print(f"[{global_rank}] 특수 토큰 추가: {SPECIAL_TOKENS}")
-    tokenizer = setup_tokenizer(MODEL_ID, CACHE_DIR)
+    tokenizer = setup_tokenizer(MODEL_ID, CACHE_DIR, special_tokens=SPECIAL_TOKENS)
 
     # ── 데이터셋 ─────────────────────────────────────────────────────────────
     dataset = SFTDataset(args.data_path, tokenizer, max_length=args.max_length)
@@ -382,7 +284,6 @@ def train(args):
         drop_last=True,
     )
 
-    from functools import partial
     loader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -395,8 +296,17 @@ def train(args):
     # ── 모델 ─────────────────────────────────────────────────────────────────
     if is_main:
         print(f"[{global_rank}] 모델 로드: {MODEL_ID}")
+    # config.vocab_size가 실제 체크포인트 가중치 크기와 다를 수 있으므로 패치 후 로드.
+    # Qwen2.5 계열은 config.vocab_size=152064이지만 실제 임베딩은 151668인 경우 존재.
+    _base_vocab = len(tokenizer)  # special token이 이미 base vocab에 있으면 add_special_tokens가 0 반환
+    _config = AutoConfig.from_pretrained(MODEL_ID, cache_dir=CACHE_DIR, trust_remote_code=True)
+    if _config.vocab_size != _base_vocab:
+        if is_main:
+            print(f"[{global_rank}] config.vocab_size({_config.vocab_size}) != tokenizer vocab({_base_vocab}), 패치 후 로드")
+        _config.vocab_size = _base_vocab
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
+        config=_config,
         cache_dir=CACHE_DIR,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
@@ -525,7 +435,7 @@ def main():
 
     if args.preview:
         # 프리뷰 모드: 토크나이저만 로드해서 샘플 출력
-        tokenizer = setup_tokenizer(MODEL_ID, CACHE_DIR)
+        tokenizer = setup_tokenizer(MODEL_ID, CACHE_DIR, special_tokens=SPECIAL_TOKENS)
         preview_sample(args.data_path, tokenizer)
         return
 

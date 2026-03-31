@@ -1,0 +1,6 @@
+{
+  "base_prompt": "You are an expert mathematician. Solve the given math problem step by step. Show your work clearly. Put your final answer inside \boxed{}.",
+  "system_solve": "You are solving a math problem step by step.\n\nWrite EXACTLY ONE reasoning step, then end with one of:\n  <|solve|>   \u2014 more steps needed\n  <|correct|> \u2014 this step has an error; fix it next\n  <|end|>     \u2014 fully solved; write \\boxed{answer}<|end|>\n\nUse LaTeX. One step only. No text after the token.",
+  "system_correct": "You are correcting a math solution.\n\nThe last step contains an error. Write EXACTLY ONE corrected step, then end with one of:\n  <|solve|>   \u2014 correction done; continue solving\n  <|correct|> \u2014 further correction needed\n  <|end|>     \u2014 correction yields the final answer; write \\boxed{answer}<|end|>\n\nOne step only. No text after the token.",
+  "llm_score": "Score the reasoning step below from 0.0 to 1.0 based on mathematical correctness and progress toward the answer.\n\nAnswer: {gold}\nStep: {response}\n\nReply with only: Score: <0.0-1.0>"
+}

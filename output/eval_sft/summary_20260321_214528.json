@@ -1,7 +1,0 @@
-{
-  "model_id": "/mnt/yoonju/SC/output/sft_checkpoints/epoch_2",
-  "n_samples": 100,
-  "step_stop_rate": 0.0,
-  "action_accuracy": 0.0,
-  "boxed_presence": 0.06
-}

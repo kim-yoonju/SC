@@ -19,13 +19,24 @@ import argparse
 import datetime
 import json
 import re
+import sys
 import torch.multiprocessing as mp
 from pathlib import Path
 
-import pandas as pd
 import torch
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from utils import (
+    load_problems,
+    SYSTEM_SOLVE,
+    TOKEN_SOLVE,
+    TOKEN_CORRECT,
+    TOKEN_END,
+    ACTION_TOKENS,
+    check_end,
+)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 하이퍼파라미터
@@ -47,21 +58,9 @@ MAX_NEW_TOKENS = 2048  # 스텝당 최대 생성 토큰 (SFT 모델은 스텝당
 BATCH_SIZE     = 128    # 배치 크기
 DEFAULT_GPUS   = "2,3,4,5,6"
 
-# train_sft.py / prototype/utils.py 와 동일한 토큰·시스템 프롬프트
 # <|end|>은 커스텀 종료 토큰 → 별도 등록 필요
-SPECIAL_TOKENS = ["<|solve|>", "<|correct|>", "<|end|>"]
-
-# 프롬프트는 source/prompts.json에서 로드 (모든 스크립트 공유)
-_PROMPTS_PATH = _ROOT / "source" / "prompts.json"
-with open(_PROMPTS_PATH) as _f:
-    _PROMPTS = json.load(_f)
-
-SYSTEM_PROMPT  = _PROMPTS["system_solve"]   # 평가 시 기본 solve 프롬프트 사용
-
-TOKEN_SOLVE   = "<|solve|>"
-TOKEN_CORRECT = "<|correct|>"
-TOKEN_END     = "<|end|>"
-ACTION_TOKENS = [TOKEN_SOLVE, TOKEN_CORRECT, TOKEN_END]
+SPECIAL_TOKENS = ACTION_TOKENS
+SYSTEM_PROMPT  = SYSTEM_SOLVE   # 평가 시 기본 solve 프롬프트 사용
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 정규식
@@ -92,19 +91,35 @@ def _strip_action(text: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _extract_boxed(text: str) -> str | None:
+    """정답 추출 우선순위: \\boxed{} → #### (GSM8K) → ### 뒤 텍스트."""
+    import re as _re
+    # 1. \boxed{}
     marker = r"\boxed{"
     pos = text.rfind(marker)
-    if pos == -1:
-        return None
-    start = pos + len(marker)
-    depth, i = 1, start
-    while i < len(text) and depth > 0:
-        if text[i] == "{":
-            depth += 1
-        elif text[i] == "}":
-            depth -= 1
-        i += 1
-    return text[start:i - 1].strip() if depth == 0 else None
+    if pos != -1:
+        start = pos + len(marker)
+        depth, i = 1, start
+        while i < len(text) and depth > 0:
+            if text[i] == "{":
+                depth += 1
+            elif text[i] == "}":
+                depth -= 1
+            i += 1
+        if depth == 0:
+            return text[start:i - 1].strip()
+    # 2. GSM8K: 마지막 #### 뒤 숫자
+    m = None
+    for match in _re.finditer(r"####\s*(.+)", text):
+        m = match
+    if m:
+        return m.group(1).strip().replace(",", "")
+    # 3. 마지막 ### 뒤 한 줄
+    m = None
+    for match in _re.finditer(r"###\s*(.+)", text):
+        m = match
+    if m:
+        return m.group(1).strip()
+    return None
 
 
 def _check_correct(text: str, gold: str) -> bool:
@@ -120,43 +135,6 @@ def _check_correct(text: str, gold: str) -> bool:
     except ValueError:
         return False
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# 데이터 로드
-# ─────────────────────────────────────────────────────────────────────────────
-
-def load_problems(data_path: str, n: int) -> list[dict]:
-    df   = pd.read_parquet(data_path)
-    rows = df.iloc[-n:]
-    items = []
-    for i, (_, row) in enumerate(rows.iterrows()):
-        prompt = row["prompt"]
-        if hasattr(prompt, "tolist"):
-            prompt = prompt.tolist()
-        if isinstance(prompt, str):
-            prompt = json.loads(prompt)
-
-        problem_text = ""
-        for msg in prompt:
-            if msg.get("role") == "user":
-                text = msg["content"]
-                text = re.sub(r"\s*Please reason step by step,.*$", "", text, flags=re.DOTALL).strip()
-                problem_text = text
-                break
-
-        extra = row.get("extra_info", {})
-        if isinstance(extra, str):
-            extra = json.loads(extra)
-        elif hasattr(extra, "item"):
-            extra = extra.item()
-
-        problem_id = str(extra.get("index", f"eval_{i}")) if isinstance(extra, dict) else f"eval_{i}"
-        items.append({
-            "problem_id": problem_id,
-            "problem":    problem_text,
-            "answer":     str(row.get("final_answer", "")),
-        })
-    return items
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -325,10 +303,7 @@ def solve_all(
                 # history에는 액션 토큰 없는 순수 추론 텍스트만 추가
                 histories[i].append(reasoning)
 
-                # <|end|> 도달하거나 정답 맞추면 종료
-                # special token 없이 \boxed{}만 있으면 강제 종료
-                force_end = (action is None and has_boxed)
-                if action == TOKEN_END or is_correct or force_end:
+                if check_end(gen_text, action) or is_correct:
                     done[i] = True
                     _write(i)
 
@@ -356,10 +331,17 @@ def gpu_worker(gpu_id: int, items: list[dict], model_id: str, load_kwargs: dict,
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
     # <|solve|>, <|correct|>, <|end|> 등록 (<|end|>은 커스텀 토큰이므로 등록 필요)
-    tokenizer.add_special_tokens({"additional_special_tokens": SPECIAL_TOKENS})
+    added = tokenizer.add_special_tokens({"additional_special_tokens": SPECIAL_TOKENS})
+
+    # config.vocab_size가 실제 체크포인트 가중치 크기와 다를 수 있으므로 패치.
+    # 베이스 모델은 special token 추가 전이므로 실제 임베딩 크기 = len(tokenizer) - added.
+    config = AutoConfig.from_pretrained(model_id, **load_kwargs)
+    actual_vocab_size = len(tokenizer) - added
+    if config.vocab_size != actual_vocab_size:
+        config.vocab_size = actual_vocab_size
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_id, torch_dtype=torch.bfloat16, **load_kwargs,
+        model_id, config=config, torch_dtype=torch.bfloat16, **load_kwargs,
     ).to(device)
     model.resize_token_embeddings(len(tokenizer))
     model.eval()

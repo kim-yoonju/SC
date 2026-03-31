@@ -1,0 +1,6 @@
+2026-03-31 17:42:19,518 INFO 건너뛸 problem_id: 0개  (from: 없음)
+2026-03-31 17:42:22,627 INFO wrong_only 필터 적용: /mnt/yoonju/SC/output/base_wrong/base_wrong_trajectory.jsonl → 10267개 id → 10267개 문제
+2026-03-31 17:42:22,628 INFO 전체 10267개 문제 → 미완료 10267개
+2026-03-31 17:42:22,628 INFO GPU: [4, 5]  workers: 2  problems_per_iter: 64  chunk/worker: 32
+2026-03-31 17:48:56,187 INFO [round 1]  이번=64개  correct=12  boxed=34  누적=64/10267
+2026-03-31 17:54:15,112 INFO [round 2]  이번=64개  correct=14  boxed=33  누적=128/10267

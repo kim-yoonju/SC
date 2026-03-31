@@ -1,4 +1,0 @@
-2026-03-22 06:27:44,510 [INFO] 로그 파일: ../output/prototype/20260322_062744/run.log
-2026-03-22 06:27:53,661 [INFO] [load_problems] 16000개 로드 (../datasets/deepmath_16k.parquet)
-2026-03-22 06:27:53,989 [INFO] [load_math500] 500개 로드 (../datasets/math500.parquet)
-2026-03-22 06:27:54,008 [INFO] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_061039

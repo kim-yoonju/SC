@@ -4,68 +4,72 @@
 # 사용법:
 #   bash scripts/run_ppo_online.sh
 #
-# GPU 배치 (CUDA_VISIBLE_DEVICES=4,5,6,7 기준 논리 인덱스):
-#   논리 GPU 0 (물리 4) → RolloutWorker 0
-#   논리 GPU 1 (물리 5) → RolloutWorker 1
-#   논리 GPU 2 (물리 6) → RolloutWorker 2
-#   논리 GPU 3 (물리 7) → Trainer (policy + ref + critic)
-#
-# n_rollout_workers=3 이면 논리 GPU 0,1,2 를 workers가 쓰고,
-# Trainer는 논리 GPU 3
+# 하이퍼파라미터는 config/config.yaml의 ppo 섹션에서 관리됩니다.
+# 특정 값만 오버라이드하려면 스크립트 하단 python 호출부에 인자를 추가하세요.
+#   예) --lr 5e-7 --train_batch_size 256
 
 set -e
 
-# ---- 설정 ----
-MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"   # 또는 로컬 경로
-DATASET="datasets/math7500.parquet"
-OUTPUT_DIR="models/ppo_online"
+cd "$(dirname "$0")/.."
 
-# 수정 가능한 파라미터
-N_ROLLOUT_WORKERS=3          # Rollout Worker 수 (GPU 1개씩)
-PROBLEMS_PER_ROLLOUT=50      # Worker당 한 iteration에 처리할 문제 수
-N_ROLLOUTS=8                 # MC rollout 횟수 (generate_data_teacher.py 기본값)
-MAX_STEPS=10                 # 문제당 최대 step 수
-MAX_NEW_TOKENS=512
-TEMPERATURE=0.8
+# ---- config/config.yaml 파싱 ----
+eval "$(python3 - <<'PYEOF'
+import yaml, sys
 
-NUM_ITERATIONS=2          # 총 PPO iteration
-PPO_EPOCHS=1                # 수집된 데이터에 대한 PPO update 횟수
-BATCH_SIZE=8
-GRAD_ACCUM=64
-LR=1e-6
-CRITIC_LR=1e-5
-SAVE_EVERY=1
+with open("config/config.yaml", "r") as f:
+    cfg = yaml.safe_load(f)
+
+ppo = cfg["ppo"]
+
+rollout_gpus = ",".join(str(g) for g in ppo["rollout_gpus"])
+train_gpus   = ",".join(str(g) for g in ppo["train_gpus"])
+resume       = ppo.get("resume_checkpoint") or ""
+
+print(f'ROLLOUT_GPUS="{rollout_gpus}"')
+print(f'TRAIN_GPUS="{train_gpus}"')
+print(f'RESUME_CHECKPOINT="{resume}"')
+print(f'MAX_ITERATIONS={ppo["max_iterations"]}')
+print(f'PROBLEMS_PER_ITER={ppo["problems_per_iter"]}')
+print(f'TRAIN_BATCH_SIZE={ppo["train_batch_size"]}')
+print(f'LR={ppo["lr"]}')
+print(f'CLIP_EPS={ppo["clip_eps"]}')
+print(f'KL_COEF={ppo["kl_coef"]}')
+print(f'GAMMA={ppo["gamma"]}')
+print(f'MAX_SEQ_LEN={ppo["max_seq_len"]}')
+PYEOF
+)"
 
 # ---- 실행 ----
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-cd "$(dirname "$0")/.."
+RESUME_ARG=""
+if [ -n "$RESUME_CHECKPOINT" ]; then
+    RESUME_ARG="--resume_checkpoint $RESUME_CHECKPOINT"
+fi
 
-/home/seoyoon/miniconda3/envs/NRL/bin/python scripts/ppo_online_trainer.py \
-    --model_name "$MODEL_NAME" \
-    --dataset "$DATASET" \
-    --output_dir "$OUTPUT_DIR" \
-    --n_rollout_workers $N_ROLLOUT_WORKERS \
-    --problems_per_rollout $PROBLEMS_PER_ROLLOUT \
-    --n_rollouts $N_ROLLOUTS \
-    --max_steps $MAX_STEPS \
-    --max_new_tokens $MAX_NEW_TOKENS \
-    --temperature $TEMPERATURE \
-    --num_iterations $NUM_ITERATIONS \
-    --ppo_epochs $PPO_EPOCHS \
-    --batch_size $BATCH_SIZE \
-    --grad_accum_steps $GRAD_ACCUM \
-    --learning_rate $LR \
-    --critic_lr $CRITIC_LR \
-    --clip_eps 0.2 \
-    --kl_coef 0.1 \
-    --vf_coef 0.1 \
-    --entropy_coef 0.01 \
-    --gamma 0.99 \
-    --lam 0.95 \
-    --save_every $SAVE_EVERY \
-    --use_wandb \
-    --wandb_project "ppo_sc_math" \
-    --log_file "$OUTPUT_DIR/train.log"
+# 실행 시각 타임스탬프를 한 번만 생성 → Python과 공유해서 같은 폴더 사용
+RUN_TS="$(date +%Y%m%d_%H%M%S)"
+RUN_DIR="output/train_ppo/${RUN_TS}"
+
+mkdir -p "$RUN_DIR"
+cp "$0" "${RUN_DIR}/run_ppo_online.sh"
+
+echo "Run ts: $RUN_TS"
+echo "Run dir: $RUN_DIR"
+
+python3 source/train_ppo.py \
+    --rollout_gpus   "$ROLLOUT_GPUS" \
+    --train_gpus     "$TRAIN_GPUS" \
+    $RESUME_ARG \
+    --run_ts           "$RUN_TS" \
+    --max_iterations   $MAX_ITERATIONS \
+    --problems_per_iter $PROBLEMS_PER_ITER \
+    --train_batch_size  $TRAIN_BATCH_SIZE \
+    --lr               $LR \
+    --clip_eps         $CLIP_EPS \
+    --kl_coef          $KL_COEF \
+    --gamma            $GAMMA \
+    --max_seq_len      $MAX_SEQ_LEN \
+    2>&1 | tee "${RUN_DIR}/shell.log"
 
 echo "Done."

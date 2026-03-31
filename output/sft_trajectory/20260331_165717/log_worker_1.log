@@ -1,0 +1,2 @@
+2026-03-31 16:57:30,313 [W1] Generator 로드 중: /mnt/yoonju/SC/checkpoints/sft/20260322_202515/epoch3
+2026-03-31 16:57:30,608 [W1] config.vocab_size(152064) != 체크포인트 가중치 크기(151668), config 패치 후 로드

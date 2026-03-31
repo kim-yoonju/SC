@@ -1,52 +1,0 @@
-[eval] 모델 로드: checkpoints/offline_reinforce/epoch-1
-Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<00:51,  6.51it/s]Loading weights:   5%|▍         | 16/339 [00:00<00:04, 70.02it/s]Loading weights:   9%|▊         | 29/339 [00:00<00:03, 89.43it/s]Loading weights:  12%|█▏        | 40/339 [00:00<00:03, 92.10it/s]Loading weights:  16%|█▌        | 53/339 [00:00<00:03, 89.06it/s]Loading weights:  21%|██        | 72/339 [00:00<00:02, 115.86it/s]Loading weights:  25%|██▌       | 85/339 [00:00<00:02, 116.97it/s]Loading weights:  29%|██▉       | 100/339 [00:00<00:01, 119.68it/s]Loading weights:  33%|███▎      | 113/339 [00:01<00:02, 109.05it/s]Loading weights:  37%|███▋      | 125/339 [00:01<00:01, 107.60it/s]Loading weights:  40%|████      | 137/339 [00:01<00:01, 108.12it/s]Loading weights:  44%|████▍     | 149/339 [00:01<00:01, 107.23it/s]Loading weights:  47%|████▋     | 161/339 [00:01<00:01, 107.65it/s]Loading weights:  51%|█████     | 173/339 [00:01<00:01, 104.38it/s]Loading weights:  54%|█████▍    | 184/339 [00:01<00:01, 94.43it/s] Loading weights:  58%|█████▊    | 198/339 [00:01<00:01, 102.98it/s]Loading weights:  62%|██████▏   | 210/339 [00:02<00:01, 100.95it/s]Loading weights:  65%|██████▌   | 222/339 [00:02<00:01, 104.45it/s]Loading weights:  69%|██████▉   | 234/339 [00:02<00:00, 105.30it/s]Loading weights:  73%|███████▎  | 246/339 [00:02<00:00, 102.89it/s]Loading weights:  76%|███████▌  | 258/339 [00:02<00:00, 104.35it/s]Loading weights:  80%|███████▉  | 270/339 [00:02<00:00, 103.40it/s]Loading weights:  83%|████████▎ | 282/339 [00:02<00:00, 104.07it/s]Loading weights:  87%|████████▋ | 294/339 [00:02<00:00, 103.95it/s]Loading weights:  90%|████████▉ | 305/339 [00:02<00:00, 105.06it/s]Loading weights:  94%|█████████▍| 318/339 [00:03<00:00, 107.32it/s]Loading weights:  97%|█████████▋| 330/339 [00:03<00:00, 102.47it/s]Loading weights: 100%|██████████| 339/339 [00:03<00:00, 104.04it/s]
-[eval] Classifier head 로드: checkpoints/offline_reinforce/epoch-1/classifier_head.pt
-       (3584 → 2 classes: {'0': 'solve', '1': 'correct'})
-[eval] 데이터셋 로드: datasets/math500.parquet (test)
-[eval] 워커 0/2: 250문제 담당 (전체 500)
-배치 평가:   0%|          | 0/16 [00:00<?, ?it/s]The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
-                                                 배치 평가:   0%|          | 0/16 [01:41<?, ?it/s]배치 평가:   6%|▋         | 1/16 [01:41<25:21, 101.42s/it]배치 평가:   6%|▋         | 1/16 [03:18<49:44, 198.99s/it]
-  [16/250] 정확도: 0.688
-Traceback (most recent call last):
-  File "/mnt/yoonju/SC/source/evaluate.py", line 363, in <module>
-    main()
-  File "/mnt/yoonju/SC/source/evaluate.py", line 297, in main
-    batch_results = solve_batch(
-                    ^^^^^^^^^^^^
-  File "/mnt/yoonju/SC/source/evaluate.py", line 107, in solve_batch
-    out = model(**prompt_enc, output_hidden_states=True)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
-    return forward_call(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 193, in new_forward
-    return module._hf_hook.post_forward(module, output)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 50, in wrapper
-    return wrapper._compiled_fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 1044, in _fn
-    return fn(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/hooks.py", line 419, in post_forward
-    output = send_to_device(output, self.input_device, skip_keys=self.skip_keys)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 180, in send_to_device
-    k: t if k in skip_keys else send_to_device(t, device, non_blocking=non_blocking, skip_keys=skip_keys)
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 170, in send_to_device
-    return honor_type(
-           ^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 82, in honor_type
-    return type(obj)(generator)
-           ^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 171, in <genexpr>
-    tensor, (send_to_device(t, device, non_blocking=non_blocking, skip_keys=skip_keys) for t in tensor)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/accelerate/utils/operations.py", line 154, in send_to_device
-    return tensor.to(device, non_blocking=non_blocking)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 114.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 97.94 MiB is free. Process 964006 has 50.53 GiB memory in use. Process 976571 has 20.12 GiB memory in use. Including non-PyTorch memory, this process has 24.21 GiB memory in use. Of the allocated memory 23.19 GiB is allocated by PyTorch, and 390.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
