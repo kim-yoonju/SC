@@ -5,23 +5,24 @@ PPO rollout용 trajectory 생성 로직 (state machine 기반)
 State machine — 모델이 생성한 액션 토큰에 의해 전환:
   첫 스텝은 항상 SOLVE 상태에서 시작.
 
-  TOKEN_SOLVE + boxed{}  → 종료 (정답)
   TOKEN_END              → 종료
   TOKEN_CORRECT:
     SOLVE        → CORRECT_GEN
     CORRECT_GEN  → CORRECT_PAT (patcher 호출)
     CORRECT_PAT  → 종료 (실패)
-  TOKEN_SOLVE (no boxed) → SOLVE (계속 시도)
+  TOKEN_SOLVE            → SOLVE (계속 시도)
 
   액션 토큰이 명시적으로 생성되지 않은 경우:
     logit 기반으로 가장 확률 높은 액션 토큰을 선택해 위 규칙 적용.
 """
 
+import asyncio
 import json
 import logging
 import math
 import os
 import time
+import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional
 
@@ -38,9 +39,12 @@ from utils import (
     MAX_STEPS,
     PATCHER,
     PATCHER_CANDIDATE,
+    PATCHER_MAX_NEW_TOKENS,
     PATCHER_TEMPERATURE,
+    PATCHER_PROMPT,
     SYSTEM_CORRECT,
     SYSTEM_SOLVE,
+    SYSTEM_SOLVE_SFT,
     TOKEN_CORRECT,
     TOKEN_END,
     TOKEN_SOLVE,
@@ -53,7 +57,9 @@ from utils import (
     check_solved,
     has_boxed,
     R_PRM,
+    VLLM_MAX_MODEL_LEN,
     save_trajectory,
+    truncate_step_if_needed,
 )
 
 logger = logging.getLogger(__name__)
@@ -66,16 +72,22 @@ SOLVE       = "solve"
 CORRECT_GEN = "correct_gen"
 CORRECT_PAT = "correct_pat"
 
+# 프롬프트 최대 토큰 수 (생성 토큰 여유 확보)
+_MAX_PROMPT_TOKENS  = VLLM_MAX_MODEL_LEN - GENERATOR_MAX_NEW_TOKENS
+# history로 넘길 최대 토큰 수
+_MAX_HISTORY_TOKENS = 4096
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Reward 계산
 # ─────────────────────────────────────────────────────────────────────────────
 
-def score_step(text: str, answer: str, is_last: bool = False) -> float:
+def score_step(text: str, answer: str, is_last: bool = False, history: List[str] = None) -> float:
     """스텝 reward R_final을 반환.
 
     R_final = R_PRM: REWARD 모델이 생성한 0~1 연속값.  state machine 분기 기준 (> 0.5).
+    history가 주어지면 문맥을 포함한 SFT scorer를 사용한다.
     """
-    r_prm = R_PRM(text, answer)
+    r_prm = R_PRM(text, answer, history=history)
 
     logger.debug(f"  [reward] R_PRM={r_prm:.3f}  is_last={is_last}")
     return r_prm
@@ -92,15 +104,12 @@ def _next_state(
 ) -> Optional[str]:
     """eval 전용: 모델이 생성한 액션 토큰 기반 상태 전환. None이면 종료.
 
-      TOKEN_SOLVE + boxed{}  → None (종료)
       TOKEN_END              → None (종료)
       TOKEN_CORRECT:
         SOLVE / CORRECT_GEN  → CORRECT_GEN / CORRECT_PAT (한 단계 깊게)
         CORRECT_PAT          → None (더 이상 패처 없음)
-      TOKEN_SOLVE (no boxed) → SOLVE (계속 풀기)
+      TOKEN_SOLVE            → SOLVE (계속 풀기)
     """
-    if pred_action == TOKEN_SOLVE and has_boxed(text):
-        return None
     if pred_action == TOKEN_END:
         return None
     if pred_action == TOKEN_CORRECT:
@@ -119,7 +128,7 @@ def _next_state_by_reward(
 ) -> Optional[str]:
     """train 전용: llm_reward 기반 ground truth 상태 전환. None이면 종료.
 
-      solve,       boxed{}       → None (end, 정답)
+      boxed + r>0.5              → None (end, 정답 도달)
       solve,       r>0.5         → solve
       solve,       r<=0.5        → correct_gen
       correct_gen, r>0.5         → solve
@@ -129,8 +138,8 @@ def _next_state_by_reward(
       end,         r>0.5         → None (end, 성공)
       end,         r<=0.5        → correct_gen
     """
-    if current_state == SOLVE and has_boxed(text):
-        return None
+    if has_boxed(text) and r_prm > 0.5:
+        return None  # boxed 답 + 높은 reward → 종료 (gold: <|end|>)
     if r_prm > 0.5:
         if current_state in (SOLVE, CORRECT_GEN, CORRECT_PAT):
             return SOLVE
@@ -158,25 +167,69 @@ def _gt_action_token(next_state: Optional[str]) -> str:
 # 프롬프트 빌더
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_gen_prompt(tokenizer, state: str, problem: str, history: List[str]) -> str:
-    """상태에 따라 generator용 chat prompt를 생성."""
-    if state == SOLVE:
-        return build_chat_prompt(tokenizer, SYSTEM_SOLVE, _solve_user(problem, history))
-    else:  # correct_gen, end
-        reason = history[-1] if history else ""
-        return build_chat_prompt(tokenizer, SYSTEM_CORRECT, _correct_user(problem, history, reason))
+def _trim_history(history: List[str], tokenizer, max_tokens: int = _MAX_HISTORY_TOKENS) -> List[str]:
+    """history를 최근 max_tokens 토큰 이내로 trim (오래된 스텝 제거)."""
+    if not history:
+        return history
+    total, keep = 0, []
+    for step in reversed(history):
+        n = len(tokenizer(step, add_special_tokens=False)["input_ids"])
+        if total + n > max_tokens:
+            break
+        keep.append(step)
+        total += n
+    return list(reversed(keep))
+
+
+def _build_gen_prompt(tokenizer, state: str, problem: str, history: List[str], sft_mode: bool = False) -> str:
+    """상태에 따라 generator용 chat prompt를 생성.
+
+    누적 history가 _MAX_PROMPT_TOKENS를 초과하면 오래된 step부터 제거해 길이를 맞춘다.
+    """
+    def _make(hist):
+        if state == SOLVE:
+            system = SYSTEM_SOLVE_SFT if sft_mode else SYSTEM_SOLVE
+            return build_chat_prompt(tokenizer, system, _solve_user(problem, hist))
+        else:
+            return build_chat_prompt(tokenizer, SYSTEM_CORRECT, _correct_user(problem, hist))
+
+    if not history:
+        return _make(history)
+
+    # 빠른 경로: 대부분의 경우 길이가 충분
+    prompt = _make(history)
+    n_tokens = len(tokenizer(prompt, add_special_tokens=False)["input_ids"])
+    if n_tokens <= _MAX_PROMPT_TOKENS:
+        return prompt
+
+    # 이진 탐색: 최근 step을 최대한 많이 유지하면서 budget 안으로 수렴
+    lo, hi = 0, len(history)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        n = len(tokenizer(_make(history[-mid:]), add_special_tokens=False)["input_ids"])
+        if n <= _MAX_PROMPT_TOKENS:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    if lo < len(history):
+        logger.warning(
+            f"[prompt trim] history {len(history)} steps → 최근 {lo}개만 사용 "
+            f"(prompt {n_tokens} > {_MAX_PROMPT_TOKENS} tokens)"
+        )
+    return _make(history[-lo:] if lo > 0 else [])
 
 
 def _call_patcher(problem: str, history: List[str], temperature: float = None) -> str:
-    """PATCHER API를 호출해 한 스텝 풀이를 반환."""
-    reason = history[-1] if history else ""
+    """PATCHER API를 호출해 한 스텝 풀이를 반환 (action token 없음)."""
     messages = [
-        {"role": "system", "content": SYSTEM_CORRECT},
-        {"role": "user",   "content": _correct_user(problem, history, reason)},
+        {"role": "system", "content": PATCHER_PROMPT},
+        {"role": "user",   "content": _correct_user(problem, history)},
     ]
     logger.info(f"  [patcher] {PATCHER} 호출 중  history_len={len(history)}  temp={temperature}")
     try:
-        result = _gpt(PATCHER, messages, max_completion_tokens=GENERATOR_MAX_NEW_TOKENS, temperature=temperature)
+        result = _gpt(PATCHER, messages, max_completion_tokens=PATCHER_MAX_NEW_TOKENS, temperature=temperature)
+        result = truncate_step_if_needed(result)
         logger.info(f"  [patcher] 응답 {len(result)}자  preview={result[:80].replace(chr(10),' ')!r}")
         return result
     except Exception as e:
@@ -342,11 +395,13 @@ def solve_problems_batch(
     problems: List[dict],
     rollout_path: str = None,
     max_new_tokens: int = None,
+    sft_mode: bool = False,
 ) -> List[Trajectory]:
     """problems 배치에 대해 state machine 기반으로 Trajectory를 생성.
 
     generator 스텝: use_patcher=False — PPO 학습 대상
     patcher  스텝: use_patcher=True  — PPO 학습 제외
+    sft_mode=True: SFT 전용 프롬프트 + 문맥 포함 reward scorer 사용
     """
     _max = max_new_tokens or GENERATOR_MAX_NEW_TOKENS
     action_token_ids = set(
@@ -422,7 +477,7 @@ def solve_problems_batch(
                 )
 
             prompts = [
-                _build_gen_prompt(tokenizer, states[i], trajs[i].problem, histories[i])
+                _build_gen_prompt(tokenizer, states[i], trajs[i].problem, histories[i], sft_mode=sft_mode)
                 for i in gen_active
             ]
 
@@ -448,12 +503,18 @@ def solve_problems_batch(
                 f"  batch={len(gen_active)}  elapsed={time.time()-t0:.2f}s"
             )
 
-            # ③ log_probs: response 위치만 계산
+            # ③ log_probs: 마이크로배치로 쪼개 GPU→CPU 즉시 이동 (OOM 방지)
             t1 = time.time()
+            _LP_MB = 4  # 한 번에 처리할 시퀀스 수
+            lp_parts = []
             with torch.no_grad():
-                full_lp = F.log_softmax(
-                    model(out_ids[:, :-1]).logits[:, n_in - 1:, :], dim=-1
-                )
+                for _s in range(0, len(gen_active), _LP_MB):
+                    _chunk = out_ids[_s:_s + _LP_MB, :-1]
+                    _logits = model(_chunk).logits[:, n_in - 1:, :]
+                    lp_parts.append(F.log_softmax(_logits, dim=-1).cpu())
+                    del _logits
+            full_lp = torch.cat(lp_parts, dim=0)   # CPU tensor
+            del lp_parts
             resp_all = out_ids[:, n_in:]
             logger.info(f"[batch] [I{_iter:03d}] log_probs  n={len(gen_active)}  elapsed={time.time()-t1:.2f}s")
 
@@ -490,19 +551,21 @@ def solve_problems_batch(
                         pred_action = TOKEN_SOLVE
 
                 resp_trim = resp[:trim]
-                lp = full_lp[j, :trim].gather(1, resp_trim.unsqueeze(1)).squeeze(1).cpu()
+                lp = full_lp[j, :trim].gather(1, resp_trim.cpu().unsqueeze(1)).squeeze(1)
 
                 text = tokenizer.decode(resp_trim, skip_special_tokens=True)
                 for tok in ACTION_TOKENS:
                     text = text.replace(tok, "")
-                decoded.append((j, i, resp_trim, lp, text.strip(), pred_action))
+                text = truncate_step_if_needed(text.strip())
+                decoded.append((j, i, resp_trim, lp, text, pred_action))
 
             # ⑤ R_PRM 병렬 호출 → 완료된 순서대로 즉시 처리 + 로그
             t2 = time.time()
             with ThreadPoolExecutor(max_workers=len(decoded)) as ex:
                 future_to_d = {
                     ex.submit(
-                        score_step, d[4], trajs[d[1]].answer, is_last=(d[5] == TOKEN_END)
+                        score_step, d[4], trajs[d[1]].answer, d[5] == TOKEN_END,
+                        histories[d[1]] if sft_mode else None,
                     ): d
                     for d in decoded
                 }
@@ -535,11 +598,11 @@ def solve_problems_batch(
                         state=states[i],
                         action=pred_action.strip("<|>"),
                         text=text,
-                        reward=R_final,
+                        final_reward=R_final,
                         llm_reward=r_prm,
                         format_reward=format_reward,
                         predicted_next_action=pred_action,
-                        ground_truth_next_action=gt_action,
+                        gold_next_action=gt_action,
                         input_ids=enc["input_ids"][j:j+1].cpu(),
                         response_ids=resp_trim.unsqueeze(0).cpu(),
                         log_probs_old=lp,
@@ -563,14 +626,28 @@ def solve_problems_batch(
                     f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}  PATCHER_SUBMIT  history={len(histories[i])}"
                 )
             t_pat = time.time()
-            pat_texts = [
-                _select_best_patcher_candidate(
+            pat_submit_times: dict[int, float] = {i: time.time() for i in pat_active}
+
+            def _call_patcher_timed(i):
+                text = _select_best_patcher_candidate(
                     model, tokenizer,
                     trajs[i].problem, trajs[i].answer, histories[i],
                     action_token_ids, _max,
                 )
-                for i in pat_active
-            ]
+                elapsed = time.time() - pat_submit_times[i]
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}  PATCHER_DONE"
+                    f"  wait={elapsed:.1f}s  len={len(text)}"
+                )
+                return i, text
+
+            with ThreadPoolExecutor(max_workers=len(pat_active)) as ex:
+                pat_futures = {ex.submit(_call_patcher_timed, i): i for i in pat_active}
+                pat_result_map = {}
+                for fut in as_completed(pat_futures):
+                    idx, text = fut.result()
+                    pat_result_map[idx] = text
+            pat_texts = [pat_result_map[i] for i in pat_active]
             logger.info(
                 f"[batch] [I{_iter:03d}] PATCHER  n={len(pat_active)}  elapsed={time.time()-t_pat:.2f}s"
             )
@@ -590,7 +667,14 @@ def solve_problems_batch(
                         .gather(1, resp_ids.squeeze(0).unsqueeze(1))
                         .squeeze(1).cpu()
                     )
-                return r_prm, inp_ids.cpu(), resp_ids.cpu(), lp_p
+                # generator가 patcher 스텝 이후의 action token 예측
+                act_prompt = _build_gen_prompt(tokenizer, SOLVE, trajs[i].problem, histories[i] + [text])
+                act_ids = tokenizer(act_prompt, return_tensors="pt").to(model.device)["input_ids"]
+                with torch.no_grad():
+                    act_logits = model(act_ids).logits[0, -1, :]
+                best_action_id = max(action_token_ids, key=lambda tid: act_logits[tid].item())
+                pred_action = action_id_to_token.get(best_action_id, TOKEN_SOLVE)
+                return r_prm, inp_ids.cpu(), resp_ids.cpu(), lp_p, pred_action
 
             with ThreadPoolExecutor(max_workers=len(pat_active)) as ex:
                 future_to_pi = {
@@ -599,7 +683,7 @@ def solve_problems_batch(
                 }
                 for fut in as_completed(future_to_pi):
                     i, text = future_to_pi[fut]
-                    r_prm, inp_ids, resp_ids, lp_p = fut.result()
+                    r_prm, inp_ids, resp_ids, lp_p, pred_action = fut.result()
                     gt_next_s = _next_state_by_reward(CORRECT_PAT, r_prm, text)
                     gt_action = _gt_action_token(gt_next_s)
                     R_final = r_prm
@@ -611,7 +695,8 @@ def solve_problems_batch(
                     _is_ans_pat = check_solved(text, trajs[i].answer)
                     logger.info(
                         f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}  PATCHER_ARRIVED"
-                        f"  gt={_gt_name}  patcher_wrong={trajs[i].patcher_wrong}"
+                        f"  pred={pred_action.strip('<|>')}  gt={_gt_name}"
+                        f"  patcher_wrong={trajs[i].patcher_wrong}"
                         f"  R_PRM={r_prm:.3f}  R_final={R_final:.3f}"
                         f"  tokens={resp_ids.shape[1]}  next={_next_label(gt_next_s)}"
                         f"  is_answer={_is_ans_pat}"
@@ -620,13 +705,13 @@ def solve_problems_batch(
                     trajs[i].steps.append(StepRecord(
                         step_idx=step_counts[i],
                         state=CORRECT_PAT,
-                        action="correct",
+                        action=pred_action.strip("<|>"),
                         text=text,
-                        reward=R_final,
+                        final_reward=R_final,
                         llm_reward=r_prm,
                         format_reward=0.0,
-                        predicted_next_action=TOKEN_CORRECT,
-                        ground_truth_next_action=gt_action,
+                        predicted_next_action=pred_action,
+                        gold_next_action=gt_action,
                         input_ids=inp_ids,
                         response_ids=resp_ids,
                         log_probs_old=lp_p,
@@ -705,12 +790,434 @@ def print_sample_trajectories(
         print(f"answer     : {traj.answer}")
         print(f"is_answer  : {traj.is_answer}  |  have_boxed: {traj.have_boxed}  |  steps: {len(traj.steps)}")
         for s in traj.steps:
-            print(f"\n  [step {s.step_idx}]  action={s.action}  reward={s.reward:.3f}"
+            print(f"\n  [step {s.step_idx}]  action={s.action}  reward={s.final_reward:.3f}"
                   f"  (llm={s.llm_reward:.3f}, format={s.format_reward:.1f})"
                   f"  use_patcher={s.use_patcher}")
             preview = s.text[:200].replace("\n", " ")
             print(f"  text: {preview!r}")
         print()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# vLLM 기반 continuous batching trajectory 생성
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _parse_vllm_completion(completion, action_token_ids, im_end_id, eos_token_id, tokenizer):
+    """vLLM CompletionOutput → (pred_action, text_token_ids, resp_token_ids, lp_tensor)."""
+    token_ids   = list(completion.token_ids)
+    stop_reason = completion.stop_reason
+    lp_dicts    = completion.logprobs or []
+
+    if isinstance(stop_reason, int) and stop_reason in action_token_ids:
+        pred_action  = tokenizer.decode([stop_reason])
+        # 마지막 token이 action token인 경우 텍스트에서 제외
+        if token_ids and token_ids[-1] == stop_reason:
+            text_tids = token_ids[:-1]
+            resp_tids = token_ids          # PPO: action token 포함
+            resp_lps  = lp_dicts
+        else:
+            text_tids = token_ids
+            resp_tids = token_ids
+            resp_lps  = lp_dicts
+    elif isinstance(stop_reason, int) and stop_reason in {eos_token_id, im_end_id}:
+        pred_action = TOKEN_END
+        if token_ids and token_ids[-1] == stop_reason:
+            text_tids = token_ids[:-1]
+        else:
+            text_tids = token_ids
+        resp_tids = token_ids
+        resp_lps  = lp_dicts
+    else:
+        # max_tokens 도달
+        pred_action = TOKEN_SOLVE
+        text_tids = resp_tids = token_ids
+        resp_lps  = lp_dicts
+
+    lp_values = []
+    for tok_id, lp_d in zip(resp_tids, resp_lps[: len(resp_tids)]):
+        if lp_d and tok_id in lp_d:
+            lp_values.append(lp_d[tok_id].logprob)
+        else:
+            lp_values.append(0.0)
+    lp_tensor = torch.tensor(lp_values, dtype=torch.float32)
+    return pred_action, text_tids, resp_tids, lp_tensor
+
+
+async def _patcher_logprobs_vllm(engine, prompt_token_ids: list, patcher_token_ids: list) -> torch.Tensor:
+    """vLLM prompt_logprobs를 사용해 patcher 텍스트의 모델 log prob을 계산."""
+    from vllm import SamplingParams
+
+    full_ids = list(prompt_token_ids) + list(patcher_token_ids)
+    n_resp   = len(patcher_token_ids)
+    if n_resp == 0:
+        return torch.zeros(0, dtype=torch.float32)
+
+    sp     = SamplingParams(max_tokens=1, prompt_logprobs=1, temperature=0.0)
+    req_id = f"plp_{uuid.uuid4().hex[:8]}"
+    final  = None
+    async for out in engine.generate({"prompt_token_ids": full_ids}, sp, req_id):
+        final = out
+
+    plp = final.prompt_logprobs  # list[dict|None], len = len(full_ids)
+    if plp is None:
+        return torch.zeros(n_resp, dtype=torch.float32)
+
+    resp_plp = plp[-n_resp:]
+    lp_values = []
+    for tok_id, lp_d in zip(patcher_token_ids, resp_plp):
+        if lp_d is None:
+            lp_values.append(0.0)
+        elif tok_id in lp_d:
+            lp_values.append(lp_d[tok_id].logprob)
+        else:
+            lp_values.append(0.0)
+    return torch.tensor(lp_values, dtype=torch.float32)
+
+
+async def _run_rollouts_vllm(engine, tokenizer, problems, initial_histories,
+                              action_token_ids, im_end_id, _max):
+    """patcher 후보 평가용 generator rollout (vLLM, log_probs 없음)."""
+    from vllm import SamplingParams
+
+    n       = len(problems)
+    answers = [p["answer"] for p in problems]
+    histories = [h[:] for h in initial_histories]
+    states  = [SOLVE] * n
+    solved  = [False] * n
+    last_boxed: dict = {}
+    stop_ids = list(action_token_ids) + [tokenizer.eos_token_id, im_end_id]
+
+    async def _run_one(i):
+        for _ in range(MAX_STEPS):
+            if states[i] == CORRECT_PAT:
+                break
+            prompt = _build_gen_prompt(tokenizer, states[i], problems[i]["problem"], histories[i])
+            sp     = SamplingParams(max_tokens=_max, temperature=GENERATOR_TEMPERATURE,
+                                    stop_token_ids=stop_ids)
+            req_id = f"ro_{i}_{uuid.uuid4().hex[:6]}"
+            final  = None
+            async for out in engine.generate(prompt, sp, req_id):
+                final = out
+
+            completion = final.outputs[0]
+            tids       = list(completion.token_ids)
+            stop_r     = completion.stop_reason
+
+            if isinstance(stop_r, int) and stop_r in action_token_ids:
+                pred_action = tokenizer.decode([stop_r])
+                text_tids   = tids[:-1] if tids and tids[-1] == stop_r else tids
+            elif isinstance(stop_r, int) and stop_r in {tokenizer.eos_token_id, im_end_id}:
+                pred_action = TOKEN_END
+                text_tids   = tids[:-1] if tids and tids[-1] == stop_r else tids
+            else:
+                pred_action = TOKEN_SOLVE
+                text_tids   = tids
+
+            text = tokenizer.decode(text_tids, skip_special_tokens=True)
+            for tok in ACTION_TOKENS:
+                text = text.replace(tok, "")
+            text = text.strip()
+
+            if has_boxed(text):
+                last_boxed[i] = text
+            histories[i].append(text)
+
+            next_s = _next_state(states[i], pred_action, text)
+            if next_s is None or next_s == CORRECT_PAT:
+                lt = last_boxed.get(i, "")
+                solved[i] = check_solved(lt, answers[i]) if lt else False
+                return
+            states[i] = next_s
+
+        lt = last_boxed.get(i, "")
+        solved[i] = check_solved(lt, answers[i]) if lt else False
+
+    await asyncio.gather(*[_run_one(i) for i in range(n)])
+    return solved
+
+
+async def _predict_patcher_action_vllm(engine, tokenizer, problem, history_with_patch,
+                                       action_token_ids, im_end_id):
+    """patcher 스텝 이후 generator가 예측하는 action token 반환."""
+    from vllm import SamplingParams
+    prompt   = _build_gen_prompt(tokenizer, SOLVE, problem, history_with_patch)
+    stop_ids = list(action_token_ids) + [tokenizer.eos_token_id, im_end_id]
+    sp       = SamplingParams(max_tokens=1, temperature=0.0, stop_token_ids=stop_ids)
+    req_id   = f"pat_act_{uuid.uuid4().hex[:8]}"
+    final    = None
+    async for out in engine.generate(prompt, sp, req_id):
+        final = out
+    completion = final.outputs[0]
+    stop_r = completion.stop_reason
+    if isinstance(stop_r, int) and stop_r in action_token_ids:
+        return tokenizer.decode([stop_r])
+    tids = list(completion.token_ids)
+    if tids and tids[-1] in action_token_ids:
+        return tokenizer.decode([tids[-1]])
+    return TOKEN_SOLVE
+
+
+async def _select_patcher_vllm(engine, tokenizer, problem, answer, history,
+                                action_token_ids, im_end_id, _max):
+    """vLLM rollout 기반 patcher 후보 선택 (비동기)."""
+    # patcher 후보 병렬 API 호출
+    cands = list(await asyncio.gather(*[
+        asyncio.to_thread(_call_patcher, problem, history, PATCHER_TEMPERATURE)
+        for _ in range(PATCHER_CANDIDATE)
+    ]))
+    cands = [c for c in cands if c]
+    if not cands:
+        return ""
+
+    # 후보별 generator rollout으로 성공률 측정
+    combo_problems:  List[dict]      = []
+    combo_histories: List[List[str]] = []
+    combo_idx:       List[int]       = []
+    for ci, cand in enumerate(cands):
+        ext = history + [cand]
+        for _ in range(GENERATOR_CANDIDATE):
+            combo_problems.append({"problem": problem, "answer": answer})
+            combo_histories.append(ext)
+            combo_idx.append(ci)
+
+    solved_list = await _run_rollouts_vllm(
+        engine, tokenizer, combo_problems, combo_histories,
+        action_token_ids, im_end_id, _max,
+    )
+
+    counts   = [0] * len(cands)
+    for ci, s in zip(combo_idx, solved_list):
+        if s:
+            counts[ci] += 1
+    best_idx = max(range(len(cands)), key=lambda k: counts[k])
+    logger.info(
+        f"  [patcher best-of-{len(cands)}] "
+        + ", ".join(f"cand{k}={counts[k]}/{GENERATOR_CANDIDATE}" for k in range(len(cands)))
+        + f"  → cand{best_idx} 선택"
+    )
+    return cands[best_idx]
+
+
+async def _solve_vllm_async(engine, tokenizer, problems, rollout_path, max_new_tokens, sft_mode=False):
+    """vLLM AsyncLLMEngine 기반 continuous batching trajectory 생성.
+
+    N개의 문제를 asyncio.gather로 동시 실행하며, 각 문제는 독립적으로
+    스텝을 진행한다. 한 문제가 API 호출(R_PRM, patcher)을 기다리는 동안
+    다른 문제는 GPU 추론을 계속한다.
+    """
+    from vllm import SamplingParams
+
+    n    = len(problems)
+    _max = max_new_tokens or GENERATOR_MAX_NEW_TOKENS
+
+    action_token_ids = set(
+        tid for tid in tokenizer.convert_tokens_to_ids(ACTION_TOKENS)
+        if tid != tokenizer.unk_token_id
+    )
+    im_end_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
+    stop_ids  = list(action_token_ids) + [tokenizer.eos_token_id, im_end_id]
+
+    trajs = [
+        Trajectory(
+            problem_id=p.get("problem_id", str(i)),
+            problem=p.get("problem", ""),
+            answer=p.get("answer", ""),
+        )
+        for i, p in enumerate(problems)
+    ]
+    histories        = [[] for _ in range(n)]
+    states           = [SOLVE] * n
+    last_boxed_texts: dict = {}
+    step_counts      = [0] * n
+    t_start          = time.time()
+
+    logger.info(f"[batch] 시작  n={n}  rollout={rollout_path}")
+
+    def _terminate(i, reason="done"):
+        last_text = last_boxed_texts.get(i, "")
+        trajs[i].have_boxed = bool(last_text)
+        trajs[i].is_answer  = check_solved(last_text, trajs[i].answer) if last_text else False
+        trajs[i].end_state  = END_MAX if reason == "timeout" else END_ANSWER
+        status = "ANSWER" if trajs[i].is_answer else ("BOXED" if trajs[i].have_boxed else "FAIL")
+        logger.info(
+            f"[P{trajs[i].problem_id:>6}] DONE"
+            f"  status={status}  total_steps={len(trajs[i].steps)}  reason={reason}"
+        )
+        if rollout_path:
+            _save_traj(trajs[i], rollout_path)
+
+    async def _process_one(i):
+        for step_idx in range(MAX_STEPS):
+
+            if step_counts[i] >= MAX_STEPS:
+                _terminate(i, reason="timeout")
+                return
+
+            if states[i] == CORRECT_PAT:
+                # ── Patcher 스텝 ──────────────────────────────────────────
+                t_submit = time.time()
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}"
+                    f"  PATCHER_SUBMIT  history={len(histories[i])}"
+                )
+                hist_trimmed = _trim_history(histories[i], tokenizer)
+                text = await _select_patcher_vllm(
+                    engine, tokenizer,
+                    trajs[i].problem, trajs[i].answer, hist_trimmed,
+                    action_token_ids, im_end_id, _max,
+                )
+                elapsed = time.time() - t_submit
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}"
+                    f"  PATCHER_DONE  wait={elapsed:.1f}s  len={len(text)}"
+                )
+                if not text:
+                    _terminate(i, reason="patcher_empty")
+                    return
+
+                r_prm = await asyncio.to_thread(
+                    score_step, text, trajs[i].answer, False,
+                    hist_trimmed if sft_mode else None,
+                )
+
+                prompt     = _build_gen_prompt(tokenizer, CORRECT_GEN, trajs[i].problem, hist_trimmed)
+                inp_ids    = tokenizer(prompt, return_tensors="pt")["input_ids"]
+                resp_ids   = tokenizer(text,   return_tensors="pt", add_special_tokens=False)["input_ids"]
+                lp_tensor  = await _patcher_logprobs_vllm(
+                    engine, inp_ids[0].tolist(), resp_ids[0].tolist()
+                )
+
+                # generator가 patcher 스텝 이후의 action token 예측
+                pred_action = await _predict_patcher_action_vllm(
+                    engine, tokenizer, trajs[i].problem, hist_trimmed + [text],
+                    action_token_ids, im_end_id,
+                )
+
+                gt_next_s = _next_state_by_reward(CORRECT_PAT, r_prm, text)
+                gt_action = _gt_action_token(gt_next_s)
+                R_final   = r_prm
+                if r_prm <= 0.5:
+                    trajs[i].patcher_wrong = True
+
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}  PATCHER_ARRIVED"
+                    f"  pred={pred_action.strip('<|>')}  gt={gt_action.strip('<|>')}"
+                    f"  R_PRM={r_prm:.3f}  R_final={R_final:.3f}"
+                    f"  tokens={resp_ids.shape[1]}  is_answer={check_solved(text, trajs[i].answer)}"
+                )
+                trajs[i].steps.append(StepRecord(
+                    step_idx=step_counts[i], state=CORRECT_PAT, action=pred_action.strip("<|>"),
+                    text=text, final_reward=R_final, llm_reward=r_prm, format_reward=0.0,
+                    predicted_next_action=pred_action, gold_next_action=gt_action,
+                    input_ids=inp_ids.cpu(), response_ids=resp_ids.cpu(),
+                    log_probs_old=lp_tensor, use_patcher=True,
+                ))
+                step_counts[i] += 1
+                histories[i].append(text)
+                if has_boxed(text):
+                    last_boxed_texts[i] = text
+                if gt_next_s is None:
+                    _terminate(i, reason="patcher")
+                    return
+                states[i] = gt_next_s
+
+            else:
+                # ── Generator 스텝 (vLLM continuous batching) ─────────────
+                hist_trimmed = _trim_history(histories[i], tokenizer)
+                prompt = _build_gen_prompt(tokenizer, states[i], trajs[i].problem, hist_trimmed, sft_mode=sft_mode)
+                sp     = SamplingParams(
+                    max_tokens=_max,
+                    temperature=GENERATOR_TEMPERATURE,
+                    stop_token_ids=stop_ids,
+                    logprobs=1,
+                )
+                req_id = f"p{i}_s{step_idx}_{uuid.uuid4().hex[:6]}"
+
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}"
+                    f"  state={states[i].upper()}  history={len(histories[i])}  → generating"
+                )
+
+                final = None
+                async for out in engine.generate(prompt, sp, req_id):
+                    final = out
+
+                completion = final.outputs[0]
+                pred_action, text_tids, resp_tids, lp_tensor = _parse_vllm_completion(
+                    completion, action_token_ids, im_end_id, tokenizer.eos_token_id, tokenizer
+                )
+
+                text = tokenizer.decode(text_tids, skip_special_tokens=True)
+                for tok in ACTION_TOKENS:
+                    text = text.replace(tok, "")
+                text = truncate_step_if_needed(text.strip())
+
+                inp_ids      = tokenizer(prompt, return_tensors="pt")["input_ids"]
+                resp_ids_t   = torch.tensor(resp_tids, dtype=torch.long).unsqueeze(0)
+
+                if has_boxed(text):
+                    last_boxed_texts[i] = text
+
+                r_prm = await asyncio.to_thread(
+                    score_step, text, trajs[i].answer, pred_action == TOKEN_END,
+                    hist_trimmed if sft_mode else None,
+                )
+
+                gt_next_s    = _next_state_by_reward(states[i], r_prm, text)
+                gt_action    = _gt_action_token(gt_next_s)
+                format_reward = 0.1 if (pred_action == TOKEN_END and has_boxed(text)) else 0.0
+                R_final       = r_prm + format_reward
+
+                if states[i] == CORRECT_PAT and r_prm <= 0.5:
+                    trajs[i].patcher_wrong = True
+
+                logger.info(
+                    f"[P{trajs[i].problem_id:>6}] step={step_idx:02d}  state={states[i].upper()}"
+                    f"  pred={pred_action.strip('<|>')}  gt={gt_action.strip('<|>')}"
+                    f"  R_PRM={r_prm:.3f}  format={format_reward:.1f}  R_final={R_final:.3f}"
+                    f"  tokens={len(resp_tids)}  is_answer={check_solved(text, trajs[i].answer)}"
+                )
+                trajs[i].steps.append(StepRecord(
+                    step_idx=step_counts[i], state=states[i],
+                    action=pred_action.strip("<|>"), text=text,
+                    final_reward=R_final, llm_reward=r_prm, format_reward=format_reward,
+                    predicted_next_action=pred_action, gold_next_action=gt_action,
+                    input_ids=inp_ids.cpu(), response_ids=resp_ids_t.cpu(),
+                    log_probs_old=lp_tensor, use_patcher=False,
+                ))
+                step_counts[i] += 1
+                histories[i].append(text)
+
+                if gt_next_s is None:
+                    _terminate(i, reason="generator")
+                    return
+                states[i] = gt_next_s
+
+        _terminate(i, reason="timeout")
+
+    await asyncio.gather(*[_process_one(i) for i in range(n)])
+
+    logger.info(
+        f"[batch] 완료  total={n}"
+        f"  correct={sum(1 for t in trajs if t.is_answer)}"
+        f"  elapsed={time.time()-t_start:.1f}s"
+    )
+    return trajs
+
+
+def solve_problems_batch_vllm(engine, tokenizer, problems,
+                               rollout_path=None, max_new_tokens=None, loop=None,
+                               sft_mode=False):
+    """vLLM AsyncLLMEngine continuous batching trajectory 생성 엔트리포인트.
+
+    loop가 주어지면 해당 이벤트 루프를 사용하고, 없으면 asyncio.run()을 사용.
+    RolloutWorker에서는 영속 루프를 전달해 엔진의 asyncio 태스크를 유지한다.
+    sft_mode=True: SFT 전용 프롬프트 + 문맥 포함 reward scorer 사용.
+    """
+    coro = _solve_vllm_async(engine, tokenizer, problems, rollout_path, max_new_tokens, sft_mode=sft_mode)
+    if loop is not None:
+        return loop.run_until_complete(coro)
+    return asyncio.run(coro)
 
 
 def _load_done_ids(*jsonl_paths: str) -> set:
@@ -744,23 +1251,24 @@ def _save_traj(traj: "Trajectory", path: str):
     input_ids / log_probs 등 학습 전용 텐서는 포함하지 않는다.
     """
     record = {
-        "problem_id": traj.problem_id,
-        "problem":    traj.problem,
-        "answer":     traj.answer,
-        "have_boxed": traj.have_boxed,
-        "is_answer":  traj.is_answer,
-        "end_state":  traj.end_state,
+        "problem_id":    traj.problem_id,
+        "problem":       traj.problem,
+        "answer":        traj.answer,
+        "have_boxed":    traj.have_boxed,
+        "is_answer":     traj.is_answer,
+        "patcher_wrong": traj.patcher_wrong,
+        "end_state":     traj.end_state,
         "steps": [
             {
                 "step_idx":                  s.step_idx,
                 "state":                     s.state,
                 "action":                    s.action,
                 "text":                      s.text,
-                "reward":                    s.reward,
+                "final_reward":              s.final_reward,
                 "llm_reward":                s.llm_reward,
                 "format_reward":             s.format_reward,
                 "predicted_next_action":     s.predicted_next_action,
-                "ground_truth_next_action":  s.ground_truth_next_action,
+                "gold_next_action":          s.gold_next_action,
                 "use_patcher":               s.use_patcher,
             }
             for s in traj.steps
@@ -822,13 +1330,14 @@ def main():
     _gt_cfg        = CONF.get("generate_trajectory", {})
     _ppo_cfg       = CONF["ppo"]
     rollout_gpus   = _gt_cfg.get("rollout_gpus") or _ppo_cfg["rollout_gpus"]
-    problems_per_iter = _ppo_cfg["problems_per_iter"] # ex) 64
     num_workers    = len(rollout_gpus)
-    chunk          = problems_per_iter // num_workers  # 워커 1개당 문제 수
+    chunk          = _ppo_cfg["problems_per_gpu"]      # 워커 1개당 문제 수
+    problems_per_iter = chunk * num_workers
 
     # ── 출력 경로 설정 ────────────────────────────────────────────────────
     ts      = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_dir = _root / "output" / "sft_trajectory" / ts
+    _sft_data_base = _gt_cfg.get("sft_data") or str(_root / "output" / "sft_data")
+    out_dir = Path(_sft_data_base) / ts
     out_dir.mkdir(parents=True, exist_ok=True)
     log_path = str(out_dir / "run.log")
 
@@ -839,33 +1348,23 @@ def main():
     fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
     logging.getLogger().addHandler(fh)
 
-    # ── 이미 완료된 problem_id 수집 ───────────────────────────────────────
-    default_skip = str(_root / "datasets" / "sft_ppo.jsonl")
-    skip_file    = args.skip_file or (default_skip if os.path.exists(default_skip) else None)
-    # 워커 출력 파일들도 포함 (재실행 시 이어서 처리)
-    done_ids = _load_done_ids(skip_file, *rollout_paths)
-    logger.info(f"건너뛸 problem_id: {len(done_ids)}개  (from: {skip_file or '없음'})")
+    # ── 문제 로드: base_problems 파일 우선, 없으면 기본 dataset ─────────────
+    base_problems_path = args.wrong_only or _gt_cfg.get("base_problems")
+    if base_problems_path and os.path.exists(base_problems_path):
+        all_problems = load_problems(base_problems_path)
+        logger.info(f"base_problems 로드: {base_problems_path} → {len(all_problems)}개")
+    else:
+        if base_problems_path:
+            logger.warning(f"base_problems 파일을 찾을 수 없습니다: {base_problems_path}")
+        dataset_path = args.dataset or DATASET_PATH
+        all_problems = load_problems(dataset_path)
+        logger.info(f"기본 dataset 로드: {dataset_path} → {len(all_problems)}개")
 
-    # ── 문제 로드 및 필터링 ────────────────────────────────────────────────
-    dataset_path = args.dataset or DATASET_PATH
-    all_problems = load_problems(dataset_path)
-
-    # wrong_only 필터: base_wrong_file의 id 목록에 있는 문제만 처리
-    wrong_only_path = args.wrong_only or _gt_cfg.get("base_wrong_file")
-    if wrong_only_path and os.path.exists(wrong_only_path):
-        wrong_ids = set()
-        with open(wrong_only_path, encoding="utf-8") as _f:
-            for _line in _f:
-                _line = _line.strip()
-                if _line:
-                    _obj = json.loads(_line)
-                    _id = _obj.get("id") or _obj.get("problem_id")
-                    if _id is not None:
-                        wrong_ids.add(str(_id))
-        all_problems = [p for p in all_problems if str(p["problem_id"]) in wrong_ids]
-        logger.info(f"wrong_only 필터 적용: {wrong_only_path} → {len(wrong_ids)}개 id → {len(all_problems)}개 문제")
-    elif wrong_only_path:
-        logger.warning(f"wrong_only 파일을 찾을 수 없습니다: {wrong_only_path}")
+    # ── 이미 완료된 problem_id 수집 (sft_data 하위 모든 jsonl + 현재 출력 파일) ──
+    sft_data_dir = Path(_gt_cfg.get("sft_data") or str(_root / "output" / "sft_data"))
+    past_jsonls  = list(sft_data_dir.glob("**/*.jsonl")) if sft_data_dir.exists() else []
+    done_ids = _load_done_ids(*rollout_paths, *[str(p) for p in past_jsonls])
+    logger.info(f"건너뛸 problem_id: {len(done_ids)}개  (past_jsonls={len(past_jsonls)}개)")
 
     todo = [p for p in all_problems if str(p["problem_id"]) not in done_ids]
     logger.info(f"전체 {len(all_problems)}개 문제 → 미완료 {len(todo)}개")
@@ -884,10 +1383,11 @@ def main():
     # worker __init__ 안에서 os.environ으로 직접 설정한 뒤 모델을 로드한다.
     @ray.remote
     class _SFTWorker:
-        def __init__(self, worker_id: int, rollout_path: str, log_path: str, checkpoint: str, gpu_id: int):
+        def __init__(self, worker_id: int, rollout_path: str, log_path: str, checkpoint: str):
+            import asyncio
             import logging
             import os
-            os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+            import sys
 
             self.worker_id    = worker_id
             self.rollout_path = rollout_path
@@ -900,34 +1400,77 @@ def main():
             fh.setFormatter(logging.Formatter(f"%(asctime)s [W{worker_id}] %(message)s"))
             _wlog.addHandler(fh)
 
-            self.model, self.tokenizer = load_generator(
-                device_map={"": "cuda:0"}, model_path=checkpoint or None
+            _src_dir = os.path.dirname(os.path.abspath(__file__))
+            if _src_dir not in sys.path:
+                sys.path.insert(0, _src_dir)
+
+            from utils import ACTION_TOKENS, GENERATOR_CACHE_DIR, GENERATOR_MODEL_ID, SFT_CHECKPOINT
+            from transformers import AutoTokenizer
+
+            model_path = (checkpoint or SFT_CHECKPOINT) if (checkpoint or SFT_CHECKPOINT) else GENERATOR_MODEL_ID
+
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                model_path, cache_dir=GENERATOR_CACHE_DIR, trust_remote_code=True
             )
+            if self.tokenizer.pad_token is None:
+                self.tokenizer.pad_token = self.tokenizer.eos_token
+            self.tokenizer.add_special_tokens({"additional_special_tokens": ACTION_TOKENS})
+
+            # CUDA_VISIBLE_DEVICES를 명시적으로 재설정 (runtime_env는 vLLM spawn 타이밍에 불안정)
+            _cuda_vis = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+            os.environ["CUDA_VISIBLE_DEVICES"] = _cuda_vis
+            logging.info(f"  CUDA_VISIBLE_DEVICES={_cuda_vis!r}")
+
+            self._loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self._loop)
+
+            from vllm import AsyncLLMEngine, AsyncEngineArgs
+            engine_args = AsyncEngineArgs(
+                model=model_path,
+                tokenizer=model_path,
+                dtype="bfloat16",
+                gpu_memory_utilization=0.90,
+                trust_remote_code=True,
+                enable_sleep_mode=True,
+                enforce_eager=False,
+                max_model_len=VLLM_MAX_MODEL_LEN,
+                download_dir=GENERATOR_CACHE_DIR,
+            )
+
+            async def _init_engine():
+                return AsyncLLMEngine.from_engine_args(engine_args)
+
+            self.engine = self._loop.run_until_complete(_init_engine())
             create_rollout_file(rollout_path)
-            logging.info(f"준비 완료  GPU={gpu_id}  rollout → {rollout_path}")
+            logging.info(f"준비 완료 (vLLM SFT)  rollout → {rollout_path}")
 
         def run(self, problems: list) -> dict:
             """problems 배치를 처리하고 저장 후 간단한 통계를 반환."""
-            trajs = solve_problems_batch(
-                self.model, self.tokenizer, problems, rollout_path=None
+            trajs = solve_problems_batch_vllm(
+                self.engine, self.tokenizer, problems,
+                rollout_path=self.rollout_path, loop=self._loop, sft_mode=True,
             )
-            for traj in trajs:
-                _save_traj(traj, self.rollout_path)
             return {
                 "n":       len(trajs),
                 "correct": sum(1 for t in trajs if t.is_answer),
                 "boxed":   sum(1 for t in trajs if t.have_boxed),
             }
 
+    # Ray가 worker 프로세스의 CUDA_VISIBLE_DEVICES를 강제로 "0"으로 덮어쓰지 않도록 방지
+    os.environ["RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO"] = "0"
     ray.init(include_dashboard=False, ignore_reinit_error=True, log_to_driver=False)
 
     workers = [
-        _SFTWorker.remote(
+        _SFTWorker.options(
+            runtime_env={"env_vars": {
+                "CUDA_VISIBLE_DEVICES": str(rollout_gpus[i]),
+                "MASTER_PORT": str(36000 + i),
+            }}
+        ).remote(
             worker_id=i,
             rollout_path=rollout_paths[i],
             log_path=worker_log_paths[i],
             checkpoint=args.checkpoint,
-            gpu_id=rollout_gpus[i],
         )
         for i in range(num_workers)
     ]

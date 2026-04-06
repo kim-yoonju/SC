@@ -35,7 +35,7 @@ def _parse_args():
     p.add_argument("--resume_checkpoint", type=str, default=None)
     # 학습 설정
     p.add_argument("--max_iterations",   type=int)
-    p.add_argument("--problems_per_iter", type=int)
+    p.add_argument("--problems_per_gpu",  type=int)
     p.add_argument("--train_batch_size",  type=int)
     p.add_argument("--dataset",           type=str)
     # 하이퍼파라미터
@@ -66,15 +66,14 @@ from utils import (
     GENERATOR_MODEL_ID,
     GENERATOR_MAX_NEW_TOKENS,
     TRUNCATE_TOKEN_LIMIT,
+    VLLM_MAX_MODEL_LEN,
     Trajectory,
     create_rollout_file,
     load_generator,
-    load_math500,
     load_problems,
     save_trajectory,
 )
-from generate_trajectory import solve_problems_batch
-from evaluate_step_reasoning import solve_batch as _eval_solve_batch
+from generate_trajectory import solve_problems_batch, solve_problems_batch_vllm
 from record_wandb import WandbLogger
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -85,7 +84,7 @@ _ppo = CONF["ppo"]
 if _args.rollout_gpus   is not None: _ppo["rollout_gpus"]    = [int(g) for g in _args.rollout_gpus.split(",")]
 if _args.train_gpus     is not None: _ppo["train_gpus"]      = [int(g) for g in _args.train_gpus.split(",")]
 if _args.max_iterations  is not None: _ppo["max_iterations"]  = _args.max_iterations
-if _args.problems_per_iter is not None: _ppo["problems_per_iter"] = _args.problems_per_iter
+if _args.problems_per_gpu  is not None: _ppo["problems_per_gpu"]  = _args.problems_per_gpu
 if _args.train_batch_size  is not None: _ppo["train_batch_size"]  = _args.train_batch_size
 if _args.lr        is not None: PPO_LR      = _args.lr
 if _args.clip_eps  is not None: PPO_CLIP_EPS = _args.clip_eps
@@ -101,7 +100,7 @@ RESUME_CHECKPOINT = _ppo.get("resume_checkpoint")
 NUM_WORKERS       = len(ROLLOUT_GPUS)
 TRAINER_DEVICE    = "cuda:0"  # main 프로세스는 TRAIN_GPUS만 노출되므로 항상 cuda:0
 MAX_ITERATIONS    = _ppo["max_iterations"]
-PROBLEMS_PER_ITER = _ppo["problems_per_iter"]
+PROBLEMS_PER_ITER = _ppo["problems_per_gpu"] * NUM_WORKERS
 TRAIN_BATCH_SIZE  = _ppo["train_batch_size"]
 CHECKPOINT_BASE   = str(Path(__file__).resolve().parent.parent / CONF["checkpoint"]["ppo_checkpoint_base"])
 SAVE_DIR          = str(Path(__file__).resolve().parent.parent / CONF["output_path"]["ppo"])
@@ -129,14 +128,21 @@ def _finished_without_timeout(traj: Trajectory) -> bool:
 
 @ray.remote
 class RolloutWorker:
-    """한 GPU에서 trajectory를 생성하는 Ray Actor.
+    """한 GPU에서 vLLM AsyncLLMEngine으로 trajectory를 생성하는 Ray Actor.
 
     runtime_env로 CUDA_VISIBLE_DEVICES=ROLLOUT_GPUS[i]가 주입되므로
-    내부에서는 항상 device_map="auto" (→ cuda:0) 사용.
+    내부에서는 항상 cuda:0 를 사용한다.
+
+    vLLM continuous batching: N개의 문제를 asyncio.gather로 동시에 처리하며,
+    각 문제는 다른 문제의 스텝 완료나 API 호출을 기다리지 않고 독립적으로 진행한다.
     """
 
     def __init__(self, worker_id: int, rollout_path: str, log_path: str):
+        import asyncio
         import logging
+        import os
+        import sys
+
         self.worker_id    = worker_id
         self.rollout_path = rollout_path
 
@@ -148,20 +154,98 @@ class RolloutWorker:
         fh.setFormatter(logging.Formatter(f"%(asctime)s [Worker{worker_id}] %(message)s"))
         _wlogger.addHandler(fh)
 
-        self.model, self.tokenizer = load_generator(device_map="auto")
+        # source/ 디렉토리를 경로에 추가 (Ray actor 프로세스는 sys.path가 다를 수 있음)
+        _src_dir = os.path.dirname(os.path.abspath(__file__))
+        if _src_dir not in sys.path:
+            sys.path.insert(0, _src_dir)
+
+        from utils import (
+            ACTION_TOKENS, GENERATOR_CACHE_DIR, GENERATOR_MODEL_ID, SFT_CHECKPOINT,
+        )
+        from transformers import AutoTokenizer
+
+        model_path = SFT_CHECKPOINT if SFT_CHECKPOINT else GENERATOR_MODEL_ID
+
+        # tokenizer: 특수 액션 토큰 포함 (load_generator 와 동일 설정)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_path, cache_dir=GENERATOR_CACHE_DIR, trust_remote_code=True
+        )
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        self.tokenizer.add_special_tokens({"additional_special_tokens": ACTION_TOKENS})
+
+        # 영속 이벤트 루프 생성 (vLLM asyncio 태스크가 루프 수명 동안 유지됨)
+        self._loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self._loop)
+
+        # vLLM AsyncLLMEngine 초기화
+        from vllm import AsyncLLMEngine, AsyncEngineArgs
+        engine_args = AsyncEngineArgs(
+            model=model_path,
+            tokenizer=model_path,
+            dtype="bfloat16",
+            gpu_memory_utilization=0.90,
+            trust_remote_code=True,
+            enable_sleep_mode=True,
+            enforce_eager=False,
+            max_model_len=VLLM_MAX_MODEL_LEN,
+            download_dir=GENERATOR_CACHE_DIR,
+        )
+
+        async def _init_engine():
+            return AsyncLLMEngine.from_engine_args(engine_args)
+
+        self.engine = self._loop.run_until_complete(_init_engine())
+
         create_rollout_file(rollout_path)
-        logging.info(f"준비 완료  rollout → {rollout_path}  log → {log_path}")
+        logging.info(f"준비 완료 (vLLM)  rollout → {rollout_path}  log → {log_path}")
 
     def generate_trajectories(self, problems_batch: List[dict]) -> List[Trajectory]:
-        """problems_batch를 배치 GPU 추론 + 병렬 API 호출로 동시 처리."""
-        return solve_problems_batch(
-            self.model, self.tokenizer, problems_batch, rollout_path=self.rollout_path,
+        """problems_batch를 vLLM continuous batching으로 동시 처리."""
+        return solve_problems_batch_vllm(
+            self.engine, self.tokenizer, problems_batch,
+            rollout_path=self.rollout_path, loop=self._loop,
         )
 
     def load_state_dict(self, state_dict: dict):
-        """PPOTrainer에서 업데이트된 weights를 동기화."""
-        self.model.load_state_dict(state_dict)
-        self.model.eval()
+        """PPOTrainer에서 업데이트된 weights를 vLLM 엔진에 동기화.
+
+        state_dict → 공유 메모리(/dev/shm) 임시 파일 → vLLM 엔진 코어에서 직접 로드.
+        ZMQ를 통한 대용량 텐서 직렬화를 피하기 위해 파일 경로만 IPC로 전달한다.
+        """
+        import logging
+        import os
+        import tempfile
+
+        try:
+            with tempfile.NamedTemporaryFile(dir="/dev/shm", suffix=".pt", delete=False) as f:
+                tmp_path = f.name
+        except (OSError, FileNotFoundError):
+            with tempfile.NamedTemporaryFile(suffix=".pt", delete=False) as f:
+                tmp_path = f.name
+
+        torch.save(state_dict, tmp_path)
+
+        def _load_weights(wrapper, path):
+            import torch as _t
+            import os as _os
+            sd = _t.load(path, weights_only=True, map_location="cpu")
+            worker = wrapper.worker
+            model  = worker.model_runner.model
+            for name, tensor in sd.items():
+                try:
+                    p = model.get_parameter(name)
+                    if p.shape != tensor.shape:
+                        continue  # skip resized embeddings (ACTION_TOKENS 추가로 크기 불일치)
+                    p.data.copy_(tensor.to(p.device))
+                except Exception:
+                    pass
+            _os.unlink(path)
+
+        self._loop.run_until_complete(
+            self.engine.collective_rpc(_load_weights, kwargs={"path": tmp_path})
+        )
+        logging.info(f"[Worker{self.worker_id}] weights 동기화 완료")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PPO Trainer (main process)
@@ -216,7 +300,7 @@ class PPOTrainer:
         for step in traj.steps:
             n = step.response_ids.shape[1]
             length_penalty = -max(0, n - 512) * 0.0002 if not traj.is_answer else 0.0
-            r = step.reward + length_penalty
+            r = step.final_reward + length_penalty
             rewards.append(torch.full((n,), r / max(n, 1)))
         return rewards
 
@@ -344,8 +428,18 @@ class PPOTrainer:
         return stats
 
     def get_state_dict(self) -> dict:
-        """워커에 동기화할 CPU state dict 반환."""
-        return {k: v.cpu() for k, v in self.model.state_dict().items()}
+        """워커에 동기화할 CPU state dict 반환.
+
+        vLLM 워커는 ACTION_TOKENS 추가 전 원본 vocab 크기로 로드되므로,
+        embedding/lm_head처럼 vocab 축에서 크기가 달라진 파라미터는 제외한다.
+        """
+        vocab_size = self.ref_model.config.vocab_size  # 원본 vocab 크기
+        sd = {}
+        for k, v in self.model.state_dict().items():
+            if v.shape[0] != vocab_size and any(tag in k for tag in ("embed_tokens", "lm_head")):
+                continue
+            sd[k] = v.cpu()
+        return sd
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 메인 학습 루프
@@ -378,13 +472,15 @@ def main():
 
     ray.init(include_dashboard=False, ignore_reinit_error=True, log_to_driver=False)
 
-    problems     = load_problems(DATASET_PATH)
-    n            = len(problems)
-    val_problems = load_math500()
+    problems = load_problems(DATASET_PATH)
+    n        = len(problems)
 
     workers = [
         RolloutWorker.options(
-            runtime_env={"env_vars": {"CUDA_VISIBLE_DEVICES": str(ROLLOUT_GPUS[i])}}
+            runtime_env={"env_vars": {
+                "CUDA_VISIBLE_DEVICES": str(ROLLOUT_GPUS[i]),
+                "MASTER_PORT": str(36000 + i),
+            }}
         ).remote(worker_id=i, rollout_path=rollout_paths[i], log_path=worker_log_paths[i])
         for i in range(NUM_WORKERS)
     ]
@@ -417,7 +513,7 @@ def main():
         project="sc-ppo",
         run_name=ts,
     )
-    wlogger.set_val_problems(problems)
+    wlogger.set_val_problems([])
 
     answer_total   = 0
     problem_cursor = 0
@@ -469,26 +565,7 @@ def main():
 
         wlogger.log_train(stats, iteration)
 
-        if (iteration + 1) % 10 == 0:
-            logger.info("           validation 시작 (MATH-500, step reasoning)...")
-            val_results = _eval_solve_batch(
-                trainer.model, trainer.tokenizer, val_problems,
-                max_steps=MAX_STEPS, greedy=True,
-            )
-            n_correct = sum(1 for r in val_results if r["correct"])
-            n_total   = len(val_results)
-            val_metrics = {
-                "val/accuracy":  n_correct / n_total if n_total else 0.0,
-                "val/n_correct": n_correct,
-                "val/n_total":   n_total,
-            }
-            wlogger.log_validation(val_metrics, iteration)
-            logger.info(
-                f"           val accuracy={val_metrics['val/accuracy']:.4f}"
-                f"  ({n_correct}/{n_total})"
-            )
-        else:
-            val_metrics = {}
+        val_metrics = {}
 
         weights = trainer.get_state_dict()
         ray.get([w.load_state_dict.remote(weights) for w in workers])

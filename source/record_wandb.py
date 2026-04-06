@@ -169,18 +169,18 @@ def compute_rollout_metrics(trajectories: List[Trajectory], prefix: str = "rollo
             consecutive_correct_counts.append(_max_consec)
 
         for s in steps:
-            all_rewards.append(s.reward)
+            all_rewards.append(s.llm_reward)
             if s.action == "solve":
-                solve_rewards.append(s.reward)
+                solve_rewards.append(s.llm_reward)
             if s.action == "correct":
-                correct_rewards.append(s.reward)
+                correct_rewards.append(s.llm_reward)
             if not s.use_patcher:
-                gen_rewards.append(s.reward)
+                gen_rewards.append(s.llm_reward)
 
             # 액션 예측 정확도 (generator step에서만 의미 있음)
             if not s.use_patcher:
                 action_total_n += 1
-                if s.predicted_next_action == s.ground_truth_next_action:
+                if s.predicted_next_action == s.gold_next_action:
                     action_correct_n += 1
 
         # ── self-correction 분석 ─────────────────────────────────────────────
@@ -188,20 +188,20 @@ def compute_rollout_metrics(trajectories: List[Trajectory], prefix: str = "rollo
             if s.action != "correct":
                 continue
 
-            prev_reward = steps[i - 1].reward if i > 0 else 0.0
+            prev_reward = steps[i - 1].llm_reward if i > 0 else 0.0
 
             if not s.use_patcher:
                 # generator correct 스텝
-                if s.reward > 0.1:
-                    gen_corr_success_rewards.append(s.reward)
-                    gen_corr_improvements.append(s.reward - prev_reward)
+                if s.llm_reward > 0.1:
+                    gen_corr_success_rewards.append(s.llm_reward)
+                    gen_corr_improvements.append(s.llm_reward - prev_reward)
                 else:
-                    gen_corr_fail_rewards.append(s.reward)
+                    gen_corr_fail_rewards.append(s.llm_reward)
             else:
                 # patcher correct 스텝
-                if s.reward > 0.1:
-                    patcher_success_rewards.append(s.reward)
-                    patcher_improvements.append(s.reward - prev_reward)
+                if s.llm_reward > 0.1:
+                    patcher_success_rewards.append(s.llm_reward)
+                    patcher_improvements.append(s.llm_reward - prev_reward)
 
     n_gen_corr_total  = len(gen_corr_success_rewards) + len(gen_corr_fail_rewards)
     n_patcher_success = len(patcher_success_rewards)

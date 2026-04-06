@@ -330,7 +330,7 @@ def gpu_worker(gpu_id: int, items: list[dict], model_id: str, load_kwargs: dict,
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
-    # <|solve|>, <|correct|>, <|end|> 등록 (<|end|>은 커스텀 토큰이므로 등록 필요)
+    # <|solve|>, <|rethink|>, <|end|> 등록 (<|end|>은 커스텀 토큰이므로 등록 필요)
     added = tokenizer.add_special_tokens({"additional_special_tokens": SPECIAL_TOKENS})
 
     # config.vocab_size가 실제 체크포인트 가중치 크기와 다를 수 있으므로 패치.
@@ -346,7 +346,7 @@ def gpu_worker(gpu_id: int, items: list[dict], model_id: str, load_kwargs: dict,
     model.resize_token_embeddings(len(tokenizer))
     model.eval()
 
-    # stop ID 수집: <|solve|>, <|correct|>, <|end|>
+    # stop ID 수집: <|solve|>, <|rethink|>, <|end|>
     stop_ids = []
     for tok in ACTION_TOKENS:
         tid = tokenizer.convert_tokens_to_ids(tok)

@@ -29,14 +29,16 @@ correct_gen, llm_reward>0.5 → solve
                   llm_reward<=0.5 → correct_pat
 correct_pat, llm_reward>0.5 → solve
                   llm_rewardr<=0.5 → end_pat
-end, llm_reward>0.5 → end_answer
+end or have_boxed{}, llm_reward>0.5 → end_answer
         llm_reward<=0.5 → correct_gen
-solve, boxed{} → end
+
+if step_idx>max_steps: state=end_max
+
 
 이 때
 solve -> <|solve|>
 correct_gen, correct_pat -> <|correct|>
-end_max, end_answer -> <|end|>
+end_max, end_answer, end_pat -> <|end|>
 
 Rule 채점 + LLM 채점
 boxed{}는 스텝 상관없이 마지막으로 나온게 정답

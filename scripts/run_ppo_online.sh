@@ -29,7 +29,7 @@ print(f'ROLLOUT_GPUS="{rollout_gpus}"')
 print(f'TRAIN_GPUS="{train_gpus}"')
 print(f'RESUME_CHECKPOINT="{resume}"')
 print(f'MAX_ITERATIONS={ppo["max_iterations"]}')
-print(f'PROBLEMS_PER_ITER={ppo["problems_per_iter"]}')
+print(f'PROBLEMS_PER_GPU={ppo["problems_per_gpu"]}')
 print(f'TRAIN_BATCH_SIZE={ppo["train_batch_size"]}')
 print(f'LR={ppo["lr"]}')
 print(f'CLIP_EPS={ppo["clip_eps"]}')
@@ -40,7 +40,11 @@ PYEOF
 )"
 
 # ---- 실행 ----
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+# vLLM v1은 msgspec 직렬화를 사용해 함수 객체를 collective_rpc로 전달할 수 없음.
+# pickle fallback을 허용해 load_state_dict의 _load_weights 함수를 직렬화 가능하게 함.
+export VLLM_ALLOW_INSECURE_SERIALIZATION=1
+
+# expandable_segments:True은 vLLM CuMemAllocator와 충돌하므로 제거
 
 RESUME_ARG=""
 if [ -n "$RESUME_CHECKPOINT" ]; then
@@ -63,7 +67,7 @@ python3 source/train_ppo.py \
     $RESUME_ARG \
     --run_ts           "$RUN_TS" \
     --max_iterations   $MAX_ITERATIONS \
-    --problems_per_iter $PROBLEMS_PER_ITER \
+    --problems_per_gpu  $PROBLEMS_PER_GPU \
     --train_batch_size  $TRAIN_BATCH_SIZE \
     --lr               $LR \
     --clip_eps         $CLIP_EPS \
@@ -73,3 +77,17 @@ python3 source/train_ppo.py \
     2>&1 | tee "${RUN_DIR}/shell.log"
 
 echo "Done."
+
+# ---- 학습 완료 후 평가 (마지막 체크포인트 자동 탐색) ----
+LAST_CKPT=$(ls -d "checkpoints/ppo/${RUN_TS}"/iter_* 2>/dev/null | sort | tail -1)
+if [ -n "$LAST_CKPT" ]; then
+    echo "Evaluating last checkpoint: $LAST_CKPT"
+    EVAL_GPUS="$ROLLOUT_GPUS"
+    python3 source/evaluate_step_reasoning.py \
+        --model_path "$LAST_CKPT" \
+        --gpus       "$EVAL_GPUS" \
+        2>&1 | tee "${RUN_DIR}/eval.log"
+    echo "Eval done."
+else
+    echo "No checkpoint found, skipping evaluation."
+fi

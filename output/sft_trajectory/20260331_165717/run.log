@@ -1,3 +1,0 @@
-2026-03-31 16:57:17,521 INFO 건너뛸 problem_id: 0개  (from: 없음)
-2026-03-31 16:57:20,560 INFO 전체 16000개 문제 → 미완료 16000개
-2026-03-31 16:57:20,561 INFO GPU: [4, 5]  workers: 2  problems_per_iter: 64  chunk/worker: 32

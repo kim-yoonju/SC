@@ -34,8 +34,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ---- 실행 ----
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-
 python3 source/generate_trajectory.py \
     $CHECKPOINT_ARG \
     $DATASET_ARG \

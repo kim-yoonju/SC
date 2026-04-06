@@ -65,14 +65,17 @@ GENERATOR_CACHE_DIR      = CONF["checkpoint"]["cache_dir"]
 SFT_CHECKPOINT           = CONF["checkpoint"]["sft_checkpoint"]
 GENERATOR_TEMPERATURE    = CONF["step_reasoning"]["temperature"]
 GENERATOR_MAX_NEW_TOKENS = CONF["step_reasoning"]["max_new_tokens"]
+PATCHER_MAX_NEW_TOKENS   = CONF["API_model"].get("max_new_tokens", 2048)
+API_MAX_SEQ_LEN          = CONF["API_model"].get("max_seq_len", 1500)
 TRUNCATE_TOKEN_LIMIT     = CONF["step_reasoning"]["truncate_token_limit"]
-MAX_STEPS                = CONF["ppo"].get("max_steps", CONF["step_reasoning"]["max_steps"])
+MAX_STEPS                = CONF.get("generate_trajectory", {}).get("max_steps") or CONF["ppo"].get("max_steps", CONF["step_reasoning"]["max_steps"])
+VLLM_MAX_MODEL_LEN       = CONF.get("vllm", {}).get("max_model_len", 32768)
 
 # API 모델
-TRUNCATOR = CONF["API_model"]["TRUNCATOR"]
-REWARD    = CONF["API_model"]["REWARD"]
-PATCHER   = CONF["API_model"]["PATCHER"]
-EXTRACTOR = CONF["API_model"]["EXTRACTOR"]
+TRUNCATOR     = CONF["API_model"]["TRUNCATOR"]
+REWARD        = CONF["API_model"]["REWARD"]
+PATCHER       = CONF["API_model"]["PATCHER"]
+EXTRACTOR     = CONF["API_model"]["EXTRACTOR"]
 
 # PPO 하이퍼파라미터
 _ppo                = CONF["ppo"]
@@ -114,11 +117,11 @@ class StepRecord:
     state: str           # 이 스텝이 실행된 시점의 상태 (solve/correct_gen/correct_pat)
     action: str
     text: str
-    reward: float
+    final_reward: float
     llm_reward: float
     format_reward: float
     predicted_next_action: str
-    ground_truth_next_action: str
+    gold_next_action: str
     input_ids: torch.Tensor
     response_ids: torch.Tensor
     log_probs_old: torch.Tensor
@@ -140,16 +143,27 @@ class Trajectory:
 # 프롬프트 및 액션 토큰
 # ─────────────────────────────────────────────────────────────────────────────
 
-_PROMPTS_PATH = _pathlib.Path(__file__).resolve().parent.parent / "prompts" / "action_prompts.json"
+_PROMPTS_PATH = _pathlib.Path(__file__).resolve().parent.parent / "prompts" / "action_prompts.jsonl"
+_PROMPTS: Dict[str, str] = {}
 with open(_PROMPTS_PATH) as _f:
-    _PROMPTS = json.load(_f)
+    for _line in _f:
+        _line = _line.strip()
+        if _line:
+            _entry = json.loads(_line)
+            _PROMPTS[_entry["name"]] = _entry["content"]
 
-SYSTEM_SOLVE     = _PROMPTS["system_solve"]
-SYSTEM_CORRECT   = _PROMPTS["system_correct"]
-LLM_SCORE_PROMPT = _PROMPTS["llm_score"]
+SYSTEM_SOLVE             = _PROMPTS["system_solve"]
+SYSTEM_CORRECT           = _PROMPTS["system_rethink"]
+PATCHER_PROMPT           = _PROMPTS["patcher_prompt"]
+SYSTEM_SOLVE_SFT         = _PROMPTS["system_solve_sft"]
+SYSTEM_SOLVE_API_SFT     = _PROMPTS["system_solve_api_sft"]
+SYSTEM_RETHINK_API_SFT   = _PROMPTS["system_rethink_api_sft"]
+LLM_SCORE_PROMPT         = _PROMPTS["llm_score"]
+LLM_SCORE_SFT_PROMPT     = _PROMPTS["llm_score_sft"]
+SYSTEM_TRUNCATOR         = _PROMPTS["system_truncator"]
 
 TOKEN_SOLVE   = "<|solve|>"
-TOKEN_CORRECT = "<|correct|>"
+TOKEN_CORRECT = "<|rethink|>"
 TOKEN_END     = "<|end|>"
 ACTION_TOKENS = [TOKEN_SOLVE, TOKEN_CORRECT, TOKEN_END]
 
@@ -209,23 +223,33 @@ def load_generator(device_map="auto", model_path=None):
 
     added = tokenizer.add_special_tokens({"additional_special_tokens": ACTION_TOKENS})
 
-    # config.vocab_size 패치는 로컬 SFT/PPO 체크포인트에만 적용한다.
-    # - 로컬 체크포인트: save_pretrained 시 config.vocab_size가 원본(152064)으로 남아있을 수
-    #   있지만 실제 가중치는 resize_token_embeddings 후 크기(예: 151668)로 저장됨 → 패치 필요.
-    # - HuggingFace 모델 ID (예: "Qwen/Qwen2.5-7B-Instruct"): config.vocab_size(152064)가
-    #   실제 가중치 크기와 일치하므로 패치하면 오히려 크기 불일치가 발생 → 패치 불필요.
+    # config.vocab_size 패치: 로컬 체크포인트의 config.json과 실제 가중치 크기가 다를 수 있다.
+    # safetensors 파일에서 실제 임베딩 크기를 직접 읽어 config를 패치한다.
     config = AutoConfig.from_pretrained(load_path, trust_remote_code=True)
     is_local = _pathlib.Path(load_path).exists()
     if is_local:
-        actual_vocab_size = len(tokenizer) - added
-        if config.vocab_size != actual_vocab_size:
-            logger.info(f"config.vocab_size({config.vocab_size}) != 체크포인트 가중치 크기({actual_vocab_size}), config 패치 후 로드")
-            config.vocab_size = actual_vocab_size
+        import glob as _glob
+        try:
+            from safetensors import safe_open
+            embed_key = "model.embed_tokens.weight"
+            for shard in sorted(_glob.glob(os.path.join(load_path, "*.safetensors"))):
+                with safe_open(shard, framework="pt", device="cpu") as f:
+                    if embed_key in f.keys():
+                        actual_vocab_size = f.get_slice(embed_key).get_shape()[0]
+                        if config.vocab_size != actual_vocab_size:
+                            logger.info(
+                                f"config.vocab_size({config.vocab_size}) != 실제 임베딩 크기({actual_vocab_size}), "
+                                "config 패치 후 로드"
+                            )
+                            config.vocab_size = actual_vocab_size
+                        break
+        except Exception as e:
+            logger.warning(f"임베딩 크기 사전 확인 실패, config.vocab_size({config.vocab_size}) 그대로 사용: {e}")
 
     model = AutoModelForCausalLM.from_pretrained(
         load_path, config=config, torch_dtype=torch.bfloat16, device_map=device_map, trust_remote_code=True
     )
-    if len(tokenizer) > model.config.vocab_size:
+    if len(tokenizer) != model.config.vocab_size:
         model.resize_token_embeddings(len(tokenizer))
 
     model.eval()
@@ -255,8 +279,69 @@ def _normalize_latex(s: str) -> str:
     s = s.strip().replace(" ", "")
     s = re.sub(r"\\dfrac|\\tfrac", r"\\frac", s)
     s = re.sub(r"\\text\{([^}]*)\}|\\mathrm\{([^}]*)\}", r"\1", s)
-    s = re.sub(r"\\left|\\right|[(){}]", "", s)
+    s = re.sub(r"\\left|\\right|[()]", "", s)  # {} 는 제거하지 않음 (행렬 환경 보호)
     return s
+
+
+# True/False ↔ Yes/No 정규화 테이블
+_BOOL_NORM: dict[str, str] = {
+    "true": "yes", "false": "no",
+    "yes": "yes",  "no": "no",
+}
+
+def _normalize_bool(s: str) -> str | None:
+    """'True'/'False'/'Yes'/'No' 계열 문자열을 'yes'/'no'로 정규화. 해당 없으면 None."""
+    return _BOOL_NORM.get(s.strip().lower())
+
+
+# 도(°) → 라디안 변환 후 비교
+_DEG_RE = re.compile(
+    r"^([+-]?\d+(?:\.\d+)?)\s*\^?\s*(?:\\circ|°|\\degree)$"
+)
+_RAD_RE = re.compile(
+    r"^([+-]?(?:\d+(?:\.\d+)?)?)\s*\\?pi(?:\s*/\s*([+-]?\d+(?:\.\d+)?))?$"
+    r"|^\\frac\{([+-]?(?:\d+(?:\.\d+)?)?\\?pi)\}\{([+-]?\d+(?:\.\d+)?)\}$"
+    r"|^\\frac([+-]?(?:\d+(?:\.\d+)?)?\\?pi)\{([+-]?\d+(?:\.\d+)?)\}$"
+)
+
+def _parse_angle_rad(s: str) -> float | None:
+    """LaTeX 각도 문자열을 라디안(float)으로 변환. 실패 시 None."""
+    import math
+    s = s.strip().replace(" ", "")
+
+    # 도(°) 형식
+    m = _DEG_RE.match(s)
+    if m:
+        return float(m.group(1)) * math.pi / 180
+
+    # \frac{N\pi}{D} 또는 \frac{N\pi}\{D\} 형식
+    m = re.match(r"^\\frac\{([+-]?\d*(?:\.\d+)?)\\pi\}\{([+-]?\d+(?:\.\d+)?)\}$", s)
+    if m:
+        num = float(m.group(1)) if m.group(1) not in ("", "+", "-") else (1.0 if m.group(1) != "-" else -1.0)
+        return num * math.pi / float(m.group(2))
+
+    m = re.match(r"^\\frac([+-]?\d*(?:\.\d+)?)\\pi\{([+-]?\d+(?:\.\d+)?)\}$", s)
+    if m:
+        num = float(m.group(1)) if m.group(1) not in ("", "+", "-") else (1.0 if m.group(1) != "-" else -1.0)
+        return num * math.pi / float(m.group(2))
+
+    # N\pi/D 또는 N\pi 형식
+    m = re.match(r"^([+-]?\d*(?:\.\d+)?)\\pi(?:/([+-]?\d+(?:\.\d+)?))?$", s)
+    if m:
+        num = float(m.group(1)) if m.group(1) not in ("", "+", "-") else (1.0 if m.group(1) != "-" else -1.0)
+        denom = float(m.group(2)) if m.group(2) else 1.0
+        return num * math.pi / denom
+
+    return None
+
+
+def _angle_equal(a: str, b: str) -> bool:
+    """두 각도 표현이 도/라디안 변환 후 동치인지 비교."""
+    import math
+    ra, rb = _parse_angle_rad(a), _parse_angle_rad(b)
+    if ra is None or rb is None:
+        return False
+    return abs(ra - rb) < 1e-9
 
 def extract_boxed(text: str, is_gsm8k: bool = False) -> str | None:
     """정답 추출.
@@ -290,6 +375,44 @@ def extract_boxed(text: str, is_gsm8k: bool = False) -> str | None:
         return m.group(1).strip()
     return None
 
+# 알려진 수학적 동치 표현 → 정규형 매핑 (latex2sympy2가 처리 못하는 케이스)
+_KNOWN_EQUIV: dict[str, str] = {
+    r"\mathfrak{c}": r"2^{\aleph_0}",
+}
+_KNOWN_EQUIV.update({v: k for k, v in list(_KNOWN_EQUIV.items())})
+
+def _canonicalize(s: str) -> str:
+    for variant, canonical in _KNOWN_EQUIV.items():
+        s = s.replace(variant.replace(" ", ""), canonical.replace(" ", ""))
+    return s
+
+def _latex2sympy_equal(a: str, b: str) -> bool:
+    """latex2sympy2_extended로 두 LaTeX 수식이 동치인지 확인. 실패 시 False."""
+    try:
+        from latex2sympy2_extended import latex2sympy
+        from sympy import simplify, Matrix
+        la, lb = latex2sympy(a), latex2sympy(b)
+        # 행렬은 직접 비교
+        if isinstance(la, Matrix) or isinstance(lb, Matrix):
+            return la == lb
+        return simplify(la - lb) == 0
+    except Exception:
+        return False
+
+
+def _numeric_approx_equal(a: str, b: str, rel_tol: float = 1e-3) -> bool:
+    """두 수식을 float로 평가해 상대 오차 0.1% 이내이면 True."""
+    try:
+        from latex2sympy2_extended import latex2sympy
+        import sympy
+        fa = float(sympy.N(latex2sympy(a), 15))
+        fb = float(sympy.N(latex2sympy(b), 15))
+        if fa == fb == 0:
+            return True
+        return abs(fa - fb) / max(abs(fa), abs(fb), 1e-12) < rel_tol
+    except Exception:
+        return False
+
 def check_solved(step_text: str, gold_answer, is_gsm8k: bool = False) -> bool:
     pred_raw = extract_boxed(step_text, is_gsm8k=is_gsm8k)
     if not pred_raw: return False
@@ -298,17 +421,28 @@ def check_solved(step_text: str, gold_answer, is_gsm8k: bool = False) -> bool:
         gold_str = _extract_gsm8k_answer(gold_str)
     pred_raw, gold_raw = pred_raw.replace(" ", ""), gold_str.replace(" ", "")
     if pred_raw == gold_raw: return True
+    # 대소문자 무시 비교
+    if pred_raw.lower() == gold_raw.lower(): return True
+    # True/False ↔ Yes/No 동치
+    pb, gb = _normalize_bool(pred_raw), _normalize_bool(gold_raw)
+    if pb is not None and gb is not None and pb == gb: return True
     try:
         if abs(float(pred_raw) - float(gold_raw)) < 1e-6: return True
     except ValueError: pass
-    return _normalize_latex(pred_raw) == _normalize_latex(gold_raw)
+    if _normalize_latex(pred_raw) == _normalize_latex(gold_raw): return True
+    if _canonicalize(pred_raw) == _canonicalize(gold_raw): return True
+    # 도(°) ↔ 라디안 동치
+    if _angle_equal(pred_raw, gold_raw): return True
+    if _latex2sympy_equal(pred_raw, gold_raw): return True
+    # 소수 근사 비교 (마지막 — 2/ln5 ≈ 1.242 등)
+    return _numeric_approx_equal(pred_raw, gold_raw)
 
 def has_boxed(text: str) -> bool:
     return bool(re.search(r"\\boxed\{", text))
 
 def check_end(text: str, action: str | None) -> bool:
-    """추론 종료 조건: <|end|> 액션이거나, \boxed{}와 함께 <|solve|>가 나온 경우."""
-    return action == TOKEN_END or (action == TOKEN_SOLVE and has_boxed(text))
+    """추론 종료 조건: <|end|> 액션."""
+    return action == TOKEN_END
 
 def answers_equal(pred: str, gold: str) -> bool:
     """두 정답 문자열이 동일한지 비교. 숫자는 부동소수점 오차 허용."""
@@ -386,8 +520,12 @@ def _call_gemini(model_name: str, messages: list, max_output_tokens: int = None,
 # API 헬퍼
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, temperature: float = None) -> str:
-    """모델 종류에 따라 OpenAI 또는 Gemini API를 호출합니다."""
+def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, temperature: float = None,
+         usage_out: list = None) -> str:
+    """모델 종류에 따라 OpenAI 또는 Gemini API를 호출합니다.
+
+    usage_out: 제공 시 {"input_tokens": int, "output_tokens": int} dict를 append.
+    """
     import time, re as _re2
     wait = 1.0
     attempt = 0
@@ -397,6 +535,7 @@ def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, tem
                 return _call_gemini(model_name, messages, max_output_tokens=max_completion_tokens, temperature=temperature)
 
             reasoning = _is_reasoning_model(model_name)
+
             kwargs = {"model": model_name, "messages": messages}
             if max_completion_tokens:
                 if reasoning:
@@ -407,10 +546,16 @@ def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, tem
                 kwargs["temperature"] = temperature if temperature is not None else 0
 
             resp = client.chat.completions.create(**kwargs)
+            if usage_out is not None and resp.usage:
+                usage_out.append({
+                    "input_tokens":  resp.usage.prompt_tokens,
+                    "output_tokens": resp.usage.completion_tokens,
+                })
             return resp.choices[0].message.content
         except Exception as e:
             err_str = str(e)
-            is_rate_limit = "429" in err_str or "rate_limit" in err_str.lower()
+            is_quota_exceeded = "insufficient_quota" in err_str or "billing" in err_str.lower()
+            is_rate_limit = ("429" in err_str or "rate_limit" in err_str.lower()) and not is_quota_exceeded
             if is_rate_limit:
                 m = _re2.search(r"try again in (\d+(?:\.\d+)?)s", err_str)
                 retry_after = float(m.group(1)) + 0.5 if m else wait
@@ -418,20 +563,46 @@ def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, tem
                 time.sleep(retry_after)
                 elapsed = time.time() - t0
                 attempt += 1
-                logger.warning(f"API rate limit ({model_name}), {elapsed:.1f}s 대기 후 재시도 (attempt {attempt})")
+                logger.warning(f"API rate limit ({model_name}), {elapsed:.1f}s 대기 후 재시도 (attempt {attempt}) | {err_str[:300]}")
                 wait = min(wait * 2, 60.0)
             else:
                 logger.error(f"API 호출 실패 ({model_name}): {e}")
                 raise e
 
-def R_PRM(response: str, gold: str, model: str = None) -> float:
-    """REWARD 모델로 스텝 풀이 품질을 0.0~1.0 연속값으로 채점. OpenAI/Gemini 모델 모두 지원."""
+def truncate_step_if_needed(text: str) -> str:
+    """스텝 텍스트가 API_MAX_SEQ_LEN 초과이면 TRUNCATOR API로 단축."""
+    if len(text) <= API_MAX_SEQ_LEN:
+        return text
+    logger.info(f"[truncate] {len(text)}자 초과 → TRUNCATOR 호출")
+    messages = [
+        {"role": "system", "content": SYSTEM_TRUNCATOR},
+        {"role": "user",   "content": text},
+    ]
+    try:
+        result = _gpt(TRUNCATOR, messages, max_completion_tokens=512)
+        if result:
+            logger.info(f"[truncate] → {len(result)}자")
+            return result
+    except Exception as e:
+        logger.warning(f"[truncate] 실패: {e}")
+    return text[:API_MAX_SEQ_LEN]
+
+
+def R_PRM(response: str, gold: str, model: str = None, history: list = None) -> float:
+    """REWARD 모델로 스텝 풀이 품질을 0.0~1.0 연속값으로 채점. OpenAI/Gemini 모델 모두 지원.
+
+    history가 주어지면 LLM_SCORE_SFT_PROMPT(문맥 포함)를 사용한다.
+    """
     import re as _re
     if model is None:
         model = REWARD
     # <|...|> 및 |>...|> 형태의 special token 잔재 제거
     clean_response = _re.sub(r"<?<?\|[^|>]*\|>", "", response).strip()
-    prompt = LLM_SCORE_PROMPT.format(response=clean_response, gold=gold)
+    if history:
+        history_text = "\n".join(f"Step {i+1}: {s}" for i, s in enumerate(history))
+        prompt = LLM_SCORE_SFT_PROMPT.format(response=clean_response, gold=gold, history=history_text)
+    else:
+        prompt = LLM_SCORE_PROMPT.format(response=clean_response, gold=gold)
     try:
         _max_tokens = 4096 if _is_reasoning_model(model) else 512
         text = _gpt(model, [{"role": "user", "content": prompt}], max_completion_tokens=_max_tokens)
@@ -453,7 +624,7 @@ def R_PRM(response: str, gold: str, model: str = None) -> float:
             if 0.0 <= val <= 1.0:
                 logger.warning(f"R_PRM 폴백 파싱  val={val}  raw={text!r}")
                 return val
-        logger.warning(f"R_PRM 파싱 실패  model={model}\n{text}")
+        logger.warning(f"R_PRM 파싱 실패  model={model}  raw_len={len(text)}\n--- PRM raw response ---\n{text!r}\n--- end ---")
     except Exception as e:
         logger.warning(f"R_PRM 오류: {e}")
     return 0.0
@@ -570,7 +741,7 @@ def _solve_user(problem: str, history: List[str]) -> str:
     lines.append("\nWrite the next step.")
     return "\n".join(lines)
 
-def _correct_user(problem: str, history: List[str], reason: str) -> str:
+def _correct_user(problem: str, history: List[str]) -> str:
     lines = [f"[Problem]\n{problem}"]
     if history:
         steps = history[-10:]
@@ -717,7 +888,7 @@ def extract_step_content(step: dict) -> tuple[str, str]:
     else:
         text = step.get("text", "")
         text = text.replace("<|end|>", "").replace("<|im_end|>", "").strip()
-        for act in ["solve", "correct", "end", "review"]:
+        for act in ["solve", "correct", "rethink", "end", "review"]:
             m = re.search(rf"<{act}>(.*?)</{act}>", text, re.DOTALL)
             if m:
                 text = m.group(1).strip()
@@ -734,7 +905,7 @@ def build_target_text(action: str, text: str) -> str:
 
 def pick_system(action: str) -> str:
     """액션에 맞는 system 프롬프트 반환."""
-    return SYSTEM_CORRECT if action == "correct" else SYSTEM_SOLVE
+    return SYSTEM_CORRECT if action in ("correct", "rethink") else SYSTEM_SOLVE
 
 
 def collate_fn(batch, pad_token_id: int) -> dict:
@@ -757,9 +928,26 @@ def collate_fn(batch, pad_token_id: int) -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def load_problems(data_path: str, n: int = None) -> List[dict]:
-    """parquet 파일에서 문제 리스트를 [{problem_id, problem, answer}, ...] 형태로 반환.
+    """parquet 또는 jsonl 파일에서 문제 리스트를 [{problem_id, problem, answer}, ...] 형태로 반환.
     n이 주어지면 마지막 n개만 반환.
     """
+    if str(data_path).endswith(".jsonl"):
+        items = []
+        with open(data_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                obj = json.loads(line)
+                items.append({
+                    "problem_id": str(obj.get("id") or obj.get("problem_id", f"problem_{len(items)}")),
+                    "problem":    obj.get("problem", ""),
+                    "answer":     str(obj.get("answer", "")),
+                })
+        if n:
+            items = items[-n:]
+        return items
+
     import pandas as pd
 
     df = pd.read_parquet(data_path)
@@ -837,11 +1025,11 @@ def save_trajectory(traj: "Trajectory", path: str):
                 "state":                   s.state,
                 "action":                  s.action,
                 "text":                    s.text,
-                "reward":                  s.reward,
+                "final_reward":            s.final_reward,
                 "llm_reward":              s.llm_reward,
                 "format_reward":           s.format_reward,
                 "predicted_next_action":   s.predicted_next_action,
-                "ground_truth_next_action": s.ground_truth_next_action,
+                "gold_next_action":        s.gold_next_action,
                 "use_patcher":             s.use_patcher,
             }
             for s in traj.steps

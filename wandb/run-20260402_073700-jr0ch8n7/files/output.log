@@ -1,0 +1,5 @@
+wandb: Detected [google.genai, openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Weave is installed but not imported. Add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+PPO:   0%|          | 0/1000 [00:00<?, ?iter/s]      Exception ignored in: <generator object tqdm.__iter__ at 0x7b3906c8cca0>Exception ignored in sys.unraisablehook: <built-in function unraisablehook>
+Collecting:   0%|          | 0/512 [00:00<?, ?traj/s]

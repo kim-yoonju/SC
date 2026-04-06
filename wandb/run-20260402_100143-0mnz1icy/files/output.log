@@ -1,0 +1,154 @@
+wandb: Detected [google.genai, openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Weave is installed but not imported. Add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+PPO:   0%|          | 0/1000 [05:10<?, ?iter/s]
+Traceback (most recent call last): [00:00<?, ?traj/s]
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 601, in <module>
+    main()
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 524, in main
+    new_trajs = [t for tl in ray.get(futures) for t in tl]
+                             ^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 104, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 2981, in get
+    values, debugger_breakpoint = worker.get_objects(
+                                  ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 1012, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(VLLMValidationError): [36mray::RolloutWorker.generate_trajectories()[39m (pid=1381991, ip=203.255.188.106, actor_id=feb41d45e083f0b3c385ce6701000000, repr=<train_ppo.RolloutWorker object at 0x7819f8087350>)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 206, in generate_trajectories
+    return solve_problems_batch_vllm(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1148, in solve_problems_batch_vllm
+    return loop.run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1129, in _solve_vllm_async
+    await asyncio.gather(*[_process_one(i) for i in range(n)])
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1000, in _process_one
+    text = await _select_patcher_vllm(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 924, in _select_patcher_vllm
+    solved_list = await _run_rollouts_vllm(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 876, in _run_rollouts_vllm
+    await asyncio.gather(*[_run_one(i) for i in range(n)])
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 840, in _run_one
+    async for out in engine.generate(prompt, sp, req_id):
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/async_llm.py", line 563, in generate
+    q = await self.add_request(
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/async_llm.py", line 356, in add_request
+    request = self.input_processor.process_inputs(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/input_processor.py", line 236, in process_inputs
+    processed_inputs = self.input_preprocessor.preprocess(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 317, in preprocess
+    return self._process_decoder_only_prompt(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 298, in _process_decoder_only_prompt
+    return self._prompt_to_llm_inputs(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 234, in _prompt_to_llm_inputs
+    return self._process_text(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 177, in _process_text
+    prompt_token_ids = self._tokenize_prompt(
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 83, in _tokenize_prompt
+    tok_prompt = renderer._tokenize_singleton_prompt(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/base.py", line 405, in _tokenize_singleton_prompt
+    return params.apply_post_tokenization(self.tokenizer, prompt)  # type: ignore[arg-type]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 455, in apply_post_tokenization
+    prompt["prompt_token_ids"] = self._validate_tokens(  # type: ignore[typeddict-unknown-key]
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 439, in _validate_tokens
+    tokens = validator(tokenizer, tokens)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 418, in _token_len_check
+    raise VLLMValidationError(
+vllm.exceptions.VLLMValidationError: This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 601, in <module>
+    main()
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 524, in main
+    new_trajs = [t for tl in ray.get(futures) for t in tl]
+                             ^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 104, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 2981, in get
+    values, debugger_breakpoint = worker.get_objects(
+                                  ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/ray/_private/worker.py", line 1012, in get_objects
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(VLLMValidationError): [36mray::RolloutWorker.generate_trajectories()[39m (pid=1381991, ip=203.255.188.106, actor_id=feb41d45e083f0b3c385ce6701000000, repr=<train_ppo.RolloutWorker object at 0x7819f8087350>)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/train_ppo.py", line 206, in generate_trajectories
+    return solve_problems_batch_vllm(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1148, in solve_problems_batch_vllm
+    return loop.run_until_complete(coro)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1129, in _solve_vllm_async
+    await asyncio.gather(*[_process_one(i) for i in range(n)])
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 1000, in _process_one
+    text = await _select_patcher_vllm(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 924, in _select_patcher_vllm
+    solved_list = await _run_rollouts_vllm(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 876, in _run_rollouts_vllm
+    await asyncio.gather(*[_run_one(i) for i in range(n)])
+  File "/mnt/yoonju/SC/source/generate_trajectory.py", line 840, in _run_one
+    async for out in engine.generate(prompt, sp, req_id):
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/async_llm.py", line 563, in generate
+    q = await self.add_request(
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/async_llm.py", line 356, in add_request
+    request = self.input_processor.process_inputs(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/v1/engine/input_processor.py", line 236, in process_inputs
+    processed_inputs = self.input_preprocessor.preprocess(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 317, in preprocess
+    return self._process_decoder_only_prompt(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 298, in _process_decoder_only_prompt
+    return self._prompt_to_llm_inputs(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 234, in _prompt_to_llm_inputs
+    return self._process_text(
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 177, in _process_text
+    prompt_token_ids = self._tokenize_prompt(
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/inputs/preprocess.py", line 83, in _tokenize_prompt
+    tok_prompt = renderer._tokenize_singleton_prompt(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/base.py", line 405, in _tokenize_singleton_prompt
+    return params.apply_post_tokenization(self.tokenizer, prompt)  # type: ignore[arg-type]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 455, in apply_post_tokenization
+    prompt["prompt_token_ids"] = self._validate_tokens(  # type: ignore[typeddict-unknown-key]
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 439, in _validate_tokens
+    tokens = validator(tokenizer, tokens)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/NRL/lib/python3.12/site-packages/vllm/renderers/params.py", line 418, in _token_len_check
+    raise VLLMValidationError(
+vllm.exceptions.VLLMValidationError: This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)
