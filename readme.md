@@ -1,6 +1,27 @@
-학습 순서
+### 모델 구조
+# action
+* solve
+* rethink
+* end
+
+### 학습 순서
+# SFT
+* run_sft.sh # sft 진행
+* generate_sft_sovle.py # 처음부터 끝까지 잘 푸는 데이터 생성
+* generate_sft_rethink.py # 추론 중 1~3개의 스텝에서 실수하고 rethink하는 데이터 생성
+* evaluate_sft.sh 
+
+# PPO
+* generate_trajectory.py # ppo할 때 쓰는 리워드 딸린 trajectory 생성
+
+# PRM
+* 무조건 api 호출해서 리워드 측정하는게 아니라 일단 PRM 쓰고, 애매하다 싶으면 api 호출
+
+
 SFT
-PPO
+sft 할 때는 리워드가 없어도 되니까 patcher 모델에게 처음부터 끝까지 trajectory를 생성해 달라고 함
+
+
 
 ### trajectory
 

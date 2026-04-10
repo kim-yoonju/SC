@@ -1,0 +1,647 @@
+[2026-04-06 02:17:41][GPU 7] ✓ vLLM 엔진 로드 완료
+[2026-04-06 02:17:41][GPU 7] 평가 시작: 총 125문제, max_steps=30
+[2026-04-06 02:17:42][GPU 7]   [prob 279] step=0  action=<|solve|>  tokens=17
+[2026-04-06 02:17:42][GPU 7]   [prob 311] step=0  action=<|solve|>  tokens=20
+[2026-04-06 02:17:42][GPU 7]   [prob 67] step=0  action=<|solve|>  tokens=24
+[2026-04-06 02:17:42][GPU 7]   [prob 455] step=0  action=<|solve|>  tokens=21
+[2026-04-06 02:17:42][GPU 7]   [prob 23] step=0  action=<|solve|>  tokens=26
+[2026-04-06 02:17:42][GPU 7]   [prob 51] step=0  action=<|solve|>  tokens=28
+[2026-04-06 02:17:42][GPU 7]   [prob 491] step=0  action=<|solve|>  tokens=23
+[2026-04-06 02:17:42][GPU 7]   [prob 227] step=0  action=<|solve|>  tokens=28
+[2026-04-06 02:17:42][GPU 7]   [prob 259] step=0  action=<|solve|>  tokens=28
+[2026-04-06 02:17:42][GPU 7]   [prob 255] step=0  action=<|solve|>  tokens=29
+[2026-04-06 02:17:42][GPU 7]   [prob 271] step=0  action=<|solve|>  tokens=29
+[2026-04-06 02:17:42][GPU 7]   [prob 199] step=0  action=<|solve|>  tokens=31
+[2026-04-06 02:17:42][GPU 7]   [prob 343] step=0  action=<|solve|>  tokens=29
+[2026-04-06 02:17:42][GPU 7]   [prob 375] step=0  action=<|solve|>  tokens=29
+[2026-04-06 02:17:42][GPU 7]   [prob 427] step=0  action=<|solve|>  tokens=29
+[2026-04-06 02:17:42][GPU 7]   [prob 439] step=0  action=<|solve|>  tokens=30
+[2026-04-06 02:17:42][GPU 7]   [prob 371] step=0  action=<|solve|>  tokens=32
+[2026-04-06 02:17:42][GPU 7]   [prob 3] step=0  action=<|solve|>  tokens=37
+[2026-04-06 02:17:42][GPU 7]   [prob 243] step=0  action=<|solve|>  tokens=34
+[2026-04-06 02:17:42][GPU 7]   [prob 171] step=0  action=<|solve|>  tokens=36
+[2026-04-06 02:17:42][GPU 7]   [prob 251] step=0  action=<|solve|>  tokens=35
+[2026-04-06 02:17:42][GPU 7]   [prob 263] step=0  action=<|solve|>  tokens=35
+[2026-04-06 02:17:42][GPU 7]   [prob 447] step=0  action=<|solve|>  tokens=34
+[2026-04-06 02:17:42][GPU 7]   [prob 471] step=0  action=<|solve|>  tokens=34
+[2026-04-06 02:17:42][GPU 7]   [prob 215] step=0  action=<|solve|>  tokens=37
+[2026-04-06 02:17:42][GPU 7]   [prob 483] step=0  action=<|solve|>  tokens=35
+[2026-04-06 02:17:42][GPU 7]   [prob 115] step=0  action=<|solve|>  tokens=40
+[2026-04-06 02:17:42][GPU 7]   [prob 159] step=0  action=<|solve|>  tokens=40
+[2026-04-06 02:17:42][GPU 7]   [prob 207] step=0  action=<|solve|>  tokens=39
+[2026-04-06 02:17:42][GPU 7]   [prob 191] step=0  action=<|solve|>  tokens=41
+[2026-04-06 02:17:42][GPU 7]   [prob 367] step=0  action=<|solve|>  tokens=39
+[2026-04-06 02:17:43][GPU 7]   [prob 75] step=0  action=<|solve|>  tokens=44
+[2026-04-06 02:17:43][GPU 7]   [prob 111] step=0  action=<|solve|>  tokens=43
+[2026-04-06 02:17:43][GPU 7]   [prob 399] step=0  action=<|solve|>  tokens=40
+[2026-04-06 02:17:43][GPU 7]   [prob 275] step=0  action=<|solve|>  tokens=43
+[2026-04-06 02:17:43][GPU 7]   [prob 363] step=0  action=<|solve|>  tokens=42
+[2026-04-06 02:17:43][GPU 7]   [prob 395] step=0  action=<|solve|>  tokens=41
+[2026-04-06 02:17:43][GPU 7]   [prob 431] step=0  action=<|solve|>  tokens=41
+[2026-04-06 02:17:43][GPU 7]   [prob 15] step=0  action=<|solve|>  tokens=46
+[2026-04-06 02:17:43][GPU 7]   [prob 175] step=0  action=<|solve|>  tokens=45
+[2026-04-06 02:17:43][GPU 7]   [prob 443] step=0  action=<|solve|>  tokens=42
+[2026-04-06 02:17:43][GPU 7]   [prob 31] step=0  action=<|solve|>  tokens=47
+[2026-04-06 02:17:43][GPU 7]   [prob 203] step=0  action=<|solve|>  tokens=45
+[2026-04-06 02:17:43][GPU 7]   [prob 315] step=0  action=<|solve|>  tokens=44
+[2026-04-06 02:17:43][GPU 7]   [prob 463] step=0  action=<|solve|>  tokens=43
+[2026-04-06 02:17:43][GPU 7]   [prob 167] step=0  action=<|solve|>  tokens=47
+[2026-04-06 02:17:43][GPU 7]   [prob 479] step=0  action=<|solve|>  tokens=44
+[2026-04-06 02:17:43][GPU 7]   [prob 295] step=0  action=<|solve|>  tokens=46
+[2026-04-06 02:17:43][GPU 7]   [prob 411] step=0  action=<|solve|>  tokens=46
+[2026-04-06 02:17:43][GPU 7]   [prob 79] step=0  action=<|solve|>  tokens=51
+[2026-04-06 02:17:43][GPU 7]   [prob 223] step=0  action=<|solve|>  tokens=49
+[2026-04-06 02:17:43][GPU 7]   [prob 279] step=1  action=<|solve|>  tokens=28
+[2026-04-06 02:17:43][GPU 7]   [prob 47] step=0  action=<|solve|>  tokens=54
+[2026-04-06 02:17:43][GPU 7]   [prob 319] step=0  action=<|solve|>  tokens=51
+[2026-04-06 02:17:43][GPU 7]   [prob 451] step=0  action=<|solve|>  tokens=50
+[2026-04-06 02:17:43][GPU 7]   [prob 35] step=0  action=<|solve|>  tokens=55
+[2026-04-06 02:17:43][GPU 7]   [prob 247] step=0  action=<|solve|>  tokens=53
+[2026-04-06 02:17:43][GPU 7]   [prob 283] step=0  action=<|solve|>  tokens=52
+[2026-04-06 02:17:43][GPU 7]   [prob 291] step=0  action=<|solve|>  tokens=52
+[2026-04-06 02:17:43][GPU 7]   [prob 491] step=1  action=<|solve|>  tokens=24
+[2026-04-06 02:17:43][GPU 7]   [prob 107] step=0  action=<|solve|>  tokens=56
+[2026-04-06 02:17:43][GPU 7]   [prob 383] step=0  action=<|solve|>  tokens=52
+[2026-04-06 02:17:43][GPU 7]   [prob 147] step=0  action=<|solve|>  tokens=56
+[2026-04-06 02:17:43][GPU 7]   [prob 187] step=0  action=<|solve|>  tokens=56
+[2026-04-06 02:17:43][GPU 7]   [prob 211] step=0  action=<|solve|>  tokens=55
+[2026-04-06 02:17:43][GPU 7]   [prob 351] step=0  action=<|solve|>  tokens=54
+[2026-04-06 02:17:43][GPU 7]   [prob 467] step=0  action=<|solve|>  tokens=53
+[2026-04-06 02:17:43][GPU 7]   [prob 11] step=0  action=<|solve|>  tokens=58
+[2026-04-06 02:17:43][GPU 7]   [prob 55] step=0  action=<|solve|>  tokens=58
+[2026-04-06 02:17:43][GPU 7]   [prob 219] step=0  action=<|solve|>  tokens=56
+[2026-04-06 02:17:43][GPU 7]   [prob 359] step=0  action=<|solve|>  tokens=55
+[2026-04-06 02:17:43][GPU 7]   [prob 407] step=0  action=<|solve|>  tokens=54
+[2026-04-06 02:17:43][GPU 7]   [prob 23] step=1  action=<|solve|>  tokens=29
+[2026-04-06 02:17:43][GPU 7]   [prob 119] step=0  action=<|solve|>  tokens=59
+[2026-04-06 02:17:43][GPU 7]   [prob 355] step=0  action=<|solve|>  tokens=57
+[2026-04-06 02:17:43][GPU 7]   [prob 459] step=0  action=<|solve|>  tokens=56
+[2026-04-06 02:17:43][GPU 7]   [prob 495] step=0  action=<|solve|>  tokens=55
+[2026-04-06 02:17:43][GPU 7]   [prob 27] step=0  action=<|solve|>  tokens=61
+[2026-04-06 02:17:43][GPU 7]   [prob 267] step=0  action=<|solve|>  tokens=59
+[2026-04-06 02:17:43][GPU 7]   [prob 387] step=0  action=<|solve|>  tokens=57
+[2026-04-06 02:17:43][GPU 7]   [prob 87] step=0  action=<|solve|>  tokens=62
+[2026-04-06 02:17:43][GPU 7]   [prob 155] step=0  action=<|solve|>  tokens=61
+[2026-04-06 02:17:43][GPU 7]   [prob 163] step=0  action=<|solve|>  tokens=61
+[2026-04-06 02:17:43][GPU 7]   [prob 403] step=0  action=<|solve|>  tokens=58
+[2026-04-06 02:17:43][GPU 7]   [prob 435] step=0  action=<|solve|>  tokens=58
+[2026-04-06 02:17:43][GPU 7]   [prob 455] step=1  action=<|solve|>  tokens=35
+[2026-04-06 02:17:43][GPU 7]   [prob 343] step=1  action=<|solve|>  tokens=28
+[2026-04-06 02:17:43][GPU 7]   [prob 251] step=1  action=<|solve|>  tokens=23
+[2026-04-06 02:17:43][GPU 7]   [prob 135] step=0  action=<|solve|>  tokens=64
+[2026-04-06 02:17:43][GPU 7]   [prob 231] step=0  action=<|solve|>  tokens=63
+[2026-04-06 02:17:43][GPU 7]   [prob 303] step=0  action=<|solve|>  tokens=62
+[2026-04-06 02:17:43][GPU 7]   [prob 139] step=0  action=<|solve|>  tokens=65
+[2026-04-06 02:17:43][GPU 7]   [prob 371] step=1  action=<|solve|>  tokens=28
+[2026-04-06 02:17:43][GPU 7]   [prob 63] step=0  action=<|solve|>  tokens=67
+[2026-04-06 02:17:43][GPU 7]   [prob 83] step=0  action=<|solve|>  tokens=67
+[2026-04-06 02:17:43][GPU 7]   [prob 91] step=0  action=<|solve|>  tokens=67
+[2026-04-06 02:17:43][GPU 7]   [prob 95] step=0  action=<|solve|>  tokens=67
+[2026-04-06 02:17:43][GPU 7]   [prob 131] step=0  action=<|solve|>  tokens=67
+[2026-04-06 02:17:43][GPU 7]   [prob 423] step=0  action=<|solve|>  tokens=64
+[2026-04-06 02:17:43][GPU 7]   [prob 67] step=1  action=<|solve|>  tokens=41
+[2026-04-06 02:17:43][GPU 7]   [prob 191] step=1  action=<|solve|>  tokens=24
+[2026-04-06 02:17:43][GPU 7]   [prob 299] step=0  action=<|solve|>  tokens=68
+[2026-04-06 02:17:43][GPU 7]   [prob 323] step=0  action=<|solve|>  tokens=69
+[2026-04-06 02:17:43][GPU 7]   [prob 379] step=0  action=<|solve|>  tokens=68
+[2026-04-06 02:17:43][GPU 7]   [prob 199] step=1  action=<|solve|>  tokens=37
+[2026-04-06 02:17:43][GPU 7]   [prob 275] step=1  action=<|solve|>  tokens=24
+[2026-04-06 02:17:43][GPU 7]   [prob 19] step=0  action=<|solve|>  tokens=73
+[2026-04-06 02:17:43][GPU 7]   [prob 331] step=0  action=<|solve|>  tokens=70
+[2026-04-06 02:17:43][GPU 7]   [prob 427] step=1  action=<|solve|>  tokens=37
+[2026-04-06 02:17:43][GPU 7]   [prob 415] step=0  action=<|solve|>  tokens=70
+[2026-04-06 02:17:44][GPU 7]   [prob 151] step=0  action=<|solve|>  tokens=76
+[2026-04-06 02:17:44][GPU 7]   [prob 471] step=1  action=<|solve|>  tokens=36
+[2026-04-06 02:17:44][GPU 7]   [prob 391] step=0  action=<|solve|>  tokens=74
+[2026-04-06 02:17:44][GPU 7]   [prob 499] step=0  action=<|solve|>  tokens=73
+[2026-04-06 02:17:44][GPU 7]   [prob 271] step=1  action=<|solve|>  tokens=44
+[2026-04-06 02:17:44][GPU 7]   [prob 307] step=0  action=<|solve|>  tokens=76
+[2026-04-06 02:17:44][GPU 7]   [prob 71] step=0  action=<|solve|>  tokens=80
+[2026-04-06 02:17:44][GPU 7]   [prob 487] step=0  action=<|solve|>  tokens=75
+[2026-04-06 02:17:44][GPU 7]   [prob 3] step=1  action=<|solve|>  tokens=41
+[2026-04-06 02:17:44][GPU 7]   [prob 399] step=1  action=<|solve|>  tokens=33
+[2026-04-06 02:17:44][GPU 7]   [prob 195] step=0  action=<|solve|>  tokens=80
+[2026-04-06 02:17:44][GPU 7]   [prob 479] step=1  action=<|solve|>  tokens=30
+[2026-04-06 02:17:44][GPU 7]   [prob 103] step=0  action=<|solve|>  tokens=82
+[2026-04-06 02:17:44][GPU 7]   [prob 51] step=1  action=<|solve|>  tokens=51
+[2026-04-06 02:17:44][GPU 7]   [prob 347] step=0  action=<|solve|>  tokens=80
+[2026-04-06 02:17:44][GPU 7]   [prob 463] step=1  action=<|solve|>  tokens=34
+[2026-04-06 02:17:44][GPU 7]   [prob 179] step=0  action=<|solve|>  tokens=84
+[2026-04-06 02:17:44][GPU 7]   [prob 315] step=1  action=<|solve|>  tokens=35
+[2026-04-06 02:17:44][GPU 7]   [prob 59] step=0  action=<|solve|>  tokens=86
+[2026-04-06 02:17:44][GPU 7]   [prob 439] step=1  action=<|solve|>  tokens=49
+[2026-04-06 02:17:44][GPU 7]   [prob 171] step=1  action=<|solve|>  tokens=46
+[2026-04-06 02:17:44][GPU 7]   [prob 279] step=2  action=<|solve|>  tokens=32
+[2026-04-06 02:17:44][GPU 7]   [prob 123] step=0  action=<|solve|>  tokens=86
+[2026-04-06 02:17:44][GPU 7]   [prob 447] step=1  action=<|solve|>  tokens=46
+[2026-04-06 02:17:44][GPU 7]   [prob 411] step=1  action=<|end|>  tokens=34
+[2026-04-06 02:17:44][GPU 7]   DONE problem_idx=411  steps=2  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:44][GPU 7]   [prob 227] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:44][GPU 7]   [prob 363] step=1  action=<|solve|>  tokens=40
+[2026-04-06 02:17:44][GPU 7]   [prob 167] step=1  action=<|solve|>  tokens=37
+[2026-04-06 02:17:44][GPU 7]   [prob 455] step=2  action=<|end|>  tokens=22
+[2026-04-06 02:17:44][GPU 7]   DONE problem_idx=455  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:44][GPU 7]   [prob 183] step=0  action=<|solve|>  tokens=88
+[2026-04-06 02:17:44][GPU 7]   [prob 375] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:44][GPU 7]   [prob 111] step=1  action=<|solve|>  tokens=43
+[2026-04-06 02:17:44][GPU 7]   [prob 295] step=1  action=<|solve|>  tokens=39
+[2026-04-06 02:17:44][GPU 7]   [prob 339] step=0  action=<|solve|>  tokens=89
+[2026-04-06 02:17:44][GPU 7]   [prob 287] step=0  action=<|solve|>  tokens=90
+[2026-04-06 02:17:44][GPU 7]   [prob 231] step=1  action=<|solve|>  tokens=25
+[2026-04-06 02:17:44][GPU 7]   [prob 263] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:44][GPU 7]   [prob 395] step=1  action=<|solve|>  tokens=48
+[2026-04-06 02:17:44][GPU 7]   [prob 367] step=1  action=<|solve|>  tokens=52
+[2026-04-06 02:17:44][GPU 7]   [prob 23] step=2  action=<|solve|>  tokens=36
+[2026-04-06 02:17:44][GPU 7]   [prob 235] step=0  action=<|solve|>  tokens=96
+[2026-04-06 02:17:44][GPU 7]   [prob 159] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:44][GPU 7]   [prob 99] step=0  action=<|solve|>  tokens=100
+[2026-04-06 02:17:44][GPU 7]   [prob 431] step=1  action=<|solve|>  tokens=52
+[2026-04-06 02:17:44][GPU 7]   [prob 31] step=1  action=<|solve|>  tokens=50
+[2026-04-06 02:17:44][GPU 7]   [prob 199] step=2  action=<|solve|>  tokens=26
+[2026-04-06 02:17:44][GPU 7]   [prob 127] step=0  action=<|solve|>  tokens=101
+[2026-04-06 02:17:44][GPU 7]   [prob 175] step=1  action=<|solve|>  tokens=53
+[2026-04-06 02:17:44][GPU 7]   [prob 35] step=1  action=<|solve|>  tokens=44
+[2026-04-06 02:17:44][GPU 7]   [prob 27] step=1  action=<|solve|>  tokens=38
+[2026-04-06 02:17:44][GPU 7]   [prob 7] step=0  action=<|solve|>  tokens=103
+[2026-04-06 02:17:44][GPU 7]   [prob 255] step=1  action=<|solve|>  tokens=69
+[2026-04-06 02:17:44][GPU 7]   [prob 355] step=1  action=<|solve|>  tokens=40
+[2026-04-06 02:17:44][GPU 7]   [prob 483] step=1  action=<|solve|>  tokens=61
+[2026-04-06 02:17:44][GPU 7]   [prob 207] step=1  action=<|end|>  tokens=60
+[2026-04-06 02:17:44][GPU 7]   DONE problem_idx=207  steps=2  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:44][GPU 7]   [prob 495] step=1  action=<|solve|>  tokens=41
+[2026-04-06 02:17:44][GPU 7]   [prob 259] step=1  action=<|solve|>  tokens=72
+[2026-04-06 02:17:44][GPU 7]   [prob 407] step=1  action=<|solve|>  tokens=44
+[2026-04-06 02:17:44][GPU 7]   [prob 319] step=1  action=<|solve|>  tokens=49
+[2026-04-06 02:17:44][GPU 7]   [prob 387] step=1  action=<|solve|>  tokens=42
+[2026-04-06 02:17:44][GPU 7]   [prob 299] step=1  action=<|solve|>  tokens=32
+[2026-04-06 02:17:44][GPU 7]   [prob 275] step=2  action=<|solve|>  tokens=31
+[2026-04-06 02:17:44][GPU 7]   [prob 443] step=1  action=<|solve|>  tokens=58
+[2026-04-06 02:17:44][GPU 7]   [prob 47] step=1  action=<|solve|>  tokens=51
+[2026-04-06 02:17:44][GPU 7]   [prob 243] step=1  action=<|solve|>  tokens=70
+[2026-04-06 02:17:45][GPU 7]   [prob 327] step=0  action=<|solve|>  tokens=110
+[2026-04-06 02:17:45][GPU 7]   [prob 475] step=0  action=<|solve|>  tokens=109
+[2026-04-06 02:17:45][GPU 7]   [prob 187] step=1  action=<|solve|>  tokens=53
+[2026-04-06 02:17:45][GPU 7]   [prob 315] step=2  action=<|solve|>  tokens=25
+[2026-04-06 02:17:45][GPU 7]   [prob 399] step=2  action=<|solve|>  tokens=31
+[2026-04-06 02:17:45][GPU 7]   [prob 91] step=1  action=<|solve|>  tokens=45
+[2026-04-06 02:17:45][GPU 7]   [prob 79] step=1  action=<|rethink|>  tokens=62
+[2026-04-06 02:17:45][GPU 7]   [prob 211] step=1  action=<|solve|>  tokens=56
+[2026-04-06 02:17:45][GPU 7]   [prob 83] step=1  action=<|solve|>  tokens=46
+[2026-04-06 02:17:45][GPU 7]   [prob 427] step=2  action=<|solve|>  tokens=42
+[2026-04-06 02:17:45][GPU 7]   [prob 131] step=1  action=<|solve|>  tokens=48
+[2026-04-06 02:17:45][GPU 7]   [prob 447] step=2  action=<|solve|>  tokens=29
+[2026-04-06 02:17:45][GPU 7]   [prob 115] step=1  action=<|solve|>  tokens=76
+[2026-04-06 02:17:45][GPU 7]   [prob 435] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:45][GPU 7]   [prob 135] step=1  action=<|solve|>  tokens=52
+[2026-04-06 02:17:45][GPU 7]   [prob 303] step=1  action=<|solve|>  tokens=52
+[2026-04-06 02:17:45][GPU 7]   [prob 55] step=1  action=<|solve|>  tokens=60
+[2026-04-06 02:17:45][GPU 7]   [prob 215] step=1  action=<|solve|>  tokens=80
+[2026-04-06 02:17:45][GPU 7]   [prob 471] step=2  action=<|solve|>  tokens=43
+[2026-04-06 02:17:45][GPU 7]   [prob 143] step=0  action=<|solve|>  tokens=123
+[2026-04-06 02:17:45][GPU 7]   [prob 119] step=1  action=<|solve|>  tokens=61
+[2026-04-06 02:17:45][GPU 7]   [prob 343] step=2  action=<|solve|>  tokens=58
+[2026-04-06 02:17:45][GPU 7]   [prob 351] step=1  action=<|solve|>  tokens=66
+[2026-04-06 02:17:45][GPU 7]   [prob 279] step=3  action=<|solve|>  tokens=37
+[2026-04-06 02:17:45][GPU 7]   [prob 363] step=2  action=<|solve|>  tokens=35
+[2026-04-06 02:17:45][GPU 7]   [prob 247] step=1  action=<|solve|>  tokens=69
+[2026-04-06 02:17:45][GPU 7]   [prob 467] step=1  action=<|solve|>  tokens=67
+[2026-04-06 02:17:45][GPU 7]   [prob 87] step=1  action=<|solve|>  tokens=63
+[2026-04-06 02:17:45][GPU 7]   [prob 403] step=1  action=<|rethink|>  tokens=63
+[2026-04-06 02:17:45][GPU 7]   [prob 291] step=1  action=<|solve|>  tokens=71
+[2026-04-06 02:17:45][GPU 7]   [prob 311] step=1  action=<|solve|>  tokens=104
+[2026-04-06 02:17:45][GPU 7]   [prob 263] step=2  action=<|solve|>  tokens=32
+[2026-04-06 02:17:45][GPU 7]   [prob 191] step=2  action=<|end|>  tokens=59
+[2026-04-06 02:17:45][GPU 7]   DONE problem_idx=191  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:45][GPU 7]   [prob 379] step=1  action=<|solve|>  tokens=56
+[2026-04-06 02:17:45][GPU 7]   [prob 367] step=2  action=<|end|>  tokens=31
+[2026-04-06 02:17:45][GPU 7]   DONE problem_idx=367  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:45][GPU 7]   [prob 415] step=1  action=<|solve|>  tokens=55
+[2026-04-06 02:17:45][GPU 7]   [prob 75] step=1  action=<|solve|>  tokens=86
+[2026-04-06 02:17:45][GPU 7]   [prob 223] step=1  action=<|solve|>  tokens=79
+[2026-04-06 02:17:45][GPU 7]   [prob 163] step=1  action=<|solve|>  tokens=68
+[2026-04-06 02:17:45][GPU 7]   [prob 451] step=1  action=<|solve|>  tokens=77
+[2026-04-06 02:17:45][GPU 7]   [prob 307] step=1  action=<|solve|>  tokens=54
+[2026-04-06 02:17:45][GPU 7]   [prob 15] step=1  action=<|solve|>  tokens=88
+[2026-04-06 02:17:45][GPU 7]   [prob 267] step=1  action=<|solve|>  tokens=73
+[2026-04-06 02:17:45][GPU 7]   [prob 383] step=1  action=<|solve|>  tokens=79
+[2026-04-06 02:17:45][GPU 7]   [prob 183] step=1  action=<|solve|>  tokens=46
+[2026-04-06 02:17:45][GPU 7]   [prob 203] step=1  action=<|solve|>  tokens=91
+[2026-04-06 02:17:45][GPU 7]   [prob 107] step=1  action=<|solve|>  tokens=82
+[2026-04-06 02:17:45][GPU 7]   [prob 167] step=2  action=<|end|>  tokens=50
+[2026-04-06 02:17:45][GPU 7]   DONE problem_idx=167  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:45][GPU 7]   [prob 331] step=1  action=<|solve|>  tokens=66
+[2026-04-06 02:17:45][GPU 7]   [prob 323] step=1  action=<|solve|>  tokens=68
+[2026-04-06 02:17:45][GPU 7]   [prob 199] step=3  action=<|solve|>  tokens=39
+[2026-04-06 02:17:45][GPU 7]   [prob 371] step=2  action=<|solve|>  tokens=75
+[2026-04-06 02:17:45][GPU 7]   [prob 459] step=1  action=<|solve|>  tokens=82
+[2026-04-06 02:17:45][GPU 7]   [prob 347] step=1  action=<|solve|>  tokens=59
+[2026-04-06 02:17:46][GPU 7]   [prob 287] step=1  action=<|solve|>  tokens=50
+[2026-04-06 02:17:46][GPU 7]   [prob 463] step=2  action=<|end|>  tokens=62
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=463  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 283] step=1  action=<|solve|>  tokens=92
+[2026-04-06 02:17:46][GPU 7]   [prob 27] step=2  action=<|solve|>  tokens=45
+[2026-04-06 02:17:46][GPU 7]   [prob 407] step=2  action=<|end|>  tokens=42
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=407  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 51] step=2  action=<|solve|>  tokens=66
+[2026-04-06 02:17:46][GPU 7]   [prob 187] step=2  action=<|solve|>  tokens=37
+[2026-04-06 02:17:46][GPU 7]   [prob 159] step=2  action=<|solve|>  tokens=52
+[2026-04-06 02:17:46][GPU 7]   [prob 155] step=1  action=<|solve|>  tokens=90
+[2026-04-06 02:17:46][GPU 7]   [prob 271] step=2  action=<|solve|>  tokens=74
+[2026-04-06 02:17:46][GPU 7]   [prob 19] step=1  action=<|solve|>  tokens=81
+[2026-04-06 02:17:46][GPU 7]   [prob 59] step=1  action=<|solve|>  tokens=68
+[2026-04-06 02:17:46][GPU 7]   [prob 395] step=2  action=<|solve|>  tokens=58
+[2026-04-06 02:17:46][GPU 7]   [prob 419] step=0  action=<|solve|>  tokens=154
+[2026-04-06 02:17:46][GPU 7]   [prob 487] step=1  action=<|solve|>  tokens=75
+[2026-04-06 02:17:46][GPU 7]   [prob 71] step=1  action=<|solve|>  tokens=77
+[2026-04-06 02:17:46][GPU 7]   [prob 199] step=4  action=<|end|>  tokens=18
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=199  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 123] step=1  action=<|solve|>  tokens=75
+[2026-04-06 02:17:46][GPU 7]   [prob 63] step=1  action=<|solve|>  tokens=96
+[2026-04-06 02:17:46][GPU 7]   [prob 79] step=2  action=<|solve|>  tokens=47
+[2026-04-06 02:17:46][GPU 7]   [prob 39] step=0  action=<|solve|>  tokens=167
+[2026-04-06 02:17:46][GPU 7]   [prob 139] step=1  action=<|solve|>  tokens=98
+[2026-04-06 02:17:46][GPU 7]   [prob 171] step=2  action=<|solve|>  tokens=82
+[2026-04-06 02:17:46][GPU 7]   [prob 275] step=3  action=<|end|>  tokens=62
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=275  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 423] step=1  action=<|solve|>  tokens=101
+[2026-04-06 02:17:46][GPU 7]   [prob 431] step=2  action=<|solve|>  tokens=69
+[2026-04-06 02:17:46][GPU 7]   [prob 399] step=3  action=<|end|>  tokens=55
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=399  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 195] step=1  action=<|solve|>  tokens=89
+[2026-04-06 02:17:46][GPU 7]   [prob 47] step=2  action=<|solve|>  tokens=65
+[2026-04-06 02:17:46][GPU 7]   [prob 443] step=2  action=<|rethink|>  tokens=67
+[2026-04-06 02:17:46][GPU 7]   [prob 359] step=1  action=<|solve|>  tokens=117
+[2026-04-06 02:17:46][GPU 7]   [prob 243] step=2  action=<|solve|>  tokens=67
+[2026-04-06 02:17:46][GPU 7]   [prob 267] step=2  action=<|end|>  tokens=39
+[2026-04-06 02:17:46][GPU 7]   DONE problem_idx=267  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:46][GPU 7]   [prob 263] step=3  action=<|solve|>  tokens=47
+[2026-04-06 02:17:46][GPU 7]   [prob 331] step=2  action=<|solve|>  tokens=36
+[2026-04-06 02:17:46][GPU 7]   [prob 127] step=1  action=<|rethink|>  tokens=78
+[2026-04-06 02:17:46][GPU 7]   [prob 499] step=1  action=<|solve|>  tokens=104
+[2026-04-06 02:17:46][GPU 7]   [prob 247] step=2  action=<|solve|>  tokens=55
+[2026-04-06 02:17:47][GPU 7]   [prob 11] step=1  action=<|solve|>  tokens=127
+[2026-04-06 02:17:47][GPU 7]   [prob 483] step=2  action=<|solve|>  tokens=81
+[2026-04-06 02:17:47][GPU 7]   [prob 363] step=3  action=<|end|>  tokens=60
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=363  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 231] step=2  action=<|solve|>  tokens=94
+[2026-04-06 02:17:47][GPU 7]   [prob 355] step=2  action=<|solve|>  tokens=84
+[2026-04-06 02:17:47][GPU 7]   [prob 259] step=2  action=<|solve|>  tokens=84
+[2026-04-06 02:17:47][GPU 7]   [prob 391] step=1  action=<|solve|>  tokens=113
+[2026-04-06 02:17:47][GPU 7]   [prob 403] step=2  action=<|solve|>  tokens=63
+[2026-04-06 02:17:47][GPU 7]   [prob 71] step=2  action=<|end|>  tokens=33
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=71  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 95] step=1  action=<|solve|>  tokens=127
+[2026-04-06 02:17:47][GPU 7]   [prob 235] step=1  action=<|solve|>  tokens=101
+[2026-04-06 02:17:47][GPU 7]   [prob 415] step=2  action=<|solve|>  tokens=68
+[2026-04-06 02:17:47][GPU 7]   [prob 55] step=2  action=<|end|>  tokens=80
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=55  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 75] step=2  action=<|end|>  tokens=69
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=75  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 7] step=1  action=<|solve|>  tokens=101
+[2026-04-06 02:17:47][GPU 7]   [prob 255] step=2  action=<|solve|>  tokens=101
+[2026-04-06 02:17:47][GPU 7]   [prob 327] step=1  action=<|solve|>  tokens=92
+[2026-04-06 02:17:47][GPU 7]   [prob 159] step=3  action=<|solve|>  tokens=51
+[2026-04-06 02:17:47][GPU 7]   [prob 47] step=3  action=<|end|>  tokens=32
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=47  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 111] step=2  action=<|solve|>  tokens=118
+[2026-04-06 02:17:47][GPU 7]   [prob 227] step=2  action=<|end|>  tokens=123
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=227  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 475] step=1  action=<|solve|>  tokens=98
+[2026-04-06 02:17:47][GPU 7]   [prob 59] step=2  action=<|end|>  tokens=54
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=59  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 351] step=2  action=<|solve|>  tokens=88
+[2026-04-06 02:17:47][GPU 7]   [prob 151] step=1  action=<|solve|>  tokens=138
+[2026-04-06 02:17:47][GPU 7]   [prob 443] step=3  action=<|solve|>  tokens=38
+[2026-04-06 02:17:47][GPU 7]   [prob 83] step=2  action=<|end|>  tokens=101
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=83  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:47][GPU 7]   [prob 239] step=0  action=<|solve|>  tokens=220
+[2026-04-06 02:17:47][GPU 7]   [prob 147] step=1  action=<|solve|>  tokens=162
+[2026-04-06 02:17:47][GPU 7]   [prob 223] step=2  action=<|solve|>  tokens=86
+[2026-04-06 02:17:47][GPU 7]   [prob 103] step=1  action=<|rethink|>  tokens=138
+[2026-04-06 02:17:47][GPU 7]   [prob 427] step=3  action=<|end|>  tokens=104
+[2026-04-06 02:17:47][GPU 7]   DONE problem_idx=427  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 495] step=2  action=<|solve|>  tokens=121
+[2026-04-06 02:17:48][GPU 7]   [prob 383] step=2  action=<|solve|>  tokens=88
+[2026-04-06 02:17:48][GPU 7]   [prob 395] step=3  action=<|solve|>  tokens=69
+[2026-04-06 02:17:48][GPU 7]   [prob 219] step=1  action=<|solve|>  tokens=169
+[2026-04-06 02:17:48][GPU 7]   [prob 211] step=2  action=<|solve|>  tokens=114
+[2026-04-06 02:17:48][GPU 7]   [prob 459] step=2  action=<|solve|>  tokens=87
+[2026-04-06 02:17:48][GPU 7]   [prob 419] step=1  action=<|solve|>  tokens=73
+[2026-04-06 02:17:48][GPU 7]   [prob 343] step=3  action=<|end|>  tokens=109
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=343  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 67] step=2  action=<|end|>  tokens=168
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=67  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 403] step=3  action=<|solve|>  tokens=42
+[2026-04-06 02:17:48][GPU 7]   [prob 431] step=3  action=<|solve|>  tokens=67
+[2026-04-06 02:17:48][GPU 7]   [prob 87] step=2  action=<|solve|>  tokens=113
+[2026-04-06 02:17:48][GPU 7]   [prob 195] step=2  action=<|solve|>  tokens=68
+[2026-04-06 02:17:48][GPU 7]   [prob 243] step=3  action=<|end|>  tokens=63
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=243  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 387] step=2  action=<|end|>  tokens=139
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=387  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 335] step=0  action=<|solve|>  tokens=246
+[2026-04-06 02:17:48][GPU 7]   [prob 283] step=2  action=<|solve|>  tokens=96
+[2026-04-06 02:17:48][GPU 7]   [prob 127] step=2  action=<|solve|>  tokens=65
+[2026-04-06 02:17:48][GPU 7]   [prob 135] step=2  action=<|solve|>  tokens=130
+[2026-04-06 02:17:48][GPU 7]   [prob 119] step=2  action=<|solve|>  tokens=126
+[2026-04-06 02:17:48][GPU 7]   [prob 107] step=2  action=<|end|>  tokens=109
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=107  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 3] step=2  action=<|end|>  tokens=173
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=3  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 179] step=1  action=<|rethink|>  tokens=168
+[2026-04-06 02:17:48][GPU 7]   [prob 379] step=2  action=<|solve|>  tokens=123
+[2026-04-06 02:17:48][GPU 7]   [prob 95] step=2  action=<|solve|>  tokens=59
+[2026-04-06 02:17:48][GPU 7]   [prob 31] step=2  action=<|end|>  tokens=156
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=31  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 211] step=3  action=<|end|>  tokens=25
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=211  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 331] step=3  action=<|solve|>  tokens=79
+[2026-04-06 02:17:48][GPU 7]   [prob 339] step=1  action=<|solve|>  tokens=168
+[2026-04-06 02:17:48][GPU 7]   [prob 299] step=2  action=<|end|>  tokens=155
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=299  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 131] step=2  action=<|end|>  tokens=143
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=131  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 111] step=3  action=<|end|>  tokens=51
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=111  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 291] step=2  action=<|end|>  tokens=134
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=291  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 319] step=2  action=<|end|>  tokens=158
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=319  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 279] step=4  action=<|solve|>  tokens=138
+[2026-04-06 02:17:48][GPU 7]   [prob 307] step=2  action=<|end|>  tokens=128
+[2026-04-06 02:17:48][GPU 7]   DONE problem_idx=307  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:48][GPU 7]   [prob 359] step=2  action=<|rethink|>  tokens=86
+[2026-04-06 02:17:48][GPU 7]   [prob 15] step=2  action=<|solve|>  tokens=129
+[2026-04-06 02:17:49][GPU 7]   [prob 347] step=2  action=<|solve|>  tokens=121
+[2026-04-06 02:17:49][GPU 7]   [prob 419] step=2  action=<|solve|>  tokens=33
+[2026-04-06 02:17:49][GPU 7]   [prob 215] step=2  action=<|end|>  tokens=147
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=215  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 311] step=2  action=<|solve|>  tokens=141
+[2026-04-06 02:17:49][GPU 7]   [prob 479] step=2  action=<|end|>  tokens=191
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=479  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 395] step=4  action=<|end|>  tokens=47
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=395  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 39] step=1  action=<|solve|>  tokens=114
+[2026-04-06 02:17:49][GPU 7]   [prob 255] step=3  action=<|solve|>  tokens=75
+[2026-04-06 02:17:49][GPU 7]   [prob 259] step=3  action=<|end|>  tokens=91
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=259  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 423] step=2  action=<|solve|>  tokens=113
+[2026-04-06 02:17:49][GPU 7]   [prob 147] step=2  action=<|solve|>  tokens=64
+[2026-04-06 02:17:49][GPU 7]   [prob 127] step=3  action=<|solve|>  tokens=35
+[2026-04-06 02:17:49][GPU 7]   [prob 467] step=2  action=<|end|>  tokens=161
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=467  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 327] step=2  action=<|solve|>  tokens=82
+[2026-04-06 02:17:49][GPU 7]   [prob 43] step=0  action=<|solve|>  tokens=294
+[2026-04-06 02:17:49][GPU 7]   [prob 151] step=2  action=<|solve|>  tokens=78
+[2026-04-06 02:17:49][GPU 7]   [prob 123] step=2  action=<|solve|>  tokens=131
+[2026-04-06 02:17:49][GPU 7]   [prob 287] step=2  action=<|end|>  tokens=152
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=287  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 223] step=3  action=<|rethink|>  tokens=77
+[2026-04-06 02:17:49][GPU 7]   [prob 159] step=4  action=<|solve|>  tokens=92
+[2026-04-06 02:17:49][GPU 7]   [prob 195] step=3  action=<|solve|>  tokens=56
+[2026-04-06 02:17:49][GPU 7]   [prob 283] step=3  action=<|end|>  tokens=56
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=283  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 35] step=2  action=<|end|>  tokens=204
+[2026-04-06 02:17:49][GPU 7]   DONE problem_idx=35  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:49][GPU 7]   [prob 459] step=3  action=<|rethink|>  tokens=72
+[2026-04-06 02:17:49][GPU 7]   [prob 335] step=1  action=<|solve|>  tokens=59
+[2026-04-06 02:17:50][GPU 7]   [prob 247] step=3  action=<|solve|>  tokens=125
+[2026-04-06 02:17:50][GPU 7]   [prob 91] step=2  action=<|end|>  tokens=200
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=91  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 187] step=3  action=<|rethink|>  tokens=164
+[2026-04-06 02:17:50][GPU 7]   [prob 415] step=3  action=<|solve|>  tokens=114
+[2026-04-06 02:17:50][GPU 7]   [prob 495] step=3  action=<|solve|>  tokens=89
+[2026-04-06 02:17:50][GPU 7]   [prob 311] step=3  action=<|solve|>  tokens=45
+[2026-04-06 02:17:50][GPU 7]   [prob 491] step=2  action=<|end|>  tokens=267
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=491  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 347] step=3  action=<|end|>  tokens=53
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=347  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 483] step=3  action=<|rethink|>  tokens=139
+[2026-04-06 02:17:50][GPU 7]   [prob 443] step=4  action=<|end|>  tokens=114
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=443  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 115] step=2  action=<|end|>  tokens=215
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=115  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 195] step=4  action=<|end|>  tokens=34
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=195  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 323] step=2  action=<|end|>  tokens=196
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=323  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 263] step=4  action=<|end|>  tokens=162
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=263  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 11] step=2  action=<|solve|>  tokens=156
+[2026-04-06 02:17:50][GPU 7]   [prob 103] step=2  action=<|solve|>  tokens=123
+[2026-04-06 02:17:50][GPU 7]   [prob 435] step=2  action=<|end|>  tokens=227
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=435  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 279] step=5  action=<|end|>  tokens=82
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=279  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:50][GPU 7]   [prob 223] step=4  action=<|solve|>  tokens=48
+[2026-04-06 02:17:50][GPU 7]   [prob 339] step=2  action=<|end|>  tokens=90
+[2026-04-06 02:17:50][GPU 7]   DONE problem_idx=339  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 79] step=3  action=<|end|>  tokens=190
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=79  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 295] step=2  action=<|solve|>  tokens=268
+[2026-04-06 02:17:51][GPU 7]   [prob 239] step=1  action=<|solve|>  tokens=143
+[2026-04-06 02:17:51][GPU 7]   [prob 163] step=2  action=<|end|>  tokens=232
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=163  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 495] step=4  action=<|solve|>  tokens=46
+[2026-04-06 02:17:51][GPU 7]   [prob 135] step=3  action=<|solve|>  tokens=114
+[2026-04-06 02:17:51][GPU 7]   [prob 119] step=3  action=<|solve|>  tokens=117
+[2026-04-06 02:17:51][GPU 7]   [prob 143] step=1  action=<|solve|>  tokens=250
+[2026-04-06 02:17:51][GPU 7]   [prob 351] step=3  action=<|rethink|>  tokens=158
+[2026-04-06 02:17:51][GPU 7]   [prob 439] step=2  action=<|end|>  tokens=291
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=439  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 95] step=3  action=<|solve|>  tokens=121
+[2026-04-06 02:17:51][GPU 7]   [prob 159] step=5  action=<|end|>  tokens=76
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=159  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 375] step=2  action=<|end|>  tokens=290
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=375  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 127] step=4  action=<|solve|>  tokens=91
+[2026-04-06 02:17:51][GPU 7]   [prob 379] step=3  action=<|solve|>  tokens=125
+[2026-04-06 02:17:51][GPU 7]   [prob 235] step=2  action=<|end|>  tokens=189
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=235  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:51][GPU 7]   [prob 179] step=2  action=<|solve|>  tokens=138
+[2026-04-06 02:17:51][GPU 7]   [prob 99] step=1  action=<|solve|>  tokens=296
+[2026-04-06 02:17:51][GPU 7]   [prob 171] step=3  action=<|end|>  tokens=229
+[2026-04-06 02:17:51][GPU 7]   DONE problem_idx=171  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 419] step=3  action=<|solve|>  tokens=133
+[2026-04-06 02:17:52][GPU 7]   [prob 423] step=3  action=<|solve|>  tokens=114
+[2026-04-06 02:17:52][GPU 7]   [prob 447] step=3  action=<|end|>  tokens=285
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=447  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 499] step=2  action=<|end|>  tokens=224
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=499  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 23] step=3  action=<|end|>  tokens=313
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=23  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 135] step=4  action=<|end|>  tokens=40
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=135  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 335] step=2  action=<|solve|>  tokens=101
+[2026-04-06 02:17:52][GPU 7]   [prob 187] step=4  action=<|end|>  tokens=93
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=187  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 251] step=2  action=<|end|>  tokens=354
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=251  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 39] step=2  action=<|end|>  tokens=152
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=39  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 315] step=3  action=<|end|>  tokens=324
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=315  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:52][GPU 7]   [prob 303] step=2  action=<|rethink|>  tokens=321
+[2026-04-06 02:17:52][GPU 7]   [prob 311] step=4  action=<|solve|>  tokens=121
+[2026-04-06 02:17:52][GPU 7]   [prob 219] step=2  action=<|solve|>  tokens=214
+[2026-04-06 02:17:52][GPU 7]   [prob 255] step=4  action=<|end|>  tokens=162
+[2026-04-06 02:17:52][GPU 7]   DONE problem_idx=255  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 451] step=2  action=<|end|>  tokens=327
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=451  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 403] step=4  action=<|solve|>  tokens=222
+[2026-04-06 02:17:53][GPU 7]   [prob 155] step=2  action=<|end|>  tokens=309
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=155  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 87] step=3  action=<|solve|>  tokens=223
+[2026-04-06 02:17:53][GPU 7]   [prob 183] step=2  action=<|end|>  tokens=336
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=183  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 351] step=4  action=<|solve|>  tokens=100
+[2026-04-06 02:17:53][GPU 7]   [prob 43] step=1  action=<|solve|>  tokens=186
+[2026-04-06 02:17:53][GPU 7]   [prob 223] step=5  action=<|end|>  tokens=132
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=223  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 335] step=3  action=<|end|>  tokens=71
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=335  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 271] step=3  action=<|end|>  tokens=334
+[2026-04-06 02:17:53][GPU 7]   DONE problem_idx=271  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:53][GPU 7]   [prob 487] step=2  action=<|solve|>  tokens=332
+[2026-04-06 02:17:54][GPU 7]   [prob 311] step=5  action=<|end|>  tokens=58
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=311  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 19] step=2  action=<|end|>  tokens=351
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=19  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 151] step=3  action=<|end|>  tokens=229
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=151  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 403] step=5  action=<|end|>  tokens=66
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=403  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 495] step=5  action=<|end|>  tokens=163
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=495  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 123] step=3  action=<|end|>  tokens=240
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=123  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:54][GPU 7]   [prob 99] step=2  action=<|solve|>  tokens=148
+[2026-04-06 02:17:54][GPU 7]   [prob 231] step=3  action=<|end|>  tokens=361
+[2026-04-06 02:17:54][GPU 7]   DONE problem_idx=231  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 143] step=2  action=<|end|>  tokens=180
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=143  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 475] step=2  action=<|solve|>  tokens=347
+[2026-04-06 02:17:55][GPU 7]   [prob 95] step=4  action=<|end|>  tokens=183
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=95  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 383] step=3  action=<|end|>  tokens=341
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=383  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 15] step=3  action=<|end|>  tokens=308
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=15  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 247] step=4  action=<|end|>  tokens=271
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=247  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 87] step=4  action=<|end|>  tokens=119
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=87  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 487] step=3  action=<|end|>  tokens=106
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=487  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 379] step=4  action=<|end|>  tokens=217
+[2026-04-06 02:17:55][GPU 7]   DONE problem_idx=379  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:55][GPU 7]   [prob 303] step=3  action=<|rethink|>  tokens=160
+[2026-04-06 02:17:55][GPU 7]   [prob 239] step=2  action=<|solve|>  tokens=240
+[2026-04-06 02:17:56][GPU 7]   [prob 63] step=2  action=<|solve|>  tokens=456
+[2026-04-06 02:17:56][GPU 7]   [prob 203] step=2  action=<|end|>  tokens=485
+[2026-04-06 02:17:56][GPU 7]   DONE problem_idx=203  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:56][GPU 7]   [prob 43] step=2  action=<|solve|>  tokens=150
+[2026-04-06 02:17:56][GPU 7]   [prob 51] step=3  action=<|end|>  tokens=482
+[2026-04-06 02:17:56][GPU 7]   DONE problem_idx=51  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:56][GPU 7]   [prob 423] step=4  action=<|solve|>  tokens=228
+[2026-04-06 02:17:56][GPU 7]   [prob 119] step=4  action=<|end|>  tokens=268
+[2026-04-06 02:17:56][GPU 7]   DONE problem_idx=119  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:56][GPU 7]   [prob 127] step=5  action=<|end|>  tokens=258
+[2026-04-06 02:17:56][GPU 7]   DONE problem_idx=127  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:56][GPU 7]   [prob 295] step=3  action=<|solve|>  tokens=297
+[2026-04-06 02:17:56][GPU 7]   [prob 99] step=3  action=<|solve|>  tokens=117
+[2026-04-06 02:17:57][GPU 7]   [prob 175] step=2  action=<|end|>  tokens=573
+[2026-04-06 02:17:57][GPU 7]   DONE problem_idx=175  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:57][GPU 7]   [prob 331] step=4  action=<|end|>  tokens=413
+[2026-04-06 02:17:57][GPU 7]   DONE problem_idx=331  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:57][GPU 7]   [prob 483] step=4  action=<|solve|>  tokens=353
+[2026-04-06 02:17:57][GPU 7]   [prob 475] step=3  action=<|rethink|>  tokens=133
+[2026-04-06 02:17:57][GPU 7]   [prob 179] step=3  action=<|solve|>  tokens=318
+[2026-04-06 02:17:58][GPU 7]   [prob 459] step=4  action=<|end|>  tokens=442
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=459  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:58][GPU 7]   [prob 179] step=4  action=<|end|>  tokens=37
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=179  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:58][GPU 7]   [prob 415] step=4  action=<|end|>  tokens=456
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=415  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:58][GPU 7]   [prob 43] step=3  action=<|solve|>  tokens=160
+[2026-04-06 02:17:58][GPU 7]   [prob 11] step=3  action=<|end|>  tokens=451
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=11  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:58][GPU 7]   [prob 303] step=4  action=<|end|>  tokens=202
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=303  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:58][GPU 7]   [prob 391] step=2  action=<|end|>  tokens=624
+[2026-04-06 02:17:58][GPU 7]   DONE problem_idx=391  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:59][GPU 7]   [prob 371] step=3  action=<|end|>  tokens=692
+[2026-04-06 02:17:59][GPU 7]   DONE problem_idx=371  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:59][GPU 7]   [prob 423] step=5  action=<|end|>  tokens=224
+[2026-04-06 02:17:59][GPU 7]   DONE problem_idx=423  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:59][GPU 7]   [prob 419] step=4  action=<|end|>  tokens=459
+[2026-04-06 02:17:59][GPU 7]   DONE problem_idx=419  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:59][GPU 7]   [prob 431] step=4  action=<|end|>  tokens=630
+[2026-04-06 02:17:59][GPU 7]   DONE problem_idx=431  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:17:59][GPU 7]   [prob 355] step=3  action=<|end|>  tokens=695
+[2026-04-06 02:17:59][GPU 7]   DONE problem_idx=355  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:00][GPU 7]   [prob 63] step=3  action=<|end|>  tokens=302
+[2026-04-06 02:18:00][GPU 7]   DONE problem_idx=63  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:00][GPU 7]   [prob 43] step=4  action=<|end|>  tokens=136
+[2026-04-06 02:18:00][GPU 7]   DONE problem_idx=43  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:00][GPU 7]   [prob 475] step=4  action=<|solve|>  tokens=240
+[2026-04-06 02:18:01][GPU 7]   [prob 351] step=5  action=<|end|>  tokens=536
+[2026-04-06 02:18:01][GPU 7]   DONE problem_idx=351  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:01][GPU 7]   [prob 295] step=4  action=<|solve|>  tokens=361
+[2026-04-06 02:18:02][GPU 7]   [prob 99] step=4  action=<|end|>  tokens=400
+[2026-04-06 02:18:02][GPU 7]   DONE problem_idx=99  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:02][GPU 7]   [prob 103] step=3  action=<|end|>  tokens=754
+[2026-04-06 02:18:02][GPU 7]   DONE problem_idx=103  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:02][GPU 7]   [prob 139] step=2  action=<|end|>  tokens=949
+[2026-04-06 02:18:02][GPU 7]   DONE problem_idx=139  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:02][GPU 7]   [prob 483] step=5  action=<|end|>  tokens=454
+[2026-04-06 02:18:02][GPU 7]   DONE problem_idx=483  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:06][GPU 7]   [prob 147] step=3  action=<|end|>  tokens=1154
+[2026-04-06 02:18:06][GPU 7]   DONE problem_idx=147  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:06][GPU 7]   [prob 359] step=3  action=<|end|>  tokens=1178
+[2026-04-06 02:18:06][GPU 7]   DONE problem_idx=359  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:06][GPU 7]   [prob 7] step=2  action=<|end|>  tokens=1255
+[2026-04-06 02:18:06][GPU 7]   DONE problem_idx=7  steps=3  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:07][GPU 7]   [prob 475] step=5  action=<|end|>  tokens=601
+[2026-04-06 02:18:07][GPU 7]   DONE problem_idx=475  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:09][GPU 7]   [prob 327] step=3  action=<|end|>  tokens=1393
+[2026-04-06 02:18:09][GPU 7]   DONE problem_idx=327  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:11][GPU 7]   [prob 239] step=3  action=<|end|>  tokens=1274
+[2026-04-06 02:18:11][GPU 7]   DONE problem_idx=239  steps=4  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:13][GPU 7]   [prob 295] step=5  action=<|end|>  tokens=1063
+[2026-04-06 02:18:13][GPU 7]   DONE problem_idx=295  steps=6  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:14][GPU 7]   [prob 471] step=3  action=<|solve|>  tokens=2048
+[2026-04-06 02:18:14][GPU 7]   [prob 27] step=3  action=<|solve|>  tokens=2048
+[2026-04-06 02:18:15][GPU 7]   [prob 471] step=4  action=<|end|>  tokens=51
+[2026-04-06 02:18:15][GPU 7]   DONE problem_idx=471  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:15][GPU 7]   [prob 27] step=4  action=<|end|>  tokens=37
+[2026-04-06 02:18:15][GPU 7]   DONE problem_idx=27  steps=5  reason=end  action=<|end|>  next_action=<|end|>
+[2026-04-06 02:18:18][GPU 7]   [prob 219] step=3  action=<|solve|>  tokens=2048
+[2026-04-06 02:18:18][GPU 7]   [prob 219] step=4  action=<|solve|>  tokens=6
+[2026-04-06 02:18:42][GPU 7]   [prob 219] step=5  action=<|solve|>  tokens=2048
+[2026-04-06 02:18:42][GPU 7]   [prob 219] step=6  action=<|solve|>  tokens=6
+[2026-04-06 02:19:06][GPU 7]   [prob 219] step=7  action=<|solve|>  tokens=2048
+[2026-04-06 02:19:06][GPU 7]   [prob 219] step=8  action=<|solve|>  tokens=6
+[2026-04-06 02:19:30][GPU 7]   [prob 219] step=9  action=<|solve|>  tokens=2048
+[2026-04-06 02:19:30][GPU 7]   [prob 219] step=10  action=<|solve|>  tokens=6
+[2026-04-06 02:19:54][GPU 7]   [prob 219] step=11  action=<|solve|>  tokens=2048
+[2026-04-06 02:19:55][GPU 7]   [prob 219] step=12  action=<|solve|>  tokens=6
+[2026-04-06 02:20:19][GPU 7]   [prob 219] step=13  action=<|solve|>  tokens=2048
+[2026-04-06 02:20:19][GPU 7]   [prob 219] step=14  action=<|solve|>  tokens=6
+[2026-04-06 02:20:43][GPU 7]   [prob 219] step=15  action=<|solve|>  tokens=2048
+[2026-04-06 02:20:43][GPU 7]   [prob 219] step=16  action=<|solve|>  tokens=6
+[2026-04-06 02:21:07][GPU 7]   [prob 219] step=17  action=<|solve|>  tokens=2048
+[2026-04-06 02:21:07][GPU 7]   [prob 219] step=18  action=<|solve|>  tokens=6
+[2026-04-06 02:21:31][GPU 7]   [prob 219] step=19  action=<|solve|>  tokens=2048
+[2026-04-06 02:21:31][GPU 7]   [prob 219] step=20  action=<|solve|>  tokens=6
+[2026-04-06 02:21:55][GPU 7]   [prob 219] step=21  action=<|solve|>  tokens=2048
+[2026-04-06 02:21:55][GPU 7]   [prob 219] step=22  action=<|solve|>  tokens=6
+[2026-04-06 02:22:20][GPU 7]   [prob 219] step=23  action=<|solve|>  tokens=2048
+[2026-04-06 02:22:20][GPU 7]   [prob 219] step=24  action=<|solve|>  tokens=6
+[2026-04-06 02:22:44][GPU 7]   [prob 219] step=25  action=<|solve|>  tokens=2048
+[2026-04-06 02:22:44][GPU 7]   [prob 219] step=26  action=<|solve|>  tokens=6
+[2026-04-06 02:23:08][GPU 7]   [prob 219] step=27  action=<|solve|>  tokens=2048
+[2026-04-06 02:23:08][GPU 7]   [prob 219] step=28  action=<|solve|>  tokens=6
+[2026-04-06 02:23:32][GPU 7]   [prob 219] step=29  action=<|solve|>  tokens=2048
+[2026-04-06 02:23:32][GPU 7]   DONE problem_idx=219  steps=30  reason=max_steps
+[2026-04-06 02:23:32][GPU 7] 평가 완료: 125/125문제

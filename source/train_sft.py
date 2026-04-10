@@ -5,7 +5,7 @@ SFT 학습 스크립트 - Qwen2.5-7B-Instruct
   문제 + 이전 스텝들 → 다음 스텝 텍스트 예측
   Loss는 다음 스텝 텍스트에만 계산
 
-데이터 형식 (sft_data_v1.0.jsonl):
+데이터 형식 A (sft_data_v1.0.jsonl):
   {
     "problem_id":  str,
     "problem":     str,
@@ -15,15 +15,31 @@ SFT 학습 스크립트 - Qwen2.5-7B-Instruct
     "steps":       [{"step_idx": int, "type": str, "text": str, "next_gold_action": str}, ...]
   }
 
-입력/출력 형식:
-  - 이전 스텝 히스토리: "text <next_gold_action>" (text 뒤 공백 + action 토큰)
-  - target: "text <next_gold_action>"
+데이터 형식 B (generate_sft_trajectory.py 출력, --traj 플래그):
+  {
+    "problem_id":        str,
+    "problem":           str,
+    "gold_answer":       str,
+    "is_right":          bool,
+    "patcher_prefix_len": int,   # prefix로 쓰인 patcher 스텝 수 (k)
+    "steps": [
+      {"step_idx": int, "text": str, "source": "gen"},     # gen_correct (학습 제외)
+      {"step_idx": int, "text": str, "source": "patcher"}, # patcher[:k] (학습 제외)
+      {"step_idx": int, "text": str, "source": "gen"},     # gen_cont    (학습 대상)
+      ...
+    ]
+  }
 
-실행 예시 (GPU 4,5,6,7):
-  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=4 source/train_sft.py
+실행 예시 (GPU 4,5,6,7 / gpu_per_model=2 → nproc_per_node=2):
+  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=2 source/train_sft.py
+  # trajectory 데이터로 학습:
+  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=2 source/train_sft.py \\
+      --traj --data_path output/trajectory_data/traj_xxx.jsonl
   # 기존 체크포인트에서 이어서 학습:
-  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=4 source/train_sft.py \\
+  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=2 source/train_sft.py \\
       --model_path /mnt/yoonju/SC/checkpoints/sft/20260403_125458/epoch5
+  # gpu_per_model=1 (기존 DDP 4-way):
+  CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=4 source/train_sft.py --gpu_per_model 1
   # 샘플 미리보기:
   CUDA_VISIBLE_DEVICES=4 python source/train_sft.py --preview
 """
@@ -76,15 +92,16 @@ DATA_PATH      = _CFG["data_path"]["sft_data"]
 OUTPUT_DIR     = str(_ROOT / _CFG["output_path"]["sft_checkpoints"])
 
 _sft = _CFG.get("sft", {})
-LEARNING_RATE = _sft.get("learning_rate", 2e-5)
-NUM_EPOCHS    = _sft.get("num_epochs", 3)
-BATCH_SIZE    = _sft.get("batch_size", 1)
-GRAD_ACCUM    = _sft.get("grad_accum", 32)
-MAX_LENGTH    = _sft.get("max_length", 3072)
-WARMUP_RATIO  = _sft.get("warmup_ratio", 0.05)
-WEIGHT_DECAY  = _sft.get("weight_decay", 0.01)
-MAX_GRAD_NORM = _sft.get("max_grad_norm", 1.0)
-SAVE_STEPS    = _sft.get("save_steps", 100)
+LEARNING_RATE  = _sft.get("learning_rate", 2e-5)
+NUM_EPOCHS     = _sft.get("num_epochs", 3)
+BATCH_SIZE     = _sft.get("batch_size", 4)
+GRAD_ACCUM     = _sft.get("grad_accum", 64)
+MAX_LENGTH     = _sft.get("max_length", 3072)
+WARMUP_RATIO   = _sft.get("warmup_ratio", 0.05)
+WEIGHT_DECAY   = _sft.get("weight_decay", 0.01)
+MAX_GRAD_NORM  = _sft.get("max_grad_norm", 1.0)
+SAVE_STEPS     = _sft.get("save_steps", 100)
+GPU_PER_MODEL  = _sft.get("gpu_per_model", 1)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -130,7 +147,7 @@ class SFTDataset(Dataset):
             # if next_action == "<|rethink|>":
             #     continue
 
-            history     = [s["text"] + " " + s.get("next_gold_action", "<|solve|>") for s in steps[:k]]
+            history     = [s["text"] for s in steps[:k]]
             # target = 스텝 텍스트 + 공백 + 다음 액션 토큰
             target_text = steps[k]["text"] + " " + next_action
 
@@ -167,6 +184,88 @@ class SFTDataset(Dataset):
         return self.samples[idx]
 
 
+class TrajectoryDataset(Dataset):
+    """
+    generate_sft_trajectory.py 출력 JSONL로부터 학습 샘플 생성.
+
+    Loss masking:
+      - prefix 스텝 (gen_correct + patcher[:k]): 학습 제외 (샘플 생성 안 함)
+      - gen_cont 스텝 (k번째 patcher 이후 generator 스텝): 학습 대상
+
+    patcher_prefix_len=0 이면 prefix 없음 → 전체 gen 스텝 학습.
+    """
+
+    def __init__(self, data_path: str, tokenizer, max_length: int = MAX_LENGTH):
+        self.max_length = max_length
+        self.samples = []
+
+        raw_data = load_raw_data(data_path)
+        rank = int(os.environ.get("RANK", 0))
+
+        if rank == 0:
+            print(f"[TrajectoryDataset] {len(raw_data)}개 궤적 로드, 토크나이징 중...")
+
+        skipped = 0
+        for item in tqdm(raw_data, desc="Tokenizing", disable=(rank != 0)):
+            skipped += self._process_item(item, tokenizer)
+
+        if rank == 0:
+            print(f"[TrajectoryDataset] 총 학습 샘플 수: {len(self.samples)}  (max_length 초과 제외: {skipped})")
+
+    def _process_item(self, item: dict, tokenizer) -> int:
+        problem            = item["problem"]
+        steps              = item["steps"]
+        patcher_prefix_len = item.get("patcher_prefix_len", 0)
+        skipped            = 0
+
+        # prefix boundary 계산:
+        #   gen_correct 스텝들 (source="gen") + patcher[:k] 스텝들 (source="patcher")
+        #   patcher_prefix_len번째 patcher 스텝 직후부터 gen_cont
+        if patcher_prefix_len == 0:
+            prefix_end_idx = 0
+        else:
+            patcher_seen   = 0
+            prefix_end_idx = len(steps)  # fallback (patcher 부족 시 전체 prefix)
+            for i, step in enumerate(steps):
+                if step.get("source") == "patcher":
+                    patcher_seen += 1
+                    if patcher_seen == patcher_prefix_len:
+                        prefix_end_idx = i + 1
+                        break
+
+        # gen_cont 스텝에 대해서만 학습 샘플 생성
+        for k in range(prefix_end_idx, len(steps)):
+            step = steps[k]
+            if step.get("source") == "patcher":
+                continue  # gen_cont에 patcher가 끼어있으면 건너뜀
+
+            history    = [s["text"] for s in steps[:k]]
+            target_text = step["text"]
+
+            prefix_str = build_chat_prompt(tokenizer, SYSTEM_SOLVE_SFT, _solve_user(problem, history))
+            prefix_ids = tokenizer.encode(prefix_str,   add_special_tokens=False)
+            target_ids = tokenizer.encode(target_text,  add_special_tokens=False)
+            full_ids   = prefix_ids + target_ids
+
+            if len(full_ids) > self.max_length:
+                skipped += 1
+                continue
+
+            input_ids = torch.tensor(full_ids, dtype=torch.long)
+            labels    = torch.full_like(input_ids, -100)
+            labels[len(prefix_ids):] = input_ids[len(prefix_ids):]
+
+            self.samples.append((input_ids, labels))
+
+        return skipped
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        return self.samples[idx]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # 프리뷰
 # ─────────────────────────────────────────────────────────────────────────────
@@ -176,7 +275,7 @@ def _print_sample(tokenizer, item: dict, k: int, label: str):
     problem = item["problem"]
     steps   = item["steps"]
 
-    history     = [s["text"] + " " + s.get("next_gold_action", "<|solve|>") for s in steps[:k]]
+    history     = [s["text"] for s in steps[:k]]
     next_action = steps[k].get("next_gold_action", "<|solve|>")
     target_text = steps[k]["text"] + " " + next_action
 
@@ -235,10 +334,16 @@ def train(args):
     dist.init_process_group(backend="nccl")
     local_rank  = int(os.environ["LOCAL_RANK"])
     global_rank = int(os.environ["RANK"])
-    world_size  = int(os.environ["WORLD_SIZE"])
+    world_size  = int(os.environ["WORLD_SIZE"])  # = n_replicas = total_gpus / gpu_per_model
 
-    torch.cuda.set_device(local_rank)
-    device  = torch.device("cuda", local_rank)
+    # ── GPU 할당: 각 프로세스가 gpu_per_model 개의 GPU를 담당 ─────────────────
+    gpu_per_model  = args.gpu_per_model
+    n_gpus_visible = torch.cuda.device_count()
+    my_gpu_ids     = list(range(local_rank * gpu_per_model,
+                                local_rank * gpu_per_model + gpu_per_model))
+    primary_device = torch.device(f"cuda:{my_gpu_ids[0]}")
+    torch.cuda.set_device(my_gpu_ids[0])
+    device  = primary_device
     is_main = (global_rank == 0)
 
     # ── wandb ────────────────────────────────────────────────────────────────
@@ -270,25 +375,46 @@ def train(args):
         print(f"모델 로드: {args.model_path}")
     tokenizer = setup_tokenizer(args.model_path, CACHE_DIR)
 
-    dataset = SFTDataset(args.data_path, tokenizer, max_length=args.max_length)
+    DatasetClass = TrajectoryDataset if args.traj else SFTDataset
+    dataset = DatasetClass(args.data_path, tokenizer, max_length=args.max_length)
     sampler = DistributedSampler(dataset, num_replicas=world_size, rank=global_rank,
                                  shuffle=True, drop_last=True)
     loader  = DataLoader(dataset, batch_size=args.batch_size, sampler=sampler,
                          collate_fn=partial(collate_fn, pad_token_id=tokenizer.pad_token_id),
                          num_workers=2, pin_memory=True)
 
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_path,
-        cache_dir=CACHE_DIR,
-        torch_dtype=torch.bfloat16,
-        trust_remote_code=True,
-    ).to(device)
+    if gpu_per_model > 1:
+        # 이 프로세스가 사용할 GPU에만 메모리 허용, 나머지는 0으로 막음
+        max_memory = {
+            i: "85GiB" if i in my_gpu_ids else "0GiB"
+            for i in range(n_gpus_visible)
+        }
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_path,
+            cache_dir=CACHE_DIR,
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+            device_map="auto",       # 레이어를 my_gpu_ids 에 균등 분산
+            max_memory=max_memory,
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_path,
+            cache_dir=CACHE_DIR,
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+        ).to(device)
 
     if len(tokenizer) != model.config.vocab_size:
         model.resize_token_embeddings(len(tokenizer))
 
     model.gradient_checkpointing_enable()
-    model = DDP(model, device_ids=[local_rank], find_unused_parameters=False)
+
+    if gpu_per_model > 1:
+        # 파이프라인 모델은 device_ids=None — DDP가 각 파라미터의 디바이스에서 grad all-reduce
+        model = DDP(model, device_ids=None, output_device=None, find_unused_parameters=False)
+    else:
+        model = DDP(model, device_ids=[local_rank], find_unused_parameters=False)
 
     # ── 옵티마이저 & 스케줄러 ─────────────────────────────────────────────────
     # GPU가 늘어도 effective batch(= N_GPUs × batch_size × grad_accum)를 일정하게 유지.
@@ -305,7 +431,10 @@ def train(args):
     if is_main:
         eff_batch = world_size * args.batch_size * effective_grad_accum
         print(f"데이터 샘플 수: {len(dataset)}")
-        print(f"GPU 수: {world_size}  |  grad_accum: {effective_grad_accum}  |  effective batch: {eff_batch}")
+        print(f"replica 수: {world_size}  |  gpu_per_model: {gpu_per_model}  |  "
+              f"총 GPU: {world_size * gpu_per_model}")
+        print(f"batch/replica: {args.batch_size}  |  grad_accum: {effective_grad_accum}  |  "
+              f"effective batch: {eff_batch}")
         print(f"총 옵티마이저 스텝: {total_steps}  (warmup: {warmup_steps})")
 
     # ── 체크포인트 저장 경로 ─────────────────────────────────────────────────
@@ -329,12 +458,13 @@ def train(args):
         n_updates  = 0
 
         for step_in_epoch, batch in enumerate(pbar):
-            input_ids      = batch["input_ids"].to(device)
-            attention_mask = batch["attention_mask"].to(device)
-            labels         = batch["labels"].to(device)
+            input_ids      = batch["input_ids"].to(primary_device)
+            attention_mask = batch["attention_mask"].to(primary_device)
+            labels         = batch["labels"].to(primary_device)
 
             outputs = model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
-            loss    = outputs.loss / effective_grad_accum
+            # 파이프라인 모델은 loss가 마지막 GPU에 있을 수 있으므로 primary_device로 명시
+            loss    = outputs.loss.to(primary_device) / effective_grad_accum
             loss.backward()
             accum_loss += loss.item()
 
@@ -402,10 +532,14 @@ def parse_args():
     p.add_argument("--weight_decay",  type=float, default=WEIGHT_DECAY)
     p.add_argument("--max_grad_norm", type=float, default=MAX_GRAD_NORM)
     p.add_argument("--save_steps",    type=int,   default=SAVE_STEPS)
+    p.add_argument("--gpu_per_model", type=int,   default=GPU_PER_MODEL,
+                   help="모델 하나를 몇 개 GPU에 걸쳐 올릴지 (nproc_per_node = total_gpus / gpu_per_model)")
     p.add_argument("--wandb",         action="store_true")
     p.add_argument("--run_name",      default=None)
     p.add_argument("--preview",       action="store_true",
                    help="샘플 하나 출력 후 종료")
+    p.add_argument("--traj",          action="store_true",
+                   help="TrajectoryDataset 사용 (generate_sft_trajectory.py 출력, loss masking 적용)")
     return p.parse_args()
 
 

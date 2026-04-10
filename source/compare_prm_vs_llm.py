@@ -114,6 +114,7 @@ def _worker(gpu_id: int, all_steps: list, my_indices: list, result_queue) -> Non
             current_step=s["text"],
             gold_answer=s["gold_answer"],
             history=history,
+            is_correct=s["is_right"],
         )
         result_queue.put((idx, score))   # 즉시 전송
         if (rank + 1) % 20 == 0:

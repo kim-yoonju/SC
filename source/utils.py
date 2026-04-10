@@ -158,6 +158,10 @@ PATCHER_PROMPT           = _PROMPTS["patcher_prompt"]
 SYSTEM_SOLVE_SFT         = _PROMPTS["system_solve_sft"]
 SYSTEM_SOLVE_API_SFT     = _PROMPTS["system_solve_api_sft"]
 SYSTEM_RETHINK_API_SFT   = _PROMPTS["system_rethink_api_sft"]
+SFT_GENERATOR_PROMPT     = _PROMPTS["sft_generator"]
+SFT_PATCHER_PROMPT       = _PROMPTS["sft_patcher"]
+SFT_PATCHER_STEP_PROMPT  = _PROMPTS["sft_patcher_step"]
+SFT_PATCHER_ALL_PROMPT   = _PROMPTS["sft_patcher_all"]
 LLM_SCORE_PROMPT         = _PROMPTS["llm_score"]
 LLM_SCORE_SFT_PROMPT     = _PROMPTS["llm_score_sft"]
 SYSTEM_TRUNCATOR         = _PROMPTS["system_truncator"]
@@ -249,7 +253,7 @@ def load_generator(device_map="auto", model_path=None):
     model = AutoModelForCausalLM.from_pretrained(
         load_path, config=config, torch_dtype=torch.bfloat16, device_map=device_map, trust_remote_code=True
     )
-    if len(tokenizer) != model.config.vocab_size:
+    if len(tokenizer) > model.config.vocab_size:
         model.resize_token_embeddings(len(tokenizer))
 
     model.eval()
@@ -551,7 +555,24 @@ def _gpt(model_name: str, messages: list, max_completion_tokens: int = None, tem
                     "input_tokens":  resp.usage.prompt_tokens,
                     "output_tokens": resp.usage.completion_tokens,
                 })
-            return resp.choices[0].message.content
+
+            choice        = resp.choices[0]
+            finish_reason = choice.finish_reason
+            content       = choice.message.content
+
+            # 응답 상세 로그 (빈 응답이거나 비정상 종료 시 항상 기록)
+            if not content or finish_reason not in ("stop", None):
+                _logger = logging.getLogger(__name__)
+                _logger.warning(
+                    f"[_gpt] model={model_name}  finish_reason={finish_reason!r}"
+                    f"  content_len={len(content) if content else 0}"
+                    f"  prompt_tokens={resp.usage.prompt_tokens if resp.usage else '?'}"
+                    f"  completion_tokens={resp.usage.completion_tokens if resp.usage else '?'}"
+                )
+                if hasattr(resp.usage, 'completion_tokens_details'):
+                    _logger.warning(f"[_gpt] completion_tokens_details={resp.usage.completion_tokens_details}")
+
+            return content
         except Exception as e:
             err_str = str(e)
             is_quota_exceeded = "insufficient_quota" in err_str or "billing" in err_str.lower()
@@ -716,46 +737,23 @@ def generate_steps_batched(model, tokenizer, prompt_texts, max_new_tokens=None, 
 
     return [(r[0], r[1], r[2]) for r in results]
 
-def _extract_problem(ex: dict) -> str:
-    text = ex.get("problem") or ex.get("question") or ""
-    if not text and "prompt" in ex:
-        text = next((m["content"] for m in ex["prompt"] if m["role"] == "user"), "")
-    return re.sub(r"\s*Please reason step by step.*$", "", text, flags=re.I).strip()
-
-def _extract_answer(ex: dict) -> str:
-    for k in ("answer", "final_answer", "ground_truth"):
-        if ex.get(k):
-            v = str(ex[k]).strip()
-            return _extract_gsm8k_answer(v) if "####" in v else v
-    # parquet 포맷: reward_model dict 안의 ground_truth
-    rm = ex.get("reward_model")
-    if isinstance(rm, dict) and rm.get("ground_truth"):
-        return str(rm["ground_truth"]).strip()
-    return ""
-
-def _solve_user(problem: str, history: List[str]) -> str:
-    lines = [f"[Problem]\n{problem}"]
-    if history:
-        lines.append("\n[Steps so far]")
-        for i, s in enumerate(history, 1): lines.append(f"Step {i}: {s}")
-    lines.append("\nWrite the next step.")
-    return "\n".join(lines)
-
-def _correct_user(problem: str, history: List[str]) -> str:
-    lines = [f"[Problem]\n{problem}"]
-    if history:
-        steps = history[-10:]
-        offset = len(history) - len(steps)
-        lines.append("\n[Steps so far]")
-        for i, s in enumerate(steps, offset + 1):
-            lines.append(f"Step {i}: {s}")
-        lines.append(f"\nStep {len(history)} above contains an error. Write a corrected version of this step.")
-    return "\n".join(lines)
-
-
 # ─────────────────────────────────────────────────────────────────────────────
-# 데이터 로딩 및 전처리 유틸리티
+# 데이터 로딩 및 전처리 유틸리티 (generate_utils 로 이동, 하위 호환 re-export)
 # ─────────────────────────────────────────────────────────────────────────────
+
+from generate_utils import (  # noqa: E402
+    _extract_gsm8k_answer,
+    _extract_problem,
+    _extract_answer,
+    _solve_user,
+    _correct_user,
+    _load_jsonl_eval,
+    _load_parquet_eval,
+    load_dataset_file,
+    extract_step_content,
+    build_target_text,
+)
+
 
 def load_raw_data(data_path: str) -> list[dict]:
     """JSONL 파일을 읽어 dict 리스트로 반환."""
@@ -768,104 +766,6 @@ def load_raw_data(data_path: str) -> list[dict]:
     return items
 
 
-def _extract_gsm8k_answer(answer_text: str) -> str:
-    """gsm8k 정답 텍스트에서 #### 뒤의 숫자만 추출."""
-    m = re.search(r"####\s*(.+)", answer_text)
-    return m.group(1).strip().replace(",", "") if m else answer_text.strip()
-
-
-def _load_jsonl_eval(p) -> list[dict]:
-    """평가용 JSONL → [{id, problem, answer}, ...] 변환."""
-    items = []
-    with open(p) as f:
-        for i, line in enumerate(f):
-            line = line.strip()
-            if not line:
-                continue
-            d = json.loads(line)
-            problem = d.get("problem") or d.get("question", "")
-            answer  = d.get("answer") or d.get("gold_answer", "")
-            if "####" in str(answer):
-                answer = _extract_gsm8k_answer(str(answer))
-            items.append({"id": str(d.get("id", i)), "problem": problem, "answer": str(answer)})
-    return items
-
-
-def _load_parquet_eval(p) -> list[dict]:
-    """평가용 Parquet (math500/deepmath 계열) → [{id, problem, answer}, ...] 변환."""
-    import pandas as pd
-
-    df = pd.read_parquet(p)
-    items = []
-    for i, (_, row) in enumerate(df.iterrows()):
-        prompt = row.get("prompt")
-        if hasattr(prompt, "tolist"):
-            prompt = prompt.tolist()
-        if isinstance(prompt, str):
-            try:
-                prompt = json.loads(prompt)
-            except json.JSONDecodeError:
-                prompt = [{"role": "user", "content": prompt}]
-
-        problem = ""
-        if isinstance(prompt, list):
-            for msg in prompt:
-                if isinstance(msg, dict) and msg.get("role") == "user":
-                    text = msg.get("content", "")
-                    text = re.sub(r"\s*Please reason step by step,.*$", "", text, flags=re.DOTALL).strip()
-                    problem = text
-                    break
-        elif isinstance(prompt, dict) and prompt.get("role") == "user":
-            problem = re.sub(r"\s*Please reason step by step,.*$", prompt.get("content", ""), flags=re.DOTALL).strip()
-
-        if "final_answer" in df.columns:
-            answer = str(row.get("final_answer", ""))
-        else:
-            rm = row.get("reward_model", {})
-            if hasattr(rm, "item"):
-                rm = rm.item()
-            if isinstance(rm, str):
-                try:
-                    rm = json.loads(rm)
-                except json.JSONDecodeError:
-                    rm = {}
-            answer = str(rm.get("ground_truth", "")) if isinstance(rm, dict) else ""
-
-        extra = row.get("extra_info", {})
-        if hasattr(extra, "item"):
-            extra = extra.item()
-        if isinstance(extra, str):
-            try:
-                extra = json.loads(extra)
-            except json.JSONDecodeError:
-                extra = {}
-        item_id = str(extra.get("index", i)) if isinstance(extra, dict) else str(i)
-
-        if not problem:
-            continue
-        items.append({"id": item_id, "problem": problem, "answer": answer})
-    return items
-
-
-def load_dataset_file(path: str) -> list[dict]:
-    """JSONL / Parquet 파일을 [{id, problem, answer}, ...] 형태로 로드.
-
-    지원 포맷:
-      - JSONL: problem + answer/gold_answer 필드
-      - Parquet (math500/math7500): reward_model.ground_truth + prompt
-      - Parquet (deepmath_*): final_answer + prompt
-    """
-    p = _pathlib.Path(path)
-    if not p.exists():
-        raise FileNotFoundError(f"데이터셋 없음: {path}")
-    if p.suffix == ".jsonl":
-        return _load_jsonl_eval(p)
-    elif p.suffix == ".parquet":
-        return _load_parquet_eval(p)
-    else:
-        raise ValueError(f"지원하지 않는 파일 형식: {p.suffix}")
-
-
 def setup_tokenizer(model_id: str, cache_dir: str = None, special_tokens: list = None):
     """토크나이저 로드 및 특수 토큰 추가.
     special_tokens 미지정 시 ACTION_TOKENS 사용.
@@ -876,31 +776,6 @@ def setup_tokenizer(model_id: str, cache_dir: str = None, special_tokens: list =
     tokens = special_tokens if special_tokens is not None else ACTION_TOKENS
     tokenizer.add_special_tokens({"additional_special_tokens": tokens})
     return tokenizer
-
-
-def extract_step_content(step: dict) -> tuple[str, str]:
-    """step dict에서 (action, clean_text) 추출.
-    구 포맷(text 필드)과 신 포맷(content 필드) 모두 처리.
-    """
-    action = step["action"]
-    if "content" in step and step["content"] is not None:
-        text = step["content"].strip()
-    else:
-        text = step.get("text", "")
-        text = text.replace("<|end|>", "").replace("<|im_end|>", "").strip()
-        for act in ["solve", "correct", "rethink", "end", "review"]:
-            m = re.search(rf"<{act}>(.*?)</{act}>", text, re.DOTALL)
-            if m:
-                text = m.group(1).strip()
-                break
-    return action, text
-
-
-def build_target_text(action: str, text: str) -> str:
-    """텍스트 + 액션 특수 토큰을 타겟 문자열로 합침.
-    예: "reasoning...<|solve|>"
-    """
-    return f"{text}<|{action}|>"
 
 
 def pick_system(action: str) -> str:

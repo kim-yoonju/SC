@@ -9,7 +9,7 @@ State machine — 모델이 생성한 액션 토큰에 의해 전환:
   TOKEN_CORRECT:
     SOLVE        → CORRECT_GEN
     CORRECT_GEN  → CORRECT_PAT (patcher 호출)
-    CORRECT_PAT  → 종료 (실패)
+    CORRECT_PAT  → CORRECT_GEN (patcher 실패 시 재시도, MAX_STEPS까지 반복)
   TOKEN_SOLVE            → SOLVE (계속 시도)
 
   액션 토큰이 명시적으로 생성되지 않은 경우:
@@ -134,7 +134,7 @@ def _next_state_by_reward(
       correct_gen, r>0.5         → solve
       correct_gen, r<=0.5        → correct_pat
       correct_pat, r>0.5         → solve
-      correct_pat, r<=0.5        → None (end, patcher_wrong)
+      correct_pat, r<=0.5        → correct_gen (patcher 실패 → generator 재시도, MAX_STEPS까지 반복)
       end,         r>0.5         → None (end, 성공)
       end,         r<=0.5        → correct_gen
     """
@@ -150,7 +150,7 @@ def _next_state_by_reward(
         if current_state == CORRECT_GEN:
             return CORRECT_PAT
         if current_state == CORRECT_PAT:
-            return None  # patcher_wrong → 종료
+            return CORRECT_GEN  # patcher 실패 → generator로 재시도 (MAX_STEPS까지 반복)
         return CORRECT_GEN  # end state, reward 낮음 → correct_gen
 
 
