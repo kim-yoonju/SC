@@ -12,3 +12,5 @@ output/
 output/eval_ppo/
 output/eval_ppo/*
 output/eval_ppo/
+config/
+output/eval_ppo/
