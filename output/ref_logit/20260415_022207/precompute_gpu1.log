@@ -1,0 +1,47 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[02:22:14] [GPU 1/4] 598/2393 samples  batch=16  device=cuda
+[02:22:14] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  8.60it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00, 10.46it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 10.32it/s]
+[02:22:26] Model loaded. Starting inference ...
+[02:22:32]   batch [1/38]  6.7s/batch  elapsed 7s  ETA 246s
+[02:22:38]   batch [2/38]  6.0s/batch  elapsed 13s  ETA 218s
+[02:22:49]   batch [3/38]  11.1s/batch  elapsed 24s  ETA 387s
+[02:23:21]   batch [4/38]  31.2s/batch  elapsed 55s  ETA 1061s
+[02:23:29]   batch [5/38]  8.2s/batch  elapsed 63s  ETA 271s
+[02:23:35]   batch [6/38]  6.4s/batch  elapsed 70s  ETA 206s
+[02:23:41]   batch [7/38]  6.0s/batch  elapsed 76s  ETA 186s
+[02:23:51]   batch [8/38]  10.3s/batch  elapsed 86s  ETA 308s
+[02:24:00]   batch [9/38]  8.1s/batch  elapsed 94s  ETA 234s
+[02:24:09]   batch [10/38]  9.5s/batch  elapsed 103s  ETA 266s
+[02:24:19]   batch [11/38]  9.5s/batch  elapsed 113s  ETA 256s
+[02:24:27]   batch [12/38]  8.7s/batch  elapsed 122s  ETA 227s
+[02:24:35]   batch [13/38]  7.9s/batch  elapsed 130s  ETA 198s
+[02:24:45]   batch [14/38]  9.6s/batch  elapsed 139s  ETA 230s
+[02:24:57]   batch [15/38]  12.0s/batch  elapsed 151s  ETA 277s
+[02:25:06]   batch [16/38]  9.2s/batch  elapsed 160s  ETA 202s
+[02:25:15]   batch [17/38]  9.2s/batch  elapsed 170s  ETA 193s
+[02:25:27]   batch [18/38]  11.5s/batch  elapsed 181s  ETA 229s
+[02:25:35]   batch [19/38]  8.3s/batch  elapsed 189s  ETA 157s
+[02:25:44]   batch [20/38]  9.1s/batch  elapsed 198s  ETA 164s
+[02:25:51]   batch [21/38]  7.0s/batch  elapsed 205s  ETA 119s
+[02:26:03]   batch [22/38]  11.8s/batch  elapsed 217s  ETA 188s
+[02:26:11]   batch [23/38]  8.2s/batch  elapsed 225s  ETA 124s
+[02:26:20]   batch [24/38]  8.8s/batch  elapsed 234s  ETA 123s
+[02:26:28]   batch [25/38]  8.2s/batch  elapsed 242s  ETA 106s
+[02:26:35]   batch [26/38]  7.4s/batch  elapsed 250s  ETA 89s
+[02:26:44]   batch [27/38]  8.5s/batch  elapsed 258s  ETA 94s
+[02:26:51]   batch [28/38]  6.8s/batch  elapsed 265s  ETA 68s
+[02:27:03]   batch [29/38]  12.2s/batch  elapsed 277s  ETA 110s
+[02:27:35]   batch [30/38]  31.9s/batch  elapsed 309s  ETA 255s
+[02:27:43]   batch [31/38]  8.6s/batch  elapsed 318s  ETA 60s
+[02:27:53]   batch [32/38]  9.6s/batch  elapsed 327s  ETA 57s
+[02:28:01]   batch [33/38]  8.0s/batch  elapsed 335s  ETA 40s
+[02:28:06]   batch [34/38]  5.4s/batch  elapsed 341s  ETA 22s
+[02:28:12]   batch [35/38]  6.2s/batch  elapsed 347s  ETA 19s
+[02:28:21]   batch [36/38]  8.4s/batch  elapsed 355s  ETA 17s
+[02:28:26]   batch [37/38]  5.5s/batch  elapsed 361s  ETA 6s
+[02:28:28]   batch [38/38]  1.8s/batch  elapsed 363s  ETA 0s
+[02:28:28] Done. 598 samples in 362.6s  (0.61s/sample)
+[02:28:28] Saved → ./output/ref_logit/20260415_022207/ref_logprobs.pt.part1
+[W415 02:28:29.618860184 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

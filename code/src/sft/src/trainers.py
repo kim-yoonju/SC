@@ -11,25 +11,33 @@ from base import BaseTrainer
 import re
 from utils import print_object_on_main_process, print_rank_0, getDataset, set_special_tokens
 
-def compute_lm_loglikeli(logits, labels):
+def compute_lm_loglikeli(logits, labels, chunk_size=256):
+    """Chunked CE loss to avoid materializing the full (B, S, V) fp32 tensor."""
+    import torch.nn.functional as F
     batch_size, seq_length, vocab_size = logits.shape
-        
-    shift_logits = logits[..., :-1, :].contiguous()
-    shift_labels = labels[..., 1:].contiguous()
-    
-     
-    loss_fct = torch.nn.CrossEntropyLoss(reduction='none')
-    shift_logits = shift_logits.view(-1, vocab_size)
-    shift_labels = shift_labels.view(-1)
-    
-     
-    shift_labels = shift_labels.to(shift_logits.device)
-    loss = loss_fct(shift_logits, shift_labels)  
-    ignore_mask = labels != -100
-    
-    mean_loss = loss.reshape(batch_size, -1).sum(dim=-1) / ignore_mask.sum(dim=-1)
 
-    return - mean_loss, loss  
+    shift_logits = logits[:, :-1, :]          # (B, S-1, V) bf16 — view, no copy
+    shift_labels = labels[:, 1:].contiguous().to(logits.device)  # (B, S-1)
+    S = shift_logits.shape[1]
+
+    loss = torch.zeros(batch_size, S, device=logits.device)
+    for start in range(0, S, chunk_size):
+        end = min(start + chunk_size, S)
+        chunk = shift_logits[:, start:end, :].float()           # (B, chunk, V) fp32
+        chunk_labels = shift_labels[:, start:end].clone()
+        mask = chunk_labels == -100
+        chunk_labels[mask] = 0
+        chunk_loss = F.cross_entropy(
+            chunk.view(-1, vocab_size), chunk_labels.view(-1), reduction='none'
+        ).view(batch_size, end - start)
+        chunk_loss[mask] = 0.0
+        loss[:, start:end] = chunk_loss
+        del chunk, chunk_loss
+
+    ignore_mask = labels[:, 1:] != -100
+    mean_loss = loss.sum(dim=-1) / ignore_mask.sum(dim=-1).clamp(min=1)
+
+    return -mean_loss, loss.view(-1)  # keep same return signature
 
 
 
@@ -83,41 +91,59 @@ class SFTWeightedWithKLTrainer(BaseTrainer):
     
     
     def compute_loss(self, model: torch.nn.Module, inputs: Dict[str, torch.Tensor], return_outputs=False, num_items_in_batch=None):
+        import torch.nn.functional as F
 
         model_outputs = model(
             input_ids=inputs['input_ids'],
             attention_mask=inputs['attention_mask'],
-            labels=inputs['labels'],
-            
+            # labels omitted — HF ForCausalLMLoss does logits.float() on the full
+            # (B, S, V) tensor (~39 GiB at batch=16/seq=8000). Use chunked CE below.
         )
 
-        if self.args.lm_kl_coeff is not None:
-            with torch.no_grad():
-                ref_model_outputs = self.ref_model(
-                    input_ids=inputs['input_ids'],
-                    attention_mask=inputs['attention_mask']
-                )
+        # Chunked CE loss — avoids the full fp32 (B, S, V) allocation
+        _, token_loss_flat = compute_lm_loglikeli(model_outputs.logits, inputs['labels'])
+        batch_size = model_outputs.logits.shape[0]
+        ce_loss_2d = token_loss_flat.view(batch_size, -1)  # (B, S-1)
 
-             
-            self.args.kl_penalty_mode = "full"
-            if self.args.kl_penalty_mode == 'full':
-                logprob = self.logprobs_from_logits(model_outputs.logits, gather=False)  
-                ref_logprob = self.logprobs_from_logits(ref_model_outputs.logits, gather=False)  
-            else:
-                logprob = self.logprobs_from_logits(model_outputs.logits, labels=inputs['labels'])  
-                ref_logprob = self.logprobs_from_logits(ref_model_outputs.logits, labels=inputs['labels'])  
-            
-            kl_divergence = self.compute_kl_divergence(logprob, ref_logprob, kl_penalty=self.args.kl_penalty_mode)
-             
+        if self.args.lm_kl_coeff is not None:
             shift_labels = inputs['labels'][:, 1:]
             mask = torch.not_equal(shift_labels, -100)
+
+            if 'ref_logprobs' in inputs:
+                ref_lp = inputs['ref_logprobs'].to(model_outputs.logits.device)  # (B, S-1)
+                shift_logits = model_outputs.logits[:, :-1, :]
+                B_kl, S_kl, V_kl = shift_logits.shape
+                # Chunked log_softmax + gather — peak ~2.5 GiB per chunk vs ~39 GiB full
+                model_lp = torch.zeros(B_kl, S_kl, dtype=shift_logits.dtype,
+                                       device=shift_logits.device)
+                for _s in range(0, S_kl, 256):
+                    _e = min(_s + 256, S_kl)
+                    _chunk = shift_logits[:, _s:_e, :].float()
+                    _chunk_lp = F.log_softmax(_chunk, dim=-1)
+                    del _chunk
+                    _idx = shift_labels[:, _s:_e].clamp(min=0).unsqueeze(-1)
+                    model_lp[:, _s:_e] = torch.gather(_chunk_lp, 2, _idx).squeeze(-1).to(shift_logits.dtype)
+                    del _chunk_lp
+                kl_divergence = (torch.exp(model_lp) * (model_lp - ref_lp))  # (B, S-1)
+            else:
+                with torch.no_grad():
+                    ref_model_outputs = self.ref_model(
+                        input_ids=inputs['input_ids'].cpu(),
+                        attention_mask=inputs['attention_mask'].cpu()
+                    )
+                kl_divergence = self._chunked_full_kl(
+                    model_outputs.logits, ref_model_outputs.logits, chunk_size=64
+                )
+
             kl_divergence = (kl_divergence * mask).sum() / mask.sum()
             self.store_metrics({"kl": kl_divergence}, 'train')
-            loss = model_outputs.loss + self.args.lm_kl_coeff * kl_divergence
+            ce_loss = ce_loss_2d.sum() / mask.sum().clamp(min=1)
+            loss = ce_loss + self.args.lm_kl_coeff * kl_divergence
             self.store_metrics({"step_loss": loss})
-        
+
         else:
-            loss = model_outputs.loss
+            mask = inputs['labels'][:, 1:] != -100
+            loss = ce_loss_2d.sum() / mask.sum().clamp(min=1)
 
         return (loss, model_outputs['logits']) if return_outputs else loss
 
@@ -264,11 +290,17 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
     
     
     def compute_loss(self, model: torch.nn.Module, inputs: Dict[str, torch.Tensor], return_outputs=False,num_items_in_batch=None):
-        model_outputs = model(
+        import torch.nn.functional as F
+        # ── hidden states only: never materialise the (B, S, V) bf16 logit tensor ──
+        # model.module is the unwrapped HF model inside a DeepSpeed/DDP wrapper.
+        base_model = model.module if hasattr(model, 'module') else model
+        hidden = base_model.model(
             input_ids=inputs['input_ids'],
             attention_mask=inputs['attention_mask'],
-            labels=inputs['labels']
-        )
+        ).last_hidden_state                                  # (B, S, H) bf16
+        lm_head = base_model.lm_head                         # keep module ref so AccumulateGrad fires
+        B, S, _ = hidden.shape
+        device   = hidden.device
         conjunction_mask = torch.zeros_like(inputs['labels'], dtype=torch.bool)
          
         for i in range(len(inputs['labels'])):
@@ -282,7 +314,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
              
 
              
-            text = self.tokenizer.decode(valid_ids, skip_special_tokens=False)
+            text = self.processing_class.decode(valid_ids, skip_special_tokens=False)
              
              
              
@@ -299,7 +331,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                 
             current_text = splits[0]
              
-            current_tokens = len(self.tokenizer(current_text, add_special_tokens=False)["input_ids"])
+            current_tokens = len(self.processing_class(current_text, add_special_tokens=False)["input_ids"])
             current_position = valid_positions[current_tokens-1] if current_tokens > 0 else valid_positions[0]
             
             last_split_token = None
@@ -314,7 +346,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                     full_text = current_text + last_split_token + split
 
                      
-                    tokenizer_output = self.tokenizer(full_text, add_special_tokens=False)["input_ids"]
+                    tokenizer_output = self.processing_class(full_text, add_special_tokens=False)["input_ids"]
                      
                      
                     full_tokens = len(tokenizer_output)
@@ -331,7 +363,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                     
                          
                     current_masked_ids = inputs['labels'][i][start_pos:full_position+1]
-                    masked_text = self.tokenizer.decode(current_masked_ids[current_masked_ids != -100], skip_special_tokens=False)
+                    masked_text = self.processing_class.decode(current_masked_ids[current_masked_ids != -100], skip_special_tokens=False)
                      
                         
 
@@ -342,7 +374,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                     if idx == len(splits[1:]) - 3:
                         full_text = current_text + last_split_token + split
                          
-                        tokenizer_output = self.tokenizer(full_text, add_special_tokens=False)["input_ids"]
+                        tokenizer_output = self.processing_class(full_text, add_special_tokens=False)["input_ids"]
                          
                          
                         full_tokens = len(tokenizer_output)                        
@@ -357,7 +389,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                                                  
                          
                         current_masked_ids = inputs['labels'][i][start_pos:full_position+1]
-                        masked_text = self.tokenizer.decode(current_masked_ids[current_masked_ids != -100], skip_special_tokens=False)
+                        masked_text = self.processing_class.decode(current_masked_ids[current_masked_ids != -100], skip_special_tokens=False)
                          
                         
                         
@@ -367,7 +399,7 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                          
                         full_text = current_text + last_split_token + split
                         current_text = full_text
-                        current_position = valid_positions[len(self.tokenizer(full_text, add_special_tokens=False)["input_ids"])-1]
+                        current_position = valid_positions[len(self.processing_class(full_text, add_special_tokens=False)["input_ids"])-1]
          
         for i in range(len(inputs['labels'])):
              
@@ -391,45 +423,101 @@ class SFTWeightedWithKLTrainer_with_verification(BaseTrainer):
                  
                 for seg_start, seg_end in segments:
                     segment_ids = inputs['labels'][i][seg_start:seg_end]
-                    segment_text = self.tokenizer.decode(segment_ids[segment_ids != -100], skip_special_tokens=False)
+                    segment_text = self.processing_class.decode(segment_ids[segment_ids != -100], skip_special_tokens=False)
                     print_rank_0(f"Masked text for sample {i}, segment {seg_start}-{seg_end}: {segment_text}")
-                    print_rank_0(f"check eos_token: {self.tokenizer.eos_token}")
-        if self.args.lm_kl_coeff is not None:
+                    print_rank_0(f"check eos_token: {self.processing_class.eos_token}")
+        # ── chunked lm_head: CE + KL in one pass, peak = (B, 256, V) fp32 ≈ 2.5 GiB ──
+        shift_hidden = hidden[:, :-1, :].contiguous()        # (B, S-1, H)
+        shift_labels = inputs['labels'][:, 1:].contiguous()  # (B, S-1)
+        label_mask   = shift_labels != -100
+        CHUNK = 256
+        V = lm_head.weight.shape[0]
+
+        ce_loss_2d = torch.zeros(B, S - 1, device=device, dtype=hidden.dtype)
+        has_ref    = 'ref_logprobs' in inputs and self.args.lm_kl_coeff is not None
+        if has_ref:
+            ref_lp   = inputs['ref_logprobs'].to(device)     # (B, S-1)
+            model_lp = torch.zeros(B, S - 1, device=device, dtype=hidden.dtype)
+
+        acc_correct = torch.zeros(1, device=device, dtype=torch.long)
+        acc_total   = torch.zeros(1, device=device, dtype=torch.long)
+
+        for s in range(0, S - 1, CHUNK):
+            e           = min(s + CHUNK, S - 1)
+            chunk_lbl   = shift_labels[:, s:e].clone()
+            chunk_pad   = chunk_lbl == -100
+            chunk_lbl[chunk_pad] = 0
+
+            chunk_logits = lm_head(shift_hidden[:, s:e]).float()  # (B, chunk, V) fp32; grad flows through AccumulateGrad
+
+            chunk_ce = F.cross_entropy(
+                chunk_logits.view(-1, V), chunk_lbl.view(-1), reduction='none',
+            ).view(B, e - s)
+            chunk_ce[chunk_pad] = 0.0
+            ce_loss_2d[:, s:e]  = chunk_ce.to(hidden.dtype)
+
+            if has_ref:
+                chunk_lp  = F.log_softmax(chunk_logits, dim=-1)
+                chunk_mlp = torch.gather(chunk_lp, 2,
+                                         chunk_lbl.clamp(min=0).unsqueeze(-1)).squeeze(-1)
+                chunk_mlp[chunk_pad] = 0.0
+                model_lp[:, s:e] = chunk_mlp.to(hidden.dtype)
+                del chunk_lp, chunk_mlp
+
             with torch.no_grad():
-                ref_model_outputs = self.ref_model(
-                    input_ids=inputs['input_ids'],
-                    attention_mask=inputs['attention_mask']
-                )
+                chunk_preds = chunk_logits.argmax(dim=-1)       # (B, chunk)
+                acc_correct += ((chunk_preds == chunk_lbl) & ~chunk_pad).sum()
+                acc_total   += (~chunk_pad).sum()
 
-             
-            self.args.kl_penalty_mode = "full"
-            if self.args.kl_penalty_mode == 'full':
-                logprob = self.logprobs_from_logits(model_outputs.logits, gather=False)  
-                ref_logprob = self.logprobs_from_logits(ref_model_outputs.logits, gather=False)  
+            del chunk_logits, chunk_ce
+
+        shift_conjunction_mask = conjunction_mask[:, 1:]
+
+        # ── token accuracy (train or eval) ────────────────────────────────────
+        if acc_total.item() > 0:
+            acc = acc_correct.float() / acc_total.float()
+            if model.training:
+                self.store_metrics({"train_acc": acc.item()}, "train")
             else:
-                logprob = self.logprobs_from_logits(model_outputs.logits, labels=inputs['labels'])  
-                ref_logprob = self.logprobs_from_logits(ref_model_outputs.logits, labels=inputs['labels'])  
-            
-            kl_divergence = self.compute_kl_divergence(logprob, ref_logprob, kl_penalty=self.args.kl_penalty_mode)
-             
-            shift_labels = inputs['labels'][:, 1:]
-            mask = torch.not_equal(shift_labels, -100)
-            shift_conjunction_mask = conjunction_mask[:, 1:]
-            combined_mask = mask * shift_conjunction_mask
-             
-            _, token_loss = compute_lm_loglikeli(model_outputs.logits, inputs['labels'])
-            batch_size, seq_length, vocab_size = model_outputs.logits.shape
-            token_loss = token_loss.reshape(batch_size, -1)
-             
-            loss = (token_loss * shift_conjunction_mask).sum() / shift_conjunction_mask.sum()
-             
-            kl_divergence = (kl_divergence * combined_mask).sum() / combined_mask.sum()
-            self.store_metrics({"kl": kl_divergence}, 'train')
+                self.store_metrics({"eval_acc": acc.item()}, "eval")
 
-            loss = loss + self.args.lm_kl_coeff * kl_divergence
-            self.store_metrics({"step_loss": loss})
-        
+        # ── loss ──────────────────────────────────────────────────────────────
+        use_conj = shift_conjunction_mask.any()  # False for eval data without S2R format
+        loss_mask = shift_conjunction_mask if use_conj else label_mask
+
+        if self.args.lm_kl_coeff is not None:
+            combined_mask = label_mask * shift_conjunction_mask
+
+            if has_ref:
+                kl_divergence = torch.exp(model_lp) * (model_lp - ref_lp)
+                kl_scalar = (kl_divergence * combined_mask).sum() / combined_mask.sum().clamp(min=1)
+                self.store_metrics({"kl": kl_scalar}, "train")
+                loss = (ce_loss_2d * loss_mask).sum() / loss_mask.sum().clamp(min=1)
+                loss = loss + self.args.lm_kl_coeff * kl_scalar
+                self.store_metrics({"step_loss": loss})
+            elif self.ref_model is not None:
+                # fallback: ref model on CPU (only hit when ref_logprobs not provided)
+                with torch.no_grad():
+                    ref_out = self.ref_model(
+                        input_ids=inputs['input_ids'].cpu(),
+                        attention_mask=inputs['attention_mask'].cpu(),
+                    )
+                # reconstruct full policy logits once for the fallback KL
+                policy_logits = torch.cat([
+                    lm_head(shift_hidden[:, s:min(s+CHUNK, S-1)]).float()
+                    for s in range(0, S - 1, CHUNK)
+                ], dim=1)
+                kl_divergence = self._chunked_full_kl(policy_logits, ref_out.logits[:, :-1], chunk_size=64)
+                del policy_logits
+                kl_scalar = (kl_divergence * combined_mask).sum() / combined_mask.sum().clamp(min=1)
+                self.store_metrics({"kl": kl_scalar}, "train")
+                loss = (ce_loss_2d * loss_mask).sum() / loss_mask.sum().clamp(min=1)
+                loss = loss + self.args.lm_kl_coeff * kl_scalar
+                self.store_metrics({"step_loss": loss})
+            else:
+                # eval without ref_logprobs and without ref_model: CE only
+                loss = ce_loss_2d.sum() / label_mask.sum().clamp(min=1)
         else:
-            loss = (model_outputs.loss * shift_conjunction_mask).sum() / shift_conjunction_mask.sum()
+            loss = (ce_loss_2d * loss_mask).sum() / loss_mask.sum().clamp(min=1)
 
-        return (loss, model_outputs['logits']) if return_outputs else loss
+        return (loss, ce_loss_2d) if return_outputs else loss

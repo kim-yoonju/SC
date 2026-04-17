@@ -1,0 +1,8 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+  500 problems loaded from ./data/train_data/math500.parquet
+  1319 problems loaded from ./data/train_data/gsm8k.parquet
+Total: 1819 problems from 2 dataset(s)
+[GPU 2/4] 455 problems assigned
+Start: 455 problems / batch_size=256 → 2 batches × 5 samples
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]

@@ -1,0 +1,21 @@
+[2026-04-14 10:24:46,150] [INFO] [real_accelerator.py:161:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+Traceback (most recent call last):
+  File "/home/yoonju/miniconda3/envs/s2r/bin/deepspeed", line 3, in <module>
+    from deepspeed.launcher.runner import main
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/__init__.py", line 22, in <module>
+    from . import module_inject
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/module_inject/__init__.py", line 6, in <module>
+    from .replace_module import replace_transformer_layer, revert_transformer_layer, ReplaceWithTensorSlicing, GroupQuantizer, generic_injection
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/module_inject/replace_module.py", line 590, in <module>
+    from ..pipe import PipelineModule
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/pipe/__init__.py", line 6, in <module>
+    from ..runtime.pipe import PipelineModule, LayerSpec, TiedLayerSpec
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/pipe/__init__.py", line 6, in <module>
+    from .module import PipelineModule, LayerSpec, TiedLayerSpec
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/pipe/module.py", line 19, in <module>
+    from ..activation_checkpointing import checkpointing
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/activation_checkpointing/checkpointing.py", line 26, in <module>
+    from deepspeed.runtime.config import DeepSpeedConfig
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/config.py", line 12, in <module>
+    import hjson
+ModuleNotFoundError: No module named 'hjson'

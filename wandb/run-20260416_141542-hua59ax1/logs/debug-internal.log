@@ -1,0 +1,7 @@
+{"time":"2026-04-16T14:15:42.508567686Z","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"/mnt/yoonju/NRL/S2R/wandb/run-20260416_141542-hua59ax1/logs/debug-core.log"}
+{"time":"2026-04-16T14:15:43.123602072Z","level":"INFO","msg":"created new stream","id":"hua59ax1"}
+{"time":"2026-04-16T14:15:43.123645201Z","level":"INFO","msg":"stream: started","id":"hua59ax1"}
+{"time":"2026-04-16T14:15:43.12367835Z","level":"INFO","msg":"writer: Do: started","stream_id":"hua59ax1"}
+{"time":"2026-04-16T14:15:43.12371574Z","level":"INFO","msg":"sender: started","stream_id":"hua59ax1"}
+{"time":"2026-04-16T14:15:43.123727609Z","level":"INFO","msg":"handler: started","stream_id":"hua59ax1"}
+{"time":"2026-04-16T14:15:43.949655993Z","level":"INFO","msg":"Starting system monitor"}

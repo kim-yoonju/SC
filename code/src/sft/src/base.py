@@ -43,15 +43,15 @@ class BaseTrainer(Trainer):
         )
         self.args = args
         self._stored_metrics = defaultdict(lambda: defaultdict(list))
-        if self._is_create_ref_model():
+        self.ref_model = None
+        if self._is_create_ref_model() and ref_model is not None:
             self.ref_model = ref_model
             for param in self.ref_model.parameters():
                 param.requires_grad = False
-
-            if self.is_deepspeed_enabled:
-                self.ref_model = self._prepare_deepspeed(self.ref_model)
-            else:
-                self.ref_model = self.accelerator.prepare_model(self.ref_model, evaluation_mode=True)
+            # Keep ref_model on CPU to save GPU memory (~14 GiB per GPU).
+            # Forward pass runs on CPU; only small logit chunks are moved to GPU
+            # inside _chunked_full_kl.
+            self.ref_model = self.ref_model.cpu().eval()
     
 
     def _is_create_ref_model(self) -> bool:
@@ -96,7 +96,7 @@ class BaseTrainer(Trainer):
         logits: (batch_size, seq_len, vocab_size)
         labels: (batch_size, seq_len)
         """
-        logp = nn.functional.log_softmax(logits, dim=2)
+        logp = nn.functional.log_softmax(logits.float(), dim=2).to(logits.dtype)
 
         if not gather:
             return logp
@@ -105,6 +105,33 @@ class BaseTrainer(Trainer):
         return logpy
 
         
+    @staticmethod
+    def _chunked_full_kl(logits: torch.Tensor, ref_logits: torch.Tensor, chunk_size: int = 64) -> torch.Tensor:
+        """
+        Compute full KL divergence KL(model || ref) in seq_len chunks.
+
+        - logits: GPU tensor (batch, seq_len, vocab_size)
+        - ref_logits: CPU or GPU tensor (batch, seq_len, vocab_size).
+          If on CPU, each chunk is moved to GPU on the fly so GPU memory usage
+          is O(chunk_size) rather than O(seq_len).
+
+        Returns: (batch, seq_len - 1) on the same device as logits.
+        """
+        device = logits.device
+        logits = logits[:, :-1, :]          # shift
+        ref_logits = ref_logits[:, :-1, :]  # shift (may be on CPU)
+        batch, seq_len, _ = logits.shape
+        kl_chunks = []
+        for start in range(0, seq_len, chunk_size):
+            end = min(start + chunk_size, seq_len)
+            logp = nn.functional.log_softmax(logits[:, start:end, :].float(), dim=-1).to(logits.dtype)
+            ref_chunk = ref_logits[:, start:end, :].to(device)  # CPU→GPU for this chunk only
+            ref_logp = nn.functional.log_softmax(ref_chunk.float(), dim=-1).to(ref_chunk.dtype)
+            kl_chunk = nn.functional.kl_div(ref_logp, logp, log_target=True, reduction='none').sum(-1)
+            kl_chunks.append(kl_chunk)
+            del logp, ref_chunk, ref_logp
+        return torch.cat(kl_chunks, dim=1)  # (batch, seq_len - 1)
+
     @staticmethod
     def compute_kl_divergence(logprob: torch.FloatTensor, ref_logprob: torch.FloatTensor, kl_penalty='kl') -> torch.FloatTensor:
         """

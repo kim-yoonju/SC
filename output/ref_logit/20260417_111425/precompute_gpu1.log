@@ -1,0 +1,17 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[11:14:30] [GPU 1/4] 818/3272 samples  batch=16  device=cuda
+[11:14:30] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  5.84it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  6.82it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  7.23it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.56it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.24it/s]
+[11:14:40] Model loaded. Starting inference ...
+[11:14:48]   batch [1/52]  7.9s/batch  elapsed 8s  ETA 401s
+Traceback (most recent call last):
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 194, in <module>
+    main()
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 169, in main
+    token_logprobs = compute_batch_ref_logprobs(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 86, in compute_batch_ref_logprobs
+    shift_logits = outputs.logits[:, :-1, :].contiguous()  # (B, S-1, V) bf16
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 24.89 GiB. GPU 0 has a total capacity of 94.97 GiB of which 23.32 GiB is free. Including non-PyTorch memory, this process has 44.57 GiB memory in use. Process 1625887 has 27.07 GiB memory in use. Of the allocated memory 43.78 GiB is allocated by PyTorch, and 151.90 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

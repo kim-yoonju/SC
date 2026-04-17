@@ -1,0 +1,7 @@
+{"time":"2026-04-15T08:25:35.012296901Z","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"/mnt/yoonju/NRL/S2R/wandb/run-20260415_082534-kw2glzlu/logs/debug-core.log"}
+{"time":"2026-04-15T08:25:35.931176012Z","level":"INFO","msg":"created new stream","id":"kw2glzlu"}
+{"time":"2026-04-15T08:25:35.931290001Z","level":"INFO","msg":"stream: started","id":"kw2glzlu"}
+{"time":"2026-04-15T08:25:35.93131695Z","level":"INFO","msg":"writer: Do: started","stream_id":"kw2glzlu"}
+{"time":"2026-04-15T08:25:35.93133747Z","level":"INFO","msg":"handler: started","stream_id":"kw2glzlu"}
+{"time":"2026-04-15T08:25:35.931372939Z","level":"INFO","msg":"sender: started","stream_id":"kw2glzlu"}
+{"time":"2026-04-15T08:25:36.698675797Z","level":"INFO","msg":"Starting system monitor"}

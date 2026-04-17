@@ -49,6 +49,7 @@ class SFTWeightedTrainingArugments(SFTTrainingArguments):
 class SFTWeightedWithKLTrainingArguments(SFTWeightedTrainingArugments):
     use_kl_mask: Optional[bool] = field(default=False)
     lm_kl_coeff: Optional[float] = field(default=0.0)
+    ref_logprobs_path: Optional[str] = field(default=None, metadata={"help": "Path to precomputed ref model logprobs (.pt). If set, skips ref model forward pass."})
 
 @dataclass
 class OfflineWeightedPolicyTrainingArguments(SFTWeightedWithKLTrainingArguments):

@@ -1,0 +1,60 @@
+  0%|                                        | 0/225 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/mnt/yoonju/NRL/S2R/./code/src/sft/src/sft_weighted_with_kl.py", line 133, in <module>
+    main()
+  File "/mnt/yoonju/NRL/S2R/./code/src/sft/src/sft_weighted_with_kl.py", line 118, in main
+    train_result = trainer.train()
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+    return inner_training_loop(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 3579, in training_step
+    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+  File "/mnt/yoonju/NRL/S2R/code/src/sft/src/trainers.py", line 259, in compute_loss
+    model_outputs = model(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/utils/nvtx.py", line 15, in wrapped_fn
+    ret_val = func(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/engine.py", line 1852, in forward
+    loss = self.module(*inputs, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 1183, in forward
+    loss = self.loss_function(logits, labels, self.vocab_size, **loss_kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/loss/loss_utils.py", line 36, in ForCausalLMLoss
+    logits = logits.float()
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 52.90 GiB. GPU 0 has a total capacity of 94.97 GiB of which 18.20 GiB is free. Including non-PyTorch memory, this process has 76.76 GiB memory in use. Of the allocated memory 75.85 GiB is allocated by PyTorch, and 58.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/mnt/yoonju/NRL/S2R/./code/src/sft/src/sft_weighted_with_kl.py", line 133, in <module>
+[rank0]:     main()
+[rank0]:   File "/mnt/yoonju/NRL/S2R/./code/src/sft/src/sft_weighted_with_kl.py", line 118, in main
+[rank0]:     train_result = trainer.train()
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 2123, in train
+[rank0]:     return inner_training_loop(
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 2481, in _inner_training_loop
+[rank0]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/trainer.py", line 3579, in training_step
+[rank0]:     loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
+[rank0]:   File "/mnt/yoonju/NRL/S2R/code/src/sft/src/trainers.py", line 259, in compute_loss
+[rank0]:     model_outputs = model(
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/utils/nvtx.py", line 15, in wrapped_fn
+[rank0]:     ret_val = func(*args, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/deepspeed/runtime/engine.py", line 1852, in forward
+[rank0]:     loss = self.module(*inputs, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+[rank0]:     return self._call_impl(*args, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+[rank0]:     return forward_call(*args, **kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 1183, in forward
+[rank0]:     loss = self.loss_function(logits, labels, self.vocab_size, **loss_kwargs)
+[rank0]:   File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/loss/loss_utils.py", line 36, in ForCausalLMLoss
+[rank0]:     logits = logits.float()
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 52.90 GiB. GPU 0 has a total capacity of 94.97 GiB of which 18.20 GiB is free. Including non-PyTorch memory, this process has 76.76 GiB memory in use. Of the allocated memory 75.85 GiB is allocated by PyTorch, and 58.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

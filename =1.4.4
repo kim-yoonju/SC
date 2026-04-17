@@ -1,0 +1,52 @@
+Collecting gguf==0.10.0
+  Downloading gguf-0.10.0-py3-none-any.whl.metadata (3.5 kB)
+Collecting partial-json-parser
+  Downloading partial_json_parser-0.2.1.1.post7-py3-none-any.whl.metadata (6.1 kB)
+Collecting mistral-common[opencv]
+  Downloading mistral_common-1.11.0-py3-none-any.whl.metadata (5.9 kB)
+Requirement already satisfied: numpy>=1.17 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from gguf==0.10.0) (1.23.5)
+Requirement already satisfied: pyyaml>=5.1 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from gguf==0.10.0) (6.0.3)
+Requirement already satisfied: tqdm>=4.27 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from gguf==0.10.0) (4.67.1)
+Requirement already satisfied: pydantic<3.0,>=2.7 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (2.13.0)
+Requirement already satisfied: jsonschema>=4.21.1 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (4.26.0)
+Requirement already satisfied: typing-extensions>=4.11.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (4.15.0)
+Requirement already satisfied: tiktoken>=0.7.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (0.12.0)
+Requirement already satisfied: pillow>=10.3.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (12.1.1)
+Requirement already satisfied: requests>=2.0.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from mistral-common[opencv]) (2.33.1)
+Collecting numpy>=1.17 (from gguf==0.10.0)
+  Using cached numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (62 kB)
+Collecting pydantic-extra-types>=2.10.5 (from pydantic-extra-types[pycountry]>=2.10.5->mistral-common[opencv])
+  Downloading pydantic_extra_types-2.11.1-py3-none-any.whl.metadata (4.2 kB)
+Collecting opencv-python-headless>=4.0.0 (from mistral-common[opencv])
+  Downloading opencv_python_headless-4.13.0.92-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (19 kB)
+Requirement already satisfied: annotated-types>=0.6.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from pydantic<3.0,>=2.7->mistral-common[opencv]) (0.7.0)
+Requirement already satisfied: pydantic-core==2.46.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from pydantic<3.0,>=2.7->mistral-common[opencv]) (2.46.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from pydantic<3.0,>=2.7->mistral-common[opencv]) (0.4.2)
+Requirement already satisfied: attrs>=22.2.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from jsonschema>=4.21.1->mistral-common[opencv]) (26.1.0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from jsonschema>=4.21.1->mistral-common[opencv]) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from jsonschema>=4.21.1->mistral-common[opencv]) (0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from jsonschema>=4.21.1->mistral-common[opencv]) (0.30.0)
+Collecting pycountry>=23 (from pydantic-extra-types[pycountry]>=2.10.5->mistral-common[opencv])
+  Downloading pycountry-26.2.16-py3-none-any.whl.metadata (12 kB)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from requests>=2.0.0->mistral-common[opencv]) (3.4.7)
+Requirement already satisfied: idna<4,>=2.5 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from requests>=2.0.0->mistral-common[opencv]) (3.11)
+Requirement already satisfied: urllib3<3,>=1.26 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from requests>=2.0.0->mistral-common[opencv]) (2.6.3)
+Requirement already satisfied: certifi>=2023.5.7 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from requests>=2.0.0->mistral-common[opencv]) (2026.2.25)
+Requirement already satisfied: regex>=2022.1.18 in /home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages (from tiktoken>=0.7.0->mistral-common[opencv]) (2023.12.25)
+Downloading gguf-0.10.0-py3-none-any.whl (71 kB)
+Downloading mistral_common-1.11.0-py3-none-any.whl (6.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.5/6.5 MB 11.5 MB/s  0:00:00
+Using cached numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
+Downloading partial_json_parser-0.2.1.1.post7-py3-none-any.whl (10 kB)
+Downloading opencv_python_headless-4.13.0.92-cp37-abi3-manylinux_2_28_x86_64.whl (60.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.4/60.4 MB 11.6 MB/s  0:00:05
+Downloading pydantic_extra_types-2.11.1-py3-none-any.whl (79 kB)
+Downloading pycountry-26.2.16-py3-none-any.whl (8.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 11.5 MB/s  0:00:00
+Installing collected packages: pycountry, partial-json-parser, numpy, opencv-python-headless, gguf, pydantic-extra-types, mistral-common
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.23.5
+    Uninstalling numpy-1.23.5:
+      Successfully uninstalled numpy-1.23.5
+
+Successfully installed gguf-0.10.0 mistral-common-1.11.0 numpy-2.2.6 opencv-python-headless-4.13.0.92 partial-json-parser-0.2.1.1.post7 pycountry-26.2.16 pydantic-extra-types-2.11.1

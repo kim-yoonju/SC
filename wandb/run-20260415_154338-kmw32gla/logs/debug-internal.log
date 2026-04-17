@@ -1,0 +1,11 @@
+{"time":"2026-04-15T15:43:39.02151892Z","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"/mnt/yoonju/NRL/S2R/wandb/run-20260415_154338-kmw32gla/logs/debug-core.log"}
+{"time":"2026-04-15T15:43:39.537786388Z","level":"INFO","msg":"created new stream","id":"kmw32gla"}
+{"time":"2026-04-15T15:43:39.537870416Z","level":"INFO","msg":"stream: started","id":"kmw32gla"}
+{"time":"2026-04-15T15:43:39.537924655Z","level":"INFO","msg":"writer: Do: started","stream_id":"kmw32gla"}
+{"time":"2026-04-15T15:43:39.537956184Z","level":"INFO","msg":"handler: started","stream_id":"kmw32gla"}
+{"time":"2026-04-15T15:43:39.538049173Z","level":"INFO","msg":"sender: started","stream_id":"kmw32gla"}
+{"time":"2026-04-15T15:43:40.419185486Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2026-04-15T15:44:16.534161005Z","level":"INFO","msg":"stream: closing","id":"kmw32gla"}
+{"time":"2026-04-15T15:44:16.534215974Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2026-04-15T15:44:16.535116618Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2026-04-15T15:44:17.726223068Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}

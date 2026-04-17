@@ -1,0 +1,7 @@
+{"time":"2026-04-16T08:48:27.878122888Z","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"/mnt/yoonju/NRL/S2R/wandb/run-20260416_084827-mugcrdfa/logs/debug-core.log"}
+{"time":"2026-04-16T08:48:28.19340466Z","level":"INFO","msg":"created new stream","id":"mugcrdfa"}
+{"time":"2026-04-16T08:48:28.193485619Z","level":"INFO","msg":"stream: started","id":"mugcrdfa"}
+{"time":"2026-04-16T08:48:28.193526318Z","level":"INFO","msg":"writer: Do: started","stream_id":"mugcrdfa"}
+{"time":"2026-04-16T08:48:28.193563198Z","level":"INFO","msg":"sender: started","stream_id":"mugcrdfa"}
+{"time":"2026-04-16T08:48:28.193559608Z","level":"INFO","msg":"handler: started","stream_id":"mugcrdfa"}
+{"time":"2026-04-16T08:48:28.9329642Z","level":"INFO","msg":"Starting system monitor"}

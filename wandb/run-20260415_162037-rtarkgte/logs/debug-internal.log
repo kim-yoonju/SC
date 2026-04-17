@@ -1,0 +1,15 @@
+{"time":"2026-04-15T16:20:38.020001594Z","level":"INFO","msg":"stream: starting","core version":"0.19.6","symlink path":"/mnt/yoonju/NRL/S2R/wandb/run-20260415_162037-rtarkgte/logs/debug-core.log"}
+{"time":"2026-04-15T16:20:38.738684046Z","level":"INFO","msg":"created new stream","id":"rtarkgte"}
+{"time":"2026-04-15T16:20:38.738769265Z","level":"INFO","msg":"stream: started","id":"rtarkgte"}
+{"time":"2026-04-15T16:20:38.738816885Z","level":"INFO","msg":"handler: started","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:20:38.738800385Z","level":"INFO","msg":"writer: Do: started","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:20:38.738883655Z","level":"INFO","msg":"sender: started","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:20:39.508890364Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2026-04-15T16:21:14.452346715Z","level":"INFO","msg":"stream: closing","id":"rtarkgte"}
+{"time":"2026-04-15T16:21:14.452516054Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2026-04-15T16:21:14.45397866Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2026-04-15T16:21:15.531078591Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-04-15T16:21:16.538025826Z","level":"INFO","msg":"handler: closed","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:21:16.538089186Z","level":"INFO","msg":"sender: closed","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:21:16.538076406Z","level":"INFO","msg":"writer: Close: closed","stream_id":"rtarkgte"}
+{"time":"2026-04-15T16:21:16.538299186Z","level":"INFO","msg":"stream: closed","id":"rtarkgte"}

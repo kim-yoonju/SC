@@ -1,0 +1,134 @@
+{
+  "os":  "Linux-6.8.0-79-generic-x86_64-with-glibc2.39",
+  "python":  "CPython 3.10.0",
+  "startedAt":  "2026-04-15T02:31:28.919543Z",
+  "args":  [
+    "--local_rank=0",
+    "--output_dir",
+    "./saved_models/Qwen2.5-Math-7B_sft_sft_data_20260415_022935",
+    "--do_train",
+    "True",
+    "--data_paths",
+    "./data/train_data/sft_data.json",
+    "--model_type",
+    "qwen",
+    "--model_name_or_path",
+    "Qwen/Qwen2.5-Math-7B",
+    "--model_max_length",
+    "8000",
+    "--remove_unused_columns",
+    "False",
+    "--report_to",
+    "wandb",
+    "--overwrite_output_dir",
+    "True",
+    "--per_device_train_batch_size",
+    "16",
+    "--per_device_eval_batch_size",
+    "16",
+    "--gradient_accumulation_steps",
+    "1",
+    "--num_train_epochs",
+    "3",
+    "--logging_strategy",
+    "steps",
+    "--logging_steps",
+    "1",
+    "--save_strategy",
+    "epoch",
+    "--save_steps",
+    "50",
+    "--learning_rate",
+    "5e-6",
+    "--evaluation_strategy",
+    "no",
+    "--eval_steps",
+    "2000",
+    "--warmup_steps",
+    "5",
+    "--gradient_checkpointing",
+    "True",
+    "--bf16",
+    "True",
+    "--ref_logprobs_path",
+    "./output/ref_logit/20260415_022207/ref_logprobs.pt",
+    "--lm_kl_coeff",
+    "0.01",
+    "--pad_labels_with_ignore",
+    "--optim",
+    "adamw_torch",
+    "--deepspeed",
+    "./code/configs/ds_stage2_fast.json"
+  ],
+  "program":  "/mnt/yoonju/NRL/S2R/./code/src/sft/src/sft_weighted_with_kl.py",
+  "codePath":  "code/src/sft/src/sft_weighted_with_kl.py",
+  "git":  {
+    "remote":  "https://github.com/NineAbyss/S2R",
+    "commit":  "43ccd2b7917b4964ac06bfee2d06c53cdf16f3e2"
+  },
+  "email":  "beads0105@gmail.com",
+  "root":  "/mnt/yoonju/NRL/S2R",
+  "host":  "vega",
+  "executable":  "/home/yoonju/miniconda3/envs/s2r/bin/python3.10",
+  "codePathLocal":  "code/src/sft/src/sft_weighted_with_kl.py",
+  "cpu_count":  192,
+  "cpu_count_logical":  192,
+  "gpu":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+  "gpu_count":  8,
+  "disk":  {
+    "/":  {
+      "total":  "15147421802496",
+      "used":  "7959675924480"
+    }
+  },
+  "memory":  {
+    "total":  "811218989056"
+  },
+  "cpu":  {
+    "count":  192,
+    "countLogical":  192
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    },
+    {
+      "name":  "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal":  "102641958912",
+      "cudaCores":  24064
+    }
+  ],
+  "cudaVersion":  "13.0"
+}

@@ -1,0 +1,17 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[02:13:58] [GPU 3/4] 598/2393 samples  batch=16  device=cuda
+[02:13:58] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  8.70it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00, 10.17it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  9.94it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  9.87it/s]
+[02:14:11] Model loaded. Starting inference ...
+Traceback (most recent call last):
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 175, in <module>
+    main()
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 150, in main
+    token_logprobs = compute_batch_ref_logprobs(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 88, in compute_batch_ref_logprobs
+    shift_logits.view(-1, V).float(),
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 49.15 GiB. GPU 0 has a total capacity of 94.97 GiB of which 26.17 GiB is free. Including non-PyTorch memory, this process has 68.79 GiB memory in use. Of the allocated memory 67.99 GiB is allocated by PyTorch, and 164.96 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[W415 02:14:37.300940954 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

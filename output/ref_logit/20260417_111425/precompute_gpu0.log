@@ -1,0 +1,60 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[11:14:30] [GPU 0/4] 818/3272 samples  batch=16  device=cuda
+[11:14:30] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  5.91it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  6.39it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  6.98it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  6.92it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  6.77it/s]
+[11:14:40] Model loaded. Starting inference ...
+[11:14:50]   batch [1/52]  9.9s/batch  elapsed 10s  ETA 507s
+[11:15:11]   batch [2/52]  21.2s/batch  elapsed 31s  ETA 1061s
+[11:15:16]   batch [3/52]  5.2s/batch  elapsed 36s  ETA 253s
+[11:15:27]   batch [4/52]  10.7s/batch  elapsed 47s  ETA 513s
+[11:15:36]   batch [5/52]  9.3s/batch  elapsed 56s  ETA 436s
+[11:15:42]   batch [6/52]  5.6s/batch  elapsed 62s  ETA 256s
+[11:15:50]   batch [7/52]  7.7s/batch  elapsed 70s  ETA 349s
+[11:16:02]   batch [8/52]  12.4s/batch  elapsed 82s  ETA 544s
+[11:16:10]   batch [9/52]  8.2s/batch  elapsed 90s  ETA 354s
+[11:16:17]   batch [10/52]  7.0s/batch  elapsed 97s  ETA 294s
+[11:16:25]   batch [11/52]  8.0s/batch  elapsed 105s  ETA 327s
+[11:16:37]   batch [12/52]  11.9s/batch  elapsed 117s  ETA 476s
+[11:16:43]   batch [13/52]  5.8s/batch  elapsed 123s  ETA 228s
+[11:16:51]   batch [14/52]  7.6s/batch  elapsed 130s  ETA 287s
+[11:16:57]   batch [15/52]  6.7s/batch  elapsed 137s  ETA 247s
+[11:17:06]   batch [16/52]  8.8s/batch  elapsed 146s  ETA 317s
+[11:17:11]   batch [17/52]  5.2s/batch  elapsed 151s  ETA 181s
+[11:17:19]   batch [18/52]  7.7s/batch  elapsed 159s  ETA 263s
+[11:17:27]   batch [19/52]  8.4s/batch  elapsed 167s  ETA 277s
+[11:17:32]   batch [20/52]  4.4s/batch  elapsed 172s  ETA 142s
+[11:17:37]   batch [21/52]  5.5s/batch  elapsed 177s  ETA 172s
+[11:17:45]   batch [22/52]  8.2s/batch  elapsed 185s  ETA 245s
+[11:17:53]   batch [23/52]  7.1s/batch  elapsed 192s  ETA 205s
+[11:18:00]   batch [24/52]  7.0s/batch  elapsed 200s  ETA 197s
+[11:18:04]   batch [25/52]  4.5s/batch  elapsed 204s  ETA 121s
+[11:18:10]   batch [26/52]  5.9s/batch  elapsed 210s  ETA 152s
+[11:18:16]   batch [27/52]  6.1s/batch  elapsed 216s  ETA 154s
+[11:18:24]   batch [28/52]  7.8s/batch  elapsed 224s  ETA 187s
+[11:18:33]   batch [29/52]  9.0s/batch  elapsed 233s  ETA 207s
+[11:18:39]   batch [30/52]  6.2s/batch  elapsed 239s  ETA 136s
+[11:18:44]   batch [31/52]  5.2s/batch  elapsed 244s  ETA 109s
+[11:18:54]   batch [32/52]  9.6s/batch  elapsed 254s  ETA 193s
+[11:19:03]   batch [33/52]  8.6s/batch  elapsed 262s  ETA 164s
+[11:19:09]   batch [34/52]  6.9s/batch  elapsed 269s  ETA 125s
+[11:19:18]   batch [35/52]  8.4s/batch  elapsed 278s  ETA 143s
+[11:19:23]   batch [36/52]  5.3s/batch  elapsed 283s  ETA 85s
+[11:19:32]   batch [37/52]  9.1s/batch  elapsed 292s  ETA 137s
+[11:19:43]   batch [38/52]  10.4s/batch  elapsed 303s  ETA 146s
+[11:19:50]   batch [39/52]  7.3s/batch  elapsed 310s  ETA 95s
+[11:19:57]   batch [40/52]  7.4s/batch  elapsed 317s  ETA 89s
+[11:20:02]   batch [41/52]  5.0s/batch  elapsed 322s  ETA 55s
+[11:20:11]   batch [42/52]  8.3s/batch  elapsed 331s  ETA 83s
+[11:20:16]   batch [43/52]  5.7s/batch  elapsed 336s  ETA 51s
+[11:20:20]   batch [44/52]  3.4s/batch  elapsed 340s  ETA 28s
+[11:20:26]   batch [45/52]  5.9s/batch  elapsed 346s  ETA 41s
+[11:20:33]   batch [46/52]  7.1s/batch  elapsed 353s  ETA 43s
+[11:20:38]   batch [47/52]  5.4s/batch  elapsed 358s  ETA 27s
+[11:20:46]   batch [48/52]  7.5s/batch  elapsed 366s  ETA 30s
+[11:20:53]   batch [49/52]  7.1s/batch  elapsed 373s  ETA 21s
+[11:20:58]   batch [50/52]  5.7s/batch  elapsed 378s  ETA 11s
+[11:21:10]   batch [51/52]  11.9s/batch  elapsed 390s  ETA 12s
+[11:21:11]   batch [52/52]  0.9s/batch  elapsed 391s  ETA 0s
+[11:21:11] Done. 818 samples in 391.2s  (0.48s/sample)
+[11:21:11] Saved → ./output/ref_logit/20260417_111425/ref_logprobs.pt.part0

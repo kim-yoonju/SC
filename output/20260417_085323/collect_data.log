@@ -1,0 +1,9 @@
+Run directory: ./output/20260417_085323
+Started at: Fri Apr 17 08:53:23 AM UTC 2026
+=== Step 1: Collecting responses from LLM (math500.parquet gsm8k.parquet) ===
+Launching 4 workers (GPUs: 4 5 6 7, batch_size=32 per GPU)
+[GPU 4] Worker 0 → ./output/20260417_085323/step1_output.jsonl.part0
+[GPU 5] Worker 1 → ./output/20260417_085323/step1_output.jsonl.part1
+[GPU 6] Worker 2 → ./output/20260417_085323/step1_output.jsonl.part2
+[GPU 7] Worker 3 → ./output/20260417_085323/step1_output.jsonl.part3
+Waiting for 4 workers to finish...

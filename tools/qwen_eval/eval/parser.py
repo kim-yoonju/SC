@@ -616,7 +616,7 @@ def parse_ground_truth(example: Dict[str, Any], data_name):
         gt_cot, gt_ans = None, example["Answer"]
     elif data_name == "aqua":
         gt_cot, gt_ans = None, example["correct"]
-    elif data_name in ["gaokao2023en", "college_math", "gaokao_math_cloze"]:
+    elif data_name in ["gaokao23En", "gaokao2023en", "college_math", "gaokao_math_cloze"]:
         gt_cot, gt_ans = None, example["answer"].replace("$", "").strip()
     elif data_name == "gaokao_math_qa":
         gt_cot, gt_ans = None, example["label"]

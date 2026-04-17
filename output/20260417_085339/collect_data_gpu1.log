@@ -1,0 +1,1983 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+  500 problems loaded from ./data/train_data/math500.parquet
+  1319 problems loaded from ./data/train_data/gsm8k.parquet
+Total: 1819 problems from 2 dataset(s)
+[GPU 1/4] 455 problems assigned
+Start: 455 problems / batch_size=32 → 15 batches × 5 samples
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:07<00:21,  7.13s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:08<00:07,  3.65s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:09<00:02,  2.56s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:10<00:00,  1.92s/it]Loading checkpoint shards: 100%|██████████| 4/4 [00:10<00:00,  2.64s/it]
+[08:53:56] Model loaded
+GPU1:   0%|          | 0/455 [00:00<?, ?prob/s][08:53:59] [GPU1 B1/15 S1/5]  → 100/2048 tokens  (26 tok/s)
+[08:54:02] [GPU1 B1/15 S1/5]  → 200/2048 tokens  (30 tok/s)
+[08:54:05] [GPU1 B1/15 S1/5]  → 300/2048 tokens  (31 tok/s)
+[08:54:08] [GPU1 B1/15 S1/5]  → 400/2048 tokens  (31 tok/s)
+[08:54:12] [GPU1 B1/15 S1/5]  → 500/2048 tokens  (31 tok/s)
+[08:54:16] [GPU1 B1/15 S1/5]  → 600/2048 tokens  (30 tok/s)
+[08:54:20] [GPU1 B1/15 S1/5]  → 700/2048 tokens  (29 tok/s)
+[08:54:24] [GPU1 B1/15 S1/5]  → 800/2048 tokens  (28 tok/s)
+[08:54:29] [GPU1 B1/15 S1/5]  → 900/2048 tokens  (27 tok/s)
+[08:54:34] [GPU1 B1/15 S1/5]  → 1000/2048 tokens  (26 tok/s)
+[08:54:39] [GPU1 B1/15 S1/5]  → 1100/2048 tokens  (25 tok/s)
+[08:54:44] [GPU1 B1/15 S1/5]  → 1200/2048 tokens  (25 tok/s)
+[08:54:50] [GPU1 B1/15 S1/5]  → 1300/2048 tokens  (24 tok/s)
+[08:54:56] [GPU1 B1/15 S1/5]  → 1400/2048 tokens  (23 tok/s)
+[08:55:02] [GPU1 B1/15 S1/5]  → 1500/2048 tokens  (22 tok/s)
+[08:55:09] [GPU1 B1/15 S1/5]  → 1600/2048 tokens  (22 tok/s)
+[08:55:16] [GPU1 B1/15 S1/5]  → 1700/2048 tokens  (21 tok/s)
+[08:55:23] [GPU1 B1/15 S1/5]  → 1800/2048 tokens  (21 tok/s)
+[08:55:30] [GPU1 B1/15 S1/5]  → 1900/2048 tokens  (20 tok/s)
+[08:55:38] [GPU1 B1/15 S1/5]  → 2000/2048 tokens  (20 tok/s)
+[08:55:45] [GPU1 B1/15 S2/5]  → 100/2048 tokens  (31 tok/s)
+[08:55:48] [GPU1 B1/15 S2/5]  → 200/2048 tokens  (33 tok/s)
+[08:55:51] [GPU1 B1/15 S2/5]  → 300/2048 tokens  (33 tok/s)
+[08:55:54] [GPU1 B1/15 S2/5]  → 400/2048 tokens  (32 tok/s)
+[08:55:58] [GPU1 B1/15 S2/5]  → 500/2048 tokens  (31 tok/s)
+[08:56:02] [GPU1 B1/15 S2/5]  → 600/2048 tokens  (30 tok/s)
+[08:56:06] [GPU1 B1/15 S2/5]  → 700/2048 tokens  (29 tok/s)
+[08:56:10] [GPU1 B1/15 S2/5]  → 800/2048 tokens  (28 tok/s)
+[08:56:15] [GPU1 B1/15 S2/5]  → 900/2048 tokens  (27 tok/s)
+[08:56:20] [GPU1 B1/15 S2/5]  → 1000/2048 tokens  (26 tok/s)
+[08:56:25] [GPU1 B1/15 S2/5]  → 1100/2048 tokens  (25 tok/s)
+[08:56:31] [GPU1 B1/15 S2/5]  → 1200/2048 tokens  (24 tok/s)
+[08:56:36] [GPU1 B1/15 S2/5]  → 1300/2048 tokens  (24 tok/s)
+[08:56:44] [GPU1 B1/15 S3/5]  → 100/2048 tokens  (31 tok/s)
+[08:56:47] [GPU1 B1/15 S3/5]  → 200/2048 tokens  (33 tok/s)
+[08:56:50] [GPU1 B1/15 S3/5]  → 300/2048 tokens  (33 tok/s)
+[08:56:53] [GPU1 B1/15 S3/5]  → 400/2048 tokens  (32 tok/s)
+[08:56:57] [GPU1 B1/15 S3/5]  → 500/2048 tokens  (31 tok/s)
+[08:57:01] [GPU1 B1/15 S3/5]  → 600/2048 tokens  (30 tok/s)
+[08:57:05] [GPU1 B1/15 S3/5]  → 700/2048 tokens  (29 tok/s)
+[08:57:09] [GPU1 B1/15 S3/5]  → 800/2048 tokens  (28 tok/s)
+[08:57:14] [GPU1 B1/15 S3/5]  → 900/2048 tokens  (27 tok/s)
+[08:57:19] [GPU1 B1/15 S3/5]  → 1000/2048 tokens  (26 tok/s)
+[08:57:24] [GPU1 B1/15 S3/5]  → 1100/2048 tokens  (25 tok/s)
+[08:57:30] [GPU1 B1/15 S3/5]  → 1200/2048 tokens  (24 tok/s)
+[08:57:36] [GPU1 B1/15 S3/5]  → 1300/2048 tokens  (24 tok/s)
+[08:57:42] [GPU1 B1/15 S3/5]  → 1400/2048 tokens  (23 tok/s)
+[08:57:48] [GPU1 B1/15 S3/5]  → 1500/2048 tokens  (22 tok/s)
+[08:57:55] [GPU1 B1/15 S3/5]  → 1600/2048 tokens  (22 tok/s)
+[08:58:02] [GPU1 B1/15 S3/5]  → 1700/2048 tokens  (21 tok/s)
+[08:58:09] [GPU1 B1/15 S3/5]  → 1800/2048 tokens  (20 tok/s)
+[08:58:16] [GPU1 B1/15 S3/5]  → 1900/2048 tokens  (20 tok/s)
+[08:58:24] [GPU1 B1/15 S3/5]  → 2000/2048 tokens  (19 tok/s)
+[08:58:31] [GPU1 B1/15 S4/5]  → 100/2048 tokens  (31 tok/s)
+[08:58:34] [GPU1 B1/15 S4/5]  → 200/2048 tokens  (33 tok/s)
+[08:58:37] [GPU1 B1/15 S4/5]  → 300/2048 tokens  (33 tok/s)
+[08:58:40] [GPU1 B1/15 S4/5]  → 400/2048 tokens  (32 tok/s)
+[08:58:44] [GPU1 B1/15 S4/5]  → 500/2048 tokens  (31 tok/s)
+[08:58:48] [GPU1 B1/15 S4/5]  → 600/2048 tokens  (30 tok/s)
+[08:58:52] [GPU1 B1/15 S4/5]  → 700/2048 tokens  (29 tok/s)
+[08:58:56] [GPU1 B1/15 S4/5]  → 800/2048 tokens  (28 tok/s)
+[08:59:01] [GPU1 B1/15 S4/5]  → 900/2048 tokens  (27 tok/s)
+[08:59:06] [GPU1 B1/15 S4/5]  → 1000/2048 tokens  (26 tok/s)
+[08:59:12] [GPU1 B1/15 S4/5]  → 1100/2048 tokens  (25 tok/s)
+[08:59:17] [GPU1 B1/15 S4/5]  → 1200/2048 tokens  (24 tok/s)
+[08:59:23] [GPU1 B1/15 S4/5]  → 1300/2048 tokens  (24 tok/s)
+[08:59:29] [GPU1 B1/15 S4/5]  → 1400/2048 tokens  (23 tok/s)
+[08:59:35] [GPU1 B1/15 S4/5]  → 1500/2048 tokens  (22 tok/s)
+[08:59:42] [GPU1 B1/15 S4/5]  → 1600/2048 tokens  (22 tok/s)
+[08:59:49] [GPU1 B1/15 S4/5]  → 1700/2048 tokens  (21 tok/s)
+[08:59:56] [GPU1 B1/15 S4/5]  → 1800/2048 tokens  (20 tok/s)
+[09:00:03] [GPU1 B1/15 S4/5]  → 1900/2048 tokens  (20 tok/s)
+[09:00:11] [GPU1 B1/15 S4/5]  → 2000/2048 tokens  (19 tok/s)
+[09:00:18] [GPU1 B1/15 S5/5]  → 100/2048 tokens  (31 tok/s)
+[09:00:21] [GPU1 B1/15 S5/5]  → 200/2048 tokens  (33 tok/s)
+[09:00:24] [GPU1 B1/15 S5/5]  → 300/2048 tokens  (33 tok/s)
+[09:00:27] [GPU1 B1/15 S5/5]  → 400/2048 tokens  (32 tok/s)
+[09:00:31] [GPU1 B1/15 S5/5]  → 500/2048 tokens  (31 tok/s)
+[09:00:35] [GPU1 B1/15 S5/5]  → 600/2048 tokens  (30 tok/s)
+[09:00:39] [GPU1 B1/15 S5/5]  → 700/2048 tokens  (29 tok/s)
+[09:00:44] [GPU1 B1/15 S5/5]  → 800/2048 tokens  (28 tok/s)
+[09:00:48] [GPU1 B1/15 S5/5]  → 900/2048 tokens  (27 tok/s)
+[09:00:53] [GPU1 B1/15 S5/5]  → 1000/2048 tokens  (26 tok/s)
+[09:00:59] [GPU1 B1/15 S5/5]  → 1100/2048 tokens  (25 tok/s)
+[09:01:04] [GPU1 B1/15 S5/5]  → 1200/2048 tokens  (24 tok/s)
+[09:01:10] [GPU1 B1/15 S5/5]  → 1300/2048 tokens  (24 tok/s)
+[09:01:16] [GPU1 B1/15 S5/5]  → 1400/2048 tokens  (23 tok/s)
+[09:01:22] [GPU1 B1/15 S5/5]  → 1500/2048 tokens  (22 tok/s)
+[09:01:29] [GPU1 B1/15 S5/5]  → 1600/2048 tokens  (22 tok/s)
+[09:01:36] [GPU1 B1/15 S5/5]  → 1700/2048 tokens  (21 tok/s)
+[09:01:43] [GPU1 B1/15 S5/5]  → 1800/2048 tokens  (20 tok/s)
+[09:01:50] [GPU1 B1/15 S5/5]  → 1900/2048 tokens  (20 tok/s)
+[09:01:58] [GPU1 B1/15 S5/5]  → 2000/2048 tokens  (19 tok/s)
+GPU1:   0%|          | 1/455 [08:06<61:20:15, 486.38s/prob]                                                           GPU1:   0%|          | 1/455 [08:06<61:20:15, 486.38s/prob]                                                           GPU1:   0%|          | 2/455 [08:06<61:12:08, 486.38s/prob]                                                           GPU1:   1%|          | 3/455 [08:06<61:04:02, 486.38s/prob]                                                           GPU1:   1%|          | 4/455 [08:06<60:55:56, 486.38s/prob]                                                           GPU1:   1%|          | 5/455 [08:06<60:47:49, 486.38s/prob]                                                           GPU1:   1%|▏         | 6/455 [08:06<60:39:43, 486.38s/prob]                                                           GPU1:   2%|▏         | 7/455 [08:06<60:31:36, 486.38s/prob]                                                           GPU1:   2%|▏         | 8/455 [08:06<60:23:30, 486.38s/prob]                                                           GPU1:   2%|▏         | 9/455 [08:06<60:15:24, 486.38s/prob]                                                           GPU1:   2%|▏         | 10/455 [08:06<60:07:17, 486.38s/prob]                                                            GPU1:   2%|▏         | 11/455 [08:06<59:59:11, 486.38s/prob]                                                            GPU1:   3%|▎         | 12/455 [08:06<59:51:05, 486.38s/prob]                                                            GPU1:   3%|▎         | 13/455 [08:06<59:42:58, 486.38s/prob]                                                            GPU1:   3%|▎         | 14/455 [08:06<59:34:52, 486.38s/prob]                                                            GPU1:   3%|▎         | 15/455 [08:06<59:26:45, 486.38s/prob]                                                            GPU1:   4%|▎         | 16/455 [08:06<59:18:39, 486.38s/prob]                                                            GPU1:   4%|▎         | 17/455 [08:06<59:10:33, 486.38s/prob]                                                            GPU1:   4%|▍         | 18/455 [08:06<59:02:26, 486.38s/prob]                                                            GPU1:   4%|▍         | 19/455 [08:06<58:54:20, 486.38s/prob]                                                            GPU1:   4%|▍         | 20/455 [08:06<58:46:14, 486.38s/prob]                                                            GPU1:   5%|▍         | 21/455 [08:06<58:38:07, 486.38s/prob]                                                            GPU1:   5%|▍         | 22/455 [08:06<58:30:01, 486.38s/prob]                                                            GPU1:   5%|▌         | 23/455 [08:06<58:21:54, 486.38s/prob]                                                            GPU1:   5%|▌         | 24/455 [08:06<58:13:48, 486.38s/prob]                                                            GPU1:   5%|▌         | 25/455 [08:06<58:05:42, 486.38s/prob]                                                            GPU1:   6%|▌         | 26/455 [08:06<57:57:35, 486.38s/prob]                                                            GPU1:   6%|▌         | 27/455 [08:06<57:49:29, 486.38s/prob]                                                            GPU1:   6%|▌         | 28/455 [08:06<57:41:23, 486.38s/prob]                                                            GPU1:   6%|▋         | 29/455 [08:06<57:33:16, 486.38s/prob]                                                            GPU1:   7%|▋         | 30/455 [08:06<57:25:10, 486.38s/prob]                                                            GPU1:   7%|▋         | 31/455 [08:06<57:17:03, 486.38s/prob]                                                            GPU1:   7%|▋         | 32/455 [08:06<57:08:57, 486.38s/prob][09:02:02] [GPU1] [1/455] saved: test/intermediate_algebra/1994.json
+[09:02:02] [GPU1] [2/455] saved: test/prealgebra/1622.json
+[09:02:02] [GPU1] [3/455] saved: test/prealgebra/1139.json
+[09:02:02] [GPU1] [4/455] saved: test/geometry/248.json
+[09:02:02] [GPU1] [5/455] saved: test/precalculus/1199.json
+[09:02:02] [GPU1] [6/455] saved: test/intermediate_algebra/607.json
+[09:02:02] [GPU1] [7/455] saved: test/intermediate_algebra/1388.json
+[09:02:02] [GPU1] [8/455] saved: test/counting_and_probability/666.json
+[09:02:02] [GPU1] [9/455] saved: test/algebra/1072.json
+[09:02:02] [GPU1] [10/455] saved: test/geometry/967.json
+[09:02:02] [GPU1] [11/455] saved: test/geometry/627.json
+[09:02:02] [GPU1] [12/455] saved: test/geometry/178.json
+[09:02:02] [GPU1] [13/455] saved: test/prealgebra/1388.json
+[09:02:02] [GPU1] [14/455] saved: test/precalculus/1105.json
+[09:02:02] [GPU1] [15/455] saved: test/intermediate_algebra/1168.json
+[09:02:02] [GPU1] [16/455] saved: test/intermediate_algebra/1247.json
+[09:02:02] [GPU1] [17/455] saved: test/prealgebra/1747.json
+[09:02:02] [GPU1] [18/455] saved: test/intermediate_algebra/207.json
+[09:02:02] [GPU1] [19/455] saved: test/algebra/2253.json
+[09:02:02] [GPU1] [20/455] saved: test/algebra/1004.json
+[09:02:02] [GPU1] [21/455] saved: test/algebra/1035.json
+[09:02:02] [GPU1] [22/455] saved: test/geometry/353.json
+[09:02:02] [GPU1] [23/455] saved: test/number_theory/357.json
+[09:02:02] [GPU1] [24/455] saved: test/algebra/873.json
+[09:02:02] [GPU1] [25/455] saved: test/prealgebra/105.json
+[09:02:02] [GPU1] [26/455] saved: test/intermediate_algebra/582.json
+[09:02:02] [GPU1] [27/455] saved: test/prealgebra/1804.json
+[09:02:02] [GPU1] [28/455] saved: test/precalculus/44.json
+[09:02:02] [GPU1] [29/455] saved: test/algebra/2593.json
+[09:02:02] [GPU1] [30/455] saved: test/algebra/2251.json
+[09:02:02] [GPU1] [31/455] saved: test/prealgebra/505.json
+[09:02:02] [GPU1] [32/455] saved: test/algebra/2232.json
+[09:02:06] [GPU1 B2/15 S1/5]  → 100/2048 tokens  (25 tok/s)
+[09:02:09] [GPU1 B2/15 S1/5]  → 200/2048 tokens  (28 tok/s)
+[09:02:13] [GPU1 B2/15 S1/5]  → 300/2048 tokens  (28 tok/s)
+[09:02:16] [GPU1 B2/15 S1/5]  → 400/2048 tokens  (28 tok/s)
+[09:02:21] [GPU1 B2/15 S1/5]  → 500/2048 tokens  (27 tok/s)
+[09:02:25] [GPU1 B2/15 S1/5]  → 600/2048 tokens  (26 tok/s)
+[09:02:29] [GPU1 B2/15 S1/5]  → 700/2048 tokens  (26 tok/s)
+[09:02:34] [GPU1 B2/15 S1/5]  → 800/2048 tokens  (25 tok/s)
+[09:02:39] [GPU1 B2/15 S1/5]  → 900/2048 tokens  (24 tok/s)
+[09:02:45] [GPU1 B2/15 S1/5]  → 1000/2048 tokens  (23 tok/s)
+[09:02:51] [GPU1 B2/15 S1/5]  → 1100/2048 tokens  (23 tok/s)
+[09:02:56] [GPU1 B2/15 S1/5]  → 1200/2048 tokens  (22 tok/s)
+[09:03:03] [GPU1 B2/15 S1/5]  → 1300/2048 tokens  (21 tok/s)
+[09:03:09] [GPU1 B2/15 S1/5]  → 1400/2048 tokens  (21 tok/s)
+[09:03:16] [GPU1 B2/15 S1/5]  → 1500/2048 tokens  (20 tok/s)
+[09:03:23] [GPU1 B2/15 S1/5]  → 1600/2048 tokens  (20 tok/s)
+[09:03:30] [GPU1 B2/15 S1/5]  → 1700/2048 tokens  (19 tok/s)
+[09:03:38] [GPU1 B2/15 S1/5]  → 1800/2048 tokens  (19 tok/s)
+[09:03:45] [GPU1 B2/15 S1/5]  → 1900/2048 tokens  (18 tok/s)
+[09:03:53] [GPU1 B2/15 S1/5]  → 2000/2048 tokens  (18 tok/s)
+[09:04:01] [GPU1 B2/15 S2/5]  → 100/2048 tokens  (25 tok/s)
+[09:04:05] [GPU1 B2/15 S2/5]  → 200/2048 tokens  (28 tok/s)
+[09:04:08] [GPU1 B2/15 S2/5]  → 300/2048 tokens  (28 tok/s)
+[09:04:12] [GPU1 B2/15 S2/5]  → 400/2048 tokens  (28 tok/s)
+[09:04:16] [GPU1 B2/15 S2/5]  → 500/2048 tokens  (27 tok/s)
+[09:04:20] [GPU1 B2/15 S2/5]  → 600/2048 tokens  (26 tok/s)
+[09:04:25] [GPU1 B2/15 S2/5]  → 700/2048 tokens  (26 tok/s)
+[09:04:30] [GPU1 B2/15 S2/5]  → 800/2048 tokens  (25 tok/s)
+[09:04:35] [GPU1 B2/15 S2/5]  → 900/2048 tokens  (24 tok/s)
+[09:04:40] [GPU1 B2/15 S2/5]  → 1000/2048 tokens  (23 tok/s)
+[09:04:46] [GPU1 B2/15 S2/5]  → 1100/2048 tokens  (23 tok/s)
+[09:04:52] [GPU1 B2/15 S2/5]  → 1200/2048 tokens  (22 tok/s)
+[09:04:58] [GPU1 B2/15 S2/5]  → 1300/2048 tokens  (21 tok/s)
+[09:05:04] [GPU1 B2/15 S2/5]  → 1400/2048 tokens  (21 tok/s)
+[09:05:11] [GPU1 B2/15 S2/5]  → 1500/2048 tokens  (20 tok/s)
+[09:05:18] [GPU1 B2/15 S2/5]  → 1600/2048 tokens  (20 tok/s)
+[09:05:25] [GPU1 B2/15 S2/5]  → 1700/2048 tokens  (19 tok/s)
+[09:05:33] [GPU1 B2/15 S2/5]  → 1800/2048 tokens  (19 tok/s)
+[09:05:41] [GPU1 B2/15 S2/5]  → 1900/2048 tokens  (18 tok/s)
+[09:05:49] [GPU1 B2/15 S2/5]  → 2000/2048 tokens  (18 tok/s)
+[09:05:57] [GPU1 B2/15 S3/5]  → 100/2048 tokens  (25 tok/s)
+[09:06:00] [GPU1 B2/15 S3/5]  → 200/2048 tokens  (28 tok/s)
+[09:06:03] [GPU1 B2/15 S3/5]  → 300/2048 tokens  (28 tok/s)
+[09:06:07] [GPU1 B2/15 S3/5]  → 400/2048 tokens  (28 tok/s)
+[09:06:11] [GPU1 B2/15 S3/5]  → 500/2048 tokens  (27 tok/s)
+[09:06:16] [GPU1 B2/15 S3/5]  → 600/2048 tokens  (26 tok/s)
+[09:06:20] [GPU1 B2/15 S3/5]  → 700/2048 tokens  (26 tok/s)
+[09:06:25] [GPU1 B2/15 S3/5]  → 800/2048 tokens  (25 tok/s)
+[09:06:30] [GPU1 B2/15 S3/5]  → 900/2048 tokens  (24 tok/s)
+[09:06:36] [GPU1 B2/15 S3/5]  → 1000/2048 tokens  (23 tok/s)
+[09:06:41] [GPU1 B2/15 S3/5]  → 1100/2048 tokens  (23 tok/s)
+[09:06:47] [GPU1 B2/15 S3/5]  → 1200/2048 tokens  (22 tok/s)
+[09:06:53] [GPU1 B2/15 S3/5]  → 1300/2048 tokens  (21 tok/s)
+[09:07:00] [GPU1 B2/15 S3/5]  → 1400/2048 tokens  (21 tok/s)
+[09:07:07] [GPU1 B2/15 S3/5]  → 1500/2048 tokens  (20 tok/s)
+[09:07:14] [GPU1 B2/15 S3/5]  → 1600/2048 tokens  (20 tok/s)
+[09:07:21] [GPU1 B2/15 S3/5]  → 1700/2048 tokens  (19 tok/s)
+[09:07:28] [GPU1 B2/15 S3/5]  → 1800/2048 tokens  (19 tok/s)
+[09:07:36] [GPU1 B2/15 S3/5]  → 1900/2048 tokens  (18 tok/s)
+[09:07:44] [GPU1 B2/15 S3/5]  → 2000/2048 tokens  (18 tok/s)
+[09:07:52] [GPU1 B2/15 S4/5]  → 100/2048 tokens  (25 tok/s)
+[09:07:56] [GPU1 B2/15 S4/5]  → 200/2048 tokens  (28 tok/s)
+[09:07:59] [GPU1 B2/15 S4/5]  → 300/2048 tokens  (28 tok/s)
+[09:08:03] [GPU1 B2/15 S4/5]  → 400/2048 tokens  (28 tok/s)
+[09:08:07] [GPU1 B2/15 S4/5]  → 500/2048 tokens  (27 tok/s)
+[09:08:11] [GPU1 B2/15 S4/5]  → 600/2048 tokens  (26 tok/s)
+[09:08:16] [GPU1 B2/15 S4/5]  → 700/2048 tokens  (26 tok/s)
+[09:08:21] [GPU1 B2/15 S4/5]  → 800/2048 tokens  (25 tok/s)
+[09:08:26] [GPU1 B2/15 S4/5]  → 900/2048 tokens  (24 tok/s)
+[09:08:31] [GPU1 B2/15 S4/5]  → 1000/2048 tokens  (23 tok/s)
+[09:08:37] [GPU1 B2/15 S4/5]  → 1100/2048 tokens  (23 tok/s)
+[09:08:43] [GPU1 B2/15 S4/5]  → 1200/2048 tokens  (22 tok/s)
+[09:08:49] [GPU1 B2/15 S4/5]  → 1300/2048 tokens  (21 tok/s)
+[09:08:55] [GPU1 B2/15 S4/5]  → 1400/2048 tokens  (21 tok/s)
+[09:09:02] [GPU1 B2/15 S4/5]  → 1500/2048 tokens  (20 tok/s)
+[09:09:09] [GPU1 B2/15 S4/5]  → 1600/2048 tokens  (20 tok/s)
+[09:09:16] [GPU1 B2/15 S4/5]  → 1700/2048 tokens  (19 tok/s)
+[09:09:24] [GPU1 B2/15 S4/5]  → 1800/2048 tokens  (19 tok/s)
+[09:09:32] [GPU1 B2/15 S4/5]  → 1900/2048 tokens  (18 tok/s)
+[09:09:40] [GPU1 B2/15 S4/5]  → 2000/2048 tokens  (18 tok/s)
+[09:09:48] [GPU1 B2/15 S5/5]  → 100/2048 tokens  (25 tok/s)
+[09:09:51] [GPU1 B2/15 S5/5]  → 200/2048 tokens  (28 tok/s)
+[09:09:55] [GPU1 B2/15 S5/5]  → 300/2048 tokens  (28 tok/s)
+[09:09:58] [GPU1 B2/15 S5/5]  → 400/2048 tokens  (28 tok/s)
+[09:10:02] [GPU1 B2/15 S5/5]  → 500/2048 tokens  (27 tok/s)
+[09:10:07] [GPU1 B2/15 S5/5]  → 600/2048 tokens  (26 tok/s)
+[09:10:11] [GPU1 B2/15 S5/5]  → 700/2048 tokens  (26 tok/s)
+[09:10:16] [GPU1 B2/15 S5/5]  → 800/2048 tokens  (25 tok/s)
+[09:10:21] [GPU1 B2/15 S5/5]  → 900/2048 tokens  (24 tok/s)
+[09:10:27] [GPU1 B2/15 S5/5]  → 1000/2048 tokens  (23 tok/s)
+[09:10:32] [GPU1 B2/15 S5/5]  → 1100/2048 tokens  (23 tok/s)
+[09:10:38] [GPU1 B2/15 S5/5]  → 1200/2048 tokens  (22 tok/s)
+[09:10:45] [GPU1 B2/15 S5/5]  → 1300/2048 tokens  (21 tok/s)
+[09:10:51] [GPU1 B2/15 S5/5]  → 1400/2048 tokens  (21 tok/s)
+[09:10:58] [GPU1 B2/15 S5/5]  → 1500/2048 tokens  (20 tok/s)
+[09:11:05] [GPU1 B2/15 S5/5]  → 1600/2048 tokens  (20 tok/s)
+[09:11:12] [GPU1 B2/15 S5/5]  → 1700/2048 tokens  (19 tok/s)
+[09:11:20] [GPU1 B2/15 S5/5]  → 1800/2048 tokens  (19 tok/s)
+[09:11:27] [GPU1 B2/15 S5/5]  → 1900/2048 tokens  (18 tok/s)
+[09:11:35] [GPU1 B2/15 S5/5]  → 2000/2048 tokens  (18 tok/s)
+GPU1:   7%|▋         | 33/455 [17:43<3:17:26, 28.07s/prob]                                                            GPU1:   7%|▋         | 33/455 [17:43<3:17:26, 28.07s/prob]                                                          GPU1:   7%|▋         | 34/455 [17:43<3:16:57, 28.07s/prob]                                                          GPU1:   8%|▊         | 35/455 [17:43<3:16:29, 28.07s/prob]                                                          GPU1:   8%|▊         | 36/455 [17:43<3:16:01, 28.07s/prob]                                                          GPU1:   8%|▊         | 37/455 [17:43<3:15:33, 28.07s/prob]                                                          GPU1:   8%|▊         | 38/455 [17:43<3:15:05, 28.07s/prob]                                                          GPU1:   9%|▊         | 39/455 [17:43<3:14:37, 28.07s/prob]                                                          GPU1:   9%|▉         | 40/455 [17:43<3:14:09, 28.07s/prob]                                                          GPU1:   9%|▉         | 41/455 [17:43<3:13:41, 28.07s/prob]                                                          GPU1:   9%|▉         | 42/455 [17:43<3:13:13, 28.07s/prob]                                                          GPU1:   9%|▉         | 43/455 [17:43<3:12:45, 28.07s/prob]                                                          GPU1:  10%|▉         | 44/455 [17:43<3:12:17, 28.07s/prob]                                                          GPU1:  10%|▉         | 45/455 [17:43<3:11:49, 28.07s/prob]                                                          GPU1:  10%|█         | 46/455 [17:43<3:11:21, 28.07s/prob]                                                          GPU1:  10%|█         | 47/455 [17:43<3:10:53, 28.07s/prob]                                                          GPU1:  11%|█         | 48/455 [17:43<3:10:24, 28.07s/prob]                                                          GPU1:  11%|█         | 49/455 [17:43<3:09:56, 28.07s/prob]                                                          GPU1:  11%|█         | 50/455 [17:43<3:09:28, 28.07s/prob]                                                          GPU1:  11%|█         | 51/455 [17:43<3:09:00, 28.07s/prob]                                                          GPU1:  11%|█▏        | 52/455 [17:43<3:08:32, 28.07s/prob]                                                          GPU1:  12%|█▏        | 53/455 [17:43<3:08:04, 28.07s/prob]                                                          GPU1:  12%|█▏        | 54/455 [17:43<3:07:36, 28.07s/prob]                                                          GPU1:  12%|█▏        | 55/455 [17:43<3:07:08, 28.07s/prob]                                                          GPU1:  12%|█▏        | 56/455 [17:43<3:06:40, 28.07s/prob]                                                          GPU1:  13%|█▎        | 57/455 [17:43<3:06:12, 28.07s/prob]                                                          GPU1:  13%|█▎        | 58/455 [17:43<3:05:44, 28.07s/prob]                                                          GPU1:  13%|█▎        | 59/455 [17:43<3:05:16, 28.07s/prob]                                                          GPU1:  13%|█▎        | 60/455 [17:43<3:04:48, 28.07s/prob]                                                          GPU1:  13%|█▎        | 61/455 [17:43<3:04:20, 28.07s/prob]                                                          GPU1:  14%|█▎        | 62/455 [17:43<3:03:51, 28.07s/prob]                                                          GPU1:  14%|█▍        | 63/455 [17:43<3:03:23, 28.07s/prob]                                                          GPU1:  14%|█▍        | 64/455 [17:43<3:02:55, 28.07s/prob][09:11:39] [GPU1] [33/455] saved: test/geometry/1140.json
+[09:11:39] [GPU1] [34/455] saved: test/prealgebra/1807.json
+[09:11:39] [GPU1] [35/455] saved: test/number_theory/1257.json
+[09:11:39] [GPU1] [36/455] saved: test/number_theory/612.json
+[09:11:39] [GPU1] [37/455] saved: test/intermediate_algebra/1408.json
+[09:11:39] [GPU1] [38/455] saved: test/number_theory/931.json
+[09:11:39] [GPU1] [39/455] saved: test/counting_and_probability/230.json
+[09:11:39] [GPU1] [40/455] saved: test/intermediate_algebra/1410.json
+[09:11:39] [GPU1] [41/455] saved: test/algebra/1255.json
+[09:11:39] [GPU1] [42/455] saved: test/prealgebra/1356.json
+[09:11:39] [GPU1] [43/455] saved: test/geometry/802.json
+[09:11:39] [GPU1] [44/455] saved: test/algebra/686.json
+[09:11:39] [GPU1] [45/455] saved: test/geometry/65.json
+[09:11:39] [GPU1] [46/455] saved: test/algebra/1275.json
+[09:11:39] [GPU1] [47/455] saved: test/algebra/1214.json
+[09:11:39] [GPU1] [48/455] saved: test/geometry/702.json
+[09:11:39] [GPU1] [49/455] saved: test/intermediate_algebra/1422.json
+[09:11:39] [GPU1] [50/455] saved: test/number_theory/838.json
+[09:11:39] [GPU1] [51/455] saved: test/number_theory/149.json
+[09:11:39] [GPU1] [52/455] saved: test/precalculus/263.json
+[09:11:39] [GPU1] [53/455] saved: test/number_theory/234.json
+[09:11:39] [GPU1] [54/455] saved: test/intermediate_algebra/102.json
+[09:11:39] [GPU1] [55/455] saved: test/number_theory/417.json
+[09:11:39] [GPU1] [56/455] saved: test/number_theory/89.json
+[09:11:39] [GPU1] [57/455] saved: test/algebra/2159.json
+[09:11:39] [GPU1] [58/455] saved: test/prealgebra/2057.json
+[09:11:39] [GPU1] [59/455] saved: test/precalculus/441.json
+[09:11:39] [GPU1] [60/455] saved: test/intermediate_algebra/337.json
+[09:11:39] [GPU1] [61/455] saved: test/algebra/1143.json
+[09:11:39] [GPU1] [62/455] saved: test/intermediate_algebra/1210.json
+[09:11:39] [GPU1] [63/455] saved: test/number_theory/1065.json
+[09:11:39] [GPU1] [64/455] saved: test/prealgebra/1458.json
+[09:11:45] [GPU1 B3/15 S1/5]  → 100/2048 tokens  (18 tok/s)
+[09:11:49] [GPU1 B3/15 S1/5]  → 200/2048 tokens  (21 tok/s)
+[09:11:54] [GPU1 B3/15 S1/5]  → 300/2048 tokens  (21 tok/s)
+[09:11:58] [GPU1 B3/15 S1/5]  → 400/2048 tokens  (21 tok/s)
+[09:12:03] [GPU1 B3/15 S1/5]  → 500/2048 tokens  (21 tok/s)
+[09:12:08] [GPU1 B3/15 S1/5]  → 600/2048 tokens  (21 tok/s)
+[09:12:14] [GPU1 B3/15 S1/5]  → 700/2048 tokens  (20 tok/s)
+[09:12:20] [GPU1 B3/15 S1/5]  → 800/2048 tokens  (20 tok/s)
+[09:12:26] [GPU1 B3/15 S1/5]  → 900/2048 tokens  (19 tok/s)
+[09:12:32] [GPU1 B3/15 S1/5]  → 1000/2048 tokens  (19 tok/s)
+[09:12:38] [GPU1 B3/15 S1/5]  → 1100/2048 tokens  (19 tok/s)
+[09:12:45] [GPU1 B3/15 S1/5]  → 1200/2048 tokens  (18 tok/s)
+[09:12:52] [GPU1 B3/15 S1/5]  → 1300/2048 tokens  (18 tok/s)
+[09:13:00] [GPU1 B3/15 S1/5]  → 1400/2048 tokens  (17 tok/s)
+[09:13:07] [GPU1 B3/15 S1/5]  → 1500/2048 tokens  (17 tok/s)
+[09:13:15] [GPU1 B3/15 S1/5]  → 1600/2048 tokens  (17 tok/s)
+[09:13:23] [GPU1 B3/15 S1/5]  → 1700/2048 tokens  (16 tok/s)
+[09:13:32] [GPU1 B3/15 S1/5]  → 1800/2048 tokens  (16 tok/s)
+[09:13:40] [GPU1 B3/15 S1/5]  → 1900/2048 tokens  (16 tok/s)
+[09:13:49] [GPU1 B3/15 S1/5]  → 2000/2048 tokens  (15 tok/s)
+[09:13:59] [GPU1 B3/15 S2/5]  → 100/2048 tokens  (18 tok/s)
+[09:14:03] [GPU1 B3/15 S2/5]  → 200/2048 tokens  (21 tok/s)
+[09:14:08] [GPU1 B3/15 S2/5]  → 300/2048 tokens  (21 tok/s)
+[09:14:13] [GPU1 B3/15 S2/5]  → 400/2048 tokens  (21 tok/s)
+[09:14:17] [GPU1 B3/15 S2/5]  → 500/2048 tokens  (21 tok/s)
+[09:14:23] [GPU1 B3/15 S2/5]  → 600/2048 tokens  (21 tok/s)
+[09:14:28] [GPU1 B3/15 S2/5]  → 700/2048 tokens  (20 tok/s)
+[09:14:34] [GPU1 B3/15 S2/5]  → 800/2048 tokens  (20 tok/s)
+[09:14:40] [GPU1 B3/15 S2/5]  → 900/2048 tokens  (19 tok/s)
+[09:14:46] [GPU1 B3/15 S2/5]  → 1000/2048 tokens  (19 tok/s)
+[09:14:53] [GPU1 B3/15 S2/5]  → 1100/2048 tokens  (19 tok/s)
+[09:15:00] [GPU1 B3/15 S2/5]  → 1200/2048 tokens  (18 tok/s)
+[09:15:07] [GPU1 B3/15 S2/5]  → 1300/2048 tokens  (18 tok/s)
+[09:15:14] [GPU1 B3/15 S2/5]  → 1400/2048 tokens  (17 tok/s)
+[09:15:22] [GPU1 B3/15 S2/5]  → 1500/2048 tokens  (17 tok/s)
+[09:15:29] [GPU1 B3/15 S2/5]  → 1600/2048 tokens  (17 tok/s)
+[09:15:38] [GPU1 B3/15 S2/5]  → 1700/2048 tokens  (16 tok/s)
+[09:15:46] [GPU1 B3/15 S2/5]  → 1800/2048 tokens  (16 tok/s)
+[09:15:55] [GPU1 B3/15 S2/5]  → 1900/2048 tokens  (16 tok/s)
+[09:16:04] [GPU1 B3/15 S2/5]  → 2000/2048 tokens  (15 tok/s)
+[09:16:14] [GPU1 B3/15 S3/5]  → 100/2048 tokens  (18 tok/s)
+[09:16:18] [GPU1 B3/15 S3/5]  → 200/2048 tokens  (21 tok/s)
+[09:16:22] [GPU1 B3/15 S3/5]  → 300/2048 tokens  (21 tok/s)
+[09:16:27] [GPU1 B3/15 S3/5]  → 400/2048 tokens  (21 tok/s)
+[09:16:32] [GPU1 B3/15 S3/5]  → 500/2048 tokens  (21 tok/s)
+[09:16:37] [GPU1 B3/15 S3/5]  → 600/2048 tokens  (21 tok/s)
+[09:16:43] [GPU1 B3/15 S3/5]  → 700/2048 tokens  (20 tok/s)
+[09:16:48] [GPU1 B3/15 S3/5]  → 800/2048 tokens  (20 tok/s)
+[09:16:54] [GPU1 B3/15 S3/5]  → 900/2048 tokens  (19 tok/s)
+[09:17:01] [GPU1 B3/15 S3/5]  → 1000/2048 tokens  (19 tok/s)
+[09:17:07] [GPU1 B3/15 S3/5]  → 1100/2048 tokens  (19 tok/s)
+[09:17:14] [GPU1 B3/15 S3/5]  → 1200/2048 tokens  (18 tok/s)
+[09:17:21] [GPU1 B3/15 S3/5]  → 1300/2048 tokens  (18 tok/s)
+[09:17:28] [GPU1 B3/15 S3/5]  → 1400/2048 tokens  (17 tok/s)
+[09:17:36] [GPU1 B3/15 S3/5]  → 1500/2048 tokens  (17 tok/s)
+[09:17:44] [GPU1 B3/15 S3/5]  → 1600/2048 tokens  (17 tok/s)
+[09:17:52] [GPU1 B3/15 S3/5]  → 1700/2048 tokens  (16 tok/s)
+[09:18:00] [GPU1 B3/15 S3/5]  → 1800/2048 tokens  (16 tok/s)
+[09:18:09] [GPU1 B3/15 S3/5]  → 1900/2048 tokens  (16 tok/s)
+[09:18:18] [GPU1 B3/15 S3/5]  → 2000/2048 tokens  (15 tok/s)
+[09:18:28] [GPU1 B3/15 S4/5]  → 100/2048 tokens  (18 tok/s)
+[09:18:32] [GPU1 B3/15 S4/5]  → 200/2048 tokens  (21 tok/s)
+[09:18:37] [GPU1 B3/15 S4/5]  → 300/2048 tokens  (21 tok/s)
+[09:18:41] [GPU1 B3/15 S4/5]  → 400/2048 tokens  (21 tok/s)
+[09:18:46] [GPU1 B3/15 S4/5]  → 500/2048 tokens  (21 tok/s)
+[09:18:51] [GPU1 B3/15 S4/5]  → 600/2048 tokens  (21 tok/s)
+[09:18:57] [GPU1 B3/15 S4/5]  → 700/2048 tokens  (20 tok/s)
+[09:19:03] [GPU1 B3/15 S4/5]  → 800/2048 tokens  (20 tok/s)
+[09:19:09] [GPU1 B3/15 S4/5]  → 900/2048 tokens  (19 tok/s)
+[09:19:15] [GPU1 B3/15 S4/5]  → 1000/2048 tokens  (19 tok/s)
+[09:19:22] [GPU1 B3/15 S4/5]  → 1100/2048 tokens  (19 tok/s)
+[09:19:28] [GPU1 B3/15 S4/5]  → 1200/2048 tokens  (18 tok/s)
+[09:19:35] [GPU1 B3/15 S4/5]  → 1300/2048 tokens  (18 tok/s)
+[09:19:43] [GPU1 B3/15 S4/5]  → 1400/2048 tokens  (17 tok/s)
+[09:19:50] [GPU1 B3/15 S4/5]  → 1500/2048 tokens  (17 tok/s)
+[09:19:58] [GPU1 B3/15 S4/5]  → 1600/2048 tokens  (17 tok/s)
+[09:20:06] [GPU1 B3/15 S4/5]  → 1700/2048 tokens  (16 tok/s)
+[09:20:15] [GPU1 B3/15 S4/5]  → 1800/2048 tokens  (16 tok/s)
+[09:20:24] [GPU1 B3/15 S4/5]  → 1900/2048 tokens  (16 tok/s)
+[09:20:33] [GPU1 B3/15 S4/5]  → 2000/2048 tokens  (15 tok/s)
+[09:20:43] [GPU1 B3/15 S5/5]  → 100/2048 tokens  (18 tok/s)
+[09:20:47] [GPU1 B3/15 S5/5]  → 200/2048 tokens  (21 tok/s)
+[09:20:51] [GPU1 B3/15 S5/5]  → 300/2048 tokens  (21 tok/s)
+[09:20:56] [GPU1 B3/15 S5/5]  → 400/2048 tokens  (21 tok/s)
+[09:21:01] [GPU1 B3/15 S5/5]  → 500/2048 tokens  (21 tok/s)
+[09:21:06] [GPU1 B3/15 S5/5]  → 600/2048 tokens  (21 tok/s)
+[09:21:11] [GPU1 B3/15 S5/5]  → 700/2048 tokens  (20 tok/s)
+[09:21:17] [GPU1 B3/15 S5/5]  → 800/2048 tokens  (20 tok/s)
+[09:21:23] [GPU1 B3/15 S5/5]  → 900/2048 tokens  (19 tok/s)
+[09:21:29] [GPU1 B3/15 S5/5]  → 1000/2048 tokens  (19 tok/s)
+[09:21:36] [GPU1 B3/15 S5/5]  → 1100/2048 tokens  (19 tok/s)
+[09:21:43] [GPU1 B3/15 S5/5]  → 1200/2048 tokens  (18 tok/s)
+[09:21:50] [GPU1 B3/15 S5/5]  → 1300/2048 tokens  (18 tok/s)
+[09:21:57] [GPU1 B3/15 S5/5]  → 1400/2048 tokens  (17 tok/s)
+[09:22:05] [GPU1 B3/15 S5/5]  → 1500/2048 tokens  (17 tok/s)
+[09:22:13] [GPU1 B3/15 S5/5]  → 1600/2048 tokens  (17 tok/s)
+[09:22:21] [GPU1 B3/15 S5/5]  → 1700/2048 tokens  (16 tok/s)
+[09:22:29] [GPU1 B3/15 S5/5]  → 1800/2048 tokens  (16 tok/s)
+[09:22:38] [GPU1 B3/15 S5/5]  → 1900/2048 tokens  (16 tok/s)
+[09:22:47] [GPU1 B3/15 S5/5]  → 2000/2048 tokens  (15 tok/s)
+GPU1:  14%|█▍        | 65/455 [28:55<2:35:39, 23.95s/prob]                                                          GPU1:  14%|█▍        | 65/455 [28:55<2:35:39, 23.95s/prob]                                                          GPU1:  15%|█▍        | 66/455 [28:55<2:35:15, 23.95s/prob]                                                          GPU1:  15%|█▍        | 67/455 [28:55<2:34:51, 23.95s/prob]                                                          GPU1:  15%|█▍        | 68/455 [28:55<2:34:27, 23.95s/prob]                                                          GPU1:  15%|█▌        | 69/455 [28:55<2:34:04, 23.95s/prob]                                                          GPU1:  15%|█▌        | 70/455 [28:55<2:33:40, 23.95s/prob]                                                          GPU1:  16%|█▌        | 71/455 [28:55<2:33:16, 23.95s/prob]                                                          GPU1:  16%|█▌        | 72/455 [28:55<2:32:52, 23.95s/prob]                                                          GPU1:  16%|█▌        | 73/455 [28:55<2:32:28, 23.95s/prob]                                                          GPU1:  16%|█▋        | 74/455 [28:55<2:32:04, 23.95s/prob]                                                          GPU1:  16%|█▋        | 75/455 [28:55<2:31:40, 23.95s/prob]                                                          GPU1:  17%|█▋        | 76/455 [28:55<2:31:16, 23.95s/prob]                                                          GPU1:  17%|█▋        | 77/455 [28:55<2:30:52, 23.95s/prob]                                                          GPU1:  17%|█▋        | 78/455 [28:55<2:30:28, 23.95s/prob]                                                          GPU1:  17%|█▋        | 79/455 [28:55<2:30:04, 23.95s/prob]                                                          GPU1:  18%|█▊        | 80/455 [28:55<2:29:40, 23.95s/prob]                                                          GPU1:  18%|█▊        | 81/455 [28:55<2:29:16, 23.95s/prob]                                                          GPU1:  18%|█▊        | 82/455 [28:55<2:28:52, 23.95s/prob]                                                          GPU1:  18%|█▊        | 83/455 [28:55<2:28:28, 23.95s/prob]                                                          GPU1:  18%|█▊        | 84/455 [28:55<2:28:04, 23.95s/prob]                                                          GPU1:  19%|█▊        | 85/455 [28:55<2:27:40, 23.95s/prob]                                                          GPU1:  19%|█▉        | 86/455 [28:55<2:27:16, 23.95s/prob]                                                          GPU1:  19%|█▉        | 87/455 [28:55<2:26:52, 23.95s/prob]                                                          GPU1:  19%|█▉        | 88/455 [28:55<2:26:29, 23.95s/prob]                                                          GPU1:  20%|█▉        | 89/455 [28:55<2:26:05, 23.95s/prob]                                                          GPU1:  20%|█▉        | 90/455 [28:55<2:25:41, 23.95s/prob]                                                          GPU1:  20%|██        | 91/455 [28:55<2:25:17, 23.95s/prob]                                                          GPU1:  20%|██        | 92/455 [28:55<2:24:53, 23.95s/prob]                                                          GPU1:  20%|██        | 93/455 [28:55<2:24:29, 23.95s/prob]                                                          GPU1:  21%|██        | 94/455 [28:55<2:24:05, 23.95s/prob]                                                          GPU1:  21%|██        | 95/455 [28:55<2:23:41, 23.95s/prob]                                                          GPU1:  21%|██        | 96/455 [28:55<2:23:17, 23.95s/prob][09:22:51] [GPU1] [65/455] saved: test/geometry/473.json
+[09:22:51] [GPU1] [66/455] saved: test/geometry/347.json
+[09:22:51] [GPU1] [67/455] saved: test/algebra/524.json
+[09:22:51] [GPU1] [68/455] saved: test/counting_and_probability/913.json
+[09:22:51] [GPU1] [69/455] saved: test/prealgebra/993.json
+[09:22:51] [GPU1] [70/455] saved: test/prealgebra/1834.json
+[09:22:51] [GPU1] [71/455] saved: test/prealgebra/260.json
+[09:22:51] [GPU1] [72/455] saved: test/intermediate_algebra/1411.json
+[09:22:51] [GPU1] [73/455] saved: test/intermediate_algebra/1300.json
+[09:22:51] [GPU1] [74/455] saved: test/algebra/2486.json
+[09:22:51] [GPU1] [75/455] saved: test/number_theory/1172.json
+[09:22:51] [GPU1] [76/455] saved: test/prealgebra/1044.json
+[09:22:51] [GPU1] [77/455] saved: test/algebra/2257.json
+[09:22:51] [GPU1] [78/455] saved: test/number_theory/203.json
+[09:22:51] [GPU1] [79/455] saved: test/prealgebra/1423.json
+[09:22:51] [GPU1] [80/455] saved: test/intermediate_algebra/2152.json
+[09:22:51] [GPU1] [81/455] saved: test/prealgebra/954.json
+[09:22:51] [GPU1] [82/455] saved: test/geometry/73.json
+[09:22:51] [GPU1] [83/455] saved: test/prealgebra/1973.json
+[09:22:51] [GPU1] [84/455] saved: test/intermediate_algebra/776.json
+[09:22:51] [GPU1] [85/455] saved: test/prealgebra/1730.json
+[09:22:51] [GPU1] [86/455] saved: test/algebra/858.json
+[09:22:51] [GPU1] [87/455] saved: test/algebra/1529.json
+[09:22:51] [GPU1] [88/455] saved: test/counting_and_probability/238.json
+[09:22:51] [GPU1] [89/455] saved: test/counting_and_probability/1014.json
+[09:22:51] [GPU1] [90/455] saved: test/prealgebra/1353.json
+[09:22:51] [GPU1] [91/455] saved: test/intermediate_algebra/1405.json
+[09:22:51] [GPU1] [92/455] saved: test/number_theory/820.json
+[09:22:51] [GPU1] [93/455] saved: test/prealgebra/1187.json
+[09:22:51] [GPU1] [94/455] saved: test/algebra/2264.json
+[09:22:51] [GPU1] [95/455] saved: test/number_theory/1185.json
+[09:22:51] [GPU1] [96/455] saved: test/counting_and_probability/188.json
+[09:22:54] [GPU1 B4/15 S1/5]  → 100/2048 tokens  (35 tok/s)
+[09:22:57] [GPU1 B4/15 S1/5]  → 200/2048 tokens  (37 tok/s)
+[09:23:00] [GPU1 B4/15 S1/5]  → 300/2048 tokens  (36 tok/s)
+[09:23:03] [GPU1 B4/15 S1/5]  → 400/2048 tokens  (35 tok/s)
+[09:23:06] [GPU1 B4/15 S1/5]  → 500/2048 tokens  (33 tok/s)
+[09:23:10] [GPU1 B4/15 S1/5]  → 600/2048 tokens  (32 tok/s)
+[09:23:14] [GPU1 B4/15 S1/5]  → 700/2048 tokens  (31 tok/s)
+[09:23:18] [GPU1 B4/15 S1/5]  → 800/2048 tokens  (30 tok/s)
+[09:23:23] [GPU1 B4/15 S1/5]  → 900/2048 tokens  (29 tok/s)
+[09:23:28] [GPU1 B4/15 S1/5]  → 1000/2048 tokens  (28 tok/s)
+[09:23:33] [GPU1 B4/15 S1/5]  → 1100/2048 tokens  (27 tok/s)
+[09:23:38] [GPU1 B4/15 S1/5]  → 1200/2048 tokens  (26 tok/s)
+[09:23:44] [GPU1 B4/15 S1/5]  → 1300/2048 tokens  (25 tok/s)
+[09:23:50] [GPU1 B4/15 S1/5]  → 1400/2048 tokens  (24 tok/s)
+[09:23:56] [GPU1 B4/15 S1/5]  → 1500/2048 tokens  (23 tok/s)
+[09:24:02] [GPU1 B4/15 S1/5]  → 1600/2048 tokens  (23 tok/s)
+[09:24:09] [GPU1 B4/15 S1/5]  → 1700/2048 tokens  (22 tok/s)
+[09:24:16] [GPU1 B4/15 S1/5]  → 1800/2048 tokens  (21 tok/s)
+[09:24:23] [GPU1 B4/15 S1/5]  → 1900/2048 tokens  (21 tok/s)
+[09:24:30] [GPU1 B4/15 S1/5]  → 2000/2048 tokens  (20 tok/s)
+[09:24:37] [GPU1 B4/15 S2/5]  → 100/2048 tokens  (35 tok/s)
+[09:24:40] [GPU1 B4/15 S2/5]  → 200/2048 tokens  (37 tok/s)
+[09:24:43] [GPU1 B4/15 S2/5]  → 300/2048 tokens  (36 tok/s)
+[09:24:46] [GPU1 B4/15 S2/5]  → 400/2048 tokens  (35 tok/s)
+[09:24:49] [GPU1 B4/15 S2/5]  → 500/2048 tokens  (33 tok/s)
+[09:24:53] [GPU1 B4/15 S2/5]  → 600/2048 tokens  (32 tok/s)
+[09:24:57] [GPU1 B4/15 S2/5]  → 700/2048 tokens  (31 tok/s)
+[09:25:01] [GPU1 B4/15 S2/5]  → 800/2048 tokens  (30 tok/s)
+[09:25:06] [GPU1 B4/15 S2/5]  → 900/2048 tokens  (29 tok/s)
+[09:25:10] [GPU1 B4/15 S2/5]  → 1000/2048 tokens  (28 tok/s)
+[09:25:15] [GPU1 B4/15 S2/5]  → 1100/2048 tokens  (27 tok/s)
+[09:25:21] [GPU1 B4/15 S2/5]  → 1200/2048 tokens  (26 tok/s)
+[09:25:26] [GPU1 B4/15 S2/5]  → 1300/2048 tokens  (25 tok/s)
+[09:25:32] [GPU1 B4/15 S2/5]  → 1400/2048 tokens  (24 tok/s)
+[09:25:38] [GPU1 B4/15 S2/5]  → 1500/2048 tokens  (23 tok/s)
+[09:25:45] [GPU1 B4/15 S2/5]  → 1600/2048 tokens  (23 tok/s)
+[09:25:52] [GPU1 B4/15 S2/5]  → 1700/2048 tokens  (22 tok/s)
+[09:25:58] [GPU1 B4/15 S2/5]  → 1800/2048 tokens  (21 tok/s)
+[09:26:06] [GPU1 B4/15 S2/5]  → 1900/2048 tokens  (21 tok/s)
+[09:26:13] [GPU1 B4/15 S2/5]  → 2000/2048 tokens  (20 tok/s)
+[09:26:20] [GPU1 B4/15 S3/5]  → 100/2048 tokens  (35 tok/s)
+[09:26:22] [GPU1 B4/15 S3/5]  → 200/2048 tokens  (37 tok/s)
+[09:26:25] [GPU1 B4/15 S3/5]  → 300/2048 tokens  (36 tok/s)
+[09:26:28] [GPU1 B4/15 S3/5]  → 400/2048 tokens  (35 tok/s)
+[09:26:32] [GPU1 B4/15 S3/5]  → 500/2048 tokens  (33 tok/s)
+[09:26:36] [GPU1 B4/15 S3/5]  → 600/2048 tokens  (32 tok/s)
+[09:26:40] [GPU1 B4/15 S3/5]  → 700/2048 tokens  (31 tok/s)
+[09:26:44] [GPU1 B4/15 S3/5]  → 800/2048 tokens  (30 tok/s)
+[09:26:48] [GPU1 B4/15 S3/5]  → 900/2048 tokens  (29 tok/s)
+[09:26:53] [GPU1 B4/15 S3/5]  → 1000/2048 tokens  (28 tok/s)
+[09:26:58] [GPU1 B4/15 S3/5]  → 1100/2048 tokens  (27 tok/s)
+[09:27:04] [GPU1 B4/15 S3/5]  → 1200/2048 tokens  (26 tok/s)
+[09:27:09] [GPU1 B4/15 S3/5]  → 1300/2048 tokens  (25 tok/s)
+[09:27:15] [GPU1 B4/15 S3/5]  → 1400/2048 tokens  (24 tok/s)
+[09:27:21] [GPU1 B4/15 S3/5]  → 1500/2048 tokens  (23 tok/s)
+[09:27:28] [GPU1 B4/15 S3/5]  → 1600/2048 tokens  (23 tok/s)
+[09:27:34] [GPU1 B4/15 S3/5]  → 1700/2048 tokens  (22 tok/s)
+[09:27:41] [GPU1 B4/15 S3/5]  → 1800/2048 tokens  (21 tok/s)
+[09:27:48] [GPU1 B4/15 S3/5]  → 1900/2048 tokens  (21 tok/s)
+[09:27:56] [GPU1 B4/15 S3/5]  → 2000/2048 tokens  (20 tok/s)
+[09:28:02] [GPU1 B4/15 S4/5]  → 100/2048 tokens  (35 tok/s)
+[09:28:05] [GPU1 B4/15 S4/5]  → 200/2048 tokens  (37 tok/s)
+[09:28:08] [GPU1 B4/15 S4/5]  → 300/2048 tokens  (36 tok/s)
+[09:28:11] [GPU1 B4/15 S4/5]  → 400/2048 tokens  (35 tok/s)
+[09:28:15] [GPU1 B4/15 S4/5]  → 500/2048 tokens  (33 tok/s)
+[09:28:18] [GPU1 B4/15 S4/5]  → 600/2048 tokens  (32 tok/s)
+[09:28:22] [GPU1 B4/15 S4/5]  → 700/2048 tokens  (31 tok/s)
+[09:28:27] [GPU1 B4/15 S4/5]  → 800/2048 tokens  (30 tok/s)
+[09:28:31] [GPU1 B4/15 S4/5]  → 900/2048 tokens  (29 tok/s)
+[09:28:36] [GPU1 B4/15 S4/5]  → 1000/2048 tokens  (28 tok/s)
+[09:28:41] [GPU1 B4/15 S4/5]  → 1100/2048 tokens  (27 tok/s)
+[09:28:46] [GPU1 B4/15 S4/5]  → 1200/2048 tokens  (26 tok/s)
+[09:28:52] [GPU1 B4/15 S4/5]  → 1300/2048 tokens  (25 tok/s)
+[09:28:58] [GPU1 B4/15 S4/5]  → 1400/2048 tokens  (24 tok/s)
+[09:29:04] [GPU1 B4/15 S4/5]  → 1500/2048 tokens  (23 tok/s)
+[09:29:10] [GPU1 B4/15 S4/5]  → 1600/2048 tokens  (23 tok/s)
+[09:29:17] [GPU1 B4/15 S4/5]  → 1700/2048 tokens  (22 tok/s)
+[09:29:24] [GPU1 B4/15 S4/5]  → 1800/2048 tokens  (21 tok/s)
+[09:29:31] [GPU1 B4/15 S4/5]  → 1900/2048 tokens  (21 tok/s)
+[09:29:39] [GPU1 B4/15 S4/5]  → 2000/2048 tokens  (20 tok/s)
+[09:29:45] [GPU1 B4/15 S5/5]  → 100/2048 tokens  (35 tok/s)
+[09:29:48] [GPU1 B4/15 S5/5]  → 200/2048 tokens  (37 tok/s)
+[09:29:51] [GPU1 B4/15 S5/5]  → 300/2048 tokens  (36 tok/s)
+[09:29:54] [GPU1 B4/15 S5/5]  → 400/2048 tokens  (35 tok/s)
+[09:29:57] [GPU1 B4/15 S5/5]  → 500/2048 tokens  (33 tok/s)
+[09:30:01] [GPU1 B4/15 S5/5]  → 600/2048 tokens  (32 tok/s)
+[09:30:05] [GPU1 B4/15 S5/5]  → 700/2048 tokens  (31 tok/s)
+[09:30:09] [GPU1 B4/15 S5/5]  → 800/2048 tokens  (30 tok/s)
+[09:30:14] [GPU1 B4/15 S5/5]  → 900/2048 tokens  (29 tok/s)
+[09:30:19] [GPU1 B4/15 S5/5]  → 1000/2048 tokens  (28 tok/s)
+[09:30:24] [GPU1 B4/15 S5/5]  → 1100/2048 tokens  (27 tok/s)
+[09:30:29] [GPU1 B4/15 S5/5]  → 1200/2048 tokens  (26 tok/s)
+[09:30:35] [GPU1 B4/15 S5/5]  → 1300/2048 tokens  (25 tok/s)
+[09:30:41] [GPU1 B4/15 S5/5]  → 1400/2048 tokens  (24 tok/s)
+[09:30:47] [GPU1 B4/15 S5/5]  → 1500/2048 tokens  (23 tok/s)
+[09:30:53] [GPU1 B4/15 S5/5]  → 1600/2048 tokens  (23 tok/s)
+[09:31:00] [GPU1 B4/15 S5/5]  → 1700/2048 tokens  (22 tok/s)
+[09:31:07] [GPU1 B4/15 S5/5]  → 1800/2048 tokens  (21 tok/s)
+[09:31:14] [GPU1 B4/15 S5/5]  → 1900/2048 tokens  (21 tok/s)
+[09:31:21] [GPU1 B4/15 S5/5]  → 2000/2048 tokens  (20 tok/s)
+GPU1:  21%|██▏       | 97/455 [37:29<2:01:29, 20.36s/prob]                                                          GPU1:  21%|██▏       | 97/455 [37:29<2:01:29, 20.36s/prob]                                                          GPU1:  22%|██▏       | 98/455 [37:29<2:01:08, 20.36s/prob]                                                          GPU1:  22%|██▏       | 99/455 [37:29<2:00:48, 20.36s/prob]                                                          GPU1:  22%|██▏       | 100/455 [37:29<2:00:28, 20.36s/prob]                                                           GPU1:  22%|██▏       | 101/455 [37:29<2:00:07, 20.36s/prob]                                                           GPU1:  22%|██▏       | 102/455 [37:29<1:59:47, 20.36s/prob]                                                           GPU1:  23%|██▎       | 103/455 [37:29<1:59:27, 20.36s/prob]                                                           GPU1:  23%|██▎       | 104/455 [37:29<1:59:06, 20.36s/prob]                                                           GPU1:  23%|██▎       | 105/455 [37:29<1:58:46, 20.36s/prob]                                                           GPU1:  23%|██▎       | 106/455 [37:29<1:58:26, 20.36s/prob]                                                           GPU1:  24%|██▎       | 107/455 [37:29<1:58:05, 20.36s/prob]                                                           GPU1:  24%|██▎       | 108/455 [37:29<1:57:45, 20.36s/prob]                                                           GPU1:  24%|██▍       | 109/455 [37:29<1:57:25, 20.36s/prob]                                                           GPU1:  24%|██▍       | 110/455 [37:29<1:57:04, 20.36s/prob]                                                           GPU1:  24%|██▍       | 111/455 [37:29<1:56:44, 20.36s/prob]                                                           GPU1:  25%|██▍       | 112/455 [37:29<1:56:23, 20.36s/prob]                                                           GPU1:  25%|██▍       | 113/455 [37:29<1:56:03, 20.36s/prob]                                                           GPU1:  25%|██▌       | 114/455 [37:29<1:55:43, 20.36s/prob]                                                           GPU1:  25%|██▌       | 115/455 [37:29<1:55:22, 20.36s/prob]                                                           GPU1:  25%|██▌       | 116/455 [37:29<1:55:02, 20.36s/prob]                                                           GPU1:  26%|██▌       | 117/455 [37:29<1:54:42, 20.36s/prob]                                                           GPU1:  26%|██▌       | 118/455 [37:29<1:54:21, 20.36s/prob]                                                           GPU1:  26%|██▌       | 119/455 [37:29<1:54:01, 20.36s/prob]                                                           GPU1:  26%|██▋       | 120/455 [37:29<1:53:41, 20.36s/prob]                                                           GPU1:  27%|██▋       | 121/455 [37:29<1:53:20, 20.36s/prob]                                                           GPU1:  27%|██▋       | 122/455 [37:29<1:53:00, 20.36s/prob]                                                           GPU1:  27%|██▋       | 123/455 [37:29<1:52:39, 20.36s/prob]                                                           GPU1:  27%|██▋       | 124/455 [37:29<1:52:19, 20.36s/prob]                                                           GPU1:  27%|██▋       | 125/455 [37:29<1:51:59, 20.36s/prob]                                                           GPU1:  28%|██▊       | 126/455 [37:29<1:51:38, 20.36s/prob]                                                           GPU1:  28%|██▊       | 127/455 [37:29<1:51:18, 20.36s/prob]                                                           GPU1:  28%|██▊       | 128/455 [37:29<1:50:58, 20.36s/prob][09:31:25] [GPU1] [97/455] saved: test/prealgebra/2066.json
+[09:31:25] [GPU1] [98/455] saved: test/geometry/795.json
+[09:31:25] [GPU1] [99/455] saved: test/algebra/518.json
+[09:31:25] [GPU1] [100/455] saved: test/prealgebra/977.json
+[09:31:25] [GPU1] [101/455] saved: test/intermediate_algebra/1806.json
+[09:31:25] [GPU1] [102/455] saved: test/prealgebra/1572.json
+[09:31:25] [GPU1] [103/455] saved: test/intermediate_algebra/1797.json
+[09:31:25] [GPU1] [104/455] saved: test/algebra/2680.json
+[09:31:25] [GPU1] [105/455] saved: test/algebra/776.json
+[09:31:25] [GPU1] [106/455] saved: test/precalculus/1202.json
+[09:31:25] [GPU1] [107/455] saved: test/precalculus/1133.json
+[09:31:25] [GPU1] [108/455] saved: test/intermediate_algebra/1014.json
+[09:31:25] [GPU1] [109/455] saved: test/number_theory/410.json
+[09:31:25] [GPU1] [110/455] saved: test/algebra/1553.json
+[09:31:25] [GPU1] [111/455] saved: test/prealgebra/2037.json
+[09:31:25] [GPU1] [112/455] saved: test/intermediate_algebra/1779.json
+[09:31:25] [GPU1] [113/455] saved: test/algebra/2789.json
+[09:31:25] [GPU1] [114/455] saved: test/algebra/2476.json
+[09:31:25] [GPU1] [115/455] saved: test/number_theory/342.json
+[09:31:25] [GPU1] [116/455] saved: test/algebra/824.json
+[09:31:25] [GPU1] [117/455] saved: test/number_theory/72.json
+[09:31:25] [GPU1] [118/455] saved: test/algebra/435.json
+[09:31:25] [GPU1] [119/455] saved: test/prealgebra/1930.json
+[09:31:25] [GPU1] [120/455] saved: test/number_theory/22.json
+[09:31:25] [GPU1] [121/455] saved: test/intermediate_algebra/1467.json
+[09:31:25] [GPU1] [122/455] saved: test/counting_and_probability/199.json
+[09:31:25] [GPU1] [123/455] saved: test/intermediate_algebra/1365.json
+[09:31:25] [GPU1] [124/455] saved: test/algebra/2779.json
+[09:31:25] [GPU1] [125/455] saved: test/geometry/561.json
+[09:31:25] [GPU1] [126/455] saved: gsm8k_1
+[09:31:25] [GPU1] [127/455] saved: gsm8k_5
+[09:31:25] [GPU1] [128/455] saved: gsm8k_9
+[09:31:28] [GPU1 B5/15 S1/5]  → 100/2048 tokens  (43 tok/s)
+[09:31:30] [GPU1 B5/15 S1/5]  → 200/2048 tokens  (43 tok/s)
+[09:31:32] [GPU1 B5/15 S1/5]  → 300/2048 tokens  (41 tok/s)
+[09:31:35] [GPU1 B5/15 S1/5]  → 400/2048 tokens  (39 tok/s)
+[09:31:38] [GPU1 B5/15 S1/5]  → 500/2048 tokens  (38 tok/s)
+[09:31:42] [GPU1 B5/15 S1/5]  → 600/2048 tokens  (36 tok/s)
+[09:31:46] [GPU1 B5/15 S1/5]  → 700/2048 tokens  (34 tok/s)
+[09:31:50] [GPU1 B5/15 S1/5]  → 800/2048 tokens  (33 tok/s)
+[09:31:54] [GPU1 B5/15 S1/5]  → 900/2048 tokens  (31 tok/s)
+[09:31:58] [GPU1 B5/15 S1/5]  → 1000/2048 tokens  (30 tok/s)
+[09:32:03] [GPU1 B5/15 S1/5]  → 1100/2048 tokens  (29 tok/s)
+[09:32:08] [GPU1 B5/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[09:32:13] [GPU1 B5/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[09:32:19] [GPU1 B5/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[09:32:25] [GPU1 B5/15 S1/5]  → 1500/2048 tokens  (25 tok/s)
+[09:32:31] [GPU1 B5/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[09:32:37] [GPU1 B5/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[09:32:44] [GPU1 B5/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[09:32:51] [GPU1 B5/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[09:32:58] [GPU1 B5/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[09:33:04] [GPU1 B5/15 S2/5]  → 100/2048 tokens  (43 tok/s)
+[09:33:06] [GPU1 B5/15 S2/5]  → 200/2048 tokens  (43 tok/s)
+[09:33:09] [GPU1 B5/15 S2/5]  → 300/2048 tokens  (41 tok/s)
+[09:33:12] [GPU1 B5/15 S2/5]  → 400/2048 tokens  (39 tok/s)
+[09:33:15] [GPU1 B5/15 S2/5]  → 500/2048 tokens  (37 tok/s)
+[09:33:19] [GPU1 B5/15 S2/5]  → 600/2048 tokens  (36 tok/s)
+[09:33:22] [GPU1 B5/15 S2/5]  → 700/2048 tokens  (34 tok/s)
+[09:33:26] [GPU1 B5/15 S2/5]  → 800/2048 tokens  (33 tok/s)
+[09:33:30] [GPU1 B5/15 S2/5]  → 900/2048 tokens  (31 tok/s)
+[09:33:35] [GPU1 B5/15 S2/5]  → 1000/2048 tokens  (30 tok/s)
+[09:33:40] [GPU1 B5/15 S2/5]  → 1100/2048 tokens  (29 tok/s)
+[09:33:45] [GPU1 B5/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[09:33:50] [GPU1 B5/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[09:33:56] [GPU1 B5/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[09:34:02] [GPU1 B5/15 S2/5]  → 1500/2048 tokens  (25 tok/s)
+[09:34:08] [GPU1 B5/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[09:34:14] [GPU1 B5/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[09:34:21] [GPU1 B5/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[09:34:28] [GPU1 B5/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[09:34:35] [GPU1 B5/15 S2/5]  → 2000/2048 tokens  (21 tok/s)
+[09:34:41] [GPU1 B5/15 S3/5]  → 100/2048 tokens  (43 tok/s)
+[09:34:43] [GPU1 B5/15 S3/5]  → 200/2048 tokens  (43 tok/s)
+[09:34:46] [GPU1 B5/15 S3/5]  → 300/2048 tokens  (41 tok/s)
+[09:34:49] [GPU1 B5/15 S3/5]  → 400/2048 tokens  (39 tok/s)
+[09:34:52] [GPU1 B5/15 S3/5]  → 500/2048 tokens  (38 tok/s)
+[09:34:55] [GPU1 B5/15 S3/5]  → 600/2048 tokens  (36 tok/s)
+[09:34:59] [GPU1 B5/15 S3/5]  → 700/2048 tokens  (34 tok/s)
+[09:35:03] [GPU1 B5/15 S3/5]  → 800/2048 tokens  (33 tok/s)
+[09:35:07] [GPU1 B5/15 S3/5]  → 900/2048 tokens  (31 tok/s)
+[09:35:12] [GPU1 B5/15 S3/5]  → 1000/2048 tokens  (30 tok/s)
+[09:35:16] [GPU1 B5/15 S3/5]  → 1100/2048 tokens  (29 tok/s)
+[09:35:21] [GPU1 B5/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[09:35:27] [GPU1 B5/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[09:35:32] [GPU1 B5/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[09:35:38] [GPU1 B5/15 S3/5]  → 1500/2048 tokens  (25 tok/s)
+[09:35:44] [GPU1 B5/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[09:35:51] [GPU1 B5/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[09:35:57] [GPU1 B5/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[09:36:04] [GPU1 B5/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[09:36:11] [GPU1 B5/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[09:36:17] [GPU1 B5/15 S4/5]  → 100/2048 tokens  (43 tok/s)
+[09:36:20] [GPU1 B5/15 S4/5]  → 200/2048 tokens  (43 tok/s)
+[09:36:22] [GPU1 B5/15 S4/5]  → 300/2048 tokens  (41 tok/s)
+[09:36:25] [GPU1 B5/15 S4/5]  → 400/2048 tokens  (39 tok/s)
+[09:36:28] [GPU1 B5/15 S4/5]  → 500/2048 tokens  (38 tok/s)
+[09:36:32] [GPU1 B5/15 S4/5]  → 600/2048 tokens  (36 tok/s)
+[09:36:36] [GPU1 B5/15 S4/5]  → 700/2048 tokens  (34 tok/s)
+[09:36:40] [GPU1 B5/15 S4/5]  → 800/2048 tokens  (33 tok/s)
+[09:36:44] [GPU1 B5/15 S4/5]  → 900/2048 tokens  (31 tok/s)
+[09:36:48] [GPU1 B5/15 S4/5]  → 1000/2048 tokens  (30 tok/s)
+[09:36:53] [GPU1 B5/15 S4/5]  → 1100/2048 tokens  (29 tok/s)
+[09:36:58] [GPU1 B5/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[09:37:03] [GPU1 B5/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[09:37:09] [GPU1 B5/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[09:37:15] [GPU1 B5/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[09:37:21] [GPU1 B5/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[09:37:27] [GPU1 B5/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[09:37:34] [GPU1 B5/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[09:37:41] [GPU1 B5/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[09:37:48] [GPU1 B5/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[09:37:54] [GPU1 B5/15 S5/5]  → 100/2048 tokens  (43 tok/s)
+[09:37:56] [GPU1 B5/15 S5/5]  → 200/2048 tokens  (43 tok/s)
+[09:37:59] [GPU1 B5/15 S5/5]  → 300/2048 tokens  (41 tok/s)
+[09:38:02] [GPU1 B5/15 S5/5]  → 400/2048 tokens  (39 tok/s)
+[09:38:05] [GPU1 B5/15 S5/5]  → 500/2048 tokens  (38 tok/s)
+[09:38:09] [GPU1 B5/15 S5/5]  → 600/2048 tokens  (36 tok/s)
+[09:38:12] [GPU1 B5/15 S5/5]  → 700/2048 tokens  (34 tok/s)
+[09:38:16] [GPU1 B5/15 S5/5]  → 800/2048 tokens  (33 tok/s)
+[09:38:20] [GPU1 B5/15 S5/5]  → 900/2048 tokens  (31 tok/s)
+[09:38:25] [GPU1 B5/15 S5/5]  → 1000/2048 tokens  (30 tok/s)
+[09:38:30] [GPU1 B5/15 S5/5]  → 1100/2048 tokens  (29 tok/s)
+[09:38:35] [GPU1 B5/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[09:38:40] [GPU1 B5/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[09:38:46] [GPU1 B5/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[09:38:51] [GPU1 B5/15 S5/5]  → 1500/2048 tokens  (25 tok/s)
+[09:38:58] [GPU1 B5/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[09:39:04] [GPU1 B5/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[09:39:11] [GPU1 B5/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[09:39:17] [GPU1 B5/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[09:39:25] [GPU1 B5/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  28%|██▊       | 129/455 [45:32<1:39:22, 18.29s/prob]                                                           GPU1:  28%|██▊       | 129/455 [45:32<1:39:22, 18.29s/prob]                                                           GPU1:  29%|██▊       | 130/455 [45:32<1:39:04, 18.29s/prob]                                                           GPU1:  29%|██▉       | 131/455 [45:32<1:38:45, 18.29s/prob]                                                           GPU1:  29%|██▉       | 132/455 [45:32<1:38:27, 18.29s/prob]                                                           GPU1:  29%|██▉       | 133/455 [45:32<1:38:09, 18.29s/prob]                                                           GPU1:  29%|██▉       | 134/455 [45:32<1:37:51, 18.29s/prob]                                                           GPU1:  30%|██▉       | 135/455 [45:32<1:37:32, 18.29s/prob]                                                           GPU1:  30%|██▉       | 136/455 [45:32<1:37:14, 18.29s/prob]                                                           GPU1:  30%|███       | 137/455 [45:32<1:36:56, 18.29s/prob]                                                           GPU1:  30%|███       | 138/455 [45:32<1:36:37, 18.29s/prob]                                                           GPU1:  31%|███       | 139/455 [45:32<1:36:19, 18.29s/prob]                                                           GPU1:  31%|███       | 140/455 [45:32<1:36:01, 18.29s/prob]                                                           GPU1:  31%|███       | 141/455 [45:32<1:35:43, 18.29s/prob]                                                           GPU1:  31%|███       | 142/455 [45:32<1:35:24, 18.29s/prob]                                                           GPU1:  31%|███▏      | 143/455 [45:32<1:35:06, 18.29s/prob]                                                           GPU1:  32%|███▏      | 144/455 [45:32<1:34:48, 18.29s/prob]                                                           GPU1:  32%|███▏      | 145/455 [45:32<1:34:29, 18.29s/prob]                                                           GPU1:  32%|███▏      | 146/455 [45:32<1:34:11, 18.29s/prob]                                                           GPU1:  32%|███▏      | 147/455 [45:32<1:33:53, 18.29s/prob]                                                           GPU1:  33%|███▎      | 148/455 [45:32<1:33:35, 18.29s/prob]                                                           GPU1:  33%|███▎      | 149/455 [45:32<1:33:16, 18.29s/prob]                                                           GPU1:  33%|███▎      | 150/455 [45:32<1:32:58, 18.29s/prob]                                                           GPU1:  33%|███▎      | 151/455 [45:32<1:32:40, 18.29s/prob]                                                           GPU1:  33%|███▎      | 152/455 [45:32<1:32:21, 18.29s/prob]                                                           GPU1:  34%|███▎      | 153/455 [45:32<1:32:03, 18.29s/prob]                                                           GPU1:  34%|███▍      | 154/455 [45:32<1:31:45, 18.29s/prob]                                                           GPU1:  34%|███▍      | 155/455 [45:32<1:31:27, 18.29s/prob]                                                           GPU1:  34%|███▍      | 156/455 [45:32<1:31:08, 18.29s/prob]                                                           GPU1:  35%|███▍      | 157/455 [45:32<1:30:50, 18.29s/prob]                                                           GPU1:  35%|███▍      | 158/455 [45:32<1:30:32, 18.29s/prob]                                                           GPU1:  35%|███▍      | 159/455 [45:32<1:30:13, 18.29s/prob]                                                           GPU1:  35%|███▌      | 160/455 [45:32<1:29:55, 18.29s/prob][09:39:28] [GPU1] [129/455] saved: gsm8k_13
+[09:39:28] [GPU1] [130/455] saved: gsm8k_17
+[09:39:28] [GPU1] [131/455] saved: gsm8k_21
+[09:39:28] [GPU1] [132/455] saved: gsm8k_25
+[09:39:28] [GPU1] [133/455] saved: gsm8k_29
+[09:39:28] [GPU1] [134/455] saved: gsm8k_33
+[09:39:28] [GPU1] [135/455] saved: gsm8k_37
+[09:39:28] [GPU1] [136/455] saved: gsm8k_41
+[09:39:28] [GPU1] [137/455] saved: gsm8k_45
+[09:39:28] [GPU1] [138/455] saved: gsm8k_49
+[09:39:28] [GPU1] [139/455] saved: gsm8k_53
+[09:39:28] [GPU1] [140/455] saved: gsm8k_57
+[09:39:28] [GPU1] [141/455] saved: gsm8k_61
+[09:39:28] [GPU1] [142/455] saved: gsm8k_65
+[09:39:28] [GPU1] [143/455] saved: gsm8k_69
+[09:39:28] [GPU1] [144/455] saved: gsm8k_73
+[09:39:28] [GPU1] [145/455] saved: gsm8k_77
+[09:39:28] [GPU1] [146/455] saved: gsm8k_81
+[09:39:28] [GPU1] [147/455] saved: gsm8k_85
+[09:39:28] [GPU1] [148/455] saved: gsm8k_89
+[09:39:28] [GPU1] [149/455] saved: gsm8k_93
+[09:39:28] [GPU1] [150/455] saved: gsm8k_97
+[09:39:28] [GPU1] [151/455] saved: gsm8k_101
+[09:39:28] [GPU1] [152/455] saved: gsm8k_105
+[09:39:28] [GPU1] [153/455] saved: gsm8k_109
+[09:39:28] [GPU1] [154/455] saved: gsm8k_113
+[09:39:28] [GPU1] [155/455] saved: gsm8k_117
+[09:39:28] [GPU1] [156/455] saved: gsm8k_121
+[09:39:28] [GPU1] [157/455] saved: gsm8k_125
+[09:39:28] [GPU1] [158/455] saved: gsm8k_129
+[09:39:28] [GPU1] [159/455] saved: gsm8k_133
+[09:39:28] [GPU1] [160/455] saved: gsm8k_137
+[09:39:31] [GPU1 B6/15 S1/5]  → 100/2048 tokens  (43 tok/s)
+[09:39:33] [GPU1 B6/15 S1/5]  → 200/2048 tokens  (43 tok/s)
+[09:39:36] [GPU1 B6/15 S1/5]  → 300/2048 tokens  (42 tok/s)
+[09:39:38] [GPU1 B6/15 S1/5]  → 400/2048 tokens  (40 tok/s)
+[09:39:42] [GPU1 B6/15 S1/5]  → 500/2048 tokens  (38 tok/s)
+[09:39:45] [GPU1 B6/15 S1/5]  → 600/2048 tokens  (36 tok/s)
+[09:39:49] [GPU1 B6/15 S1/5]  → 700/2048 tokens  (34 tok/s)
+[09:39:53] [GPU1 B6/15 S1/5]  → 800/2048 tokens  (33 tok/s)
+[09:39:57] [GPU1 B6/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[09:40:01] [GPU1 B6/15 S1/5]  → 1000/2048 tokens  (30 tok/s)
+[09:40:06] [GPU1 B6/15 S1/5]  → 1100/2048 tokens  (29 tok/s)
+[09:40:11] [GPU1 B6/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[09:40:16] [GPU1 B6/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[09:40:22] [GPU1 B6/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[09:40:28] [GPU1 B6/15 S1/5]  → 1500/2048 tokens  (25 tok/s)
+[09:40:34] [GPU1 B6/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[09:40:40] [GPU1 B6/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[09:40:47] [GPU1 B6/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[09:40:54] [GPU1 B6/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[09:41:01] [GPU1 B6/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[09:41:07] [GPU1 B6/15 S2/5]  → 100/2048 tokens  (43 tok/s)
+[09:41:09] [GPU1 B6/15 S2/5]  → 200/2048 tokens  (43 tok/s)
+[09:41:12] [GPU1 B6/15 S2/5]  → 300/2048 tokens  (42 tok/s)
+[09:41:15] [GPU1 B6/15 S2/5]  → 400/2048 tokens  (40 tok/s)
+[09:41:18] [GPU1 B6/15 S2/5]  → 500/2048 tokens  (38 tok/s)
+[09:41:21] [GPU1 B6/15 S2/5]  → 600/2048 tokens  (36 tok/s)
+[09:41:25] [GPU1 B6/15 S2/5]  → 700/2048 tokens  (34 tok/s)
+[09:41:29] [GPU1 B6/15 S2/5]  → 800/2048 tokens  (33 tok/s)
+[09:41:33] [GPU1 B6/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[09:41:37] [GPU1 B6/15 S2/5]  → 1000/2048 tokens  (30 tok/s)
+[09:41:42] [GPU1 B6/15 S2/5]  → 1100/2048 tokens  (29 tok/s)
+[09:41:47] [GPU1 B6/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[09:41:53] [GPU1 B6/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[09:41:58] [GPU1 B6/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[09:42:04] [GPU1 B6/15 S2/5]  → 1500/2048 tokens  (25 tok/s)
+[09:42:10] [GPU1 B6/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[09:42:16] [GPU1 B6/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[09:42:23] [GPU1 B6/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[09:42:30] [GPU1 B6/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[09:42:37] [GPU1 B6/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[09:42:43] [GPU1 B6/15 S3/5]  → 100/2048 tokens  (43 tok/s)
+[09:42:45] [GPU1 B6/15 S3/5]  → 200/2048 tokens  (43 tok/s)
+[09:42:48] [GPU1 B6/15 S3/5]  → 300/2048 tokens  (42 tok/s)
+[09:42:51] [GPU1 B6/15 S3/5]  → 400/2048 tokens  (40 tok/s)
+[09:42:54] [GPU1 B6/15 S3/5]  → 500/2048 tokens  (38 tok/s)
+[09:42:57] [GPU1 B6/15 S3/5]  → 600/2048 tokens  (36 tok/s)
+[09:43:01] [GPU1 B6/15 S3/5]  → 700/2048 tokens  (34 tok/s)
+[09:43:05] [GPU1 B6/15 S3/5]  → 800/2048 tokens  (33 tok/s)
+[09:43:09] [GPU1 B6/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[09:43:14] [GPU1 B6/15 S3/5]  → 1000/2048 tokens  (30 tok/s)
+[09:43:18] [GPU1 B6/15 S3/5]  → 1100/2048 tokens  (29 tok/s)
+[09:43:23] [GPU1 B6/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[09:43:29] [GPU1 B6/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[09:43:34] [GPU1 B6/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[09:43:40] [GPU1 B6/15 S3/5]  → 1500/2048 tokens  (25 tok/s)
+[09:43:46] [GPU1 B6/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[09:43:53] [GPU1 B6/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[09:43:59] [GPU1 B6/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[09:44:06] [GPU1 B6/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[09:44:13] [GPU1 B6/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[09:44:19] [GPU1 B6/15 S4/5]  → 100/2048 tokens  (43 tok/s)
+[09:44:22] [GPU1 B6/15 S4/5]  → 200/2048 tokens  (43 tok/s)
+[09:44:24] [GPU1 B6/15 S4/5]  → 300/2048 tokens  (42 tok/s)
+[09:44:27] [GPU1 B6/15 S4/5]  → 400/2048 tokens  (40 tok/s)
+[09:44:30] [GPU1 B6/15 S4/5]  → 500/2048 tokens  (38 tok/s)
+[09:44:34] [GPU1 B6/15 S4/5]  → 600/2048 tokens  (36 tok/s)
+[09:44:37] [GPU1 B6/15 S4/5]  → 700/2048 tokens  (34 tok/s)
+[09:44:41] [GPU1 B6/15 S4/5]  → 800/2048 tokens  (33 tok/s)
+[09:44:45] [GPU1 B6/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[09:44:50] [GPU1 B6/15 S4/5]  → 1000/2048 tokens  (30 tok/s)
+[09:44:55] [GPU1 B6/15 S4/5]  → 1100/2048 tokens  (29 tok/s)
+[09:45:00] [GPU1 B6/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[09:45:05] [GPU1 B6/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[09:45:11] [GPU1 B6/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[09:45:16] [GPU1 B6/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[09:45:22] [GPU1 B6/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[09:45:29] [GPU1 B6/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[09:45:35] [GPU1 B6/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[09:45:42] [GPU1 B6/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[09:45:49] [GPU1 B6/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[09:45:55] [GPU1 B6/15 S5/5]  → 100/2048 tokens  (43 tok/s)
+[09:45:58] [GPU1 B6/15 S5/5]  → 200/2048 tokens  (43 tok/s)
+[09:46:00] [GPU1 B6/15 S5/5]  → 300/2048 tokens  (42 tok/s)
+[09:46:03] [GPU1 B6/15 S5/5]  → 400/2048 tokens  (40 tok/s)
+[09:46:06] [GPU1 B6/15 S5/5]  → 500/2048 tokens  (38 tok/s)
+[09:46:10] [GPU1 B6/15 S5/5]  → 600/2048 tokens  (36 tok/s)
+[09:46:13] [GPU1 B6/15 S5/5]  → 700/2048 tokens  (34 tok/s)
+[09:46:17] [GPU1 B6/15 S5/5]  → 800/2048 tokens  (33 tok/s)
+[09:46:22] [GPU1 B6/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[09:46:26] [GPU1 B6/15 S5/5]  → 1000/2048 tokens  (30 tok/s)
+[09:46:31] [GPU1 B6/15 S5/5]  → 1100/2048 tokens  (29 tok/s)
+[09:46:36] [GPU1 B6/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[09:46:41] [GPU1 B6/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[09:46:47] [GPU1 B6/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[09:46:53] [GPU1 B6/15 S5/5]  → 1500/2048 tokens  (25 tok/s)
+[09:46:59] [GPU1 B6/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[09:47:05] [GPU1 B6/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[09:47:12] [GPU1 B6/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[09:47:19] [GPU1 B6/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[09:47:26] [GPU1 B6/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  35%|███▌      | 161/455 [53:33<1:23:52, 17.12s/prob]                                                           GPU1:  35%|███▌      | 161/455 [53:33<1:23:52, 17.12s/prob]                                                           GPU1:  36%|███▌      | 162/455 [53:33<1:23:35, 17.12s/prob]                                                           GPU1:  36%|███▌      | 163/455 [53:33<1:23:18, 17.12s/prob]                                                           GPU1:  36%|███▌      | 164/455 [53:33<1:23:01, 17.12s/prob]                                                           GPU1:  36%|███▋      | 165/455 [53:33<1:22:44, 17.12s/prob]                                                           GPU1:  36%|███▋      | 166/455 [53:33<1:22:27, 17.12s/prob]                                                           GPU1:  37%|███▋      | 167/455 [53:33<1:22:10, 17.12s/prob]                                                           GPU1:  37%|███▋      | 168/455 [53:33<1:21:52, 17.12s/prob]                                                           GPU1:  37%|███▋      | 169/455 [53:33<1:21:35, 17.12s/prob]                                                           GPU1:  37%|███▋      | 170/455 [53:33<1:21:18, 17.12s/prob]                                                           GPU1:  38%|███▊      | 171/455 [53:33<1:21:01, 17.12s/prob]                                                           GPU1:  38%|███▊      | 172/455 [53:33<1:20:44, 17.12s/prob]                                                           GPU1:  38%|███▊      | 173/455 [53:33<1:20:27, 17.12s/prob]                                                           GPU1:  38%|███▊      | 174/455 [53:33<1:20:10, 17.12s/prob]                                                           GPU1:  38%|███▊      | 175/455 [53:33<1:19:53, 17.12s/prob]                                                           GPU1:  39%|███▊      | 176/455 [53:33<1:19:36, 17.12s/prob]                                                           GPU1:  39%|███▉      | 177/455 [53:33<1:19:18, 17.12s/prob]                                                           GPU1:  39%|███▉      | 178/455 [53:33<1:19:01, 17.12s/prob]                                                           GPU1:  39%|███▉      | 179/455 [53:33<1:18:44, 17.12s/prob]                                                           GPU1:  40%|███▉      | 180/455 [53:33<1:18:27, 17.12s/prob]                                                           GPU1:  40%|███▉      | 181/455 [53:33<1:18:10, 17.12s/prob]                                                           GPU1:  40%|████      | 182/455 [53:33<1:17:53, 17.12s/prob]                                                           GPU1:  40%|████      | 183/455 [53:33<1:17:36, 17.12s/prob]                                                           GPU1:  40%|████      | 184/455 [53:33<1:17:19, 17.12s/prob]                                                           GPU1:  41%|████      | 185/455 [53:33<1:17:01, 17.12s/prob]                                                           GPU1:  41%|████      | 186/455 [53:33<1:16:44, 17.12s/prob]                                                           GPU1:  41%|████      | 187/455 [53:33<1:16:27, 17.12s/prob]                                                           GPU1:  41%|████▏     | 188/455 [53:33<1:16:10, 17.12s/prob]                                                           GPU1:  42%|████▏     | 189/455 [53:33<1:15:53, 17.12s/prob]                                                           GPU1:  42%|████▏     | 190/455 [53:33<1:15:36, 17.12s/prob]                                                           GPU1:  42%|████▏     | 191/455 [53:33<1:15:19, 17.12s/prob]                                                           GPU1:  42%|████▏     | 192/455 [53:33<1:15:02, 17.12s/prob][09:47:29] [GPU1] [161/455] saved: gsm8k_141
+[09:47:29] [GPU1] [162/455] saved: gsm8k_145
+[09:47:29] [GPU1] [163/455] saved: gsm8k_149
+[09:47:29] [GPU1] [164/455] saved: gsm8k_153
+[09:47:29] [GPU1] [165/455] saved: gsm8k_157
+[09:47:29] [GPU1] [166/455] saved: gsm8k_161
+[09:47:29] [GPU1] [167/455] saved: gsm8k_165
+[09:47:29] [GPU1] [168/455] saved: gsm8k_169
+[09:47:29] [GPU1] [169/455] saved: gsm8k_173
+[09:47:29] [GPU1] [170/455] saved: gsm8k_177
+[09:47:29] [GPU1] [171/455] saved: gsm8k_181
+[09:47:29] [GPU1] [172/455] saved: gsm8k_185
+[09:47:29] [GPU1] [173/455] saved: gsm8k_189
+[09:47:29] [GPU1] [174/455] saved: gsm8k_193
+[09:47:29] [GPU1] [175/455] saved: gsm8k_197
+[09:47:29] [GPU1] [176/455] saved: gsm8k_201
+[09:47:29] [GPU1] [177/455] saved: gsm8k_205
+[09:47:29] [GPU1] [178/455] saved: gsm8k_209
+[09:47:29] [GPU1] [179/455] saved: gsm8k_213
+[09:47:29] [GPU1] [180/455] saved: gsm8k_217
+[09:47:29] [GPU1] [181/455] saved: gsm8k_221
+[09:47:29] [GPU1] [182/455] saved: gsm8k_225
+[09:47:29] [GPU1] [183/455] saved: gsm8k_229
+[09:47:29] [GPU1] [184/455] saved: gsm8k_233
+[09:47:29] [GPU1] [185/455] saved: gsm8k_237
+[09:47:29] [GPU1] [186/455] saved: gsm8k_241
+[09:47:29] [GPU1] [187/455] saved: gsm8k_245
+[09:47:29] [GPU1] [188/455] saved: gsm8k_249
+[09:47:29] [GPU1] [189/455] saved: gsm8k_253
+[09:47:29] [GPU1] [190/455] saved: gsm8k_257
+[09:47:29] [GPU1] [191/455] saved: gsm8k_261
+[09:47:29] [GPU1] [192/455] saved: gsm8k_265
+[09:47:32] [GPU1 B7/15 S1/5]  → 100/2048 tokens  (45 tok/s)
+[09:47:34] [GPU1 B7/15 S1/5]  → 200/2048 tokens  (45 tok/s)
+[09:47:36] [GPU1 B7/15 S1/5]  → 300/2048 tokens  (43 tok/s)
+[09:47:39] [GPU1 B7/15 S1/5]  → 400/2048 tokens  (41 tok/s)
+[09:47:42] [GPU1 B7/15 S1/5]  → 500/2048 tokens  (39 tok/s)
+[09:47:46] [GPU1 B7/15 S1/5]  → 600/2048 tokens  (37 tok/s)
+[09:47:49] [GPU1 B7/15 S1/5]  → 700/2048 tokens  (35 tok/s)
+[09:47:53] [GPU1 B7/15 S1/5]  → 800/2048 tokens  (34 tok/s)
+[09:47:57] [GPU1 B7/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[09:48:02] [GPU1 B7/15 S1/5]  → 1000/2048 tokens  (31 tok/s)
+[09:48:06] [GPU1 B7/15 S1/5]  → 1100/2048 tokens  (30 tok/s)
+[09:48:11] [GPU1 B7/15 S1/5]  → 1200/2048 tokens  (29 tok/s)
+[09:48:17] [GPU1 B7/15 S1/5]  → 1300/2048 tokens  (28 tok/s)
+[09:48:22] [GPU1 B7/15 S1/5]  → 1400/2048 tokens  (27 tok/s)
+[09:48:28] [GPU1 B7/15 S1/5]  → 1500/2048 tokens  (26 tok/s)
+[09:48:34] [GPU1 B7/15 S1/5]  → 1600/2048 tokens  (25 tok/s)
+[09:48:40] [GPU1 B7/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[09:48:47] [GPU1 B7/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[09:48:54] [GPU1 B7/15 S1/5]  → 1900/2048 tokens  (23 tok/s)
+[09:49:01] [GPU1 B7/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[09:49:06] [GPU1 B7/15 S2/5]  → 100/2048 tokens  (45 tok/s)
+[09:49:09] [GPU1 B7/15 S2/5]  → 200/2048 tokens  (45 tok/s)
+[09:49:11] [GPU1 B7/15 S2/5]  → 300/2048 tokens  (43 tok/s)
+[09:49:14] [GPU1 B7/15 S2/5]  → 400/2048 tokens  (41 tok/s)
+[09:49:17] [GPU1 B7/15 S2/5]  → 500/2048 tokens  (39 tok/s)
+[09:49:20] [GPU1 B7/15 S2/5]  → 600/2048 tokens  (37 tok/s)
+[09:49:24] [GPU1 B7/15 S2/5]  → 700/2048 tokens  (35 tok/s)
+[09:49:28] [GPU1 B7/15 S2/5]  → 800/2048 tokens  (34 tok/s)
+[09:49:32] [GPU1 B7/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[09:49:36] [GPU1 B7/15 S2/5]  → 1000/2048 tokens  (31 tok/s)
+[09:49:41] [GPU1 B7/15 S2/5]  → 1100/2048 tokens  (30 tok/s)
+[09:49:46] [GPU1 B7/15 S2/5]  → 1200/2048 tokens  (29 tok/s)
+[09:49:51] [GPU1 B7/15 S2/5]  → 1300/2048 tokens  (28 tok/s)
+[09:49:57] [GPU1 B7/15 S2/5]  → 1400/2048 tokens  (27 tok/s)
+[09:50:03] [GPU1 B7/15 S2/5]  → 1500/2048 tokens  (26 tok/s)
+[09:50:09] [GPU1 B7/15 S2/5]  → 1600/2048 tokens  (25 tok/s)
+[09:50:15] [GPU1 B7/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[09:50:21] [GPU1 B7/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[09:50:28] [GPU1 B7/15 S2/5]  → 1900/2048 tokens  (23 tok/s)
+[09:50:35] [GPU1 B7/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[09:50:41] [GPU1 B7/15 S3/5]  → 100/2048 tokens  (45 tok/s)
+[09:50:43] [GPU1 B7/15 S3/5]  → 200/2048 tokens  (45 tok/s)
+[09:50:46] [GPU1 B7/15 S3/5]  → 300/2048 tokens  (43 tok/s)
+[09:50:49] [GPU1 B7/15 S3/5]  → 400/2048 tokens  (41 tok/s)
+[09:50:52] [GPU1 B7/15 S3/5]  → 500/2048 tokens  (39 tok/s)
+[09:50:55] [GPU1 B7/15 S3/5]  → 600/2048 tokens  (37 tok/s)
+[09:50:59] [GPU1 B7/15 S3/5]  → 700/2048 tokens  (35 tok/s)
+[09:51:03] [GPU1 B7/15 S3/5]  → 800/2048 tokens  (34 tok/s)
+[09:51:07] [GPU1 B7/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[09:51:11] [GPU1 B7/15 S3/5]  → 1000/2048 tokens  (31 tok/s)
+[09:51:16] [GPU1 B7/15 S3/5]  → 1100/2048 tokens  (30 tok/s)
+[09:51:21] [GPU1 B7/15 S3/5]  → 1200/2048 tokens  (29 tok/s)
+[09:51:26] [GPU1 B7/15 S3/5]  → 1300/2048 tokens  (28 tok/s)
+[09:51:32] [GPU1 B7/15 S3/5]  → 1400/2048 tokens  (27 tok/s)
+[09:51:37] [GPU1 B7/15 S3/5]  → 1500/2048 tokens  (26 tok/s)
+[09:51:43] [GPU1 B7/15 S3/5]  → 1600/2048 tokens  (25 tok/s)
+[09:51:50] [GPU1 B7/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[09:51:56] [GPU1 B7/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[09:52:03] [GPU1 B7/15 S3/5]  → 1900/2048 tokens  (23 tok/s)
+[09:52:10] [GPU1 B7/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[09:52:16] [GPU1 B7/15 S4/5]  → 100/2048 tokens  (45 tok/s)
+[09:52:18] [GPU1 B7/15 S4/5]  → 200/2048 tokens  (45 tok/s)
+[09:52:21] [GPU1 B7/15 S4/5]  → 300/2048 tokens  (43 tok/s)
+[09:52:23] [GPU1 B7/15 S4/5]  → 400/2048 tokens  (41 tok/s)
+[09:52:26] [GPU1 B7/15 S4/5]  → 500/2048 tokens  (39 tok/s)
+[09:52:30] [GPU1 B7/15 S4/5]  → 600/2048 tokens  (37 tok/s)
+[09:52:33] [GPU1 B7/15 S4/5]  → 700/2048 tokens  (35 tok/s)
+[09:52:37] [GPU1 B7/15 S4/5]  → 800/2048 tokens  (34 tok/s)
+[09:52:41] [GPU1 B7/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[09:52:46] [GPU1 B7/15 S4/5]  → 1000/2048 tokens  (31 tok/s)
+[09:52:50] [GPU1 B7/15 S4/5]  → 1100/2048 tokens  (30 tok/s)
+[09:52:55] [GPU1 B7/15 S4/5]  → 1200/2048 tokens  (29 tok/s)
+[09:53:01] [GPU1 B7/15 S4/5]  → 1300/2048 tokens  (28 tok/s)
+[09:53:06] [GPU1 B7/15 S4/5]  → 1400/2048 tokens  (27 tok/s)
+[09:53:12] [GPU1 B7/15 S4/5]  → 1500/2048 tokens  (26 tok/s)
+[09:53:18] [GPU1 B7/15 S4/5]  → 1600/2048 tokens  (25 tok/s)
+[09:53:24] [GPU1 B7/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[09:53:31] [GPU1 B7/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[09:53:38] [GPU1 B7/15 S4/5]  → 1900/2048 tokens  (23 tok/s)
+[09:53:45] [GPU1 B7/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[09:53:50] [GPU1 B7/15 S5/5]  → 100/2048 tokens  (45 tok/s)
+[09:53:53] [GPU1 B7/15 S5/5]  → 200/2048 tokens  (45 tok/s)
+[09:53:55] [GPU1 B7/15 S5/5]  → 300/2048 tokens  (43 tok/s)
+[09:53:58] [GPU1 B7/15 S5/5]  → 400/2048 tokens  (41 tok/s)
+[09:54:01] [GPU1 B7/15 S5/5]  → 500/2048 tokens  (39 tok/s)
+[09:54:04] [GPU1 B7/15 S5/5]  → 600/2048 tokens  (37 tok/s)
+[09:54:08] [GPU1 B7/15 S5/5]  → 700/2048 tokens  (35 tok/s)
+[09:54:12] [GPU1 B7/15 S5/5]  → 800/2048 tokens  (34 tok/s)
+[09:54:16] [GPU1 B7/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[09:54:20] [GPU1 B7/15 S5/5]  → 1000/2048 tokens  (31 tok/s)
+[09:54:25] [GPU1 B7/15 S5/5]  → 1100/2048 tokens  (30 tok/s)
+[09:54:30] [GPU1 B7/15 S5/5]  → 1200/2048 tokens  (29 tok/s)
+[09:54:35] [GPU1 B7/15 S5/5]  → 1300/2048 tokens  (28 tok/s)
+[09:54:41] [GPU1 B7/15 S5/5]  → 1400/2048 tokens  (27 tok/s)
+[09:54:47] [GPU1 B7/15 S5/5]  → 1500/2048 tokens  (26 tok/s)
+[09:54:53] [GPU1 B7/15 S5/5]  → 1600/2048 tokens  (25 tok/s)
+[09:54:59] [GPU1 B7/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[09:55:05] [GPU1 B7/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[09:55:12] [GPU1 B7/15 S5/5]  → 1900/2048 tokens  (23 tok/s)
+[09:55:19] [GPU1 B7/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  42%|████▏     | 193/455 [1:01:27<1:11:18, 16.33s/prob]                                                             GPU1:  42%|████▏     | 193/455 [1:01:27<1:11:18, 16.33s/prob]                                                             GPU1:  43%|████▎     | 194/455 [1:01:27<1:11:02, 16.33s/prob]                                                             GPU1:  43%|████▎     | 195/455 [1:01:27<1:10:45, 16.33s/prob]                                                             GPU1:  43%|████▎     | 196/455 [1:01:27<1:10:29, 16.33s/prob]                                                             GPU1:  43%|████▎     | 197/455 [1:01:27<1:10:13, 16.33s/prob]                                                             GPU1:  44%|████▎     | 198/455 [1:01:27<1:09:56, 16.33s/prob]                                                             GPU1:  44%|████▎     | 199/455 [1:01:27<1:09:40, 16.33s/prob]                                                             GPU1:  44%|████▍     | 200/455 [1:01:27<1:09:24, 16.33s/prob]                                                             GPU1:  44%|████▍     | 201/455 [1:01:27<1:09:07, 16.33s/prob]                                                             GPU1:  44%|████▍     | 202/455 [1:01:27<1:08:51, 16.33s/prob]                                                             GPU1:  45%|████▍     | 203/455 [1:01:27<1:08:35, 16.33s/prob]                                                             GPU1:  45%|████▍     | 204/455 [1:01:27<1:08:18, 16.33s/prob]                                                             GPU1:  45%|████▌     | 205/455 [1:01:27<1:08:02, 16.33s/prob]                                                             GPU1:  45%|████▌     | 206/455 [1:01:27<1:07:46, 16.33s/prob]                                                             GPU1:  45%|████▌     | 207/455 [1:01:27<1:07:29, 16.33s/prob]                                                             GPU1:  46%|████▌     | 208/455 [1:01:27<1:07:13, 16.33s/prob]                                                             GPU1:  46%|████▌     | 209/455 [1:01:27<1:06:57, 16.33s/prob]                                                             GPU1:  46%|████▌     | 210/455 [1:01:27<1:06:40, 16.33s/prob]                                                             GPU1:  46%|████▋     | 211/455 [1:01:27<1:06:24, 16.33s/prob]                                                             GPU1:  47%|████▋     | 212/455 [1:01:27<1:06:08, 16.33s/prob]                                                             GPU1:  47%|████▋     | 213/455 [1:01:27<1:05:51, 16.33s/prob]                                                             GPU1:  47%|████▋     | 214/455 [1:01:27<1:05:35, 16.33s/prob]                                                             GPU1:  47%|████▋     | 215/455 [1:01:27<1:05:19, 16.33s/prob]                                                             GPU1:  47%|████▋     | 216/455 [1:01:27<1:05:02, 16.33s/prob]                                                             GPU1:  48%|████▊     | 217/455 [1:01:27<1:04:46, 16.33s/prob]                                                             GPU1:  48%|████▊     | 218/455 [1:01:27<1:04:30, 16.33s/prob]                                                             GPU1:  48%|████▊     | 219/455 [1:01:27<1:04:13, 16.33s/prob]                                                             GPU1:  48%|████▊     | 220/455 [1:01:27<1:03:57, 16.33s/prob]                                                             GPU1:  49%|████▊     | 221/455 [1:01:27<1:03:41, 16.33s/prob]                                                             GPU1:  49%|████▉     | 222/455 [1:01:27<1:03:24, 16.33s/prob]                                                             GPU1:  49%|████▉     | 223/455 [1:01:27<1:03:08, 16.33s/prob]                                                             GPU1:  49%|████▉     | 224/455 [1:01:27<1:02:52, 16.33s/prob][09:55:23] [GPU1] [193/455] saved: gsm8k_269
+[09:55:23] [GPU1] [194/455] saved: gsm8k_273
+[09:55:23] [GPU1] [195/455] saved: gsm8k_277
+[09:55:23] [GPU1] [196/455] saved: gsm8k_281
+[09:55:23] [GPU1] [197/455] saved: gsm8k_285
+[09:55:23] [GPU1] [198/455] saved: gsm8k_289
+[09:55:23] [GPU1] [199/455] saved: gsm8k_293
+[09:55:23] [GPU1] [200/455] saved: gsm8k_297
+[09:55:23] [GPU1] [201/455] saved: gsm8k_301
+[09:55:23] [GPU1] [202/455] saved: gsm8k_305
+[09:55:23] [GPU1] [203/455] saved: gsm8k_309
+[09:55:23] [GPU1] [204/455] saved: gsm8k_313
+[09:55:23] [GPU1] [205/455] saved: gsm8k_317
+[09:55:23] [GPU1] [206/455] saved: gsm8k_321
+[09:55:23] [GPU1] [207/455] saved: gsm8k_325
+[09:55:23] [GPU1] [208/455] saved: gsm8k_329
+[09:55:23] [GPU1] [209/455] saved: gsm8k_333
+[09:55:23] [GPU1] [210/455] saved: gsm8k_337
+[09:55:23] [GPU1] [211/455] saved: gsm8k_341
+[09:55:23] [GPU1] [212/455] saved: gsm8k_345
+[09:55:23] [GPU1] [213/455] saved: gsm8k_349
+[09:55:23] [GPU1] [214/455] saved: gsm8k_353
+[09:55:23] [GPU1] [215/455] saved: gsm8k_357
+[09:55:23] [GPU1] [216/455] saved: gsm8k_361
+[09:55:23] [GPU1] [217/455] saved: gsm8k_365
+[09:55:23] [GPU1] [218/455] saved: gsm8k_369
+[09:55:23] [GPU1] [219/455] saved: gsm8k_373
+[09:55:23] [GPU1] [220/455] saved: gsm8k_377
+[09:55:23] [GPU1] [221/455] saved: gsm8k_381
+[09:55:23] [GPU1] [222/455] saved: gsm8k_385
+[09:55:23] [GPU1] [223/455] saved: gsm8k_389
+[09:55:23] [GPU1] [224/455] saved: gsm8k_393
+[09:55:25] [GPU1 B8/15 S1/5]  → 100/2048 tokens  (44 tok/s)
+[09:55:27] [GPU1 B8/15 S1/5]  → 200/2048 tokens  (44 tok/s)
+[09:55:30] [GPU1 B8/15 S1/5]  → 300/2048 tokens  (42 tok/s)
+[09:55:33] [GPU1 B8/15 S1/5]  → 400/2048 tokens  (40 tok/s)
+[09:55:36] [GPU1 B8/15 S1/5]  → 500/2048 tokens  (39 tok/s)
+[09:55:39] [GPU1 B8/15 S1/5]  → 600/2048 tokens  (37 tok/s)
+[09:55:43] [GPU1 B8/15 S1/5]  → 700/2048 tokens  (35 tok/s)
+[09:55:47] [GPU1 B8/15 S1/5]  → 800/2048 tokens  (34 tok/s)
+[09:55:51] [GPU1 B8/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[09:55:55] [GPU1 B8/15 S1/5]  → 1000/2048 tokens  (31 tok/s)
+[09:56:00] [GPU1 B8/15 S1/5]  → 1100/2048 tokens  (30 tok/s)
+[09:56:05] [GPU1 B8/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[09:56:10] [GPU1 B8/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[09:56:16] [GPU1 B8/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[09:56:22] [GPU1 B8/15 S1/5]  → 1500/2048 tokens  (26 tok/s)
+[09:56:28] [GPU1 B8/15 S1/5]  → 1600/2048 tokens  (25 tok/s)
+[09:56:34] [GPU1 B8/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[09:56:41] [GPU1 B8/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[09:56:47] [GPU1 B8/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[09:56:54] [GPU1 B8/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[09:57:00] [GPU1 B8/15 S2/5]  → 100/2048 tokens  (44 tok/s)
+[09:57:03] [GPU1 B8/15 S2/5]  → 200/2048 tokens  (44 tok/s)
+[09:57:05] [GPU1 B8/15 S2/5]  → 300/2048 tokens  (42 tok/s)
+[09:57:08] [GPU1 B8/15 S2/5]  → 400/2048 tokens  (40 tok/s)
+[09:57:11] [GPU1 B8/15 S2/5]  → 500/2048 tokens  (39 tok/s)
+[09:57:14] [GPU1 B8/15 S2/5]  → 600/2048 tokens  (37 tok/s)
+[09:57:18] [GPU1 B8/15 S2/5]  → 700/2048 tokens  (35 tok/s)
+[09:57:22] [GPU1 B8/15 S2/5]  → 800/2048 tokens  (34 tok/s)
+[09:57:26] [GPU1 B8/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[09:57:31] [GPU1 B8/15 S2/5]  → 1000/2048 tokens  (31 tok/s)
+[09:57:35] [GPU1 B8/15 S2/5]  → 1100/2048 tokens  (30 tok/s)
+[09:57:40] [GPU1 B8/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[09:57:45] [GPU1 B8/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[09:57:51] [GPU1 B8/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[09:57:57] [GPU1 B8/15 S2/5]  → 1500/2048 tokens  (26 tok/s)
+[09:58:03] [GPU1 B8/15 S2/5]  → 1600/2048 tokens  (25 tok/s)
+[09:58:09] [GPU1 B8/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[09:58:16] [GPU1 B8/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[09:58:23] [GPU1 B8/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[09:58:30] [GPU1 B8/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[09:58:35] [GPU1 B8/15 S3/5]  → 100/2048 tokens  (44 tok/s)
+[09:58:38] [GPU1 B8/15 S3/5]  → 200/2048 tokens  (44 tok/s)
+[09:58:40] [GPU1 B8/15 S3/5]  → 300/2048 tokens  (43 tok/s)
+[09:58:43] [GPU1 B8/15 S3/5]  → 400/2048 tokens  (41 tok/s)
+[09:58:46] [GPU1 B8/15 S3/5]  → 500/2048 tokens  (39 tok/s)
+[09:58:50] [GPU1 B8/15 S3/5]  → 600/2048 tokens  (37 tok/s)
+[09:58:53] [GPU1 B8/15 S3/5]  → 700/2048 tokens  (35 tok/s)
+[09:58:57] [GPU1 B8/15 S3/5]  → 800/2048 tokens  (34 tok/s)
+[09:59:01] [GPU1 B8/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[09:59:06] [GPU1 B8/15 S3/5]  → 1000/2048 tokens  (31 tok/s)
+[09:59:10] [GPU1 B8/15 S3/5]  → 1100/2048 tokens  (30 tok/s)
+[09:59:15] [GPU1 B8/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[09:59:21] [GPU1 B8/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[09:59:26] [GPU1 B8/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[09:59:32] [GPU1 B8/15 S3/5]  → 1500/2048 tokens  (26 tok/s)
+[09:59:38] [GPU1 B8/15 S3/5]  → 1600/2048 tokens  (25 tok/s)
+[09:59:44] [GPU1 B8/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[09:59:51] [GPU1 B8/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[09:59:58] [GPU1 B8/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[10:00:05] [GPU1 B8/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[10:00:11] [GPU1 B8/15 S4/5]  → 100/2048 tokens  (44 tok/s)
+[10:00:13] [GPU1 B8/15 S4/5]  → 200/2048 tokens  (44 tok/s)
+[10:00:15] [GPU1 B8/15 S4/5]  → 300/2048 tokens  (43 tok/s)
+[10:00:18] [GPU1 B8/15 S4/5]  → 400/2048 tokens  (41 tok/s)
+[10:00:21] [GPU1 B8/15 S4/5]  → 500/2048 tokens  (39 tok/s)
+[10:00:25] [GPU1 B8/15 S4/5]  → 600/2048 tokens  (37 tok/s)
+[10:00:28] [GPU1 B8/15 S4/5]  → 700/2048 tokens  (35 tok/s)
+[10:00:32] [GPU1 B8/15 S4/5]  → 800/2048 tokens  (34 tok/s)
+[10:00:36] [GPU1 B8/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[10:00:41] [GPU1 B8/15 S4/5]  → 1000/2048 tokens  (31 tok/s)
+[10:00:46] [GPU1 B8/15 S4/5]  → 1100/2048 tokens  (30 tok/s)
+[10:00:51] [GPU1 B8/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[10:00:56] [GPU1 B8/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[10:01:01] [GPU1 B8/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[10:01:07] [GPU1 B8/15 S4/5]  → 1500/2048 tokens  (26 tok/s)
+[10:01:13] [GPU1 B8/15 S4/5]  → 1600/2048 tokens  (25 tok/s)
+[10:01:20] [GPU1 B8/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[10:01:26] [GPU1 B8/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[10:01:33] [GPU1 B8/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[10:01:40] [GPU1 B8/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[10:01:46] [GPU1 B8/15 S5/5]  → 100/2048 tokens  (44 tok/s)
+[10:01:48] [GPU1 B8/15 S5/5]  → 200/2048 tokens  (44 tok/s)
+[10:01:51] [GPU1 B8/15 S5/5]  → 300/2048 tokens  (43 tok/s)
+[10:01:53] [GPU1 B8/15 S5/5]  → 400/2048 tokens  (41 tok/s)
+[10:01:57] [GPU1 B8/15 S5/5]  → 500/2048 tokens  (39 tok/s)
+[10:02:00] [GPU1 B8/15 S5/5]  → 600/2048 tokens  (37 tok/s)
+[10:02:04] [GPU1 B8/15 S5/5]  → 700/2048 tokens  (35 tok/s)
+[10:02:07] [GPU1 B8/15 S5/5]  → 800/2048 tokens  (34 tok/s)
+[10:02:12] [GPU1 B8/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[10:02:16] [GPU1 B8/15 S5/5]  → 1000/2048 tokens  (31 tok/s)
+[10:02:21] [GPU1 B8/15 S5/5]  → 1100/2048 tokens  (30 tok/s)
+[10:02:26] [GPU1 B8/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[10:02:31] [GPU1 B8/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[10:02:37] [GPU1 B8/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[10:02:42] [GPU1 B8/15 S5/5]  → 1500/2048 tokens  (26 tok/s)
+[10:02:48] [GPU1 B8/15 S5/5]  → 1600/2048 tokens  (25 tok/s)
+[10:02:55] [GPU1 B8/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[10:03:01] [GPU1 B8/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[10:03:08] [GPU1 B8/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[10:03:15] [GPU1 B8/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  49%|████▉     | 225/455 [1:09:23<1:00:46, 15.85s/prob]                                                             GPU1:  49%|████▉     | 225/455 [1:09:23<1:00:46, 15.85s/prob]                                                             GPU1:  50%|████▉     | 226/455 [1:09:23<1:00:30, 15.85s/prob]                                                             GPU1:  50%|████▉     | 227/455 [1:09:23<1:00:14, 15.85s/prob]                                                             GPU1:  50%|█████     | 228/455 [1:09:23<59:58, 15.85s/prob]                                                           GPU1:  50%|█████     | 229/455 [1:09:23<59:42, 15.85s/prob]                                                           GPU1:  51%|█████     | 230/455 [1:09:23<59:27, 15.85s/prob]                                                           GPU1:  51%|█████     | 231/455 [1:09:23<59:11, 15.85s/prob]                                                           GPU1:  51%|█████     | 232/455 [1:09:23<58:55, 15.85s/prob]                                                           GPU1:  51%|█████     | 233/455 [1:09:23<58:39, 15.85s/prob]                                                           GPU1:  51%|█████▏    | 234/455 [1:09:23<58:23, 15.85s/prob]                                                           GPU1:  52%|█████▏    | 235/455 [1:09:23<58:07, 15.85s/prob]                                                           GPU1:  52%|█████▏    | 236/455 [1:09:23<57:51, 15.85s/prob]                                                           GPU1:  52%|█████▏    | 237/455 [1:09:23<57:36, 15.85s/prob]                                                           GPU1:  52%|█████▏    | 238/455 [1:09:23<57:20, 15.85s/prob]                                                           GPU1:  53%|█████▎    | 239/455 [1:09:23<57:04, 15.85s/prob]                                                           GPU1:  53%|█████▎    | 240/455 [1:09:23<56:48, 15.85s/prob]                                                           GPU1:  53%|█████▎    | 241/455 [1:09:23<56:32, 15.85s/prob]                                                           GPU1:  53%|█████▎    | 242/455 [1:09:23<56:16, 15.85s/prob]                                                           GPU1:  53%|█████▎    | 243/455 [1:09:23<56:00, 15.85s/prob]                                                           GPU1:  54%|█████▎    | 244/455 [1:09:23<55:45, 15.85s/prob]                                                           GPU1:  54%|█████▍    | 245/455 [1:09:23<55:29, 15.85s/prob]                                                           GPU1:  54%|█████▍    | 246/455 [1:09:23<55:13, 15.85s/prob]                                                           GPU1:  54%|█████▍    | 247/455 [1:09:23<54:57, 15.85s/prob]                                                           GPU1:  55%|█████▍    | 248/455 [1:09:23<54:41, 15.85s/prob]                                                           GPU1:  55%|█████▍    | 249/455 [1:09:23<54:25, 15.85s/prob]                                                           GPU1:  55%|█████▍    | 250/455 [1:09:23<54:10, 15.85s/prob]                                                           GPU1:  55%|█████▌    | 251/455 [1:09:23<53:54, 15.85s/prob]                                                           GPU1:  55%|█████▌    | 252/455 [1:09:23<53:38, 15.85s/prob]                                                           GPU1:  56%|█████▌    | 253/455 [1:09:23<53:22, 15.85s/prob]                                                           GPU1:  56%|█████▌    | 254/455 [1:09:23<53:06, 15.85s/prob]                                                           GPU1:  56%|█████▌    | 255/455 [1:09:23<52:50, 15.85s/prob]                                                           GPU1:  56%|█████▋    | 256/455 [1:09:23<52:34, 15.85s/prob][10:03:19] [GPU1] [225/455] saved: gsm8k_397
+[10:03:19] [GPU1] [226/455] saved: gsm8k_401
+[10:03:19] [GPU1] [227/455] saved: gsm8k_405
+[10:03:19] [GPU1] [228/455] saved: gsm8k_409
+[10:03:19] [GPU1] [229/455] saved: gsm8k_413
+[10:03:19] [GPU1] [230/455] saved: gsm8k_417
+[10:03:19] [GPU1] [231/455] saved: gsm8k_421
+[10:03:19] [GPU1] [232/455] saved: gsm8k_425
+[10:03:19] [GPU1] [233/455] saved: gsm8k_429
+[10:03:19] [GPU1] [234/455] saved: gsm8k_433
+[10:03:19] [GPU1] [235/455] saved: gsm8k_437
+[10:03:19] [GPU1] [236/455] saved: gsm8k_441
+[10:03:19] [GPU1] [237/455] saved: gsm8k_445
+[10:03:19] [GPU1] [238/455] saved: gsm8k_449
+[10:03:19] [GPU1] [239/455] saved: gsm8k_453
+[10:03:19] [GPU1] [240/455] saved: gsm8k_457
+[10:03:19] [GPU1] [241/455] saved: gsm8k_461
+[10:03:19] [GPU1] [242/455] saved: gsm8k_465
+[10:03:19] [GPU1] [243/455] saved: gsm8k_469
+[10:03:19] [GPU1] [244/455] saved: gsm8k_473
+[10:03:19] [GPU1] [245/455] saved: gsm8k_477
+[10:03:19] [GPU1] [246/455] saved: gsm8k_481
+[10:03:19] [GPU1] [247/455] saved: gsm8k_485
+[10:03:19] [GPU1] [248/455] saved: gsm8k_489
+[10:03:19] [GPU1] [249/455] saved: gsm8k_493
+[10:03:19] [GPU1] [250/455] saved: gsm8k_497
+[10:03:19] [GPU1] [251/455] saved: gsm8k_501
+[10:03:19] [GPU1] [252/455] saved: gsm8k_505
+[10:03:19] [GPU1] [253/455] saved: gsm8k_509
+[10:03:19] [GPU1] [254/455] saved: gsm8k_513
+[10:03:19] [GPU1] [255/455] saved: gsm8k_517
+[10:03:19] [GPU1] [256/455] saved: gsm8k_521
+[10:03:21] [GPU1 B9/15 S1/5]  → 100/2048 tokens  (44 tok/s)
+[10:03:23] [GPU1 B9/15 S1/5]  → 200/2048 tokens  (44 tok/s)
+[10:03:26] [GPU1 B9/15 S1/5]  → 300/2048 tokens  (43 tok/s)
+[10:03:29] [GPU1 B9/15 S1/5]  → 400/2048 tokens  (41 tok/s)
+[10:03:32] [GPU1 B9/15 S1/5]  → 500/2048 tokens  (39 tok/s)
+[10:03:35] [GPU1 B9/15 S1/5]  → 600/2048 tokens  (37 tok/s)
+[10:03:39] [GPU1 B9/15 S1/5]  → 700/2048 tokens  (35 tok/s)
+[10:03:43] [GPU1 B9/15 S1/5]  → 800/2048 tokens  (34 tok/s)
+[10:03:47] [GPU1 B9/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[10:03:51] [GPU1 B9/15 S1/5]  → 1000/2048 tokens  (31 tok/s)
+[10:03:56] [GPU1 B9/15 S1/5]  → 1100/2048 tokens  (30 tok/s)
+[10:04:01] [GPU1 B9/15 S1/5]  → 1200/2048 tokens  (29 tok/s)
+[10:04:06] [GPU1 B9/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[10:04:12] [GPU1 B9/15 S1/5]  → 1400/2048 tokens  (27 tok/s)
+[10:04:17] [GPU1 B9/15 S1/5]  → 1500/2048 tokens  (26 tok/s)
+[10:04:24] [GPU1 B9/15 S1/5]  → 1600/2048 tokens  (25 tok/s)
+[10:04:30] [GPU1 B9/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[10:04:36] [GPU1 B9/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[10:04:43] [GPU1 B9/15 S1/5]  → 1900/2048 tokens  (23 tok/s)
+[10:04:50] [GPU1 B9/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[10:04:56] [GPU1 B9/15 S2/5]  → 100/2048 tokens  (44 tok/s)
+[10:04:58] [GPU1 B9/15 S2/5]  → 200/2048 tokens  (44 tok/s)
+[10:05:01] [GPU1 B9/15 S2/5]  → 300/2048 tokens  (43 tok/s)
+[10:05:04] [GPU1 B9/15 S2/5]  → 400/2048 tokens  (41 tok/s)
+[10:05:07] [GPU1 B9/15 S2/5]  → 500/2048 tokens  (39 tok/s)
+[10:05:10] [GPU1 B9/15 S2/5]  → 600/2048 tokens  (37 tok/s)
+[10:05:14] [GPU1 B9/15 S2/5]  → 700/2048 tokens  (35 tok/s)
+[10:05:18] [GPU1 B9/15 S2/5]  → 800/2048 tokens  (34 tok/s)
+[10:05:22] [GPU1 B9/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[10:05:26] [GPU1 B9/15 S2/5]  → 1000/2048 tokens  (31 tok/s)
+[10:05:31] [GPU1 B9/15 S2/5]  → 1100/2048 tokens  (30 tok/s)
+[10:05:36] [GPU1 B9/15 S2/5]  → 1200/2048 tokens  (29 tok/s)
+[10:05:41] [GPU1 B9/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[10:05:47] [GPU1 B9/15 S2/5]  → 1400/2048 tokens  (27 tok/s)
+[10:05:52] [GPU1 B9/15 S2/5]  → 1500/2048 tokens  (26 tok/s)
+[10:05:59] [GPU1 B9/15 S2/5]  → 1600/2048 tokens  (25 tok/s)
+[10:06:05] [GPU1 B9/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[10:06:11] [GPU1 B9/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[10:06:18] [GPU1 B9/15 S2/5]  → 1900/2048 tokens  (23 tok/s)
+[10:06:25] [GPU1 B9/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[10:06:31] [GPU1 B9/15 S3/5]  → 100/2048 tokens  (44 tok/s)
+[10:06:33] [GPU1 B9/15 S3/5]  → 200/2048 tokens  (44 tok/s)
+[10:06:36] [GPU1 B9/15 S3/5]  → 300/2048 tokens  (43 tok/s)
+[10:06:39] [GPU1 B9/15 S3/5]  → 400/2048 tokens  (41 tok/s)
+[10:06:42] [GPU1 B9/15 S3/5]  → 500/2048 tokens  (39 tok/s)
+[10:06:45] [GPU1 B9/15 S3/5]  → 600/2048 tokens  (37 tok/s)
+[10:06:49] [GPU1 B9/15 S3/5]  → 700/2048 tokens  (35 tok/s)
+[10:06:53] [GPU1 B9/15 S3/5]  → 800/2048 tokens  (34 tok/s)
+[10:06:57] [GPU1 B9/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[10:07:01] [GPU1 B9/15 S3/5]  → 1000/2048 tokens  (31 tok/s)
+[10:07:06] [GPU1 B9/15 S3/5]  → 1100/2048 tokens  (30 tok/s)
+[10:07:11] [GPU1 B9/15 S3/5]  → 1200/2048 tokens  (29 tok/s)
+[10:07:16] [GPU1 B9/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[10:07:22] [GPU1 B9/15 S3/5]  → 1400/2048 tokens  (27 tok/s)
+[10:07:28] [GPU1 B9/15 S3/5]  → 1500/2048 tokens  (26 tok/s)
+[10:07:34] [GPU1 B9/15 S3/5]  → 1600/2048 tokens  (25 tok/s)
+[10:07:40] [GPU1 B9/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[10:07:46] [GPU1 B9/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[10:07:53] [GPU1 B9/15 S3/5]  → 1900/2048 tokens  (23 tok/s)
+[10:08:00] [GPU1 B9/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[10:08:06] [GPU1 B9/15 S4/5]  → 100/2048 tokens  (44 tok/s)
+[10:08:08] [GPU1 B9/15 S4/5]  → 200/2048 tokens  (44 tok/s)
+[10:08:11] [GPU1 B9/15 S4/5]  → 300/2048 tokens  (43 tok/s)
+[10:08:14] [GPU1 B9/15 S4/5]  → 400/2048 tokens  (41 tok/s)
+[10:08:17] [GPU1 B9/15 S4/5]  → 500/2048 tokens  (39 tok/s)
+[10:08:20] [GPU1 B9/15 S4/5]  → 600/2048 tokens  (37 tok/s)
+[10:08:24] [GPU1 B9/15 S4/5]  → 700/2048 tokens  (35 tok/s)
+[10:08:28] [GPU1 B9/15 S4/5]  → 800/2048 tokens  (34 tok/s)
+[10:08:32] [GPU1 B9/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[10:08:36] [GPU1 B9/15 S4/5]  → 1000/2048 tokens  (31 tok/s)
+[10:08:41] [GPU1 B9/15 S4/5]  → 1100/2048 tokens  (30 tok/s)
+[10:08:46] [GPU1 B9/15 S4/5]  → 1200/2048 tokens  (29 tok/s)
+[10:08:51] [GPU1 B9/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[10:08:57] [GPU1 B9/15 S4/5]  → 1400/2048 tokens  (27 tok/s)
+[10:09:03] [GPU1 B9/15 S4/5]  → 1500/2048 tokens  (26 tok/s)
+[10:09:09] [GPU1 B9/15 S4/5]  → 1600/2048 tokens  (25 tok/s)
+[10:09:15] [GPU1 B9/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[10:09:21] [GPU1 B9/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[10:09:28] [GPU1 B9/15 S4/5]  → 1900/2048 tokens  (23 tok/s)
+[10:09:35] [GPU1 B9/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[10:09:41] [GPU1 B9/15 S5/5]  → 100/2048 tokens  (44 tok/s)
+[10:09:43] [GPU1 B9/15 S5/5]  → 200/2048 tokens  (44 tok/s)
+[10:09:46] [GPU1 B9/15 S5/5]  → 300/2048 tokens  (43 tok/s)
+[10:09:49] [GPU1 B9/15 S5/5]  → 400/2048 tokens  (41 tok/s)
+[10:09:52] [GPU1 B9/15 S5/5]  → 500/2048 tokens  (39 tok/s)
+[10:09:55] [GPU1 B9/15 S5/5]  → 600/2048 tokens  (37 tok/s)
+[10:09:59] [GPU1 B9/15 S5/5]  → 700/2048 tokens  (35 tok/s)
+[10:10:03] [GPU1 B9/15 S5/5]  → 800/2048 tokens  (34 tok/s)
+[10:10:07] [GPU1 B9/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[10:10:11] [GPU1 B9/15 S5/5]  → 1000/2048 tokens  (31 tok/s)
+[10:10:16] [GPU1 B9/15 S5/5]  → 1100/2048 tokens  (30 tok/s)
+[10:10:21] [GPU1 B9/15 S5/5]  → 1200/2048 tokens  (29 tok/s)
+[10:10:26] [GPU1 B9/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[10:10:32] [GPU1 B9/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[10:10:38] [GPU1 B9/15 S5/5]  → 1500/2048 tokens  (26 tok/s)
+[10:10:44] [GPU1 B9/15 S5/5]  → 1600/2048 tokens  (25 tok/s)
+[10:10:50] [GPU1 B9/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[10:10:57] [GPU1 B9/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[10:11:03] [GPU1 B9/15 S5/5]  → 1900/2048 tokens  (23 tok/s)
+[10:11:11] [GPU1 B9/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  56%|█████▋    | 257/455 [1:17:18<51:15, 15.54s/prob]                                                           GPU1:  56%|█████▋    | 257/455 [1:17:18<51:15, 15.54s/prob]                                                           GPU1:  57%|█████▋    | 258/455 [1:17:18<51:00, 15.54s/prob]                                                           GPU1:  57%|█████▋    | 259/455 [1:17:18<50:44, 15.54s/prob]                                                           GPU1:  57%|█████▋    | 260/455 [1:17:18<50:29, 15.54s/prob]                                                           GPU1:  57%|█████▋    | 261/455 [1:17:18<50:13, 15.54s/prob]                                                           GPU1:  58%|█████▊    | 262/455 [1:17:18<49:58, 15.54s/prob]                                                           GPU1:  58%|█████▊    | 263/455 [1:17:18<49:42, 15.54s/prob]                                                           GPU1:  58%|█████▊    | 264/455 [1:17:18<49:27, 15.54s/prob]                                                           GPU1:  58%|█████▊    | 265/455 [1:17:18<49:11, 15.54s/prob]                                                           GPU1:  58%|█████▊    | 266/455 [1:17:18<48:56, 15.54s/prob]                                                           GPU1:  59%|█████▊    | 267/455 [1:17:18<48:40, 15.54s/prob]                                                           GPU1:  59%|█████▉    | 268/455 [1:17:18<48:25, 15.54s/prob]                                                           GPU1:  59%|█████▉    | 269/455 [1:17:18<48:09, 15.54s/prob]                                                           GPU1:  59%|█████▉    | 270/455 [1:17:18<47:54, 15.54s/prob]                                                           GPU1:  60%|█████▉    | 271/455 [1:17:18<47:38, 15.54s/prob]                                                           GPU1:  60%|█████▉    | 272/455 [1:17:18<47:22, 15.54s/prob]                                                           GPU1:  60%|██████    | 273/455 [1:17:18<47:07, 15.54s/prob]                                                           GPU1:  60%|██████    | 274/455 [1:17:18<46:51, 15.54s/prob]                                                           GPU1:  60%|██████    | 275/455 [1:17:18<46:36, 15.54s/prob]                                                           GPU1:  61%|██████    | 276/455 [1:17:18<46:20, 15.54s/prob]                                                           GPU1:  61%|██████    | 277/455 [1:17:18<46:05, 15.54s/prob]                                                           GPU1:  61%|██████    | 278/455 [1:17:18<45:49, 15.54s/prob]                                                           GPU1:  61%|██████▏   | 279/455 [1:17:18<45:34, 15.54s/prob]                                                           GPU1:  62%|██████▏   | 280/455 [1:17:18<45:18, 15.54s/prob]                                                           GPU1:  62%|██████▏   | 281/455 [1:17:18<45:03, 15.54s/prob]                                                           GPU1:  62%|██████▏   | 282/455 [1:17:18<44:47, 15.54s/prob]                                                           GPU1:  62%|██████▏   | 283/455 [1:17:18<44:32, 15.54s/prob]                                                           GPU1:  62%|██████▏   | 284/455 [1:17:18<44:16, 15.54s/prob]                                                           GPU1:  63%|██████▎   | 285/455 [1:17:18<44:01, 15.54s/prob]                                                           GPU1:  63%|██████▎   | 286/455 [1:17:18<43:45, 15.54s/prob]                                                           GPU1:  63%|██████▎   | 287/455 [1:17:18<43:29, 15.54s/prob]GPU1:  63%|██████▎   | 288/455 [1:17:18<30:01, 10.79s/prob]                                                           GPU1:  63%|██████▎   | 288/455 [1:17:18<30:01, 10.79s/prob][10:11:14] [GPU1] [257/455] saved: gsm8k_525
+[10:11:14] [GPU1] [258/455] saved: gsm8k_529
+[10:11:14] [GPU1] [259/455] saved: gsm8k_533
+[10:11:14] [GPU1] [260/455] saved: gsm8k_537
+[10:11:14] [GPU1] [261/455] saved: gsm8k_541
+[10:11:14] [GPU1] [262/455] saved: gsm8k_545
+[10:11:14] [GPU1] [263/455] saved: gsm8k_549
+[10:11:14] [GPU1] [264/455] saved: gsm8k_553
+[10:11:14] [GPU1] [265/455] saved: gsm8k_557
+[10:11:14] [GPU1] [266/455] saved: gsm8k_561
+[10:11:14] [GPU1] [267/455] saved: gsm8k_565
+[10:11:14] [GPU1] [268/455] saved: gsm8k_569
+[10:11:14] [GPU1] [269/455] saved: gsm8k_573
+[10:11:14] [GPU1] [270/455] saved: gsm8k_577
+[10:11:14] [GPU1] [271/455] saved: gsm8k_581
+[10:11:14] [GPU1] [272/455] saved: gsm8k_585
+[10:11:14] [GPU1] [273/455] saved: gsm8k_589
+[10:11:14] [GPU1] [274/455] saved: gsm8k_593
+[10:11:14] [GPU1] [275/455] saved: gsm8k_597
+[10:11:14] [GPU1] [276/455] saved: gsm8k_601
+[10:11:14] [GPU1] [277/455] saved: gsm8k_605
+[10:11:14] [GPU1] [278/455] saved: gsm8k_609
+[10:11:14] [GPU1] [279/455] saved: gsm8k_613
+[10:11:14] [GPU1] [280/455] saved: gsm8k_617
+[10:11:14] [GPU1] [281/455] saved: gsm8k_621
+[10:11:14] [GPU1] [282/455] saved: gsm8k_625
+[10:11:14] [GPU1] [283/455] saved: gsm8k_629
+[10:11:14] [GPU1] [284/455] saved: gsm8k_633
+[10:11:14] [GPU1] [285/455] saved: gsm8k_637
+[10:11:14] [GPU1] [286/455] saved: gsm8k_641
+[10:11:14] [GPU1] [287/455] saved: gsm8k_645
+[10:11:14] [GPU1] [288/455] saved: gsm8k_649
+[10:11:17] [GPU1 B10/15 S1/5]  → 100/2048 tokens  (43 tok/s)
+[10:11:19] [GPU1 B10/15 S1/5]  → 200/2048 tokens  (43 tok/s)
+[10:11:21] [GPU1 B10/15 S1/5]  → 300/2048 tokens  (42 tok/s)
+[10:11:24] [GPU1 B10/15 S1/5]  → 400/2048 tokens  (40 tok/s)
+GPU1:  63%|██████▎   | 288/455 [1:17:28<30:01, 10.79s/prob][10:11:27] [GPU1 B10/15 S1/5]  → 500/2048 tokens  (38 tok/s)
+[10:11:31] [GPU1 B10/15 S1/5]  → 600/2048 tokens  (36 tok/s)
+[10:11:34] [GPU1 B10/15 S1/5]  → 700/2048 tokens  (35 tok/s)
+[10:11:38] [GPU1 B10/15 S1/5]  → 800/2048 tokens  (33 tok/s)
+[10:11:43] [GPU1 B10/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[10:11:47] [GPU1 B10/15 S1/5]  → 1000/2048 tokens  (30 tok/s)
+[10:11:52] [GPU1 B10/15 S1/5]  → 1100/2048 tokens  (29 tok/s)
+[10:11:57] [GPU1 B10/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[10:12:02] [GPU1 B10/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[10:12:08] [GPU1 B10/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[10:12:14] [GPU1 B10/15 S1/5]  → 1500/2048 tokens  (25 tok/s)
+[10:12:20] [GPU1 B10/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[10:12:26] [GPU1 B10/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[10:12:33] [GPU1 B10/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[10:12:39] [GPU1 B10/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[10:12:47] [GPU1 B10/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[10:12:52] [GPU1 B10/15 S2/5]  → 100/2048 tokens  (43 tok/s)
+[10:12:55] [GPU1 B10/15 S2/5]  → 200/2048 tokens  (43 tok/s)
+[10:12:57] [GPU1 B10/15 S2/5]  → 300/2048 tokens  (42 tok/s)
+[10:13:00] [GPU1 B10/15 S2/5]  → 400/2048 tokens  (40 tok/s)
+[10:13:03] [GPU1 B10/15 S2/5]  → 500/2048 tokens  (38 tok/s)
+[10:13:07] [GPU1 B10/15 S2/5]  → 600/2048 tokens  (36 tok/s)
+[10:13:10] [GPU1 B10/15 S2/5]  → 700/2048 tokens  (35 tok/s)
+[10:13:14] [GPU1 B10/15 S2/5]  → 800/2048 tokens  (33 tok/s)
+[10:13:19] [GPU1 B10/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[10:13:23] [GPU1 B10/15 S2/5]  → 1000/2048 tokens  (30 tok/s)
+[10:13:28] [GPU1 B10/15 S2/5]  → 1100/2048 tokens  (29 tok/s)
+[10:13:33] [GPU1 B10/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[10:13:38] [GPU1 B10/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[10:13:44] [GPU1 B10/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[10:13:50] [GPU1 B10/15 S2/5]  → 1500/2048 tokens  (25 tok/s)
+[10:13:56] [GPU1 B10/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[10:14:02] [GPU1 B10/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[10:14:09] [GPU1 B10/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[10:14:15] [GPU1 B10/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[10:14:23] [GPU1 B10/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[10:14:28] [GPU1 B10/15 S3/5]  → 100/2048 tokens  (43 tok/s)
+[10:14:31] [GPU1 B10/15 S3/5]  → 200/2048 tokens  (43 tok/s)
+[10:14:33] [GPU1 B10/15 S3/5]  → 300/2048 tokens  (42 tok/s)
+[10:14:36] [GPU1 B10/15 S3/5]  → 400/2048 tokens  (40 tok/s)
+[10:14:39] [GPU1 B10/15 S3/5]  → 500/2048 tokens  (38 tok/s)
+[10:14:43] [GPU1 B10/15 S3/5]  → 600/2048 tokens  (36 tok/s)
+[10:14:46] [GPU1 B10/15 S3/5]  → 700/2048 tokens  (35 tok/s)
+[10:14:50] [GPU1 B10/15 S3/5]  → 800/2048 tokens  (33 tok/s)
+[10:14:55] [GPU1 B10/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[10:14:59] [GPU1 B10/15 S3/5]  → 1000/2048 tokens  (30 tok/s)
+[10:15:04] [GPU1 B10/15 S3/5]  → 1100/2048 tokens  (29 tok/s)
+[10:15:09] [GPU1 B10/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[10:15:14] [GPU1 B10/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[10:15:20] [GPU1 B10/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[10:15:25] [GPU1 B10/15 S3/5]  → 1500/2048 tokens  (25 tok/s)
+[10:15:32] [GPU1 B10/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[10:15:38] [GPU1 B10/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[10:15:45] [GPU1 B10/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[10:15:51] [GPU1 B10/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[10:15:58] [GPU1 B10/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[10:16:04] [GPU1 B10/15 S4/5]  → 100/2048 tokens  (43 tok/s)
+[10:16:07] [GPU1 B10/15 S4/5]  → 200/2048 tokens  (43 tok/s)
+[10:16:09] [GPU1 B10/15 S4/5]  → 300/2048 tokens  (42 tok/s)
+[10:16:12] [GPU1 B10/15 S4/5]  → 400/2048 tokens  (40 tok/s)
+[10:16:15] [GPU1 B10/15 S4/5]  → 500/2048 tokens  (38 tok/s)
+[10:16:19] [GPU1 B10/15 S4/5]  → 600/2048 tokens  (36 tok/s)
+[10:16:22] [GPU1 B10/15 S4/5]  → 700/2048 tokens  (35 tok/s)
+[10:16:26] [GPU1 B10/15 S4/5]  → 800/2048 tokens  (33 tok/s)
+[10:16:30] [GPU1 B10/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[10:16:35] [GPU1 B10/15 S4/5]  → 1000/2048 tokens  (30 tok/s)
+[10:16:40] [GPU1 B10/15 S4/5]  → 1100/2048 tokens  (29 tok/s)
+[10:16:45] [GPU1 B10/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[10:16:50] [GPU1 B10/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[10:16:56] [GPU1 B10/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[10:17:01] [GPU1 B10/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[10:17:07] [GPU1 B10/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[10:17:14] [GPU1 B10/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[10:17:20] [GPU1 B10/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[10:17:27] [GPU1 B10/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[10:17:34] [GPU1 B10/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[10:17:40] [GPU1 B10/15 S5/5]  → 100/2048 tokens  (43 tok/s)
+[10:17:43] [GPU1 B10/15 S5/5]  → 200/2048 tokens  (43 tok/s)
+[10:17:45] [GPU1 B10/15 S5/5]  → 300/2048 tokens  (42 tok/s)
+[10:17:48] [GPU1 B10/15 S5/5]  → 400/2048 tokens  (40 tok/s)
+[10:17:51] [GPU1 B10/15 S5/5]  → 500/2048 tokens  (38 tok/s)
+[10:17:55] [GPU1 B10/15 S5/5]  → 600/2048 tokens  (36 tok/s)
+[10:17:58] [GPU1 B10/15 S5/5]  → 700/2048 tokens  (35 tok/s)
+[10:18:02] [GPU1 B10/15 S5/5]  → 800/2048 tokens  (33 tok/s)
+[10:18:06] [GPU1 B10/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[10:18:11] [GPU1 B10/15 S5/5]  → 1000/2048 tokens  (30 tok/s)
+[10:18:16] [GPU1 B10/15 S5/5]  → 1100/2048 tokens  (29 tok/s)
+[10:18:21] [GPU1 B10/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[10:18:26] [GPU1 B10/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[10:18:32] [GPU1 B10/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[10:18:37] [GPU1 B10/15 S5/5]  → 1500/2048 tokens  (25 tok/s)
+[10:18:43] [GPU1 B10/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[10:18:50] [GPU1 B10/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[10:18:56] [GPU1 B10/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[10:19:03] [GPU1 B10/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[10:19:10] [GPU1 B10/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  64%|██████▎   | 289/455 [1:25:18<47:52, 17.30s/prob]                                                           GPU1:  64%|██████▎   | 289/455 [1:25:18<47:52, 17.30s/prob]                                                           GPU1:  64%|██████▎   | 290/455 [1:25:18<47:34, 17.30s/prob]                                                           GPU1:  64%|██████▍   | 291/455 [1:25:18<47:17, 17.30s/prob]                                                           GPU1:  64%|██████▍   | 292/455 [1:25:18<47:00, 17.30s/prob]                                                           GPU1:  64%|██████▍   | 293/455 [1:25:18<46:43, 17.30s/prob]                                                           GPU1:  65%|██████▍   | 294/455 [1:25:18<46:25, 17.30s/prob]                                                           GPU1:  65%|██████▍   | 295/455 [1:25:18<46:08, 17.30s/prob]                                                           GPU1:  65%|██████▌   | 296/455 [1:25:18<45:51, 17.30s/prob]                                                           GPU1:  65%|██████▌   | 297/455 [1:25:18<45:33, 17.30s/prob]                                                           GPU1:  65%|██████▌   | 298/455 [1:25:18<45:16, 17.30s/prob]                                                           GPU1:  66%|██████▌   | 299/455 [1:25:18<44:59, 17.30s/prob]                                                           GPU1:  66%|██████▌   | 300/455 [1:25:18<44:41, 17.30s/prob]                                                           GPU1:  66%|██████▌   | 301/455 [1:25:18<44:24, 17.30s/prob]                                                           GPU1:  66%|██████▋   | 302/455 [1:25:18<44:07, 17.30s/prob]                                                           GPU1:  67%|██████▋   | 303/455 [1:25:18<43:50, 17.30s/prob]                                                           GPU1:  67%|██████▋   | 304/455 [1:25:18<43:32, 17.30s/prob]                                                           GPU1:  67%|██████▋   | 305/455 [1:25:18<43:15, 17.30s/prob]                                                           GPU1:  67%|██████▋   | 306/455 [1:25:18<42:58, 17.30s/prob]                                                           GPU1:  67%|██████▋   | 307/455 [1:25:18<42:40, 17.30s/prob]                                                           GPU1:  68%|██████▊   | 308/455 [1:25:18<42:23, 17.30s/prob]                                                           GPU1:  68%|██████▊   | 309/455 [1:25:18<42:06, 17.30s/prob]                                                           GPU1:  68%|██████▊   | 310/455 [1:25:18<41:48, 17.30s/prob]                                                           GPU1:  68%|██████▊   | 311/455 [1:25:18<41:31, 17.30s/prob]                                                           GPU1:  69%|██████▊   | 312/455 [1:25:18<41:14, 17.30s/prob]                                                           GPU1:  69%|██████▉   | 313/455 [1:25:18<40:57, 17.30s/prob]                                                           GPU1:  69%|██████▉   | 314/455 [1:25:18<40:39, 17.30s/prob]                                                           GPU1:  69%|██████▉   | 315/455 [1:25:18<40:22, 17.30s/prob]                                                           GPU1:  69%|██████▉   | 316/455 [1:25:18<40:05, 17.30s/prob]                                                           GPU1:  70%|██████▉   | 317/455 [1:25:18<39:47, 17.30s/prob]                                                           GPU1:  70%|██████▉   | 318/455 [1:25:18<39:30, 17.30s/prob]                                                           GPU1:  70%|███████   | 319/455 [1:25:18<39:13, 17.30s/prob]                                                           GPU1:  70%|███████   | 320/455 [1:25:18<38:55, 17.30s/prob][10:19:14] [GPU1] [289/455] saved: gsm8k_653
+[10:19:14] [GPU1] [290/455] saved: gsm8k_657
+[10:19:14] [GPU1] [291/455] saved: gsm8k_661
+[10:19:14] [GPU1] [292/455] saved: gsm8k_665
+[10:19:14] [GPU1] [293/455] saved: gsm8k_669
+[10:19:14] [GPU1] [294/455] saved: gsm8k_673
+[10:19:14] [GPU1] [295/455] saved: gsm8k_677
+[10:19:14] [GPU1] [296/455] saved: gsm8k_681
+[10:19:14] [GPU1] [297/455] saved: gsm8k_685
+[10:19:14] [GPU1] [298/455] saved: gsm8k_689
+[10:19:14] [GPU1] [299/455] saved: gsm8k_693
+[10:19:14] [GPU1] [300/455] saved: gsm8k_697
+[10:19:14] [GPU1] [301/455] saved: gsm8k_701
+[10:19:14] [GPU1] [302/455] saved: gsm8k_705
+[10:19:14] [GPU1] [303/455] saved: gsm8k_709
+[10:19:14] [GPU1] [304/455] saved: gsm8k_713
+[10:19:14] [GPU1] [305/455] saved: gsm8k_717
+[10:19:14] [GPU1] [306/455] saved: gsm8k_721
+[10:19:14] [GPU1] [307/455] saved: gsm8k_725
+[10:19:14] [GPU1] [308/455] saved: gsm8k_729
+[10:19:14] [GPU1] [309/455] saved: gsm8k_733
+[10:19:14] [GPU1] [310/455] saved: gsm8k_737
+[10:19:14] [GPU1] [311/455] saved: gsm8k_741
+[10:19:14] [GPU1] [312/455] saved: gsm8k_745
+[10:19:14] [GPU1] [313/455] saved: gsm8k_749
+[10:19:14] [GPU1] [314/455] saved: gsm8k_753
+[10:19:14] [GPU1] [315/455] saved: gsm8k_757
+[10:19:14] [GPU1] [316/455] saved: gsm8k_761
+[10:19:14] [GPU1] [317/455] saved: gsm8k_765
+[10:19:14] [GPU1] [318/455] saved: gsm8k_769
+[10:19:14] [GPU1] [319/455] saved: gsm8k_773
+[10:19:14] [GPU1] [320/455] saved: gsm8k_777
+[10:19:16] [GPU1 B11/15 S1/5]  → 100/2048 tokens  (43 tok/s)
+[10:19:19] [GPU1 B11/15 S1/5]  → 200/2048 tokens  (43 tok/s)
+[10:19:21] [GPU1 B11/15 S1/5]  → 300/2048 tokens  (41 tok/s)
+[10:19:24] [GPU1 B11/15 S1/5]  → 400/2048 tokens  (40 tok/s)
+[10:19:27] [GPU1 B11/15 S1/5]  → 500/2048 tokens  (38 tok/s)
+[10:19:31] [GPU1 B11/15 S1/5]  → 600/2048 tokens  (36 tok/s)
+[10:19:34] [GPU1 B11/15 S1/5]  → 700/2048 tokens  (34 tok/s)
+[10:19:38] [GPU1 B11/15 S1/5]  → 800/2048 tokens  (33 tok/s)
+[10:19:43] [GPU1 B11/15 S1/5]  → 900/2048 tokens  (32 tok/s)
+[10:19:47] [GPU1 B11/15 S1/5]  → 1000/2048 tokens  (30 tok/s)
+[10:19:52] [GPU1 B11/15 S1/5]  → 1100/2048 tokens  (29 tok/s)
+[10:19:57] [GPU1 B11/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[10:20:02] [GPU1 B11/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[10:20:08] [GPU1 B11/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[10:20:14] [GPU1 B11/15 S1/5]  → 1500/2048 tokens  (25 tok/s)
+[10:20:20] [GPU1 B11/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[10:20:26] [GPU1 B11/15 S1/5]  → 1700/2048 tokens  (24 tok/s)
+[10:20:33] [GPU1 B11/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[10:20:40] [GPU1 B11/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[10:20:47] [GPU1 B11/15 S1/5]  → 2000/2048 tokens  (22 tok/s)
+[10:20:53] [GPU1 B11/15 S2/5]  → 100/2048 tokens  (43 tok/s)
+[10:20:55] [GPU1 B11/15 S2/5]  → 200/2048 tokens  (43 tok/s)
+[10:20:58] [GPU1 B11/15 S2/5]  → 300/2048 tokens  (41 tok/s)
+[10:21:00] [GPU1 B11/15 S2/5]  → 400/2048 tokens  (40 tok/s)
+[10:21:04] [GPU1 B11/15 S2/5]  → 500/2048 tokens  (38 tok/s)
+[10:21:07] [GPU1 B11/15 S2/5]  → 600/2048 tokens  (36 tok/s)
+[10:21:11] [GPU1 B11/15 S2/5]  → 700/2048 tokens  (34 tok/s)
+[10:21:15] [GPU1 B11/15 S2/5]  → 800/2048 tokens  (33 tok/s)
+[10:21:19] [GPU1 B11/15 S2/5]  → 900/2048 tokens  (32 tok/s)
+[10:21:23] [GPU1 B11/15 S2/5]  → 1000/2048 tokens  (30 tok/s)
+[10:21:28] [GPU1 B11/15 S2/5]  → 1100/2048 tokens  (29 tok/s)
+[10:21:33] [GPU1 B11/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[10:21:38] [GPU1 B11/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[10:21:44] [GPU1 B11/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[10:21:50] [GPU1 B11/15 S2/5]  → 1500/2048 tokens  (25 tok/s)
+[10:21:56] [GPU1 B11/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[10:22:02] [GPU1 B11/15 S2/5]  → 1700/2048 tokens  (24 tok/s)
+[10:22:09] [GPU1 B11/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[10:22:16] [GPU1 B11/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[10:22:23] [GPU1 B11/15 S2/5]  → 2000/2048 tokens  (22 tok/s)
+[10:22:29] [GPU1 B11/15 S3/5]  → 100/2048 tokens  (43 tok/s)
+[10:22:31] [GPU1 B11/15 S3/5]  → 200/2048 tokens  (43 tok/s)
+[10:22:34] [GPU1 B11/15 S3/5]  → 300/2048 tokens  (41 tok/s)
+[10:22:37] [GPU1 B11/15 S3/5]  → 400/2048 tokens  (40 tok/s)
+[10:22:40] [GPU1 B11/15 S3/5]  → 500/2048 tokens  (38 tok/s)
+[10:22:43] [GPU1 B11/15 S3/5]  → 600/2048 tokens  (36 tok/s)
+[10:22:47] [GPU1 B11/15 S3/5]  → 700/2048 tokens  (34 tok/s)
+[10:22:51] [GPU1 B11/15 S3/5]  → 800/2048 tokens  (33 tok/s)
+[10:22:55] [GPU1 B11/15 S3/5]  → 900/2048 tokens  (32 tok/s)
+[10:23:00] [GPU1 B11/15 S3/5]  → 1000/2048 tokens  (30 tok/s)
+[10:23:04] [GPU1 B11/15 S3/5]  → 1100/2048 tokens  (29 tok/s)
+[10:23:09] [GPU1 B11/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[10:23:15] [GPU1 B11/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[10:23:20] [GPU1 B11/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[10:23:26] [GPU1 B11/15 S3/5]  → 1500/2048 tokens  (25 tok/s)
+[10:23:32] [GPU1 B11/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[10:23:39] [GPU1 B11/15 S3/5]  → 1700/2048 tokens  (24 tok/s)
+[10:23:45] [GPU1 B11/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[10:23:52] [GPU1 B11/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[10:23:59] [GPU1 B11/15 S3/5]  → 2000/2048 tokens  (22 tok/s)
+[10:24:05] [GPU1 B11/15 S4/5]  → 100/2048 tokens  (43 tok/s)
+[10:24:08] [GPU1 B11/15 S4/5]  → 200/2048 tokens  (43 tok/s)
+[10:24:10] [GPU1 B11/15 S4/5]  → 300/2048 tokens  (41 tok/s)
+[10:24:13] [GPU1 B11/15 S4/5]  → 400/2048 tokens  (40 tok/s)
+[10:24:16] [GPU1 B11/15 S4/5]  → 500/2048 tokens  (38 tok/s)
+[10:24:20] [GPU1 B11/15 S4/5]  → 600/2048 tokens  (36 tok/s)
+[10:24:23] [GPU1 B11/15 S4/5]  → 700/2048 tokens  (34 tok/s)
+[10:24:27] [GPU1 B11/15 S4/5]  → 800/2048 tokens  (33 tok/s)
+[10:24:31] [GPU1 B11/15 S4/5]  → 900/2048 tokens  (32 tok/s)
+[10:24:36] [GPU1 B11/15 S4/5]  → 1000/2048 tokens  (30 tok/s)
+[10:24:41] [GPU1 B11/15 S4/5]  → 1100/2048 tokens  (29 tok/s)
+[10:24:46] [GPU1 B11/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[10:24:51] [GPU1 B11/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[10:24:57] [GPU1 B11/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[10:25:02] [GPU1 B11/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[10:25:09] [GPU1 B11/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[10:25:15] [GPU1 B11/15 S4/5]  → 1700/2048 tokens  (24 tok/s)
+[10:25:21] [GPU1 B11/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[10:25:28] [GPU1 B11/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[10:25:35] [GPU1 B11/15 S4/5]  → 2000/2048 tokens  (22 tok/s)
+[10:25:41] [GPU1 B11/15 S5/5]  → 100/2048 tokens  (43 tok/s)
+[10:25:44] [GPU1 B11/15 S5/5]  → 200/2048 tokens  (43 tok/s)
+[10:25:46] [GPU1 B11/15 S5/5]  → 300/2048 tokens  (41 tok/s)
+[10:25:49] [GPU1 B11/15 S5/5]  → 400/2048 tokens  (39 tok/s)
+[10:25:52] [GPU1 B11/15 S5/5]  → 500/2048 tokens  (38 tok/s)
+[10:25:56] [GPU1 B11/15 S5/5]  → 600/2048 tokens  (36 tok/s)
+[10:26:00] [GPU1 B11/15 S5/5]  → 700/2048 tokens  (34 tok/s)
+[10:26:03] [GPU1 B11/15 S5/5]  → 800/2048 tokens  (33 tok/s)
+[10:26:08] [GPU1 B11/15 S5/5]  → 900/2048 tokens  (32 tok/s)
+[10:26:12] [GPU1 B11/15 S5/5]  → 1000/2048 tokens  (30 tok/s)
+[10:26:17] [GPU1 B11/15 S5/5]  → 1100/2048 tokens  (29 tok/s)
+[10:26:22] [GPU1 B11/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[10:26:27] [GPU1 B11/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[10:26:33] [GPU1 B11/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[10:26:39] [GPU1 B11/15 S5/5]  → 1500/2048 tokens  (25 tok/s)
+[10:26:45] [GPU1 B11/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[10:26:51] [GPU1 B11/15 S5/5]  → 1700/2048 tokens  (24 tok/s)
+[10:26:58] [GPU1 B11/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[10:27:05] [GPU1 B11/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[10:27:12] [GPU1 B11/15 S5/5]  → 2000/2048 tokens  (22 tok/s)
+GPU1:  71%|███████   | 321/455 [1:33:19<36:40, 16.43s/prob]                                                           GPU1:  71%|███████   | 321/455 [1:33:19<36:40, 16.43s/prob]                                                           GPU1:  71%|███████   | 322/455 [1:33:19<36:24, 16.43s/prob]                                                           GPU1:  71%|███████   | 323/455 [1:33:19<36:08, 16.43s/prob]                                                           GPU1:  71%|███████   | 324/455 [1:33:19<35:51, 16.43s/prob]                                                           GPU1:  71%|███████▏  | 325/455 [1:33:19<35:35, 16.43s/prob]                                                           GPU1:  72%|███████▏  | 326/455 [1:33:19<35:18, 16.43s/prob]                                                           GPU1:  72%|███████▏  | 327/455 [1:33:19<35:02, 16.43s/prob]                                                           GPU1:  72%|███████▏  | 328/455 [1:33:19<34:45, 16.43s/prob]                                                           GPU1:  72%|███████▏  | 329/455 [1:33:19<34:29, 16.43s/prob]                                                           GPU1:  73%|███████▎  | 330/455 [1:33:19<34:13, 16.43s/prob]                                                           GPU1:  73%|███████▎  | 331/455 [1:33:19<33:56, 16.43s/prob]                                                           GPU1:  73%|███████▎  | 332/455 [1:33:19<33:40, 16.43s/prob]                                                           GPU1:  73%|███████▎  | 333/455 [1:33:19<33:23, 16.43s/prob]                                                           GPU1:  73%|███████▎  | 334/455 [1:33:19<33:07, 16.43s/prob]                                                           GPU1:  74%|███████▎  | 335/455 [1:33:19<32:51, 16.43s/prob]                                                           GPU1:  74%|███████▍  | 336/455 [1:33:19<32:34, 16.43s/prob]                                                           GPU1:  74%|███████▍  | 337/455 [1:33:19<32:18, 16.43s/prob]                                                           GPU1:  74%|███████▍  | 338/455 [1:33:19<32:01, 16.43s/prob]                                                           GPU1:  75%|███████▍  | 339/455 [1:33:19<31:45, 16.43s/prob]                                                           GPU1:  75%|███████▍  | 340/455 [1:33:19<31:28, 16.43s/prob]                                                           GPU1:  75%|███████▍  | 341/455 [1:33:19<31:12, 16.43s/prob]                                                           GPU1:  75%|███████▌  | 342/455 [1:33:19<30:56, 16.43s/prob]                                                           GPU1:  75%|███████▌  | 343/455 [1:33:19<30:39, 16.43s/prob]                                                           GPU1:  76%|███████▌  | 344/455 [1:33:19<30:23, 16.43s/prob]                                                           GPU1:  76%|███████▌  | 345/455 [1:33:19<30:06, 16.43s/prob]                                                           GPU1:  76%|███████▌  | 346/455 [1:33:19<29:50, 16.43s/prob]                                                           GPU1:  76%|███████▋  | 347/455 [1:33:19<29:33, 16.43s/prob]                                                           GPU1:  76%|███████▋  | 348/455 [1:33:19<29:17, 16.43s/prob]                                                           GPU1:  77%|███████▋  | 349/455 [1:33:19<29:01, 16.43s/prob]                                                           GPU1:  77%|███████▋  | 350/455 [1:33:19<28:44, 16.43s/prob]                                                           GPU1:  77%|███████▋  | 351/455 [1:33:19<28:28, 16.43s/prob]                                                           GPU1:  77%|███████▋  | 352/455 [1:33:19<28:11, 16.43s/prob][10:27:15] [GPU1] [321/455] saved: gsm8k_781
+[10:27:15] [GPU1] [322/455] saved: gsm8k_785
+[10:27:15] [GPU1] [323/455] saved: gsm8k_789
+[10:27:15] [GPU1] [324/455] saved: gsm8k_793
+[10:27:15] [GPU1] [325/455] saved: gsm8k_797
+[10:27:15] [GPU1] [326/455] saved: gsm8k_801
+[10:27:15] [GPU1] [327/455] saved: gsm8k_805
+[10:27:15] [GPU1] [328/455] saved: gsm8k_809
+[10:27:15] [GPU1] [329/455] saved: gsm8k_813
+[10:27:15] [GPU1] [330/455] saved: gsm8k_817
+[10:27:15] [GPU1] [331/455] saved: gsm8k_821
+[10:27:15] [GPU1] [332/455] saved: gsm8k_825
+[10:27:15] [GPU1] [333/455] saved: gsm8k_829
+[10:27:15] [GPU1] [334/455] saved: gsm8k_833
+[10:27:15] [GPU1] [335/455] saved: gsm8k_837
+[10:27:15] [GPU1] [336/455] saved: gsm8k_841
+[10:27:15] [GPU1] [337/455] saved: gsm8k_845
+[10:27:15] [GPU1] [338/455] saved: gsm8k_849
+[10:27:15] [GPU1] [339/455] saved: gsm8k_853
+[10:27:15] [GPU1] [340/455] saved: gsm8k_857
+[10:27:15] [GPU1] [341/455] saved: gsm8k_861
+[10:27:15] [GPU1] [342/455] saved: gsm8k_865
+[10:27:15] [GPU1] [343/455] saved: gsm8k_869
+[10:27:15] [GPU1] [344/455] saved: gsm8k_873
+[10:27:15] [GPU1] [345/455] saved: gsm8k_877
+[10:27:15] [GPU1] [346/455] saved: gsm8k_881
+[10:27:15] [GPU1] [347/455] saved: gsm8k_885
+[10:27:15] [GPU1] [348/455] saved: gsm8k_889
+[10:27:15] [GPU1] [349/455] saved: gsm8k_893
+[10:27:15] [GPU1] [350/455] saved: gsm8k_897
+[10:27:15] [GPU1] [351/455] saved: gsm8k_901
+[10:27:15] [GPU1] [352/455] saved: gsm8k_905
+[10:27:18] [GPU1 B12/15 S1/5]  → 100/2048 tokens  (42 tok/s)
+[10:27:20] [GPU1 B12/15 S1/5]  → 200/2048 tokens  (42 tok/s)
+[10:27:23] [GPU1 B12/15 S1/5]  → 300/2048 tokens  (41 tok/s)
+[10:27:26] [GPU1 B12/15 S1/5]  → 400/2048 tokens  (39 tok/s)
+[10:27:29] [GPU1 B12/15 S1/5]  → 500/2048 tokens  (37 tok/s)
+[10:27:32] [GPU1 B12/15 S1/5]  → 600/2048 tokens  (36 tok/s)
+[10:27:36] [GPU1 B12/15 S1/5]  → 700/2048 tokens  (34 tok/s)
+[10:27:40] [GPU1 B12/15 S1/5]  → 800/2048 tokens  (33 tok/s)
+[10:27:44] [GPU1 B12/15 S1/5]  → 900/2048 tokens  (31 tok/s)
+[10:27:49] [GPU1 B12/15 S1/5]  → 1000/2048 tokens  (30 tok/s)
+[10:27:53] [GPU1 B12/15 S1/5]  → 1100/2048 tokens  (29 tok/s)
+[10:27:59] [GPU1 B12/15 S1/5]  → 1200/2048 tokens  (28 tok/s)
+[10:28:04] [GPU1 B12/15 S1/5]  → 1300/2048 tokens  (27 tok/s)
+[10:28:09] [GPU1 B12/15 S1/5]  → 1400/2048 tokens  (26 tok/s)
+[10:28:15] [GPU1 B12/15 S1/5]  → 1500/2048 tokens  (25 tok/s)
+[10:28:21] [GPU1 B12/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[10:28:28] [GPU1 B12/15 S1/5]  → 1700/2048 tokens  (23 tok/s)
+[10:28:35] [GPU1 B12/15 S1/5]  → 1800/2048 tokens  (23 tok/s)
+[10:28:41] [GPU1 B12/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[10:28:49] [GPU1 B12/15 S1/5]  → 2000/2048 tokens  (21 tok/s)
+[10:28:55] [GPU1 B12/15 S2/5]  → 100/2048 tokens  (42 tok/s)
+[10:28:57] [GPU1 B12/15 S2/5]  → 200/2048 tokens  (43 tok/s)
+[10:29:00] [GPU1 B12/15 S2/5]  → 300/2048 tokens  (41 tok/s)
+[10:29:02] [GPU1 B12/15 S2/5]  → 400/2048 tokens  (39 tok/s)
+[10:29:06] [GPU1 B12/15 S2/5]  → 500/2048 tokens  (37 tok/s)
+[10:29:09] [GPU1 B12/15 S2/5]  → 600/2048 tokens  (36 tok/s)
+[10:29:13] [GPU1 B12/15 S2/5]  → 700/2048 tokens  (34 tok/s)
+[10:29:17] [GPU1 B12/15 S2/5]  → 800/2048 tokens  (33 tok/s)
+[10:29:21] [GPU1 B12/15 S2/5]  → 900/2048 tokens  (31 tok/s)
+[10:29:25] [GPU1 B12/15 S2/5]  → 1000/2048 tokens  (30 tok/s)
+[10:29:30] [GPU1 B12/15 S2/5]  → 1100/2048 tokens  (29 tok/s)
+[10:29:35] [GPU1 B12/15 S2/5]  → 1200/2048 tokens  (28 tok/s)
+[10:29:41] [GPU1 B12/15 S2/5]  → 1300/2048 tokens  (27 tok/s)
+[10:29:46] [GPU1 B12/15 S2/5]  → 1400/2048 tokens  (26 tok/s)
+[10:29:52] [GPU1 B12/15 S2/5]  → 1500/2048 tokens  (25 tok/s)
+[10:29:58] [GPU1 B12/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[10:30:05] [GPU1 B12/15 S2/5]  → 1700/2048 tokens  (23 tok/s)
+[10:30:11] [GPU1 B12/15 S2/5]  → 1800/2048 tokens  (23 tok/s)
+[10:30:18] [GPU1 B12/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[10:30:25] [GPU1 B12/15 S2/5]  → 2000/2048 tokens  (21 tok/s)
+[10:30:31] [GPU1 B12/15 S3/5]  → 100/2048 tokens  (42 tok/s)
+[10:30:34] [GPU1 B12/15 S3/5]  → 200/2048 tokens  (42 tok/s)
+[10:30:36] [GPU1 B12/15 S3/5]  → 300/2048 tokens  (41 tok/s)
+[10:30:39] [GPU1 B12/15 S3/5]  → 400/2048 tokens  (39 tok/s)
+[10:30:42] [GPU1 B12/15 S3/5]  → 500/2048 tokens  (37 tok/s)
+[10:30:46] [GPU1 B12/15 S3/5]  → 600/2048 tokens  (36 tok/s)
+[10:30:50] [GPU1 B12/15 S3/5]  → 700/2048 tokens  (34 tok/s)
+[10:30:53] [GPU1 B12/15 S3/5]  → 800/2048 tokens  (33 tok/s)
+[10:30:58] [GPU1 B12/15 S3/5]  → 900/2048 tokens  (31 tok/s)
+[10:31:02] [GPU1 B12/15 S3/5]  → 1000/2048 tokens  (30 tok/s)
+[10:31:07] [GPU1 B12/15 S3/5]  → 1100/2048 tokens  (29 tok/s)
+[10:31:12] [GPU1 B12/15 S3/5]  → 1200/2048 tokens  (28 tok/s)
+[10:31:17] [GPU1 B12/15 S3/5]  → 1300/2048 tokens  (27 tok/s)
+[10:31:23] [GPU1 B12/15 S3/5]  → 1400/2048 tokens  (26 tok/s)
+[10:31:29] [GPU1 B12/15 S3/5]  → 1500/2048 tokens  (25 tok/s)
+[10:31:35] [GPU1 B12/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[10:31:41] [GPU1 B12/15 S3/5]  → 1700/2048 tokens  (23 tok/s)
+[10:31:48] [GPU1 B12/15 S3/5]  → 1800/2048 tokens  (23 tok/s)
+[10:31:55] [GPU1 B12/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[10:32:02] [GPU1 B12/15 S3/5]  → 2000/2048 tokens  (21 tok/s)
+[10:32:08] [GPU1 B12/15 S4/5]  → 100/2048 tokens  (42 tok/s)
+[10:32:10] [GPU1 B12/15 S4/5]  → 200/2048 tokens  (42 tok/s)
+[10:32:13] [GPU1 B12/15 S4/5]  → 300/2048 tokens  (41 tok/s)
+[10:32:16] [GPU1 B12/15 S4/5]  → 400/2048 tokens  (39 tok/s)
+[10:32:19] [GPU1 B12/15 S4/5]  → 500/2048 tokens  (37 tok/s)
+[10:32:23] [GPU1 B12/15 S4/5]  → 600/2048 tokens  (36 tok/s)
+[10:32:26] [GPU1 B12/15 S4/5]  → 700/2048 tokens  (34 tok/s)
+[10:32:30] [GPU1 B12/15 S4/5]  → 800/2048 tokens  (33 tok/s)
+[10:32:34] [GPU1 B12/15 S4/5]  → 900/2048 tokens  (31 tok/s)
+[10:32:39] [GPU1 B12/15 S4/5]  → 1000/2048 tokens  (30 tok/s)
+[10:32:44] [GPU1 B12/15 S4/5]  → 1100/2048 tokens  (29 tok/s)
+[10:32:49] [GPU1 B12/15 S4/5]  → 1200/2048 tokens  (28 tok/s)
+[10:32:54] [GPU1 B12/15 S4/5]  → 1300/2048 tokens  (27 tok/s)
+[10:33:00] [GPU1 B12/15 S4/5]  → 1400/2048 tokens  (26 tok/s)
+[10:33:06] [GPU1 B12/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[10:33:12] [GPU1 B12/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[10:33:18] [GPU1 B12/15 S4/5]  → 1700/2048 tokens  (23 tok/s)
+[10:33:25] [GPU1 B12/15 S4/5]  → 1800/2048 tokens  (23 tok/s)
+[10:33:32] [GPU1 B12/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[10:33:39] [GPU1 B12/15 S4/5]  → 2000/2048 tokens  (21 tok/s)
+[10:33:45] [GPU1 B12/15 S5/5]  → 100/2048 tokens  (42 tok/s)
+[10:33:47] [GPU1 B12/15 S5/5]  → 200/2048 tokens  (42 tok/s)
+[10:33:50] [GPU1 B12/15 S5/5]  → 300/2048 tokens  (41 tok/s)
+[10:33:53] [GPU1 B12/15 S5/5]  → 400/2048 tokens  (39 tok/s)
+[10:33:56] [GPU1 B12/15 S5/5]  → 500/2048 tokens  (37 tok/s)
+[10:33:59] [GPU1 B12/15 S5/5]  → 600/2048 tokens  (36 tok/s)
+[10:34:03] [GPU1 B12/15 S5/5]  → 700/2048 tokens  (34 tok/s)
+[10:34:07] [GPU1 B12/15 S5/5]  → 800/2048 tokens  (33 tok/s)
+[10:34:11] [GPU1 B12/15 S5/5]  → 900/2048 tokens  (31 tok/s)
+[10:34:16] [GPU1 B12/15 S5/5]  → 1000/2048 tokens  (30 tok/s)
+[10:34:21] [GPU1 B12/15 S5/5]  → 1100/2048 tokens  (29 tok/s)
+[10:34:26] [GPU1 B12/15 S5/5]  → 1200/2048 tokens  (28 tok/s)
+[10:34:31] [GPU1 B12/15 S5/5]  → 1300/2048 tokens  (27 tok/s)
+[10:34:37] [GPU1 B12/15 S5/5]  → 1400/2048 tokens  (26 tok/s)
+[10:34:43] [GPU1 B12/15 S5/5]  → 1500/2048 tokens  (25 tok/s)
+[10:34:49] [GPU1 B12/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[10:34:55] [GPU1 B12/15 S5/5]  → 1700/2048 tokens  (23 tok/s)
+[10:35:02] [GPU1 B12/15 S5/5]  → 1800/2048 tokens  (23 tok/s)
+[10:35:09] [GPU1 B12/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[10:35:16] [GPU1 B12/15 S5/5]  → 2000/2048 tokens  (21 tok/s)
+GPU1:  78%|███████▊  | 353/455 [1:41:23<27:08, 15.96s/prob]                                                           GPU1:  78%|███████▊  | 353/455 [1:41:23<27:08, 15.96s/prob]                                                           GPU1:  78%|███████▊  | 354/455 [1:41:23<26:52, 15.96s/prob]                                                           GPU1:  78%|███████▊  | 355/455 [1:41:23<26:36, 15.96s/prob]                                                           GPU1:  78%|███████▊  | 356/455 [1:41:23<26:20, 15.96s/prob]                                                           GPU1:  78%|███████▊  | 357/455 [1:41:23<26:04, 15.96s/prob]                                                           GPU1:  79%|███████▊  | 358/455 [1:41:23<25:48, 15.96s/prob]                                                           GPU1:  79%|███████▉  | 359/455 [1:41:23<25:32, 15.96s/prob]                                                           GPU1:  79%|███████▉  | 360/455 [1:41:23<25:16, 15.96s/prob]                                                           GPU1:  79%|███████▉  | 361/455 [1:41:23<25:00, 15.96s/prob]                                                           GPU1:  80%|███████▉  | 362/455 [1:41:23<24:44, 15.96s/prob]                                                           GPU1:  80%|███████▉  | 363/455 [1:41:23<24:28, 15.96s/prob]                                                           GPU1:  80%|████████  | 364/455 [1:41:23<24:12, 15.96s/prob]                                                           GPU1:  80%|████████  | 365/455 [1:41:23<23:56, 15.96s/prob]                                                           GPU1:  80%|████████  | 366/455 [1:41:23<23:40, 15.96s/prob]                                                           GPU1:  81%|████████  | 367/455 [1:41:23<23:24, 15.96s/prob]                                                           GPU1:  81%|████████  | 368/455 [1:41:23<23:08, 15.96s/prob]                                                           GPU1:  81%|████████  | 369/455 [1:41:23<22:52, 15.96s/prob]                                                           GPU1:  81%|████████▏ | 370/455 [1:41:23<22:36, 15.96s/prob]                                                           GPU1:  82%|████████▏ | 371/455 [1:41:23<22:20, 15.96s/prob]                                                           GPU1:  82%|████████▏ | 372/455 [1:41:23<22:04, 15.96s/prob]                                                           GPU1:  82%|████████▏ | 373/455 [1:41:23<21:48, 15.96s/prob]                                                           GPU1:  82%|████████▏ | 374/455 [1:41:23<21:32, 15.96s/prob]                                                           GPU1:  82%|████████▏ | 375/455 [1:41:23<21:16, 15.96s/prob]                                                           GPU1:  83%|████████▎ | 376/455 [1:41:23<21:00, 15.96s/prob]                                                           GPU1:  83%|████████▎ | 377/455 [1:41:23<20:44, 15.96s/prob]                                                           GPU1:  83%|████████▎ | 378/455 [1:41:23<20:29, 15.96s/prob]                                                           GPU1:  83%|████████▎ | 379/455 [1:41:23<20:13, 15.96s/prob]                                                           GPU1:  84%|████████▎ | 380/455 [1:41:23<19:57, 15.96s/prob]                                                           GPU1:  84%|████████▎ | 381/455 [1:41:23<19:41, 15.96s/prob]                                                           GPU1:  84%|████████▍ | 382/455 [1:41:23<19:25, 15.96s/prob]                                                           GPU1:  84%|████████▍ | 383/455 [1:41:23<19:09, 15.96s/prob]                                                           GPU1:  84%|████████▍ | 384/455 [1:41:23<18:53, 15.96s/prob][10:35:19] [GPU1] [353/455] saved: gsm8k_909
+[10:35:19] [GPU1] [354/455] saved: gsm8k_913
+[10:35:19] [GPU1] [355/455] saved: gsm8k_917
+[10:35:19] [GPU1] [356/455] saved: gsm8k_921
+[10:35:19] [GPU1] [357/455] saved: gsm8k_925
+[10:35:19] [GPU1] [358/455] saved: gsm8k_929
+[10:35:19] [GPU1] [359/455] saved: gsm8k_933
+[10:35:19] [GPU1] [360/455] saved: gsm8k_937
+[10:35:19] [GPU1] [361/455] saved: gsm8k_941
+[10:35:19] [GPU1] [362/455] saved: gsm8k_945
+[10:35:19] [GPU1] [363/455] saved: gsm8k_949
+[10:35:19] [GPU1] [364/455] saved: gsm8k_953
+[10:35:19] [GPU1] [365/455] saved: gsm8k_957
+[10:35:19] [GPU1] [366/455] saved: gsm8k_961
+[10:35:19] [GPU1] [367/455] saved: gsm8k_965
+[10:35:19] [GPU1] [368/455] saved: gsm8k_969
+[10:35:19] [GPU1] [369/455] saved: gsm8k_973
+[10:35:19] [GPU1] [370/455] saved: gsm8k_977
+[10:35:19] [GPU1] [371/455] saved: gsm8k_981
+[10:35:19] [GPU1] [372/455] saved: gsm8k_985
+[10:35:19] [GPU1] [373/455] saved: gsm8k_989
+[10:35:19] [GPU1] [374/455] saved: gsm8k_993
+[10:35:19] [GPU1] [375/455] saved: gsm8k_997
+[10:35:19] [GPU1] [376/455] saved: gsm8k_1001
+[10:35:19] [GPU1] [377/455] saved: gsm8k_1005
+[10:35:19] [GPU1] [378/455] saved: gsm8k_1009
+[10:35:19] [GPU1] [379/455] saved: gsm8k_1013
+[10:35:19] [GPU1] [380/455] saved: gsm8k_1017
+[10:35:19] [GPU1] [381/455] saved: gsm8k_1021
+[10:35:19] [GPU1] [382/455] saved: gsm8k_1025
+[10:35:19] [GPU1] [383/455] saved: gsm8k_1029
+[10:35:19] [GPU1] [384/455] saved: gsm8k_1033
+[10:35:22] [GPU1 B13/15 S1/5]  → 100/2048 tokens  (38 tok/s)
+[10:35:25] [GPU1 B13/15 S1/5]  → 200/2048 tokens  (39 tok/s)
+[10:35:27] [GPU1 B13/15 S1/5]  → 300/2048 tokens  (38 tok/s)
+[10:35:30] [GPU1 B13/15 S1/5]  → 400/2048 tokens  (37 tok/s)
+[10:35:34] [GPU1 B13/15 S1/5]  → 500/2048 tokens  (35 tok/s)
+[10:35:37] [GPU1 B13/15 S1/5]  → 600/2048 tokens  (34 tok/s)
+[10:35:41] [GPU1 B13/15 S1/5]  → 700/2048 tokens  (32 tok/s)
+[10:35:45] [GPU1 B13/15 S1/5]  → 800/2048 tokens  (31 tok/s)
+[10:35:50] [GPU1 B13/15 S1/5]  → 900/2048 tokens  (30 tok/s)
+[10:35:54] [GPU1 B13/15 S1/5]  → 1000/2048 tokens  (29 tok/s)
+[10:35:59] [GPU1 B13/15 S1/5]  → 1100/2048 tokens  (28 tok/s)
+[10:36:04] [GPU1 B13/15 S1/5]  → 1200/2048 tokens  (27 tok/s)
+[10:36:10] [GPU1 B13/15 S1/5]  → 1300/2048 tokens  (26 tok/s)
+[10:36:16] [GPU1 B13/15 S1/5]  → 1400/2048 tokens  (25 tok/s)
+[10:36:22] [GPU1 B13/15 S1/5]  → 1500/2048 tokens  (24 tok/s)
+[10:36:28] [GPU1 B13/15 S1/5]  → 1600/2048 tokens  (23 tok/s)
+[10:36:34] [GPU1 B13/15 S1/5]  → 1700/2048 tokens  (23 tok/s)
+[10:36:41] [GPU1 B13/15 S1/5]  → 1800/2048 tokens  (22 tok/s)
+[10:36:48] [GPU1 B13/15 S1/5]  → 1900/2048 tokens  (21 tok/s)
+[10:36:56] [GPU1 B13/15 S1/5]  → 2000/2048 tokens  (21 tok/s)
+[10:37:02] [GPU1 B13/15 S2/5]  → 100/2048 tokens  (38 tok/s)
+[10:37:04] [GPU1 B13/15 S2/5]  → 200/2048 tokens  (39 tok/s)
+[10:37:07] [GPU1 B13/15 S2/5]  → 300/2048 tokens  (38 tok/s)
+[10:37:10] [GPU1 B13/15 S2/5]  → 400/2048 tokens  (37 tok/s)
+[10:37:14] [GPU1 B13/15 S2/5]  → 500/2048 tokens  (35 tok/s)
+[10:37:17] [GPU1 B13/15 S2/5]  → 600/2048 tokens  (34 tok/s)
+[10:37:21] [GPU1 B13/15 S2/5]  → 700/2048 tokens  (32 tok/s)
+[10:37:25] [GPU1 B13/15 S2/5]  → 800/2048 tokens  (31 tok/s)
+[10:37:30] [GPU1 B13/15 S2/5]  → 900/2048 tokens  (30 tok/s)
+[10:37:34] [GPU1 B13/15 S2/5]  → 1000/2048 tokens  (29 tok/s)
+[10:37:39] [GPU1 B13/15 S2/5]  → 1100/2048 tokens  (28 tok/s)
+[10:37:44] [GPU1 B13/15 S2/5]  → 1200/2048 tokens  (27 tok/s)
+[10:37:50] [GPU1 B13/15 S2/5]  → 1300/2048 tokens  (26 tok/s)
+[10:37:56] [GPU1 B13/15 S2/5]  → 1400/2048 tokens  (25 tok/s)
+[10:38:02] [GPU1 B13/15 S2/5]  → 1500/2048 tokens  (24 tok/s)
+[10:38:08] [GPU1 B13/15 S2/5]  → 1600/2048 tokens  (23 tok/s)
+[10:38:14] [GPU1 B13/15 S2/5]  → 1700/2048 tokens  (23 tok/s)
+[10:38:21] [GPU1 B13/15 S2/5]  → 1800/2048 tokens  (22 tok/s)
+[10:38:28] [GPU1 B13/15 S2/5]  → 1900/2048 tokens  (21 tok/s)
+[10:38:36] [GPU1 B13/15 S2/5]  → 2000/2048 tokens  (21 tok/s)
+[10:38:42] [GPU1 B13/15 S3/5]  → 100/2048 tokens  (38 tok/s)
+[10:38:44] [GPU1 B13/15 S3/5]  → 200/2048 tokens  (39 tok/s)
+[10:38:47] [GPU1 B13/15 S3/5]  → 300/2048 tokens  (38 tok/s)
+[10:38:50] [GPU1 B13/15 S3/5]  → 400/2048 tokens  (37 tok/s)
+[10:38:54] [GPU1 B13/15 S3/5]  → 500/2048 tokens  (35 tok/s)
+[10:38:57] [GPU1 B13/15 S3/5]  → 600/2048 tokens  (34 tok/s)
+[10:39:01] [GPU1 B13/15 S3/5]  → 700/2048 tokens  (32 tok/s)
+[10:39:05] [GPU1 B13/15 S3/5]  → 800/2048 tokens  (31 tok/s)
+[10:39:09] [GPU1 B13/15 S3/5]  → 900/2048 tokens  (30 tok/s)
+[10:39:14] [GPU1 B13/15 S3/5]  → 1000/2048 tokens  (29 tok/s)
+[10:39:19] [GPU1 B13/15 S3/5]  → 1100/2048 tokens  (28 tok/s)
+[10:39:24] [GPU1 B13/15 S3/5]  → 1200/2048 tokens  (27 tok/s)
+[10:39:30] [GPU1 B13/15 S3/5]  → 1300/2048 tokens  (26 tok/s)
+[10:39:36] [GPU1 B13/15 S3/5]  → 1400/2048 tokens  (25 tok/s)
+[10:39:42] [GPU1 B13/15 S3/5]  → 1500/2048 tokens  (24 tok/s)
+[10:39:48] [GPU1 B13/15 S3/5]  → 1600/2048 tokens  (23 tok/s)
+[10:39:54] [GPU1 B13/15 S3/5]  → 1700/2048 tokens  (23 tok/s)
+[10:40:01] [GPU1 B13/15 S3/5]  → 1800/2048 tokens  (22 tok/s)
+[10:40:08] [GPU1 B13/15 S3/5]  → 1900/2048 tokens  (21 tok/s)
+[10:40:16] [GPU1 B13/15 S3/5]  → 2000/2048 tokens  (21 tok/s)
+[10:40:22] [GPU1 B13/15 S4/5]  → 100/2048 tokens  (38 tok/s)
+[10:40:24] [GPU1 B13/15 S4/5]  → 200/2048 tokens  (39 tok/s)
+[10:40:27] [GPU1 B13/15 S4/5]  → 300/2048 tokens  (38 tok/s)
+[10:40:30] [GPU1 B13/15 S4/5]  → 400/2048 tokens  (37 tok/s)
+[10:40:34] [GPU1 B13/15 S4/5]  → 500/2048 tokens  (35 tok/s)
+[10:40:37] [GPU1 B13/15 S4/5]  → 600/2048 tokens  (34 tok/s)
+[10:40:41] [GPU1 B13/15 S4/5]  → 700/2048 tokens  (32 tok/s)
+[10:40:45] [GPU1 B13/15 S4/5]  → 800/2048 tokens  (31 tok/s)
+[10:40:50] [GPU1 B13/15 S4/5]  → 900/2048 tokens  (30 tok/s)
+[10:40:54] [GPU1 B13/15 S4/5]  → 1000/2048 tokens  (29 tok/s)
+[10:40:59] [GPU1 B13/15 S4/5]  → 1100/2048 tokens  (28 tok/s)
+[10:41:04] [GPU1 B13/15 S4/5]  → 1200/2048 tokens  (27 tok/s)
+[10:41:10] [GPU1 B13/15 S4/5]  → 1300/2048 tokens  (26 tok/s)
+[10:41:16] [GPU1 B13/15 S4/5]  → 1400/2048 tokens  (25 tok/s)
+[10:41:22] [GPU1 B13/15 S4/5]  → 1500/2048 tokens  (24 tok/s)
+[10:41:28] [GPU1 B13/15 S4/5]  → 1600/2048 tokens  (23 tok/s)
+[10:41:34] [GPU1 B13/15 S4/5]  → 1700/2048 tokens  (23 tok/s)
+[10:41:41] [GPU1 B13/15 S4/5]  → 1800/2048 tokens  (22 tok/s)
+[10:41:48] [GPU1 B13/15 S4/5]  → 1900/2048 tokens  (21 tok/s)
+[10:41:56] [GPU1 B13/15 S4/5]  → 2000/2048 tokens  (21 tok/s)
+[10:42:02] [GPU1 B13/15 S5/5]  → 100/2048 tokens  (38 tok/s)
+[10:42:05] [GPU1 B13/15 S5/5]  → 200/2048 tokens  (39 tok/s)
+[10:42:07] [GPU1 B13/15 S5/5]  → 300/2048 tokens  (38 tok/s)
+[10:42:10] [GPU1 B13/15 S5/5]  → 400/2048 tokens  (37 tok/s)
+[10:42:14] [GPU1 B13/15 S5/5]  → 500/2048 tokens  (35 tok/s)
+[10:42:17] [GPU1 B13/15 S5/5]  → 600/2048 tokens  (34 tok/s)
+[10:42:21] [GPU1 B13/15 S5/5]  → 700/2048 tokens  (32 tok/s)
+[10:42:25] [GPU1 B13/15 S5/5]  → 800/2048 tokens  (31 tok/s)
+[10:42:30] [GPU1 B13/15 S5/5]  → 900/2048 tokens  (30 tok/s)
+[10:42:34] [GPU1 B13/15 S5/5]  → 1000/2048 tokens  (29 tok/s)
+[10:42:39] [GPU1 B13/15 S5/5]  → 1100/2048 tokens  (28 tok/s)
+[10:42:45] [GPU1 B13/15 S5/5]  → 1200/2048 tokens  (27 tok/s)
+[10:42:50] [GPU1 B13/15 S5/5]  → 1300/2048 tokens  (26 tok/s)
+[10:42:56] [GPU1 B13/15 S5/5]  → 1400/2048 tokens  (25 tok/s)
+[10:43:02] [GPU1 B13/15 S5/5]  → 1500/2048 tokens  (24 tok/s)
+[10:43:08] [GPU1 B13/15 S5/5]  → 1600/2048 tokens  (23 tok/s)
+[10:43:15] [GPU1 B13/15 S5/5]  → 1700/2048 tokens  (23 tok/s)
+[10:43:21] [GPU1 B13/15 S5/5]  → 1800/2048 tokens  (22 tok/s)
+[10:43:29] [GPU1 B13/15 S5/5]  → 1900/2048 tokens  (21 tok/s)
+[10:43:36] [GPU1 B13/15 S5/5]  → 2000/2048 tokens  (21 tok/s)
+GPU1:  85%|████████▍ | 385/455 [1:49:44<18:29, 15.85s/prob]                                                           GPU1:  85%|████████▍ | 385/455 [1:49:44<18:29, 15.85s/prob]                                                           GPU1:  85%|████████▍ | 386/455 [1:49:44<18:13, 15.85s/prob]                                                           GPU1:  85%|████████▌ | 387/455 [1:49:44<17:57, 15.85s/prob]                                                           GPU1:  85%|████████▌ | 388/455 [1:49:44<17:41, 15.85s/prob]                                                           GPU1:  85%|████████▌ | 389/455 [1:49:44<17:26, 15.85s/prob]                                                           GPU1:  86%|████████▌ | 390/455 [1:49:44<17:10, 15.85s/prob]                                                           GPU1:  86%|████████▌ | 391/455 [1:49:44<16:54, 15.85s/prob]                                                           GPU1:  86%|████████▌ | 392/455 [1:49:44<16:38, 15.85s/prob]                                                           GPU1:  86%|████████▋ | 393/455 [1:49:44<16:22, 15.85s/prob]                                                           GPU1:  87%|████████▋ | 394/455 [1:49:44<16:06, 15.85s/prob]                                                           GPU1:  87%|████████▋ | 395/455 [1:49:44<15:50, 15.85s/prob]                                                           GPU1:  87%|████████▋ | 396/455 [1:49:44<15:35, 15.85s/prob]                                                           GPU1:  87%|████████▋ | 397/455 [1:49:44<15:19, 15.85s/prob]                                                           GPU1:  87%|████████▋ | 398/455 [1:49:44<15:03, 15.85s/prob]                                                           GPU1:  88%|████████▊ | 399/455 [1:49:44<14:47, 15.85s/prob]                                                           GPU1:  88%|████████▊ | 400/455 [1:49:44<14:31, 15.85s/prob]                                                           GPU1:  88%|████████▊ | 401/455 [1:49:44<14:15, 15.85s/prob]                                                           GPU1:  88%|████████▊ | 402/455 [1:49:44<14:00, 15.85s/prob]                                                           GPU1:  89%|████████▊ | 403/455 [1:49:44<13:44, 15.85s/prob]                                                           GPU1:  89%|████████▉ | 404/455 [1:49:44<13:28, 15.85s/prob]                                                           GPU1:  89%|████████▉ | 405/455 [1:49:44<13:12, 15.85s/prob]                                                           GPU1:  89%|████████▉ | 406/455 [1:49:44<12:56, 15.85s/prob]                                                           GPU1:  89%|████████▉ | 407/455 [1:49:44<12:40, 15.85s/prob]                                                           GPU1:  90%|████████▉ | 408/455 [1:49:44<12:24, 15.85s/prob]                                                           GPU1:  90%|████████▉ | 409/455 [1:49:44<12:09, 15.85s/prob]                                                           GPU1:  90%|█████████ | 410/455 [1:49:44<11:53, 15.85s/prob]                                                           GPU1:  90%|█████████ | 411/455 [1:49:44<11:37, 15.85s/prob]                                                           GPU1:  91%|█████████ | 412/455 [1:49:44<11:21, 15.85s/prob]                                                           GPU1:  91%|█████████ | 413/455 [1:49:44<11:05, 15.85s/prob]                                                           GPU1:  91%|█████████ | 414/455 [1:49:44<10:49, 15.85s/prob]                                                           GPU1:  91%|█████████ | 415/455 [1:49:44<10:33, 15.85s/prob]                                                           GPU1:  91%|█████████▏| 416/455 [1:49:44<10:18, 15.85s/prob][10:43:40] [GPU1] [385/455] saved: gsm8k_1037
+[10:43:40] [GPU1] [386/455] saved: gsm8k_1041
+[10:43:40] [GPU1] [387/455] saved: gsm8k_1045
+[10:43:40] [GPU1] [388/455] saved: gsm8k_1049
+[10:43:40] [GPU1] [389/455] saved: gsm8k_1053
+[10:43:40] [GPU1] [390/455] saved: gsm8k_1057
+[10:43:40] [GPU1] [391/455] saved: gsm8k_1061
+[10:43:40] [GPU1] [392/455] saved: gsm8k_1065
+[10:43:40] [GPU1] [393/455] saved: gsm8k_1069
+[10:43:40] [GPU1] [394/455] saved: gsm8k_1073
+[10:43:40] [GPU1] [395/455] saved: gsm8k_1077
+[10:43:40] [GPU1] [396/455] saved: gsm8k_1081
+[10:43:40] [GPU1] [397/455] saved: gsm8k_1085
+[10:43:40] [GPU1] [398/455] saved: gsm8k_1089
+[10:43:40] [GPU1] [399/455] saved: gsm8k_1093
+[10:43:40] [GPU1] [400/455] saved: gsm8k_1097
+[10:43:40] [GPU1] [401/455] saved: gsm8k_1101
+[10:43:40] [GPU1] [402/455] saved: gsm8k_1105
+[10:43:40] [GPU1] [403/455] saved: gsm8k_1109
+[10:43:40] [GPU1] [404/455] saved: gsm8k_1113
+[10:43:40] [GPU1] [405/455] saved: gsm8k_1117
+[10:43:40] [GPU1] [406/455] saved: gsm8k_1121
+[10:43:40] [GPU1] [407/455] saved: gsm8k_1125
+[10:43:40] [GPU1] [408/455] saved: gsm8k_1129
+[10:43:40] [GPU1] [409/455] saved: gsm8k_1133
+[10:43:40] [GPU1] [410/455] saved: gsm8k_1137
+[10:43:40] [GPU1] [411/455] saved: gsm8k_1141
+[10:43:40] [GPU1] [412/455] saved: gsm8k_1145
+[10:43:40] [GPU1] [413/455] saved: gsm8k_1149
+[10:43:40] [GPU1] [414/455] saved: gsm8k_1153
+[10:43:40] [GPU1] [415/455] saved: gsm8k_1157
+[10:43:40] [GPU1] [416/455] saved: gsm8k_1161
+[10:43:42] [GPU1 B14/15 S1/5]  → 100/2048 tokens  (40 tok/s)
+[10:43:45] [GPU1 B14/15 S1/5]  → 200/2048 tokens  (41 tok/s)
+[10:43:47] [GPU1 B14/15 S1/5]  → 300/2048 tokens  (39 tok/s)
+[10:43:50] [GPU1 B14/15 S1/5]  → 400/2048 tokens  (38 tok/s)
+[10:43:54] [GPU1 B14/15 S1/5]  → 500/2048 tokens  (36 tok/s)
+[10:43:57] [GPU1 B14/15 S1/5]  → 600/2048 tokens  (35 tok/s)
+[10:44:01] [GPU1 B14/15 S1/5]  → 700/2048 tokens  (33 tok/s)
+[10:44:05] [GPU1 B14/15 S1/5]  → 800/2048 tokens  (32 tok/s)
+[10:44:09] [GPU1 B14/15 S1/5]  → 900/2048 tokens  (30 tok/s)
+[10:44:14] [GPU1 B14/15 S1/5]  → 1000/2048 tokens  (29 tok/s)
+[10:44:19] [GPU1 B14/15 S1/5]  → 1100/2048 tokens  (28 tok/s)
+[10:44:24] [GPU1 B14/15 S1/5]  → 1200/2048 tokens  (27 tok/s)
+[10:44:29] [GPU1 B14/15 S1/5]  → 1300/2048 tokens  (26 tok/s)
+[10:44:35] [GPU1 B14/15 S1/5]  → 1400/2048 tokens  (25 tok/s)
+[10:44:41] [GPU1 B14/15 S1/5]  → 1500/2048 tokens  (24 tok/s)
+[10:44:47] [GPU1 B14/15 S1/5]  → 1600/2048 tokens  (24 tok/s)
+[10:44:54] [GPU1 B14/15 S1/5]  → 1700/2048 tokens  (23 tok/s)
+[10:45:00] [GPU1 B14/15 S1/5]  → 1800/2048 tokens  (22 tok/s)
+[10:45:07] [GPU1 B14/15 S1/5]  → 1900/2048 tokens  (22 tok/s)
+[10:45:15] [GPU1 B14/15 S1/5]  → 2000/2048 tokens  (21 tok/s)
+[10:45:21] [GPU1 B14/15 S2/5]  → 100/2048 tokens  (40 tok/s)
+[10:45:23] [GPU1 B14/15 S2/5]  → 200/2048 tokens  (41 tok/s)
+[10:45:26] [GPU1 B14/15 S2/5]  → 300/2048 tokens  (39 tok/s)
+[10:45:29] [GPU1 B14/15 S2/5]  → 400/2048 tokens  (38 tok/s)
+[10:45:32] [GPU1 B14/15 S2/5]  → 500/2048 tokens  (36 tok/s)
+[10:45:36] [GPU1 B14/15 S2/5]  → 600/2048 tokens  (34 tok/s)
+[10:45:39] [GPU1 B14/15 S2/5]  → 700/2048 tokens  (33 tok/s)
+[10:45:43] [GPU1 B14/15 S2/5]  → 800/2048 tokens  (32 tok/s)
+[10:45:48] [GPU1 B14/15 S2/5]  → 900/2048 tokens  (30 tok/s)
+[10:45:52] [GPU1 B14/15 S2/5]  → 1000/2048 tokens  (29 tok/s)
+[10:45:57] [GPU1 B14/15 S2/5]  → 1100/2048 tokens  (28 tok/s)
+[10:46:02] [GPU1 B14/15 S2/5]  → 1200/2048 tokens  (27 tok/s)
+[10:46:08] [GPU1 B14/15 S2/5]  → 1300/2048 tokens  (26 tok/s)
+[10:46:14] [GPU1 B14/15 S2/5]  → 1400/2048 tokens  (25 tok/s)
+[10:46:19] [GPU1 B14/15 S2/5]  → 1500/2048 tokens  (24 tok/s)
+[10:46:26] [GPU1 B14/15 S2/5]  → 1600/2048 tokens  (24 tok/s)
+[10:46:32] [GPU1 B14/15 S2/5]  → 1700/2048 tokens  (23 tok/s)
+[10:46:39] [GPU1 B14/15 S2/5]  → 1800/2048 tokens  (22 tok/s)
+[10:46:46] [GPU1 B14/15 S2/5]  → 1900/2048 tokens  (22 tok/s)
+[10:46:53] [GPU1 B14/15 S2/5]  → 2000/2048 tokens  (21 tok/s)
+[10:46:59] [GPU1 B14/15 S3/5]  → 100/2048 tokens  (40 tok/s)
+[10:47:02] [GPU1 B14/15 S3/5]  → 200/2048 tokens  (41 tok/s)
+[10:47:04] [GPU1 B14/15 S3/5]  → 300/2048 tokens  (39 tok/s)
+[10:47:07] [GPU1 B14/15 S3/5]  → 400/2048 tokens  (38 tok/s)
+[10:47:11] [GPU1 B14/15 S3/5]  → 500/2048 tokens  (36 tok/s)
+[10:47:14] [GPU1 B14/15 S3/5]  → 600/2048 tokens  (34 tok/s)
+[10:47:18] [GPU1 B14/15 S3/5]  → 700/2048 tokens  (33 tok/s)
+[10:47:22] [GPU1 B14/15 S3/5]  → 800/2048 tokens  (32 tok/s)
+[10:47:26] [GPU1 B14/15 S3/5]  → 900/2048 tokens  (30 tok/s)
+[10:47:31] [GPU1 B14/15 S3/5]  → 1000/2048 tokens  (29 tok/s)
+[10:47:36] [GPU1 B14/15 S3/5]  → 1100/2048 tokens  (28 tok/s)
+[10:47:41] [GPU1 B14/15 S3/5]  → 1200/2048 tokens  (27 tok/s)
+[10:47:46] [GPU1 B14/15 S3/5]  → 1300/2048 tokens  (26 tok/s)
+[10:47:52] [GPU1 B14/15 S3/5]  → 1400/2048 tokens  (25 tok/s)
+[10:47:58] [GPU1 B14/15 S3/5]  → 1500/2048 tokens  (24 tok/s)
+[10:48:04] [GPU1 B14/15 S3/5]  → 1600/2048 tokens  (24 tok/s)
+[10:48:11] [GPU1 B14/15 S3/5]  → 1700/2048 tokens  (23 tok/s)
+[10:48:17] [GPU1 B14/15 S3/5]  → 1800/2048 tokens  (22 tok/s)
+[10:48:24] [GPU1 B14/15 S3/5]  → 1900/2048 tokens  (22 tok/s)
+[10:48:32] [GPU1 B14/15 S3/5]  → 2000/2048 tokens  (21 tok/s)
+[10:48:38] [GPU1 B14/15 S4/5]  → 100/2048 tokens  (40 tok/s)
+[10:48:40] [GPU1 B14/15 S4/5]  → 200/2048 tokens  (41 tok/s)
+[10:48:43] [GPU1 B14/15 S4/5]  → 300/2048 tokens  (39 tok/s)
+[10:48:46] [GPU1 B14/15 S4/5]  → 400/2048 tokens  (38 tok/s)
+[10:48:49] [GPU1 B14/15 S4/5]  → 500/2048 tokens  (36 tok/s)
+[10:48:53] [GPU1 B14/15 S4/5]  → 600/2048 tokens  (35 tok/s)
+[10:48:57] [GPU1 B14/15 S4/5]  → 700/2048 tokens  (33 tok/s)
+[10:49:01] [GPU1 B14/15 S4/5]  → 800/2048 tokens  (32 tok/s)
+[10:49:05] [GPU1 B14/15 S4/5]  → 900/2048 tokens  (30 tok/s)
+[10:49:10] [GPU1 B14/15 S4/5]  → 1000/2048 tokens  (29 tok/s)
+[10:49:14] [GPU1 B14/15 S4/5]  → 1100/2048 tokens  (28 tok/s)
+[10:49:20] [GPU1 B14/15 S4/5]  → 1200/2048 tokens  (27 tok/s)
+[10:49:25] [GPU1 B14/15 S4/5]  → 1300/2048 tokens  (26 tok/s)
+[10:49:31] [GPU1 B14/15 S4/5]  → 1400/2048 tokens  (25 tok/s)
+[10:49:37] [GPU1 B14/15 S4/5]  → 1500/2048 tokens  (25 tok/s)
+[10:49:43] [GPU1 B14/15 S4/5]  → 1600/2048 tokens  (24 tok/s)
+[10:49:49] [GPU1 B14/15 S4/5]  → 1700/2048 tokens  (23 tok/s)
+[10:49:56] [GPU1 B14/15 S4/5]  → 1800/2048 tokens  (22 tok/s)
+[10:50:03] [GPU1 B14/15 S4/5]  → 1900/2048 tokens  (22 tok/s)
+[10:50:10] [GPU1 B14/15 S4/5]  → 2000/2048 tokens  (21 tok/s)
+[10:50:17] [GPU1 B14/15 S5/5]  → 100/2048 tokens  (40 tok/s)
+[10:50:19] [GPU1 B14/15 S5/5]  → 200/2048 tokens  (41 tok/s)
+[10:50:22] [GPU1 B14/15 S5/5]  → 300/2048 tokens  (39 tok/s)
+[10:50:25] [GPU1 B14/15 S5/5]  → 400/2048 tokens  (38 tok/s)
+[10:50:28] [GPU1 B14/15 S5/5]  → 500/2048 tokens  (36 tok/s)
+[10:50:31] [GPU1 B14/15 S5/5]  → 600/2048 tokens  (35 tok/s)
+[10:50:35] [GPU1 B14/15 S5/5]  → 700/2048 tokens  (33 tok/s)
+[10:50:39] [GPU1 B14/15 S5/5]  → 800/2048 tokens  (32 tok/s)
+[10:50:44] [GPU1 B14/15 S5/5]  → 900/2048 tokens  (30 tok/s)
+[10:50:48] [GPU1 B14/15 S5/5]  → 1000/2048 tokens  (29 tok/s)
+[10:50:53] [GPU1 B14/15 S5/5]  → 1100/2048 tokens  (28 tok/s)
+[10:50:58] [GPU1 B14/15 S5/5]  → 1200/2048 tokens  (27 tok/s)
+[10:51:04] [GPU1 B14/15 S5/5]  → 1300/2048 tokens  (26 tok/s)
+[10:51:09] [GPU1 B14/15 S5/5]  → 1400/2048 tokens  (25 tok/s)
+[10:51:15] [GPU1 B14/15 S5/5]  → 1500/2048 tokens  (24 tok/s)
+[10:51:21] [GPU1 B14/15 S5/5]  → 1600/2048 tokens  (24 tok/s)
+[10:51:28] [GPU1 B14/15 S5/5]  → 1700/2048 tokens  (23 tok/s)
+[10:51:35] [GPU1 B14/15 S5/5]  → 1800/2048 tokens  (22 tok/s)
+[10:51:42] [GPU1 B14/15 S5/5]  → 1900/2048 tokens  (22 tok/s)
+[10:51:49] [GPU1 B14/15 S5/5]  → 2000/2048 tokens  (21 tok/s)
+GPU1:  92%|█████████▏| 417/455 [1:57:57<09:56, 15.71s/prob]                                                           GPU1:  92%|█████████▏| 417/455 [1:57:57<09:56, 15.71s/prob]                                                           GPU1:  92%|█████████▏| 418/455 [1:57:57<09:41, 15.71s/prob]                                                           GPU1:  92%|█████████▏| 419/455 [1:57:57<09:25, 15.71s/prob]                                                           GPU1:  92%|█████████▏| 420/455 [1:57:57<09:09, 15.71s/prob]                                                           GPU1:  93%|█████████▎| 421/455 [1:57:57<08:54, 15.71s/prob]                                                           GPU1:  93%|█████████▎| 422/455 [1:57:57<08:38, 15.71s/prob]                                                           GPU1:  93%|█████████▎| 423/455 [1:57:57<08:22, 15.71s/prob]                                                           GPU1:  93%|█████████▎| 424/455 [1:57:57<08:06, 15.71s/prob]                                                           GPU1:  93%|█████████▎| 425/455 [1:57:57<07:51, 15.71s/prob]                                                           GPU1:  94%|█████████▎| 426/455 [1:57:57<07:35, 15.71s/prob]                                                           GPU1:  94%|█████████▍| 427/455 [1:57:57<07:19, 15.71s/prob]                                                           GPU1:  94%|█████████▍| 428/455 [1:57:57<07:04, 15.71s/prob]                                                           GPU1:  94%|█████████▍| 429/455 [1:57:57<06:48, 15.71s/prob]                                                           GPU1:  95%|█████████▍| 430/455 [1:57:57<06:32, 15.71s/prob]                                                           GPU1:  95%|█████████▍| 431/455 [1:57:57<06:16, 15.71s/prob]                                                           GPU1:  95%|█████████▍| 432/455 [1:57:57<06:01, 15.71s/prob]                                                           GPU1:  95%|█████████▌| 433/455 [1:57:57<05:45, 15.71s/prob]                                                           GPU1:  95%|█████████▌| 434/455 [1:57:57<05:29, 15.71s/prob]                                                           GPU1:  96%|█████████▌| 435/455 [1:57:57<05:14, 15.71s/prob]                                                           GPU1:  96%|█████████▌| 436/455 [1:57:57<04:58, 15.71s/prob]                                                           GPU1:  96%|█████████▌| 437/455 [1:57:57<04:42, 15.71s/prob]                                                           GPU1:  96%|█████████▋| 438/455 [1:57:57<04:27, 15.71s/prob]                                                           GPU1:  96%|█████████▋| 439/455 [1:57:57<04:11, 15.71s/prob]                                                           GPU1:  97%|█████████▋| 440/455 [1:57:57<03:55, 15.71s/prob]                                                           GPU1:  97%|█████████▋| 441/455 [1:57:57<03:39, 15.71s/prob]                                                           GPU1:  97%|█████████▋| 442/455 [1:57:57<03:24, 15.71s/prob]                                                           GPU1:  97%|█████████▋| 443/455 [1:57:57<03:08, 15.71s/prob]                                                           GPU1:  98%|█████████▊| 444/455 [1:57:57<02:52, 15.71s/prob]                                                           GPU1:  98%|█████████▊| 445/455 [1:57:57<02:37, 15.71s/prob]                                                           GPU1:  98%|█████████▊| 446/455 [1:57:57<02:21, 15.71s/prob]                                                           GPU1:  98%|█████████▊| 447/455 [1:57:57<02:05, 15.71s/prob]                                                           GPU1:  98%|█████████▊| 448/455 [1:57:57<01:49, 15.71s/prob][10:51:53] [GPU1] [417/455] saved: gsm8k_1165
+[10:51:53] [GPU1] [418/455] saved: gsm8k_1169
+[10:51:53] [GPU1] [419/455] saved: gsm8k_1173
+[10:51:53] [GPU1] [420/455] saved: gsm8k_1177
+[10:51:53] [GPU1] [421/455] saved: gsm8k_1181
+[10:51:53] [GPU1] [422/455] saved: gsm8k_1185
+[10:51:53] [GPU1] [423/455] saved: gsm8k_1189
+[10:51:53] [GPU1] [424/455] saved: gsm8k_1193
+[10:51:53] [GPU1] [425/455] saved: gsm8k_1197
+[10:51:53] [GPU1] [426/455] saved: gsm8k_1201
+[10:51:53] [GPU1] [427/455] saved: gsm8k_1205
+[10:51:53] [GPU1] [428/455] saved: gsm8k_1209
+[10:51:53] [GPU1] [429/455] saved: gsm8k_1213
+[10:51:53] [GPU1] [430/455] saved: gsm8k_1217
+[10:51:53] [GPU1] [431/455] saved: gsm8k_1221
+[10:51:53] [GPU1] [432/455] saved: gsm8k_1225
+[10:51:53] [GPU1] [433/455] saved: gsm8k_1229
+[10:51:53] [GPU1] [434/455] saved: gsm8k_1233
+[10:51:53] [GPU1] [435/455] saved: gsm8k_1237
+[10:51:53] [GPU1] [436/455] saved: gsm8k_1241
+[10:51:53] [GPU1] [437/455] saved: gsm8k_1245
+[10:51:53] [GPU1] [438/455] saved: gsm8k_1249
+[10:51:53] [GPU1] [439/455] saved: gsm8k_1253
+[10:51:53] [GPU1] [440/455] saved: gsm8k_1257
+[10:51:53] [GPU1] [441/455] saved: gsm8k_1261
+[10:51:53] [GPU1] [442/455] saved: gsm8k_1265
+[10:51:53] [GPU1] [443/455] saved: gsm8k_1269
+[10:51:53] [GPU1] [444/455] saved: gsm8k_1273
+[10:51:53] [GPU1] [445/455] saved: gsm8k_1277
+[10:51:53] [GPU1] [446/455] saved: gsm8k_1281
+[10:51:53] [GPU1] [447/455] saved: gsm8k_1285
+[10:51:53] [GPU1] [448/455] saved: gsm8k_1289
+[10:51:54] [GPU1 B15/15 S1/5]  → 100/2048 tokens  (58 tok/s)
+[10:51:56] [GPU1 B15/15 S1/5]  → 200/2048 tokens  (58 tok/s)
+[10:51:58] [GPU1 B15/15 S1/5]  → 300/2048 tokens  (57 tok/s)
+[10:52:00] [GPU1 B15/15 S1/5]  → 400/2048 tokens  (57 tok/s)
+[10:52:02] [GPU1 B15/15 S1/5]  → 500/2048 tokens  (56 tok/s)
+[10:52:04] [GPU1 B15/15 S1/5]  → 600/2048 tokens  (55 tok/s)
+[10:52:06] [GPU1 B15/15 S1/5]  → 700/2048 tokens  (54 tok/s)
+[10:52:08] [GPU1 B15/15 S1/5]  → 800/2048 tokens  (53 tok/s)
+[10:52:10] [GPU1 B15/15 S1/5]  → 900/2048 tokens  (52 tok/s)
+[10:52:12] [GPU1 B15/15 S1/5]  → 1000/2048 tokens  (52 tok/s)
+[10:52:14] [GPU1 B15/15 S1/5]  → 1100/2048 tokens  (51 tok/s)
+[10:52:17] [GPU1 B15/15 S1/5]  → 1200/2048 tokens  (50 tok/s)
+[10:52:19] [GPU1 B15/15 S1/5]  → 1300/2048 tokens  (49 tok/s)
+[10:52:21] [GPU1 B15/15 S1/5]  → 1400/2048 tokens  (49 tok/s)
+[10:52:24] [GPU1 B15/15 S1/5]  → 1500/2048 tokens  (48 tok/s)
+[10:52:26] [GPU1 B15/15 S1/5]  → 1600/2048 tokens  (47 tok/s)
+[10:52:29] [GPU1 B15/15 S1/5]  → 1700/2048 tokens  (47 tok/s)
+[10:52:32] [GPU1 B15/15 S1/5]  → 1800/2048 tokens  (46 tok/s)
+[10:52:34] [GPU1 B15/15 S1/5]  → 1900/2048 tokens  (45 tok/s)
+[10:52:37] [GPU1 B15/15 S1/5]  → 2000/2048 tokens  (45 tok/s)
+[10:52:40] [GPU1 B15/15 S2/5]  → 100/2048 tokens  (58 tok/s)
+[10:52:42] [GPU1 B15/15 S2/5]  → 200/2048 tokens  (58 tok/s)
+[10:52:44] [GPU1 B15/15 S2/5]  → 300/2048 tokens  (57 tok/s)
+[10:52:46] [GPU1 B15/15 S2/5]  → 400/2048 tokens  (57 tok/s)
+[10:52:48] [GPU1 B15/15 S2/5]  → 500/2048 tokens  (56 tok/s)
+[10:52:50] [GPU1 B15/15 S2/5]  → 600/2048 tokens  (55 tok/s)
+[10:52:52] [GPU1 B15/15 S2/5]  → 700/2048 tokens  (54 tok/s)
+[10:52:54] [GPU1 B15/15 S2/5]  → 800/2048 tokens  (53 tok/s)
+[10:52:56] [GPU1 B15/15 S2/5]  → 900/2048 tokens  (52 tok/s)
+[10:52:58] [GPU1 B15/15 S2/5]  → 1000/2048 tokens  (52 tok/s)
+[10:53:00] [GPU1 B15/15 S2/5]  → 1100/2048 tokens  (51 tok/s)
+[10:53:03] [GPU1 B15/15 S2/5]  → 1200/2048 tokens  (50 tok/s)
+[10:53:05] [GPU1 B15/15 S2/5]  → 1300/2048 tokens  (49 tok/s)
+[10:53:07] [GPU1 B15/15 S2/5]  → 1400/2048 tokens  (49 tok/s)
+[10:53:10] [GPU1 B15/15 S2/5]  → 1500/2048 tokens  (48 tok/s)
+[10:53:12] [GPU1 B15/15 S2/5]  → 1600/2048 tokens  (47 tok/s)
+[10:53:15] [GPU1 B15/15 S2/5]  → 1700/2048 tokens  (47 tok/s)
+[10:53:18] [GPU1 B15/15 S2/5]  → 1800/2048 tokens  (46 tok/s)
+[10:53:21] [GPU1 B15/15 S2/5]  → 1900/2048 tokens  (45 tok/s)
+[10:53:23] [GPU1 B15/15 S2/5]  → 2000/2048 tokens  (45 tok/s)
+[10:53:26] [GPU1 B15/15 S3/5]  → 100/2048 tokens  (59 tok/s)
+[10:53:28] [GPU1 B15/15 S3/5]  → 200/2048 tokens  (58 tok/s)
+[10:53:30] [GPU1 B15/15 S3/5]  → 300/2048 tokens  (58 tok/s)
+[10:53:32] [GPU1 B15/15 S3/5]  → 400/2048 tokens  (57 tok/s)
+[10:53:34] [GPU1 B15/15 S3/5]  → 500/2048 tokens  (56 tok/s)
+[10:53:36] [GPU1 B15/15 S3/5]  → 600/2048 tokens  (55 tok/s)
+[10:53:38] [GPU1 B15/15 S3/5]  → 700/2048 tokens  (54 tok/s)
+[10:53:40] [GPU1 B15/15 S3/5]  → 800/2048 tokens  (53 tok/s)
+[10:53:42] [GPU1 B15/15 S3/5]  → 900/2048 tokens  (53 tok/s)
+[10:53:44] [GPU1 B15/15 S3/5]  → 1000/2048 tokens  (52 tok/s)
+[10:53:46] [GPU1 B15/15 S3/5]  → 1100/2048 tokens  (51 tok/s)
+[10:53:49] [GPU1 B15/15 S3/5]  → 1200/2048 tokens  (50 tok/s)
+[10:53:51] [GPU1 B15/15 S3/5]  → 1300/2048 tokens  (50 tok/s)
+[10:53:53] [GPU1 B15/15 S3/5]  → 1400/2048 tokens  (49 tok/s)
+[10:53:56] [GPU1 B15/15 S3/5]  → 1500/2048 tokens  (48 tok/s)
+[10:53:58] [GPU1 B15/15 S3/5]  → 1600/2048 tokens  (47 tok/s)
+[10:54:01] [GPU1 B15/15 S3/5]  → 1700/2048 tokens  (47 tok/s)
+[10:54:04] [GPU1 B15/15 S3/5]  → 1800/2048 tokens  (46 tok/s)
+[10:54:07] [GPU1 B15/15 S3/5]  → 1900/2048 tokens  (45 tok/s)
+[10:54:09] [GPU1 B15/15 S3/5]  → 2000/2048 tokens  (45 tok/s)
+[10:54:12] [GPU1 B15/15 S4/5]  → 100/2048 tokens  (58 tok/s)
+[10:54:14] [GPU1 B15/15 S4/5]  → 200/2048 tokens  (58 tok/s)
+[10:54:16] [GPU1 B15/15 S4/5]  → 300/2048 tokens  (58 tok/s)
+[10:54:18] [GPU1 B15/15 S4/5]  → 400/2048 tokens  (57 tok/s)
+[10:54:20] [GPU1 B15/15 S4/5]  → 500/2048 tokens  (56 tok/s)
+[10:54:22] [GPU1 B15/15 S4/5]  → 600/2048 tokens  (55 tok/s)
+[10:54:24] [GPU1 B15/15 S4/5]  → 700/2048 tokens  (54 tok/s)
+[10:54:26] [GPU1 B15/15 S4/5]  → 800/2048 tokens  (53 tok/s)
+[10:54:28] [GPU1 B15/15 S4/5]  → 900/2048 tokens  (53 tok/s)
+[10:54:30] [GPU1 B15/15 S4/5]  → 1000/2048 tokens  (52 tok/s)
+[10:54:32] [GPU1 B15/15 S4/5]  → 1100/2048 tokens  (51 tok/s)
+[10:54:35] [GPU1 B15/15 S4/5]  → 1200/2048 tokens  (50 tok/s)
+[10:54:37] [GPU1 B15/15 S4/5]  → 1300/2048 tokens  (50 tok/s)
+[10:54:39] [GPU1 B15/15 S4/5]  → 1400/2048 tokens  (49 tok/s)
+[10:54:42] [GPU1 B15/15 S4/5]  → 1500/2048 tokens  (48 tok/s)
+[10:54:44] [GPU1 B15/15 S4/5]  → 1600/2048 tokens  (47 tok/s)
+[10:54:47] [GPU1 B15/15 S4/5]  → 1700/2048 tokens  (47 tok/s)
+[10:54:50] [GPU1 B15/15 S4/5]  → 1800/2048 tokens  (46 tok/s)
+[10:54:53] [GPU1 B15/15 S4/5]  → 1900/2048 tokens  (45 tok/s)
+[10:54:55] [GPU1 B15/15 S4/5]  → 2000/2048 tokens  (45 tok/s)
+[10:54:58] [GPU1 B15/15 S5/5]  → 100/2048 tokens  (58 tok/s)
+[10:55:00] [GPU1 B15/15 S5/5]  → 200/2048 tokens  (58 tok/s)
+[10:55:02] [GPU1 B15/15 S5/5]  → 300/2048 tokens  (58 tok/s)
+[10:55:04] [GPU1 B15/15 S5/5]  → 400/2048 tokens  (57 tok/s)
+[10:55:06] [GPU1 B15/15 S5/5]  → 500/2048 tokens  (56 tok/s)
+[10:55:08] [GPU1 B15/15 S5/5]  → 600/2048 tokens  (55 tok/s)
+[10:55:10] [GPU1 B15/15 S5/5]  → 700/2048 tokens  (54 tok/s)
+[10:55:12] [GPU1 B15/15 S5/5]  → 800/2048 tokens  (53 tok/s)
+[10:55:14] [GPU1 B15/15 S5/5]  → 900/2048 tokens  (53 tok/s)
+[10:55:16] [GPU1 B15/15 S5/5]  → 1000/2048 tokens  (52 tok/s)
+[10:55:18] [GPU1 B15/15 S5/5]  → 1100/2048 tokens  (51 tok/s)
+[10:55:21] [GPU1 B15/15 S5/5]  → 1200/2048 tokens  (50 tok/s)
+[10:55:23] [GPU1 B15/15 S5/5]  → 1300/2048 tokens  (50 tok/s)
+[10:55:25] [GPU1 B15/15 S5/5]  → 1400/2048 tokens  (49 tok/s)
+[10:55:28] [GPU1 B15/15 S5/5]  → 1500/2048 tokens  (48 tok/s)
+[10:55:30] [GPU1 B15/15 S5/5]  → 1600/2048 tokens  (47 tok/s)
+[10:55:33] [GPU1 B15/15 S5/5]  → 1700/2048 tokens  (47 tok/s)
+[10:55:36] [GPU1 B15/15 S5/5]  → 1800/2048 tokens  (46 tok/s)
+[10:55:39] [GPU1 B15/15 S5/5]  → 1900/2048 tokens  (45 tok/s)
+[10:55:41] [GPU1 B15/15 S5/5]  → 2000/2048 tokens  (45 tok/s)
+GPU1:  99%|█████████▊| 449/455 [2:01:47<01:18, 13.00s/prob]                                                           GPU1:  99%|█████████▊| 449/455 [2:01:47<01:18, 13.00s/prob]                                                           GPU1:  99%|█████████▉| 450/455 [2:01:47<01:05, 13.00s/prob]                                                           GPU1:  99%|█████████▉| 451/455 [2:01:47<00:52, 13.00s/prob]                                                           GPU1:  99%|█████████▉| 452/455 [2:01:47<00:39, 13.00s/prob]                                                           GPU1: 100%|█████████▉| 453/455 [2:01:47<00:26, 13.00s/prob]                                                           GPU1: 100%|█████████▉| 454/455 [2:01:47<00:13, 13.00s/prob]                                                           GPU1: 100%|██████████| 455/455 [2:01:47<00:00, 13.00s/prob]GPU1: 100%|██████████| 455/455 [2:01:47<00:00, 16.06s/prob]
+[10:55:43] [GPU1] [449/455] saved: gsm8k_1293
+[10:55:43] [GPU1] [450/455] saved: gsm8k_1297
+[10:55:43] [GPU1] [451/455] saved: gsm8k_1301
+[10:55:43] [GPU1] [452/455] saved: gsm8k_1305
+[10:55:43] [GPU1] [453/455] saved: gsm8k_1309
+[10:55:43] [GPU1] [454/455] saved: gsm8k_1313
+[10:55:43] [GPU1] [455/455] saved: gsm8k_1317
+[10:55:43] Done! 455 problems saved to ./output/20260417_085339/step1_output.jsonl.part1
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+  500 problems loaded from ./data/train_data/math500.parquet
+  1319 problems loaded from ./data/train_data/gsm8k.parquet
+Total: 1819 problems from 2 dataset(s)
+[GPU 1/4] 455 problems assigned
+455 already completed, 0 remaining.
+Nothing to process.
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+  500 problems loaded from ./data/train_data/math500.parquet
+  1319 problems loaded from ./data/train_data/gsm8k.parquet
+Total: 1819 problems from 2 dataset(s)
+[GPU 1/4] 455 problems assigned
+455 already completed, 0 remaining.
+Nothing to process.
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+  500 problems loaded from ./data/train_data/math500.parquet
+  1319 problems loaded from ./data/train_data/gsm8k.parquet
+Total: 1819 problems from 2 dataset(s)
+Resume: 1774 completed globally, 45 remaining → 11 for this worker
+Start: 11 problems / batch_size=32 → 1 batches × 5 samples
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]

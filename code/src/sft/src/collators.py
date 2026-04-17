@@ -82,6 +82,22 @@ def sft_weighted_data_collator(tokenizer: PreTrainedTokenizer, args: SFTWeighted
         ret = _llm_tokenize(prompts, texts, tokenizer, args)
         ret.update({"weights": torch.tensor(weights).float()})
 
+        # Include precomputed ref logprobs if present (pad with 0.0 to match seq len)
+        if 'ref_logprobs' in examples[0]:
+            ref_lp_tensors = [
+                torch.tensor(ex['ref_logprobs'], dtype=torch.float32)
+                for ex in examples
+            ]
+            # pad to the same shifted seq len as labels (seq_len - 1)
+            target_len = ret['labels'].shape[1] - 1
+            padded = []
+            for t in ref_lp_tensors:
+                if len(t) >= target_len:
+                    padded.append(t[:target_len])
+                else:
+                    padded.append(F.pad(t, (0, target_len - len(t)), value=0.0))
+            ret['ref_logprobs'] = torch.stack(padded)  # (batch, seq_len - 1)
+
         return ret
 
     return collactor

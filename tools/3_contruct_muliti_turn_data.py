@@ -9,6 +9,7 @@ from transformers import AutoTokenizer
 from answer_extraction import answer_corrected_match
 import collections
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 def get_soft_answer_correction(gold_answer, output_answer):
     if "=" in gold_answer:
         gold_answer = gold_answer.strip().split("=")[-1].strip()
@@ -51,6 +52,59 @@ def is_correct_verification(sentence):
     return any(pattern in sentence.lower() for pattern in correct_patterns)
 
 failed_requests_count = 0
+
+REFINE_PROMPT = """You are a math teacher reviewing a verification of a student's answer.
+Rewrite the following verification in a natural self-checking style.
+The rewritten verification must end with exactly one of these conclusions:
+  "Therefore, the answer is correct."
+  "Therefore, the answer is incorrect."
+  "Therefore, the answer cannot be verified."
+
+Original verification:
+{verification}
+
+Rewritten verification:"""
+
+def refine_verification(verification, refiner_cfg, max_retries=5):
+    """Call GPT-4o to refine a raw verification into the standardized format."""
+    payload = {
+        "model": refiner_cfg["model"],
+        "messages": [{"role": "user", "content": REFINE_PROMPT.format(verification=verification)}],
+        "n": 1,
+        "temperature": 0.1,
+    }
+    headers = {
+        "Authorization": f'Bearer {refiner_cfg["api_key"]}',
+        "Content-Type": "application/json",
+    }
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(refiner_cfg["api_url"], json=payload, headers=headers, timeout=30)
+            resp.raise_for_status()
+            return resp.json()["choices"][0]["message"]["content"]
+        except Exception:
+            if attempt == max_retries - 1:
+                return None
+            time.sleep(2)
+    return None
+
+
+def extract_verdict(text):
+    """Extract the standardized verdict from a refined verification."""
+    lower = text.lower()
+    if lower.rstrip().endswith("therefore, the answer is correct."):
+        return "correct"
+    if lower.rstrip().endswith("therefore, the answer is incorrect."):
+        return "incorrect"
+    if lower.rstrip().endswith("therefore, the answer cannot be verified."):
+        return "cannot verify"
+    # fallback: check anywhere in last sentence
+    last = lower.rsplit(".", 2)[-2] if lower.count(".") >= 2 else lower
+    if "answer is correct" in last:
+        return "correct"
+    if "answer is incorrect" in last or "answer is wrong" in last:
+        return "incorrect"
+    return None
 
 
 
@@ -389,7 +443,17 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", type=str, default="OUTPUT PATH")
     parser.add_argument("--model_name_or_path", type=str, default="MODEL NAME")
     parser.add_argument("--verification_file_path", type=str, default="VERIFICATION FILE PATH")
+    parser.add_argument("--refiner_api_key", type=str, default="")
+    parser.add_argument("--refiner_api_url", type=str, default="https://api.openai.com/v1/chat/completions")
+    parser.add_argument("--refiner_model", type=str, default="gpt-4o")
     args = parser.parse_args()
+
+    refiner_cfg = {
+        "api_key": args.refiner_api_key,
+        "api_url": args.refiner_api_url,
+        "model": args.refiner_model,
+    }
+    use_refiner = bool(args.refiner_api_key)
     file_list = [
         args.response_file_path
     ]
@@ -423,12 +487,37 @@ if __name__ == "__main__":
                 })
 
     get_answer_veri(args.verification_file_path, key_name="qwen1")
-    
-    
-    
-    
- 
-    
+
+    # --- GPT-4o 정제: 각 verification을 표준 형식으로 재작성하고 판단 불일치 제거 ---
+    if use_refiner:
+        print(f"Refining verifications with {refiner_cfg['model']}...")
+        all_pairs = []  # (uid, key_name, list_idx, pair_idx, raw_verification)
+        for uid, key_dict in response_veri_dict.items():
+            for key_name, pair_list in key_dict.items():
+                for pi, pair in enumerate(pair_list):
+                    all_pairs.append((uid, key_name, pi, pair["verification"]))
+
+        def _refine(item):
+            uid, key_name, pi, raw = item
+            refined = refine_verification(raw, refiner_cfg)
+            return uid, key_name, pi, refined
+
+        with ThreadPoolExecutor(max_workers=32) as pool:
+            futures = {pool.submit(_refine, item): item for item in all_pairs}
+            for future in tqdm.tqdm(as_completed(futures), total=len(futures), desc="Refining"):
+                uid, key_name, pi, refined = future.result()
+                if refined is not None:
+                    response_veri_dict[uid][key_name][pi]["verification"] = refined
+
+        # 판단이 명확하지 않은 항목 제거
+        for uid in response_veri_dict:
+            for key_name in response_veri_dict[uid]:
+                response_veri_dict[uid][key_name] = [
+                    pair for pair in response_veri_dict[uid][key_name]
+                    if extract_verdict(pair["verification"]) in ("correct", "incorrect")
+                ]
+        print("Refinement done.")
+
     processed_results = process_lines(lines, reference_answers, response_veri_dict)
     
     
@@ -442,7 +531,6 @@ if __name__ == "__main__":
     raw_output_path = args.output_file
     with open(raw_output_path, "w") as f:
         json.dump(res_data, f, indent=4, ensure_ascii=False)
-    breakpoint()
 
     res_data = split_data(res_data, tokenizer)
     

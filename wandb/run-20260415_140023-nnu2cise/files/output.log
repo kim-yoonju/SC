@@ -1,0 +1,14 @@
+  0%|          | 0/222 [00:00<?, ?it/s]Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+[32m"Masked text for sample 0, segment 2735-3004: .\n\nWait, let me recheck my solution.\n\nTo determine if the given answer is correct, we can estimate Jill's annual salary by calculating her weekly earnings from both jobs and then multiplying by the number of weeks she works in a year.\n\n1. **Weekly Earnings as a Teacher:**\n   - Jill works 35 hours a week as a teacher at $20 per hour.\n   - Weekly earnings from teaching = 35 hours/week * $20/hour = $700/week.\n\n2. **Weekly Earnings as a Coach:**\n   - Jill works 15 hours a week as a coach at $30 per hour.\n   - Weekly earnings from coaching = 15 hours/week * $30/hour = $450/week.\n\n3. **Total Weekly Earnings:**\n   - Total weekly earnings = $700 (teaching) + $450 (coaching) = $1,150/week.\n\n4. **Annual Salary:**\n   - Jill works 50 weeks a year.\n   - Annual salary = $1,150/week * 50 weeks/year = $57,500/year.\n\nThe given answer of $57,500 is correct.<|im_end|>\n"[0m
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+[32m'check eos_token: <|endoftext|>'[0m
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+[32m"Masked text for sample 1, segment 1341-1582: }\n\nWait, let me recheck my solution.\n\nTo determine if the answer is correct, let's analyze the units and conversion factors involved:\n\n1. **Convert kb per second to kb per minute:**\n   - Ashley's speed is 20 kb per second.\n   - There are 60 seconds in a minute, so in one minute, she would download:\n     \\[\n     20 \\, \\text{kb/s} \\times 60 \\, \\text{s/min} = 1200 \\, \\text{kb/min}\n     \\]\n\n2. **Convert kb per minute to Mb per minute:**\n   - Since 1 Mb = 1000 kb, we convert 1200 kb to Mb:\n     \\[\n     \\frac{1200 \\, \\text{kb}}{1000 \\, \\text{kb/Mb}} = 1.2 \\, \\text{Mb/min}\n     \\]\n\nThe given answer is 1.44 Mb per minute, but our conversion shows it should be 1.2 Mb per minute. Therefore, the provided answer is incorrect.\n\n"[0m
+Trainer.tokenizer is now deprecated. You should use Trainer.processing_class instead.
+[32m'check eos_token: <|endoftext|>'[0m

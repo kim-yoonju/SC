@@ -11,6 +11,9 @@ from ctypes import c_int
 import argparse
 
 
+args = None
+headers = None
+
 def load_problems(path):
     with open(path, 'r', encoding='utf-8') as f:
         problems = []
@@ -63,13 +66,15 @@ import random
 def load_reference_verifications(reference_files):
     reference_dict = {}
     for file_path in reference_files:
+        if not os.path.exists(file_path):
+            continue
         with open(file_path, 'r', encoding='utf-8') as f:
             for line in f:
                 data = json.loads(line)
-                
+
                 for answer, verification in zip(data['round_1_extracted_answer'], data['verification']):
                     key = (data['problem'], answer)
-                    if verification is not None:  
+                    if verification is not None:
                         reference_dict[key] = verification
     return reference_dict
 
@@ -140,6 +145,7 @@ def process_single_problem(problem, file_path, lock, reference_dict, gpt_counter
 
 
 def main():
+    global args, headers
     parser = argparse.ArgumentParser()
     parser.add_argument("--original_file_path", type=str, default="DATA PATH")
     parser.add_argument("--output_file", type=str, default="OUTPUT PATH")
@@ -167,6 +173,11 @@ def main():
     reference_dict = load_reference_verifications(reference_files)
     print(f"Loaded {len(reference_dict)} reference verifications!")
 
+    if not os.path.exists(original_file_path):
+        raise FileNotFoundError(
+            f"Step 1 output not found: {original_file_path}\n"
+            "Make sure Step 1 completed successfully before running Step 2."
+        )
     problems = load_problems(original_file_path)
 
     if os.path.exists(output_file):

@@ -1,0 +1,48 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[11:14:30] [GPU 3/4] 818/3272 samples  batch=16  device=cuda
+[11:14:30] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  7.42it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  7.48it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  7.59it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.72it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.64it/s]
+[11:14:40] Model loaded. Starting inference ...
+Traceback (most recent call last):
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 194, in <module>
+    main()
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 169, in main
+    token_logprobs = compute_batch_ref_logprobs(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 80, in compute_batch_ref_logprobs
+    outputs = model(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 1164, in forward
+    outputs = self.model(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 895, in forward
+    layer_outputs = decoder_layer(
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 638, in forward
+    hidden_states = self.mlp(hidden_states)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/models/qwen2/modeling_qwen2.py", line 223, in forward
+    return self.down_proj(self.act_fn(self.gate_proj(hidden_state)) * self.up_proj(hidden_state))
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/activation.py", line 472, in forward
+    return F.silu(input, inplace=self.inplace)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/functional.py", line 2395, in silu
+    return torch._C._nn.silu(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.32 GiB. GPU 0 has a total capacity of 94.97 GiB of which 395.81 MiB is free. Process 1239974 has 24.29 GiB memory in use. Process 1240738 has 53.03 GiB memory in use. Including non-PyTorch memory, this process has 17.24 GiB memory in use. Of the allocated memory 16.49 GiB is allocated by PyTorch, and 113.38 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

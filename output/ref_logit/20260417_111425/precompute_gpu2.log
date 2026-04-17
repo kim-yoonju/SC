@@ -1,0 +1,26 @@
+/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/cuda/__init__.py:65: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[11:14:30] [GPU 2/4] 818/3272 samples  batch=16  device=cuda
+[11:14:30] Loading model from Qwen/Qwen2.5-Math-7B ...
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  6.19it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  6.44it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  6.97it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.56it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  7.18it/s]
+Traceback (most recent call last):
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 194, in <module>
+    main()
+  File "/mnt/yoonju/NRL/S2R/./code/precompute_ref_logprobs.py", line 144, in main
+    ).to(device).eval()
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/transformers/modeling_utils.py", line 3157, in to
+    return super().to(*args, **kwargs)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1381, in to
+    return self._apply(convert)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  [Previous line repeated 2 more times]
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 964, in _apply
+    param_applied = fn(param)
+  File "/home/yoonju/miniconda3/envs/s2r/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1367, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 130.00 MiB. GPU 0 has a total capacity of 94.97 GiB of which 41.75 MiB is free. Process 1239973 has 66.71 GiB memory in use. Process 1240737 has 26.02 GiB memory in use. Including non-PyTorch memory, this process has 2.18 GiB memory in use. Of the allocated memory 1.63 GiB is allocated by PyTorch, and 12.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
