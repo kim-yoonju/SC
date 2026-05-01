@@ -1,0 +1,537 @@
+{
+  "model": "deepseek-chat",
+  "timestamp": "20260428_174807_batch_prm_rubric_v6_6",
+  "rubric_file": "/mnt/yoonju/SC/prompts/batch_prm_rubric_v6.6.json",
+  "n_rubrics": 9,
+  "rubrics": [
+    "Algebraic Manipulation",
+    "Abstract and Linear Algebra Operations",
+    "Calculus Computation",
+    "Function and Limit Analysis",
+    "Geometric Reasoning",
+    "Counting and Probability",
+    "Number Theoretic Reasoning",
+    "Logical and Discrete Reasoning",
+    "Differential Equations"
+  ],
+  "inference_elapsed_s": 34.5,
+  "metrics": {
+    "Algebraic Manipulation": {
+      "total": 50,
+      "accuracy": 0.7,
+      "precision": 0.6389,
+      "recall": 0.92,
+      "f1": 0.7541,
+      "tp": 23,
+      "fp": 13,
+      "tn": 12,
+      "fn": 2,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Abstract and Linear Algebra Operations": {
+      "total": 50,
+      "accuracy": 0.56,
+      "precision": 0.5319,
+      "recall": 1.0,
+      "f1": 0.6944,
+      "tp": 25,
+      "fp": 22,
+      "tn": 3,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Calculus Computation": {
+      "total": 50,
+      "accuracy": 0.56,
+      "precision": 0.5319,
+      "recall": 1.0,
+      "f1": 0.6944,
+      "tp": 25,
+      "fp": 22,
+      "tn": 3,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Function and Limit Analysis": {
+      "total": 50,
+      "accuracy": 0.54,
+      "precision": 0.5217,
+      "recall": 0.96,
+      "f1": 0.6761,
+      "tp": 24,
+      "fp": 22,
+      "tn": 3,
+      "fn": 1,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Geometric Reasoning": {
+      "total": 50,
+      "accuracy": 0.58,
+      "precision": 0.5435,
+      "recall": 1.0,
+      "f1": 0.7042,
+      "tp": 25,
+      "fp": 21,
+      "tn": 4,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Counting and Probability": {
+      "total": 50,
+      "accuracy": 0.62,
+      "precision": 0.5682,
+      "recall": 1.0,
+      "f1": 0.7246,
+      "tp": 25,
+      "fp": 19,
+      "tn": 6,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Number Theoretic Reasoning": {
+      "total": 50,
+      "accuracy": 0.56,
+      "precision": 0.5319,
+      "recall": 1.0,
+      "f1": 0.6944,
+      "tp": 25,
+      "fp": 22,
+      "tn": 3,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Logical and Discrete Reasoning": {
+      "total": 50,
+      "accuracy": 0.56,
+      "precision": 0.5319,
+      "recall": 1.0,
+      "f1": 0.6944,
+      "tp": 25,
+      "fp": 22,
+      "tn": 3,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    },
+    "Differential Equations": {
+      "total": 50,
+      "accuracy": 0.56,
+      "precision": 0.5319,
+      "recall": 1.0,
+      "f1": 0.6944,
+      "tp": 25,
+      "fp": 22,
+      "tn": 3,
+      "fn": 0,
+      "unique_find": 0,
+      "unique_find_rate": 0.0,
+      "unique_find_samples": []
+    }
+  },
+  "correlation": {
+    "agreement_matrix": {
+      "Algebraic Manipulation": {
+        "Algebraic Manipulation": 1.0,
+        "Abstract and Linear Algebra Operations": 0.78,
+        "Calculus Computation": 0.78,
+        "Function and Limit Analysis": 0.8,
+        "Geometric Reasoning": 0.76,
+        "Counting and Probability": 0.72,
+        "Number Theoretic Reasoning": 0.78,
+        "Logical and Discrete Reasoning": 0.78,
+        "Differential Equations": 0.78
+      },
+      "Abstract and Linear Algebra Operations": {
+        "Algebraic Manipulation": 0.78,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.98,
+        "Geometric Reasoning": 0.98,
+        "Counting and Probability": 0.94,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Calculus Computation": {
+        "Algebraic Manipulation": 0.78,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.98,
+        "Geometric Reasoning": 0.98,
+        "Counting and Probability": 0.94,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Function and Limit Analysis": {
+        "Algebraic Manipulation": 0.8,
+        "Abstract and Linear Algebra Operations": 0.98,
+        "Calculus Computation": 0.98,
+        "Function and Limit Analysis": 1.0,
+        "Geometric Reasoning": 0.96,
+        "Counting and Probability": 0.92,
+        "Number Theoretic Reasoning": 0.98,
+        "Logical and Discrete Reasoning": 0.98,
+        "Differential Equations": 0.98
+      },
+      "Geometric Reasoning": {
+        "Algebraic Manipulation": 0.76,
+        "Abstract and Linear Algebra Operations": 0.98,
+        "Calculus Computation": 0.98,
+        "Function and Limit Analysis": 0.96,
+        "Geometric Reasoning": 1.0,
+        "Counting and Probability": 0.92,
+        "Number Theoretic Reasoning": 0.98,
+        "Logical and Discrete Reasoning": 0.98,
+        "Differential Equations": 0.98
+      },
+      "Counting and Probability": {
+        "Algebraic Manipulation": 0.72,
+        "Abstract and Linear Algebra Operations": 0.94,
+        "Calculus Computation": 0.94,
+        "Function and Limit Analysis": 0.92,
+        "Geometric Reasoning": 0.92,
+        "Counting and Probability": 1.0,
+        "Number Theoretic Reasoning": 0.94,
+        "Logical and Discrete Reasoning": 0.94,
+        "Differential Equations": 0.94
+      },
+      "Number Theoretic Reasoning": {
+        "Algebraic Manipulation": 0.78,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.98,
+        "Geometric Reasoning": 0.98,
+        "Counting and Probability": 0.94,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Logical and Discrete Reasoning": {
+        "Algebraic Manipulation": 0.78,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.98,
+        "Geometric Reasoning": 0.98,
+        "Counting and Probability": 0.94,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Differential Equations": {
+        "Algebraic Manipulation": 0.78,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.98,
+        "Geometric Reasoning": 0.98,
+        "Counting and Probability": 0.94,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      }
+    },
+    "phi_matrix": {
+      "Algebraic Manipulation": {
+        "Algebraic Manipulation": 1.0,
+        "Abstract and Linear Algebra Operations": 0.4051,
+        "Calculus Computation": 0.4051,
+        "Function and Limit Analysis": 0.4729,
+        "Geometric Reasoning": 0.3087,
+        "Counting and Probability": 0.1809,
+        "Number Theoretic Reasoning": 0.4051,
+        "Logical and Discrete Reasoning": 0.4051,
+        "Differential Equations": 0.4051
+      },
+      "Abstract and Linear Algebra Operations": {
+        "Algebraic Manipulation": 0.4051,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.8568,
+        "Geometric Reasoning": 0.8568,
+        "Counting and Probability": 0.6842,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Calculus Computation": {
+        "Algebraic Manipulation": 0.4051,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.8568,
+        "Geometric Reasoning": 0.8568,
+        "Counting and Probability": 0.6842,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Function and Limit Analysis": {
+        "Algebraic Manipulation": 0.4729,
+        "Abstract and Linear Algebra Operations": 0.8568,
+        "Calculus Computation": 0.8568,
+        "Function and Limit Analysis": 1.0,
+        "Geometric Reasoning": 0.7283,
+        "Counting and Probability": 0.5717,
+        "Number Theoretic Reasoning": 0.8568,
+        "Logical and Discrete Reasoning": 0.8568,
+        "Differential Equations": 0.8568
+      },
+      "Geometric Reasoning": {
+        "Algebraic Manipulation": 0.3087,
+        "Abstract and Linear Algebra Operations": 0.8568,
+        "Calculus Computation": 0.8568,
+        "Function and Limit Analysis": 0.7283,
+        "Geometric Reasoning": 1.0,
+        "Counting and Probability": 0.5717,
+        "Number Theoretic Reasoning": 0.8568,
+        "Logical and Discrete Reasoning": 0.8568,
+        "Differential Equations": 0.8568
+      },
+      "Counting and Probability": {
+        "Algebraic Manipulation": 0.1809,
+        "Abstract and Linear Algebra Operations": 0.6842,
+        "Calculus Computation": 0.6842,
+        "Function and Limit Analysis": 0.5717,
+        "Geometric Reasoning": 0.5717,
+        "Counting and Probability": 1.0,
+        "Number Theoretic Reasoning": 0.6842,
+        "Logical and Discrete Reasoning": 0.6842,
+        "Differential Equations": 0.6842
+      },
+      "Number Theoretic Reasoning": {
+        "Algebraic Manipulation": 0.4051,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.8568,
+        "Geometric Reasoning": 0.8568,
+        "Counting and Probability": 0.6842,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Logical and Discrete Reasoning": {
+        "Algebraic Manipulation": 0.4051,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.8568,
+        "Geometric Reasoning": 0.8568,
+        "Counting and Probability": 0.6842,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      },
+      "Differential Equations": {
+        "Algebraic Manipulation": 0.4051,
+        "Abstract and Linear Algebra Operations": 1.0,
+        "Calculus Computation": 1.0,
+        "Function and Limit Analysis": 0.8568,
+        "Geometric Reasoning": 0.8568,
+        "Counting and Probability": 0.6842,
+        "Number Theoretic Reasoning": 1.0,
+        "Logical and Discrete Reasoning": 1.0,
+        "Differential Equations": 1.0
+      }
+    },
+    "unique_contribution": {
+      "Algebraic Manipulation": {
+        "unique_hits": 0,
+        "shared_hits": 23,
+        "miss_when_others": 2,
+        "unique_hit_rate": 0.0
+      },
+      "Abstract and Linear Algebra Operations": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Calculus Computation": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Function and Limit Analysis": {
+        "unique_hits": 0,
+        "shared_hits": 24,
+        "miss_when_others": 1,
+        "unique_hit_rate": 0.0
+      },
+      "Geometric Reasoning": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Counting and Probability": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Number Theoretic Reasoning": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Logical and Discrete Reasoning": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      },
+      "Differential Equations": {
+        "unique_hits": 0,
+        "shared_hits": 25,
+        "miss_when_others": 0,
+        "unique_hit_rate": 0.0
+      }
+    },
+    "fail_sample_coverage_dist": {
+      "7": 1,
+      "8": 1,
+      "9": 23
+    }
+  },
+  "ensemble": {
+    "hard_voting": {
+      ">=1": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=2": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=3": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=4": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=5": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=6": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=7": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      ">=8": {
+        "accuracy": 0.54,
+        "precision": 0.5217,
+        "recall": 0.96,
+        "f1": 0.6761,
+        "tp": 24,
+        "fp": 22,
+        "tn": 3,
+        "fn": 1
+      },
+      ">=9": {
+        "accuracy": 0.78,
+        "precision": 0.7188,
+        "recall": 0.92,
+        "f1": 0.807,
+        "tp": 23,
+        "fp": 9,
+        "tn": 16,
+        "fn": 2
+      }
+    },
+    "soft_voting": {
+      "thr=0.60": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      "thr=0.65": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      },
+      "thr=0.70": {
+        "accuracy": 0.56,
+        "precision": 0.5319,
+        "recall": 1.0,
+        "f1": 0.6944,
+        "tp": 25,
+        "fp": 22,
+        "tn": 3,
+        "fn": 0
+      }
+    }
+  }
+}

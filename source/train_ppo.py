@@ -73,7 +73,8 @@ from utils import (
     load_problems,
     save_trajectory,
 )
-from generate_trajectory import solve_problems_batch, solve_problems_batch_vllm
+from generate_trajectory import solve_problems_batch_vllm
+from utils import solve_problems_batch
 from record_wandb import WandbLogger
 
 # ─────────────────────────────────────────────────────────────────────────────

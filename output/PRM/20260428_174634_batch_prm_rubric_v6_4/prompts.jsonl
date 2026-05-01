@@ -1,0 +1,9 @@
+{"rubric_name": "Algebraic Manipulation", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Abstract and Linear Algebra Operations", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Calculus Computation", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Function and Limit Analysis", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Geometric Reasoning", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Counting and Probability", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Number Theoretic Reasoning", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Logical and Discrete Reasoning", "prompt_version": "batch", "system_prompt": ""}
+{"rubric_name": "Differential Equations", "prompt_version": "batch", "system_prompt": ""}

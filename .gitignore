@@ -4,3 +4,6 @@ checkpoints/
 datasets/
 wandb/
 vllm/
+checkpoints/
+configs/
+datasets/

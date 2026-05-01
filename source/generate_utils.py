@@ -14,6 +14,30 @@ from typing import List
 
 logger = logging.getLogger(__name__)
 
+_PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+
+
+def load_prompts() -> dict[str, str]:
+    """action_prompts.jsonl을 로드하고 {{rubric}} 등 변수를 치환해 반환."""
+    rubric_path = _PROMPTS_DIR / "action_prompts_rubric.jsonl"
+    rubric_lines = []
+    with open(rubric_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                entry = json.loads(line)
+                rubric_lines.append(
+                    f"{entry['id']}. {entry['name']}: [pass/fail — {entry['description']}]"
+                )
+    rubric_str = "\n".join(rubric_lines)
+
+    prompts: dict[str, str] = {}
+    with open(_PROMPTS_DIR / "action_prompts.json", encoding="utf-8") as f:
+        for entry in json.load(f):
+            prompts[entry["name"]] = entry["content"].replace("{{rubric}}", rubric_str)
+    return prompts
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # API 비용 추적
 # ─────────────────────────────────────────────────────────────────────────────
@@ -270,6 +294,20 @@ def _load_parquet_eval(p) -> list[dict]:
 
     df = pd.read_parquet(p)
     items = []
+
+    # 직접 problem/answer 컬럼이 있는 포맷 (base_multi_reasoning 계열 등)
+    if "problem" in df.columns and "answer" in df.columns:
+        for i, (_, row) in enumerate(df.iterrows()):
+            problem = str(row.get("problem", "")).strip()
+            answer  = str(row.get("answer", "")).strip()
+            if "####" in answer:
+                answer = _extract_gsm8k_answer(answer)
+            item_id = str(row.get("id", i))
+            if not problem:
+                continue
+            items.append({"id": item_id, "problem": problem, "answer": answer})
+        return items
+
     for i, (_, row) in enumerate(df.iterrows()):
         prompt = row.get("prompt")
         if hasattr(prompt, "tolist"):
