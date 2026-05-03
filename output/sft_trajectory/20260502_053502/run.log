@@ -1,0 +1,6 @@
+2026-05-02 05:35:02,478 [INFO] __main__ — prm_gpu_ids=[6]  rollout_gpus=[4]
+2026-05-02 05:35:02,480 [INFO] __main__ — 로드된 문제 수: 40
+2026-05-02 05:35:02,480 [INFO] PRM — 루브릭 로드: prm_rubric_v6.2.jsonl  (10개)
+2026-05-02 05:35:02,480 [INFO] __main__ — 데이터셋=/mnt/yoonju/SC/datasets/deepmath_16k/patcher_right_16k_sample.jsonl  sft출력=/mnt/yoonju/SC/output/sft_trajectory/20260502_053502  prm출력=/mnt/yoonju/SC/output/PRM_log/20260502_053502  num_start=25  num_data=50  PRM_BATCH_SIZE=512  n_rubrics=10  n_parallel=512
+2026-05-02 05:35:02,480 [INFO] __main__ — Generator 로딩 중: Qwen/Qwen2.5-7B-Instruct  device_map={'': 'cuda:4'}
+2026-05-02 05:35:02,480 [INFO] utils — Generator 로드 중: Qwen/Qwen2.5-7B-Instruct (4bit=False)

@@ -264,8 +264,8 @@ def _batch_run_generator(
 
         full_text = tokenizer.decode(resp[:trim], skip_special_tokens=False).strip()
 
-        # step_text / self-check 분리
-        sc_idx = full_text.find("\nSelf-check:")
+        # step_text / self-correction 분리
+        sc_idx = full_text.find("\nSelf-correction:")
         if sc_idx != -1:
             step_text       = full_text[:sc_idx].strip()
             self_check_text = full_text[sc_idx:]
@@ -312,14 +312,15 @@ def _batch_run_generator(
         )
 
         state.pending_step = {
-            "text":         step_text,
-            "full_text":    full_text,
-            "pred_action":  pred_action,
-            "source":       "gen",
-            "role":         "rethink" if state.is_rethink else "gen",
-            "is_error":     is_error,
-            "is_first_pat": state.is_rethink and not is_error,
-            "summary":      (
+            "text":             step_text,
+            "full_text":        full_text,
+            "pred_action":      pred_action,
+            "next_pred_action": _parse_next_pred_action(self_check_text),
+            "source":           "gen",
+            "role":             "rethink" if state.is_rethink else "gen",
+            "is_error":         is_error,
+            "is_first_pat":     state.is_rethink and not is_error,
+            "summary":          (
                 {"step_analysis": f"{error_reason} — skipped PRM_log"}
                 if is_error else None
             ),
@@ -354,7 +355,7 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
         try:
             set_call_role("patcher")
             text = _call_llm(PATCHER, messages, max_completion_tokens=PATCHER_MAX_NEW_TOKENS)
-            text = text.strip()
+            text = (text or "").strip()
         except Exception as e:
             logger.warning(f"[Patcher API] id={problem_id} 호출 실패: {e}")
             text = ""
@@ -369,14 +370,15 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
         )
 
         state.pending_step = {
-            "text":         text,
-            "full_text":    text,
-            "pred_action":  pred_action,
-            "source":       "patcher",
-            "role":         "patcher",
-            "is_error":     is_error,
-            "is_first_pat": not is_error,
-            "summary":      (
+            "text":             text,
+            "full_text":        text,
+            "pred_action":      pred_action,
+            "next_pred_action": _parse_next_pred_action(text),
+            "source":           "patcher",
+            "role":             "patcher",
+            "is_error":         is_error,
+            "is_first_pat":     not is_error,
+            "summary":          (
                 {"step_analysis": "patcher API empty response — skipped PRM_log"}
                 if is_error else None
             ),
@@ -416,7 +418,7 @@ def _run_generator_api(states: list[ProblemState]) -> None:
         try:
             set_call_role("generator")
             text = _call_llm(_GENERATOR_API, messages, max_completion_tokens=TRAJ_MAX_NEW_TOKENS)
-            text = text.strip()
+            text = (text or "").strip()
         except Exception as e:
             logger.warning(f"[Generator API] id={problem_id} 호출 실패: {e}")
             text = ""
@@ -425,14 +427,15 @@ def _run_generator_api(states: list[ProblemState]) -> None:
         pred_action = TOKEN_END if has_boxed(text) else TOKEN_SOLVE
 
         state.pending_step = {
-            "text":         text,
-            "full_text":    text,
-            "pred_action":  pred_action,
-            "source":       "gen",
-            "role":         "rethink" if state.is_rethink else "gen",
-            "is_error":     is_error,
-            "is_first_pat": state.is_rethink and not is_error,
-            "summary":      (
+            "text":             text,
+            "full_text":        text,
+            "pred_action":      pred_action,
+            "next_pred_action": _parse_next_pred_action(text),
+            "source":           "gen",
+            "role":             "rethink" if state.is_rethink else "gen",
+            "is_error":         is_error,
+            "is_first_pat":     state.is_rethink and not is_error,
+            "summary":          (
                 {"step_analysis": "generator API empty response"}
                 if is_error else None
             ),
@@ -924,7 +927,7 @@ def _parse_generator_self_check(text: str, rubric_names: list[str]) -> dict[str,
 
 def _parse_generator_deep_check(text: str, rubric_names: list[str]) -> dict[str, dict]:
     """Deep critic 섹션 파싱 (Deep critic: / deep_critique: 모두 지원).
-    반환: {rubric_name: {"G_verdict", "G_reasoning"}}
+    반환: {rubric_name: {"verdict", "critique"}}
 
     지원 포맷:
       - [rubric]: [reasoning] Verdict: correct/incorrect
@@ -986,15 +989,65 @@ def _parse_generator_deep_check(text: str, rubric_names: list[str]) -> dict[str,
         else:
             reasoning = block or None
 
-        results[rubric] = {"G_verdict": verdict, "G_reasoning": reasoning}
+        results[rubric] = {"verdict": verdict, "critique": reasoning}
 
     return results
+
+
+def _parse_next_pred_action(text: str) -> str | None:
+    """Self-correction 블록에서 'Next action: solve/rethink/end' 를 추출."""
+    import re as _re
+    m = _re.search(r"Next\s+action\s*:\s*(solve|rethink|end)\b", text, _re.IGNORECASE)
+    if m:
+        return m.group(1).lower()
+    return None
+
+
+def _batch_run_step_summary_only(
+    model, tokenizer, input_device,
+    states: list[ProblemState],
+) -> None:
+    """PRM 평가와 병렬로 실행 가능한 step summary만 처리. prm_results_map 불필요."""
+    prompts: list[str] = []
+    to_summarize: list = []
+
+    for state in states:
+        step = state.pending_step
+        if step.get("is_error"):
+            step["does_summary"] = None
+            continue
+        step_text = (step.get("text") or "")[:1200]
+        prompts.append(build_chat_prompt(tokenizer, _SUMMARIZE_SYSTEM, f"Step:\n{step_text}"))
+        to_summarize.append(state)
+
+    if not prompts:
+        return
+
+    orig_side = tokenizer.padding_side
+    tokenizer.padding_side = "left"
+    enc = tokenizer(prompts, return_tensors="pt", padding=True).to(input_device)
+    tokenizer.padding_side = orig_side
+    input_len = enc["input_ids"].shape[1]
+
+    with torch.no_grad():
+        out = model.generate(
+            **enc,
+            max_new_tokens=_SUMMARIZE_MAX_TOKENS,
+            do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+
+    for j, state in enumerate(to_summarize):
+        raw = tokenizer.decode(out[j, input_len:], skip_special_tokens=True).strip()
+        state.pending_step["does_summary"] = re.split(r"\n", raw)[0].strip() or None
+
+
 def _batch_run_all_summaries(
     model, tokenizer, input_device,
     states: list[ProblemState],
     prm_results_map: dict,
 ) -> None:
-    """step summary + critique summary + wrong step summary를 single model.generate()로 처리."""
+    """critique summary + wrong step summary를 처리. step summary는 PRM과 병렬로 미리 실행됨."""
     from collections import defaultdict
 
     prompts: list[str] = []
@@ -1005,10 +1058,13 @@ def _batch_run_all_summaries(
         result = prm_results_map.get(id(state), {})
 
         if not step.get("is_error"):
-            # ① step summary
             step_text = (step.get("text") or "")[:1200]
-            prompts.append(build_chat_prompt(tokenizer, _SUMMARIZE_SYSTEM, f"Step:\n{step_text}"))
-            tasks.append(("step_summary", state, None))
+
+            # ① step summary — PRM과 병렬로 _batch_run_step_summary_only에서 이미 처리됨
+            # does_summary가 없는 경우에만 fallback으로 실행
+            if "does_summary" not in step:
+                prompts.append(build_chat_prompt(tokenizer, _SUMMARIZE_SYSTEM, f"Step:\n{step_text}"))
+                tasks.append(("step_summary", state, None))
 
             # ② critique summary (stage2 평가된 루브릭만)
             votes   = result.get("votes", {})
@@ -1063,8 +1119,8 @@ def _batch_run_all_summaries(
             result = prm_results_map.get(id(state), {})
             critique_by_state[id(state)].append({
                 "rubric":       extra,
-                "PRM_verdict":  result.get("votes", {}).get(extra, "pass"),
-                "PRM_critique": raw or None,
+                "verdict":  result.get("votes", {}).get(extra, "pass"),
+                "critique": raw or None,
             })
 
         elif task_type == "wrong_summary":
@@ -1076,11 +1132,11 @@ def _batch_run_all_summaries(
             votes  = result.get("votes", {})
             filled = {e["rubric"]: e for e in critique_by_state.get(id(state), [])}
             state.pending_step["critique_summary"] = [
-                filled.get(rn, {"rubric": rn, "PRM_verdict": None, "PRM_critique": None})
+                filled.get(rn, {"rubric": rn, "verdict": None, "critique": None})
                 for rn in votes
             ] or None
             state.pending_step["gen_fast_critique"] = {
-                rn: {"G_verdict": None, "G_critique": None} for rn in votes
+                rn: {"verdict": None, "critique": None} for rn in votes
             } or None
 
 
@@ -1118,8 +1174,8 @@ def _batch_summarize_critique(
             g_verdict  = g_check.get("verdict")
             g_critique = g_check.get("critique")
             if not reasoning:
-                return ({"rubric": rn, "PRM_verdict": prm_verdict, "PRM_critique": None},
-                        {"G_verdict": g_verdict, "G_critique": g_critique})
+                return ({"rubric": rn, "verdict": prm_verdict, "critique": None},
+                        {"verdict": g_verdict, "critique": g_critique})
             try:
                 msgs = [
                     {"role": "system", "content": _CRITIQUE_SUMMARY_SYSTEM},
@@ -1131,11 +1187,11 @@ def _batch_summarize_critique(
                 ]
                 set_call_role("critique_summary")
                 raw = _call_llm(_SUMMARY_API, msgs, max_completion_tokens=_CRITIQUE_SUMMARY_MAX_TOKENS) or ""
-                return ({"rubric": rn, "PRM_verdict": prm_verdict, "PRM_critique": raw.strip() or None},
-                        {"G_verdict": g_verdict, "G_critique": g_critique})
+                return ({"rubric": rn, "verdict": prm_verdict, "critique": raw.strip() or None},
+                        {"verdict": g_verdict, "critique": g_critique})
             except Exception:
-                return ({"rubric": rn, "PRM_verdict": prm_verdict, "PRM_critique": None},
-                        {"G_verdict": g_verdict, "G_critique": g_critique})
+                return ({"rubric": rn, "verdict": prm_verdict, "critique": None},
+                        {"verdict": g_verdict, "critique": g_critique})
 
         # 모든 (state, rubric) 쌍을 한 번에 병렬 호출
         # stage1 전용 루브릭(api_batch_stage1)은 stage2 평가 없음 → critique summary 생략
@@ -1145,7 +1201,8 @@ def _batch_summarize_critique(
             votes     = result.get("votes", {})
             details   = result.get("details", {})
             step_text = (state.pending_step.get("text") or "")[:600]
-            g_checks  = _parse_generator_self_check(step_text, list(votes.keys()))
+            full_text = state.pending_step.get("full_text") or state.pending_step.get("text") or ""
+            g_checks  = _parse_generator_self_check(full_text, list(votes.keys()))
             for rn in votes:
                 if (details.get(rn) or {}).get("method") == "api_batch_stage1":
                     continue
@@ -1161,8 +1218,8 @@ def _batch_summarize_critique(
 
         # 결과를 state별로 재조립 (stage2 미평가 루브릭은 null 항목으로 채움)
         from collections import defaultdict
-        by_prm:  dict = defaultdict(list)   # {sid: [{rubric, PRM_verdict, PRM_critique}]}
-        by_gen:  dict = defaultdict(dict)   # {sid: {rn: {G_verdict, G_critique}}}
+        by_prm:  dict = defaultdict(list)   # {sid: [{rubric, verdict, critique}]}
+        by_gen:  dict = defaultdict(dict)   # {sid: {rn: {verdict, critique}}}
         for (state, rn, _), (prm_entry, gen_entry) in zip(all_tasks, results):
             by_prm[id(state)].append(prm_entry)
             by_gen[id(state)][rn] = gen_entry
@@ -1172,11 +1229,11 @@ def _batch_summarize_critique(
             filled_prm = {e["rubric"]: e for e in by_prm.get(id(state), [])}
             filled_gen = by_gen.get(id(state), {})
             state.pending_step["critique_summary"] = [
-                filled_prm.get(rn, {"rubric": rn, "PRM_verdict": None, "PRM_critique": None})
+                filled_prm.get(rn, {"rubric": rn, "verdict": None, "critique": None})
                 for rn in votes
             ] or None
             state.pending_step["gen_fast_critique"] = {
-                rn: filled_gen.get(rn, {"G_verdict": None, "G_critique": None})
+                rn: filled_gen.get(rn, {"verdict": None, "critique": None})
                 for rn in votes
             } or None
         return
@@ -1189,7 +1246,8 @@ def _batch_summarize_critique(
         votes      = result.get("votes", {})
         details    = result.get("details", {})
         step_text  = (state.pending_step.get("text") or "")[:600]
-        g_checks = _parse_generator_self_check(step_text, list(votes.keys()))
+        full_text  = state.pending_step.get("full_text") or state.pending_step.get("text") or ""
+        g_checks   = _parse_generator_self_check(full_text, list(votes.keys()))
         for rn in votes:
             if (details.get(rn) or {}).get("method") == "api_batch_stage1":
                 continue
@@ -1226,10 +1284,10 @@ def _batch_summarize_critique(
         raw = tokenizer.decode(out[j, input_len:], skip_special_tokens=True).strip()
         results_by_state[id(state)].append({
             "rubric":       rn,
-            "PRM_verdict":  prm_verdict,
-            "PRM_critique": raw or None,
-            "_G_verdict":   g_check.get("verdict"),
-            "_G_critique":  g_check.get("critique"),
+            "verdict":  prm_verdict,
+            "critique": raw or None,
+            "_verdict":   g_check.get("verdict"),
+            "_critique":  g_check.get("critique"),
         })
 
     state_map = {id(s): s for s in to_summarize}
@@ -1238,14 +1296,14 @@ def _batch_summarize_critique(
         votes  = result.get("votes", {})
         filled = {e["rubric"]: e for e in results_by_state.get(id(state), [])}
         state.pending_step["critique_summary"] = [
-            {k: v for k, v in filled.get(rn, {"rubric": rn, "PRM_verdict": None,
-                                               "PRM_critique": None}).items()
+            {k: v for k, v in filled.get(rn, {"rubric": rn, "verdict": None,
+                                               "critique": None}).items()
              if not k.startswith("_")}
             for rn in votes
         ] or None
         state.pending_step["gen_fast_critique"] = {
-            rn: {"G_verdict": (filled.get(rn) or {}).get("_G_verdict"),
-                 "G_critique": (filled.get(rn) or {}).get("_G_critique")}
+            rn: {"verdict": (filled.get(rn) or {}).get("_verdict"),
+                 "critique": (filled.get(rn) or {}).get("_critique")}
             for rn in votes
         } or None
 
@@ -1263,11 +1321,11 @@ def _batch_generate_prm_critique_summary(
         step = state.pending_step
         critique_list = step.get("critique_summary") or []
         fail_entries  = [e for e in critique_list
-                         if e.get("PRM_verdict") == "fail" and e.get("PRM_critique")]
+                         if e.get("verdict") == "fail" and e.get("critique")]
         if not fail_entries:
             step["prm_critique_summary"] = None
             continue
-        combined  = "\n\n".join(f"[{e['rubric']}]\n{e['PRM_critique']}" for e in fail_entries)
+        combined  = "\n\n".join(f"[{e['rubric']}]\n{e['critique']}" for e in fail_entries)
         step_text = (step.get("text") or "")[:400]
         user_msg  = f"Step:\n{step_text}\n\nRubric analyses:\n{combined}"
         pairs.append((state, build_chat_prompt(tokenizer, _CRITIQUE_PARA_SUMMARY_SYSTEM, user_msg)))
@@ -1299,9 +1357,11 @@ _GEN_DEEP_CRITIQUE_SYSTEM = (
 )
 
 _CRITIQUE_PARA_SUMMARY_SYSTEM = (
-    "Given rubric-specific error analyses of a math solution step, "
-    "write one concise paragraph summarizing what went wrong mathematically. "
-    "Be specific: reference actual expressions or values from the step."
+    "Given rubric-specific error analyses of a math solution step, write:\n"
+    "1. One concise paragraph summarizing what went wrong mathematically. "
+    "Be specific: reference actual expressions or values from the step.\n"
+    "2. On a new line, list the rubrics you determined were violated:\n"
+    "   Failed rubrics: <comma-separated rubric names, or 'None'>"
 )
 
 
@@ -1309,11 +1369,11 @@ def _extract_gen_fast_critique(states: list[ProblemState], rubric_names: list[st
     """inference의 fast_critique + deep_critique 섹션을 파싱해 두 필드 모두 설정."""
     for state in states:
         step = state.pending_step
-        text = (step.get("text") or step.get("full_text") or "")
+        text = (step.get("full_text") or step.get("text") or "")
         fast = _parse_generator_self_check(text, rubric_names)
         step["gen_fast_critique"] = {
-            rn: {"G_verdict": fast.get(rn, {}).get("verdict"),
-                 "G_critique": fast.get(rn, {}).get("critique")}
+            rn: {"verdict": fast.get(rn, {}).get("verdict"),
+                 "critique": fast.get(rn, {}).get("critique")}
             for rn in rubric_names
         } or None
         deep = _parse_generator_deep_check(text, rubric_names)
@@ -1334,7 +1394,7 @@ def _batch_generate_gen_deep_critique(
     for state in states:
         fc = state.pending_step.get("gen_fast_critique") or {}
         for rn, v in fc.items():
-            if not (isinstance(v, dict) and v.get("G_verdict") == "fail"):
+            if not (isinstance(v, dict) and v.get("verdict") == "fail"):
                 continue
             criterion  = rubric_map.get(rn, rn)
             step_text  = (state.pending_step.get("text") or "")[:600]
@@ -1362,7 +1422,7 @@ def _batch_generate_gen_deep_critique(
         raw = tokenizer.decode(out[j, input_len:], skip_special_tokens=True).strip()
         vm  = re.search(r"verdict\s*:\s*(correct|incorrect)", raw, re.I)
         verdict = ("pass" if vm.group(1).lower() == "correct" else "fail") if vm else None
-        state.pending_step["gen_deep_critique"][rn] = {"G_verdict": verdict, "G_reasoning": raw}
+        state.pending_step["gen_deep_critique"][rn] = {"verdict": verdict, "critique": raw}
 
 
 def _batch_generate_gen_critique_summary(
@@ -1373,11 +1433,11 @@ def _batch_generate_gen_critique_summary(
     for state in states:
         step    = state.pending_step
         deep    = step.get("gen_deep_critique") or {}
-        entries = [(rn, v) for rn, v in deep.items() if v.get("G_reasoning")]
+        entries = [(rn, v) for rn, v in deep.items() if v.get("critique")]
         if not entries:
             step["gen_critique_summary"] = None
             continue
-        combined  = "\n\n".join(f"[{rn}]\n{v['G_reasoning']}" for rn, v in entries)
+        combined  = "\n\n".join(f"[{rn}]\n{v['critique']}" for rn, v in entries)
         step_text = (step.get("text") or "")[:400]
         user_msg  = f"Step:\n{step_text}\n\nAnalyses:\n{combined}"
         pairs.append((state, build_chat_prompt(tokenizer, _CRITIQUE_PARA_SUMMARY_SYSTEM, user_msg)))
@@ -1390,7 +1450,7 @@ def _batch_generate_gen_critique_summary(
     tokenizer.padding_side = orig_side
     input_len = enc["input_ids"].shape[1]
     with torch.no_grad():
-        out = model.generate(**enc, max_new_tokens=200, do_sample=False,
+        out = model.generate(**enc, max_new_tokens=256, do_sample=False,
                              pad_token_id=tokenizer.eos_token_id)
     for j, (state, _) in enumerate(pairs):
         raw = tokenizer.decode(out[j, input_len:], skip_special_tokens=True).strip()
@@ -1407,11 +1467,11 @@ def _api_generate_gen_critique_summary(states: list[ProblemState]) -> None:
     def _one(state):
         step    = state.pending_step
         deep    = step.get("gen_deep_critique") or {}
-        entries = [(rn, v) for rn, v in deep.items() if v.get("G_reasoning")]
+        entries = [(rn, v) for rn, v in deep.items() if v.get("critique")]
         if not entries:
             step["gen_critique_summary"] = None
             return
-        combined  = "\n\n".join(f"[{rn}]\n{v['G_reasoning']}" for rn, v in entries)
+        combined  = "\n\n".join(f"[{rn}]\n{v['critique']}" for rn, v in entries)
         step_text = (step.get("text") or "")[:400]
         user_msg  = f"Step:\n{step_text}\n\nAnalyses:\n{combined}"
         try:
@@ -1420,7 +1480,7 @@ def _api_generate_gen_critique_summary(states: list[ProblemState]) -> None:
                 {"role": "user",   "content": user_msg},
             ]
             set_call_role("gen_critique_summary")
-            raw = _call_llm(_SUMMARY_API, msgs, max_completion_tokens=200) or ""
+            raw = _call_llm(_SUMMARY_API, msgs, max_completion_tokens=256) or ""
             step["gen_critique_summary"] = raw.strip() or None
         except Exception:
             step["gen_critique_summary"] = None
@@ -1449,6 +1509,41 @@ def _compute_labels(steps: list[dict], first_pat_pos: int = 0) -> list[str]:
     return labels
 
 
+def _parse_pred_fail_rubrics(gen_critique_summary: str | None) -> list[str]:
+    """gen_critique_summary에서 모델이 직접 출력한 'Failed rubrics:' 줄을 파싱."""
+    if not gen_critique_summary:
+        return []
+    m = re.search(r"Failed rubrics\s*:\s*(.+)", gen_critique_summary, re.I)
+    if not m:
+        return []
+    raw = m.group(1).strip()
+    if raw.lower() in ("none", "none.", "n/a"):
+        return []
+    return [r.strip().rstrip(".") for r in raw.split(",") if r.strip()]
+
+
+def _compute_step_action(s: dict) -> tuple[list[str], str]:
+    """prm_deep_critique 기반으로 fail_rubrics와 next_gold_action을 계산."""
+    summ = s.get("summary") or {}
+    deep = summ.get("prm_deep_critique") if isinstance(summ, dict) else None
+    if deep is None:
+        deep = s.get("critique_summary") or []
+
+    fail_rubrics = [
+        e["rubric"] for e in (deep or [])
+        if e.get("verdict") == "fail"
+    ]
+
+    if fail_rubrics:
+        action = TOKEN_CORRECT
+    elif has_boxed(s.get("full_text") or s.get("text", "")):
+        action = TOKEN_END
+    else:
+        action = TOKEN_SOLVE
+
+    return fail_rubrics, action
+
+
 def _build_traj(
     problem_id, problem, gold_answer,
     steps: list[dict],
@@ -1474,13 +1569,12 @@ def _build_traj(
         step_src = s.get("source", "gen")
         if step_src == "patcher":
             state = "pat_solve"
-            next_action = TOKEN_END if is_last else TOKEN_SOLVE
-        elif s["is_error"]:
-            state, next_action = "gen_solve", TOKEN_CORRECT
         elif s["is_first_pat"]:
-            state, next_action = "gen_rethink", TOKEN_END if is_last else TOKEN_SOLVE
+            state = "gen_rethink"
         else:
-            state, next_action = "gen_solve", TOKEN_END if is_last else TOKEN_SOLVE
+            state = "gen_solve"
+
+        fail_rubrics, next_action = _compute_step_action(s)
 
         summ = s.get("summary") or {}
         if isinstance(summ, dict):
@@ -1495,14 +1589,20 @@ def _build_traj(
             does = prm_fast_critique = prm_deep_critique = prm_critique_summary = None
             gen_fast_critique = gen_deep_critique = gen_critique_summary = None
 
+        pred_fail_rubrics = _parse_pred_fail_rubrics(gen_critique_summary)
+
         step_dicts.append({
             "step_idx":             i,
             "step":                 label,
-            "inference":            s.get("full_text") or s["text"],
+            "text":                 s.get("full_text") or s["text"],
+            "inference":            s["text"],
             "source":               s["source"],
             "is_error":             s["is_error"],
             "state":                state,
+            "gold_fail_rubrics":    fail_rubrics,
+            "pred_fail_rubrics":    pred_fail_rubrics,
             "next_gold_action":     next_action,
+            "next_pred_action":     s.get("next_pred_action"),
             "does":                 does,
             "prm_fast_critique":    prm_fast_critique,
             "prm_deep_critique":    prm_deep_critique,
@@ -1694,9 +1794,9 @@ def _process_prm_result(
             return
 
         _critique_by_rubric = {
-            entry["rubric"]: entry.get("PRM_critique")
+            entry["rubric"]: entry.get("critique")
             for entry in (step.get("critique_summary") or [])
-            if entry.get("PRM_critique")
+            if entry.get("critique")
         }
         _rubric_details = {
             rn: _critique_by_rubric.get(rn) or ""
@@ -1937,7 +2037,8 @@ def generate_batch(
             if fut_pat: fut_pat.result()
             fut_gen.result()
 
-        # ── PRM 배치 평가 (tool_call hallucination 스텝은 제외) ────────────────
+        # ── PRM 배치 평가 + step_summary GPU 병렬 실행 ──────────────────────────
+        # PRM은 API 호출(GPU 유휴), step_summary는 GPU 사용 → 동시 실행 가능
         prm_states, skip_states = [], []
         for state in active:
             if state.pending_step.get("is_error"):
@@ -1956,9 +2057,18 @@ def generate_batch(
                 f"n_rubrics={len(rubrics)}  skipped(tool_call)={len(skip_states)}"
             )
             prm_stats["total_steps"] += len(prm_states)
-            prm_results_map.update(
-                _run_prm_batch(prm_model, prm_states, [rubrics] * len(prm_states), prm_stats=prm_stats)
-            )
+            with ThreadPoolExecutor(max_workers=2) as ex:
+                fut_prm = ex.submit(
+                    _run_prm_batch, prm_model, prm_states, [rubrics] * len(prm_states),
+                    prm_stats=prm_stats,
+                )
+                fut_sum = ex.submit(
+                    _parallel_gen, _batch_run_step_summary_only, generators, active,
+                )
+                prm_results_map.update(fut_prm.result())
+                fut_sum.result()
+        else:
+            _parallel_gen(_batch_run_step_summary_only, generators, active)
 
         for state in skip_states:
             state_step_rubrics[id(state)] = rubrics
@@ -1974,7 +2084,7 @@ def generate_batch(
                 "details":     {},
             }
 
-        # ── 통합 요약: step summary + critique + wrong step (generator 1회) ──
+        # ── critique + wrong step summary (step summary는 PRM과 병렬로 완료됨) ──
         logger.info(f"[AllSummaries] n={len(active)}")
         _parallel_gen(
             lambda m, t, d, sts: _batch_run_all_summaries(m, t, d, sts, prm_results_map),

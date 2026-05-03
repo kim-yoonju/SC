@@ -1,0 +1,1267 @@
+2026-05-03 09:49:13,690 [INFO] __main__ — prm_gpu_ids=[6]  rollout_gpus=[4]
+2026-05-03 09:49:13,748 [INFO] __main__ — 로드된 문제 수: 75
+2026-05-03 09:49:13,748 [INFO] PRM — 루브릭 로드: prm_rubric_v6.2.jsonl  (10개)
+2026-05-03 09:49:13,748 [INFO] __main__ — 데이터셋=/mnt/yoonju/SC/datasets/deepmath_16k/patcher_right_16k.jsonl  sft출력=/mnt/yoonju/SC/output/sft_trajectory/20260503_094913  prm출력=/mnt/yoonju/SC/output/PRM_log/20260503_094913  num_start=50  num_data=75  PRM_BATCH_SIZE=512  n_rubrics=10  n_parallel=512
+2026-05-03 09:49:13,748 [INFO] __main__ — Generator 로딩 중: Qwen/Qwen2.5-7B-Instruct  device_map={'': 'cuda:4'}
+2026-05-03 09:49:13,748 [INFO] utils — Generator 로드 중: Qwen/Qwen2.5-7B-Instruct (4bit=False)
+2026-05-03 09:49:26,745 [INFO] __main__ — Generator 로드 완료 (device=cuda:4)
+2026-05-03 09:49:26,745 [INFO] __main__ — Generator 1개 로드 완료
+2026-05-03 09:49:26,746 [INFO] PRM — 배치 루브릭 로드: batch_prm_rubric_v6.9.json  (11개)
+2026-05-03 09:49:26,746 [INFO] API_PRM_Batch — 초기화: deepseek-chat  루브릭=11개
+2026-05-03 09:49:26,746 [INFO] API_PRM — 초기화: deepseek-chat
+2026-05-03 09:49:26,746 [INFO] PRM — API PRM 2-Stage 초기화: deepseek-chat | stage1=fast(11개) / stage2=개별(10개 루브릭)
+2026-05-03 09:49:26,746 [INFO] __main__ — PRM 2-Stage 모드: deepseek-chat  stage1(fast)=/mnt/yoonju/SC/prompts/batch_prm_rubric_v6.9.json  stage2(rubric)=/mnt/yoonju/SC/prompts/prm_rubric_v6.2.jsonl
+2026-05-03 09:49:26,747 [INFO] __main__ — [Generator batch] n=75  [Patcher API] n=0
+2026-05-03 09:52:28,732 [INFO] __main__ — [Generator] id=585 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,733 [INFO] __main__ — [Generator] id=135 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,735 [INFO] __main__ — [Generator] id=70 step=1 rethink=False pred_action=<|rethink|> correct=0 incorrect=18 na=0
+2026-05-03 09:52:28,736 [INFO] __main__ — [Generator] id=437 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,737 [INFO] __main__ — [Generator] id=35 step=1 rethink=False pred_action=<|rethink|> correct=0 incorrect=9 na=0
+2026-05-03 09:52:28,737 [INFO] __main__ — [Generator] id=2037 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=8
+2026-05-03 09:52:28,738 [INFO] __main__ — [Generator] id=2097 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,739 [INFO] __main__ — [Generator] id=1380 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,739 [INFO] __main__ — [Generator] id=1853 step=1 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 09:52:28,740 [INFO] __main__ — [Generator] id=1983 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=1 na=0
+2026-05-03 09:52:28,741 [INFO] __main__ — [Generator] id=161 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,742 [INFO] __main__ — [Generator] id=312 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=1 na=0
+2026-05-03 09:52:28,742 [INFO] __main__ — [Generator] id=457 step=1 rethink=False pred_action=<|solve|> correct=12 incorrect=0 na=8
+2026-05-03 09:52:28,743 [INFO] __main__ — [Generator] id=708 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,744 [INFO] __main__ — [Generator] id=1424 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,745 [INFO] __main__ — [Generator] id=2465 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,745 [INFO] __main__ — [Generator] id=127 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,746 [INFO] __main__ — [Generator] id=1572 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=8
+2026-05-03 09:52:28,746 [INFO] __main__ — [Generator] id=1060 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,747 [INFO] __main__ — [Generator] id=1173 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,747 [INFO] __main__ — [Generator] id=147 step=1 rethink=False pred_action=<|solve|> correct=8 incorrect=1 na=0
+2026-05-03 09:52:28,748 [INFO] __main__ — [Generator] id=164 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,749 [INFO] __main__ — [Generator] id=1841 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,749 [INFO] __main__ — [Generator] id=1022 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,750 [INFO] __main__ — [Generator] id=516 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,751 [INFO] __main__ — [Generator] id=2226 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=1 na=0
+2026-05-03 09:52:28,751 [INFO] __main__ — [Generator] id=2338 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=1 na=0
+2026-05-03 09:52:28,752 [INFO] __main__ — [Generator] id=1862 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,753 [INFO] __main__ — [Generator] id=2428 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,753 [INFO] __main__ — [Generator] id=1155 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,754 [INFO] __main__ — [Generator] id=695 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,755 [INFO] __main__ — [Generator] id=380 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,755 [INFO] __main__ — [Generator] id=1994 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,756 [INFO] __main__ — [Generator] id=581 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,757 [INFO] __main__ — [Generator] id=39 step=1 rethink=False pred_action=<|rethink|> correct=0 incorrect=3 na=0
+2026-05-03 09:52:28,758 [INFO] __main__ — [Generator] id=2113 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,759 [INFO] __main__ — [Generator] id=1176 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,760 [INFO] __main__ — [Generator] id=1655 step=1 rethink=False pred_action=<|rethink|> correct=0 incorrect=10 na=0
+2026-05-03 09:52:28,760 [INFO] __main__ — [Generator] id=716 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,761 [INFO] __main__ — [Generator] id=250 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,762 [INFO] __main__ — [Generator] id=2522 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,762 [INFO] __main__ — [Generator] id=1116 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,763 [INFO] __main__ — [Generator] id=2225 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,763 [INFO] __main__ — [Generator] id=2182 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,764 [INFO] __main__ — [Generator] id=1647 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=1 na=0
+2026-05-03 09:52:28,766 [INFO] __main__ — [Generator] id=2211 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,767 [INFO] __main__ — [Generator] id=2086 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,767 [INFO] __main__ — [Generator] id=3076 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,767 [INFO] __main__ — [Generator] id=2259 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,768 [INFO] __main__ — [Generator] id=2483 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,768 [INFO] __main__ — [Generator] id=578 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,769 [INFO] __main__ — [Generator] id=2584 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,770 [INFO] __main__ — [Generator] id=2530 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,770 [INFO] __main__ — [Generator] id=2351 step=1 rethink=False pred_action=<|rethink|> correct=2 incorrect=8 na=0
+2026-05-03 09:52:28,771 [INFO] __main__ — [Generator] id=2220 step=1 rethink=False pred_action=<|solve|> correct=3 incorrect=0 na=0
+2026-05-03 09:52:28,772 [INFO] __main__ — [Generator] id=2357 step=1 rethink=False pred_action=<|rethink|> correct=1 incorrect=8 na=0
+2026-05-03 09:52:28,772 [INFO] __main__ — [Generator] id=546 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,773 [INFO] __main__ — [Generator] id=2046 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,773 [INFO] __main__ — [Generator] id=2409 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,774 [INFO] __main__ — [Generator] id=2072 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,775 [INFO] __main__ — [Generator] id=562 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,775 [INFO] __main__ — [Generator] id=2173 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,776 [INFO] __main__ — [Generator] id=2439 step=1 rethink=False pred_action=<|rethink|> correct=1 incorrect=9 na=0
+2026-05-03 09:52:28,777 [INFO] __main__ — [Generator] id=2327 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,777 [INFO] __main__ — [Generator] id=2447 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,778 [INFO] __main__ — [Generator] id=2168 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=1 na=0
+2026-05-03 09:52:28,779 [INFO] __main__ — [Generator] id=1348 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,779 [INFO] __main__ — [Generator] id=2309 step=1 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=9
+2026-05-03 09:52:28,780 [INFO] __main__ — [Generator] id=2322 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,780 [INFO] __main__ — [Generator] id=3222 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,781 [INFO] __main__ — [Generator] id=1389 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,782 [INFO] __main__ — [Generator] id=2436 step=1 rethink=False pred_action=<|rethink|> correct=1 incorrect=8 na=0
+2026-05-03 09:52:28,783 [INFO] __main__ — [Generator] id=1322 step=1 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:52:28,783 [INFO] __main__ — [Generator] id=2267 step=1 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:52:28,784 [INFO] __main__ — [Generator] id=2608 step=1 rethink=False pred_action=<|solve|> correct=8 incorrect=4 na=0
+2026-05-03 09:52:28,799 [INFO] __main__ — [PRM batch] n_problems=75  n_rubrics=10  skipped(tool_call)=0
+2026-05-03 09:52:28,799 [INFO] API_PRM_Batch — 추론 시작: n=75  model=deepseek-chat
+2026-05-03 09:52:54,303 [INFO] API_PRM_Batch — 추론 완료 (wall=25.5s) | 평균 호출 15.2s
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=585 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=135 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=70 step=1  batch 2/11 fail (Abstract and Linear Algebra Operations, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=437 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=35 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2037 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2097 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1380 step=1  batch 1/11 fail (Calculus Computation) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1853 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1983 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=161 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=312 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=457 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=708 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1424 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2465 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=127 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1572 step=1  batch 1/11 fail (Geometric Reasoning) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1060 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1173 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=147 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=164 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1841 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1022 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=516 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2226 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2338 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1862 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2428 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1155 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=695 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=380 step=1  batch 1/11 fail (Logical and Discrete Reasoning) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1994 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=581 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=39 step=1  batch 2/11 fail (Algebraic Manipulation, Calculus Computation) → stage2 2개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2113 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1176 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=1655 step=1  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=716 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=250 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,305 [INFO] __main__ — [Stage1] id=2522 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=1116 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2225 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2182 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=1647 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2211 step=1  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2086 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=3076 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2259 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2483 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=578 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2584 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2530 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2351 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2220 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2357 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=546 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2046 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2409 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2072 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=562 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2173 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2439 step=1  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2327 step=1  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2447 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2168 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=1348 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2309 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2322 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=3222 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=1389 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2436 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=1322 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2267 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [Stage1] id=2608 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:52:54,306 [INFO] __main__ — [2-Stage PRM] stage1: 75개 중 fail=9, pass=66
+2026-05-03 09:52:54,306 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:52:54,307 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,308 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,309 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,309 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:52:54,310 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,310 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,310 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:54,312 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:52:58,063 [INFO] API_PRM — 추론 완료 (wall=3.8s) | 평균 호출 3.7s
+2026-05-03 09:52:58,610 [INFO] API_PRM — 추론 완료 (wall=4.3s) | 평균 호출 4.3s
+2026-05-03 09:52:58,807 [INFO] API_PRM — 추론 완료 (wall=4.5s) | 평균 호출 4.5s
+2026-05-03 09:52:59,736 [INFO] API_PRM — 추론 완료 (wall=5.4s) | 평균 호출 5.4s
+2026-05-03 09:53:00,262 [INFO] API_PRM — 추론 완료 (wall=6.0s) | 평균 호출 5.9s
+2026-05-03 09:53:02,602 [INFO] API_PRM — 추론 완료 (wall=8.3s) | 평균 호출 7.2s
+2026-05-03 09:53:03,768 [INFO] API_PRM — 추론 완료 (wall=9.5s) | 평균 호출 9.4s
+2026-05-03 09:53:03,854 [INFO] API_PRM — 추론 완료 (wall=9.5s) | 평균 호출 8.9s
+2026-05-03 09:53:04,441 [INFO] API_PRM — 추론 완료 (wall=10.1s) | 평균 호출 10.1s
+2026-05-03 09:53:04,454 [INFO] __main__ — [AllSummaries] n=75
+2026-05-03 09:53:17,531 [INFO] __main__ — [API_PRM_checklist] id=585 step=1: correct wrong=0/11
+2026-05-03 09:53:17,532 [INFO] __main__ — [API_PRM_checklist] id=135 step=1: correct wrong=0/11
+2026-05-03 09:53:17,533 [INFO] __main__ — [PRM→fail] id=70 step=1 wrong=1/11 rubrics=['Abstract and Linear Algebra Operations']
+2026-05-03 09:53:17,535 [INFO] __main__ — [API_PRM_checklist] id=437 step=1: correct wrong=0/11
+2026-05-03 09:53:17,536 [INFO] __main__ — [API_PRM_checklist] id=35 step=1: correct wrong=0/11
+2026-05-03 09:53:17,537 [INFO] __main__ — [API_PRM_checklist] id=2037 step=1: correct wrong=0/11
+2026-05-03 09:53:17,538 [INFO] __main__ — [API_PRM_checklist] id=2097 step=1: correct wrong=0/11
+2026-05-03 09:53:17,539 [INFO] __main__ — [PRM→fail] id=1380 step=1 wrong=1/11 rubrics=['Calculus Computation']
+2026-05-03 09:53:17,540 [INFO] __main__ — [API_PRM_checklist] id=1853 step=1: correct wrong=0/11
+2026-05-03 09:53:17,540 [INFO] __main__ — [API_PRM_checklist] id=1983 step=1: correct wrong=0/11
+2026-05-03 09:53:17,541 [INFO] __main__ — [API_PRM_checklist] id=161 step=1: correct wrong=0/11
+2026-05-03 09:53:17,542 [INFO] __main__ — [API_PRM_checklist] id=312 step=1: correct wrong=0/11
+2026-05-03 09:53:17,543 [INFO] __main__ — [API_PRM_checklist] id=457 step=1: correct wrong=0/11
+2026-05-03 09:53:17,543 [INFO] __main__ — [API_PRM_checklist] id=708 step=1: correct wrong=0/11
+2026-05-03 09:53:17,544 [INFO] __main__ — [API_PRM_checklist] id=1424 step=1: correct wrong=0/11
+2026-05-03 09:53:17,545 [INFO] __main__ — [API_PRM_checklist] id=2465 step=1: correct wrong=0/11
+2026-05-03 09:53:17,545 [INFO] __main__ — [API_PRM_checklist] id=127 step=1: correct wrong=0/11
+2026-05-03 09:53:17,547 [INFO] __main__ — [PRM→fail] id=1572 step=1 wrong=1/11 rubrics=['Geometric Reasoning']
+2026-05-03 09:53:17,547 [INFO] __main__ — [API_PRM_checklist] id=1060 step=1: correct wrong=0/11
+2026-05-03 09:53:17,548 [INFO] __main__ — [API_PRM_checklist] id=1173 step=1: correct wrong=0/11
+2026-05-03 09:53:17,549 [INFO] __main__ — [API_PRM_checklist] id=147 step=1: correct wrong=0/11
+2026-05-03 09:53:17,550 [INFO] __main__ — [API_PRM_checklist] id=164 step=1: correct wrong=0/11
+2026-05-03 09:53:17,550 [INFO] __main__ — [API_PRM_checklist] id=1841 step=1: correct wrong=0/11
+2026-05-03 09:53:17,551 [INFO] __main__ — [API_PRM_checklist] id=1022 step=1: correct wrong=0/11
+2026-05-03 09:53:17,552 [INFO] __main__ — [API_PRM_checklist] id=516 step=1: correct wrong=0/11
+2026-05-03 09:53:17,552 [INFO] __main__ — [API_PRM_checklist] id=2226 step=1: correct wrong=0/11
+2026-05-03 09:53:17,553 [INFO] __main__ — [API_PRM_checklist] id=2338 step=1: correct wrong=0/11
+2026-05-03 09:53:17,554 [INFO] __main__ — [API_PRM_checklist] id=1862 step=1: correct wrong=0/11
+2026-05-03 09:53:17,554 [INFO] __main__ — [API_PRM_checklist] id=2428 step=1: correct wrong=0/11
+2026-05-03 09:53:17,555 [INFO] __main__ — [API_PRM_checklist] id=1155 step=1: correct wrong=0/11
+2026-05-03 09:53:17,556 [INFO] __main__ — [API_PRM_checklist] id=695 step=1: correct wrong=0/11
+2026-05-03 09:53:17,557 [INFO] __main__ — [PRM→fail] id=380 step=1 wrong=1/11 rubrics=['Logical and Discrete Reasoning']
+2026-05-03 09:53:17,558 [INFO] __main__ — [API_PRM_checklist] id=1994 step=1: correct wrong=0/11
+2026-05-03 09:53:17,559 [INFO] __main__ — [API_PRM_checklist] id=581 step=1: correct wrong=0/11
+2026-05-03 09:53:17,560 [INFO] __main__ — [PRM→fail] id=39 step=1 wrong=2/11 rubrics=['Algebraic Manipulation', 'Calculus Computation']
+2026-05-03 09:53:17,561 [INFO] __main__ — [API_PRM_checklist] id=2113 step=1: correct wrong=0/11
+2026-05-03 09:53:17,562 [INFO] __main__ — [API_PRM_checklist] id=1176 step=1: correct wrong=0/11
+2026-05-03 09:53:17,563 [INFO] __main__ — [API_PRM_checklist] id=1655 step=1: correct wrong=0/11
+2026-05-03 09:53:17,563 [INFO] __main__ — [API_PRM_checklist] id=716 step=1: correct wrong=0/11
+2026-05-03 09:53:17,564 [INFO] __main__ — [API_PRM_checklist] id=250 step=1: correct wrong=0/11
+2026-05-03 09:53:17,565 [INFO] __main__ — [API_PRM_checklist] id=2522 step=1: correct wrong=0/11
+2026-05-03 09:53:17,565 [INFO] __main__ — [API_PRM_checklist] id=1116 step=1: correct wrong=0/11
+2026-05-03 09:53:17,566 [INFO] __main__ — [API_PRM_checklist] id=2225 step=1: correct wrong=0/11
+2026-05-03 09:53:17,567 [INFO] __main__ — [API_PRM_checklist] id=2182 step=1: correct wrong=0/11
+2026-05-03 09:53:17,567 [INFO] __main__ — [API_PRM_checklist] id=1647 step=1: correct wrong=0/11
+2026-05-03 09:53:17,569 [INFO] __main__ — [PRM→fail] id=2211 step=1 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:53:17,569 [INFO] __main__ — [API_PRM_checklist] id=2086 step=1: correct wrong=0/11
+2026-05-03 09:53:17,570 [INFO] __main__ — [API_PRM_checklist] id=3076 step=1: correct wrong=0/11
+2026-05-03 09:53:17,570 [INFO] __main__ — [API_PRM_checklist] id=2259 step=1: correct wrong=0/11
+2026-05-03 09:53:17,571 [INFO] __main__ — [API_PRM_checklist] id=2483 step=1: correct wrong=0/11
+2026-05-03 09:53:17,572 [INFO] __main__ — [API_PRM_checklist] id=578 step=1: correct wrong=0/11
+2026-05-03 09:53:17,572 [INFO] __main__ — [API_PRM_checklist] id=2584 step=1: correct wrong=0/11
+2026-05-03 09:53:17,573 [INFO] __main__ — [API_PRM_checklist] id=2530 step=1: correct wrong=0/11
+2026-05-03 09:53:17,573 [INFO] __main__ — [API_PRM_checklist] id=2351 step=1: correct wrong=0/11
+2026-05-03 09:53:17,574 [INFO] __main__ — [API_PRM_checklist] id=2220 step=1: correct wrong=0/11
+2026-05-03 09:53:17,575 [INFO] __main__ — [API_PRM_checklist] id=2357 step=1: correct wrong=0/11
+2026-05-03 09:53:17,575 [INFO] __main__ — [API_PRM_checklist] id=546 step=1: correct wrong=0/11
+2026-05-03 09:53:17,576 [INFO] __main__ — [API_PRM_checklist] id=2046 step=1: correct wrong=0/11
+2026-05-03 09:53:17,576 [INFO] __main__ — [API_PRM_checklist] id=2409 step=1: correct wrong=0/11
+2026-05-03 09:53:17,577 [INFO] __main__ — [API_PRM_checklist] id=2072 step=1: correct wrong=0/11
+2026-05-03 09:53:17,577 [INFO] __main__ — [API_PRM_checklist] id=562 step=1: correct wrong=0/11
+2026-05-03 09:53:17,578 [INFO] __main__ — [API_PRM_checklist] id=2173 step=1: correct wrong=0/11
+2026-05-03 09:53:17,579 [INFO] __main__ — [API_PRM_checklist] id=2439 step=1: correct wrong=0/11
+2026-05-03 09:53:17,580 [INFO] __main__ — [PRM→fail] id=2327 step=1 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:53:17,580 [INFO] __main__ — [API_PRM_checklist] id=2447 step=1: correct wrong=0/11
+2026-05-03 09:53:17,581 [INFO] __main__ — [API_PRM_checklist] id=2168 step=1: correct wrong=0/11
+2026-05-03 09:53:17,581 [INFO] __main__ — [API_PRM_checklist] id=1348 step=1: correct wrong=0/11
+2026-05-03 09:53:17,582 [INFO] __main__ — [API_PRM_checklist] id=2309 step=1: correct wrong=0/11
+2026-05-03 09:53:17,582 [INFO] __main__ — [API_PRM_checklist] id=2322 step=1: correct wrong=0/11
+2026-05-03 09:53:17,583 [INFO] __main__ — [API_PRM_checklist] id=3222 step=1: correct wrong=0/11
+2026-05-03 09:53:17,583 [INFO] __main__ — [API_PRM_checklist] id=1389 step=1: correct wrong=0/11
+2026-05-03 09:53:17,584 [INFO] __main__ — [API_PRM_checklist] id=2436 step=1: correct wrong=0/11
+2026-05-03 09:53:17,584 [INFO] __main__ — [API_PRM_checklist] id=1322 step=1: correct wrong=0/11
+2026-05-03 09:53:17,585 [INFO] __main__ — [API_PRM_checklist] id=2267 step=1: correct wrong=0/11
+2026-05-03 09:53:17,586 [INFO] __main__ — [API_PRM_checklist] id=2608 step=1: correct wrong=0/11
+2026-05-03 09:53:17,586 [INFO] __main__ — [Generator batch] n=75  [Patcher API] n=0
+2026-05-03 09:56:12,407 [INFO] __main__ — [Generator] id=585 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,408 [INFO] __main__ — [Generator] id=135 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,408 [INFO] __main__ — [Generator] id=70 step=1 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,410 [INFO] __main__ — [Generator] id=437 step=2 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 09:56:12,410 [INFO] __main__ — [Generator] id=35 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,411 [INFO] __main__ — [Generator] id=2037 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,412 [INFO] __main__ — [Generator] id=2097 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,414 [INFO] __main__ — [Generator] id=1380 step=1 rethink=True pred_action=<|solve|> correct=11 incorrect=1 na=0
+2026-05-03 09:56:12,415 [INFO] __main__ — [Generator] id=1853 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,415 [INFO] __main__ — [Generator] id=1983 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,416 [INFO] __main__ — [Generator] id=161 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,417 [INFO] __main__ — [Generator] id=312 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,418 [INFO] __main__ — [Generator] id=457 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,419 [INFO] __main__ — [Generator] id=708 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,419 [INFO] __main__ — [Generator] id=1424 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,420 [INFO] __main__ — [Generator] id=2465 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,421 [INFO] __main__ — [Generator] id=127 step=2 rethink=False pred_action=<|solve|> correct=13 incorrect=0 na=7
+2026-05-03 09:56:12,423 [INFO] __main__ — [Generator] id=1572 step=1 rethink=True pred_action=<|solve|> correct=9 incorrect=2 na=0
+2026-05-03 09:56:12,423 [INFO] __main__ — [Generator] id=1060 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,424 [INFO] __main__ — [Generator] id=1173 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,425 [INFO] __main__ — [Generator] id=147 step=2 rethink=False pred_action=<|rethink|> correct=1 incorrect=9 na=0
+2026-05-03 09:56:12,426 [INFO] __main__ — [Generator] id=164 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,428 [INFO] __main__ — [Generator] id=1841 step=2 rethink=False pred_action=<|solve|> correct=19 incorrect=0 na=1
+2026-05-03 09:56:12,429 [INFO] __main__ — [Generator] id=1022 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,431 [INFO] __main__ — [Generator] id=516 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,432 [INFO] __main__ — [Generator] id=2226 step=2 rethink=False pred_action=<|rethink|> correct=1 incorrect=2 na=0
+2026-05-03 09:56:12,432 [INFO] __main__ — [Generator] id=2338 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,433 [INFO] __main__ — [Generator] id=1862 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,434 [INFO] __main__ — [Generator] id=2428 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,435 [INFO] __main__ — [Generator] id=1155 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,436 [INFO] __main__ — [Generator] id=695 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,436 [INFO] __main__ — [Generator] id=380 step=1 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 09:56:12,437 [INFO] __main__ — [Generator] id=1994 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,438 [INFO] __main__ — [Generator] id=581 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,438 [INFO] __main__ — [Generator] id=39 step=1 rethink=True pred_action=<|solve|> correct=4 incorrect=0 na=6
+2026-05-03 09:56:12,439 [INFO] __main__ — [Generator] id=2113 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,440 [INFO] __main__ — [Generator] id=1176 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,441 [INFO] __main__ — [Generator] id=1655 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,441 [INFO] __main__ — [Generator] id=716 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,443 [INFO] __main__ — [Generator] id=250 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,444 [INFO] __main__ — [Generator] id=2522 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,444 [INFO] __main__ — [Generator] id=1116 step=2 rethink=False pred_action=<|rethink|> correct=1 incorrect=8 na=0
+2026-05-03 09:56:12,446 [INFO] __main__ — [Generator] id=2225 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,447 [INFO] __main__ — [Generator] id=2182 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,447 [INFO] __main__ — [Generator] id=1647 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,448 [INFO] __main__ — [Generator] id=2211 step=1 rethink=True pred_action=<|solve|> correct=18 incorrect=3 na=0
+2026-05-03 09:56:12,449 [INFO] __main__ — [Generator] id=2086 step=2 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 09:56:12,450 [INFO] __main__ — [Generator] id=3076 step=2 rethink=False pred_action=<|solve|> correct=8 incorrect=6 na=0
+2026-05-03 09:56:12,452 [INFO] __main__ — [Generator] id=2259 step=2 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 09:56:12,453 [INFO] __main__ — [Generator] id=2483 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,454 [INFO] __main__ — [Generator] id=578 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,455 [INFO] __main__ — [Generator] id=2584 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,455 [INFO] __main__ — [Generator] id=2530 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,456 [INFO] __main__ — [Generator] id=2351 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,457 [INFO] __main__ — [Generator] id=2220 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,458 [INFO] __main__ — [Generator] id=2357 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,461 [INFO] __main__ — [Generator] id=546 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,462 [INFO] __main__ — [Generator] id=2046 step=2 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 09:56:12,462 [INFO] __main__ — [Generator] id=2409 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,463 [INFO] __main__ — [Generator] id=2072 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,463 [INFO] __main__ — [Generator] id=562 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,464 [INFO] __main__ — [Generator] id=2173 step=2 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=9
+2026-05-03 09:56:12,465 [INFO] __main__ — [Generator] id=2439 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,467 [INFO] __main__ — [Generator] id=2327 step=1 rethink=True pred_action=<|solve|> correct=9 incorrect=3 na=0
+2026-05-03 09:56:12,468 [INFO] __main__ — [Generator] id=2447 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,468 [INFO] __main__ — [Generator] id=2168 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,469 [INFO] __main__ — [Generator] id=1348 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,470 [INFO] __main__ — [Generator] id=2309 step=2 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=9
+2026-05-03 09:56:12,471 [INFO] __main__ — [Generator] id=2322 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,471 [INFO] __main__ — [Generator] id=3222 step=2 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 09:56:12,472 [INFO] __main__ — [Generator] id=1389 step=2 rethink=False pred_action=<|solve|> correct=8 incorrect=0 na=0
+2026-05-03 09:56:12,473 [INFO] __main__ — [Generator] id=2436 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 09:56:12,475 [INFO] __main__ — [Generator] id=1322 step=2 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 09:56:12,476 [INFO] __main__ — [Generator] id=2267 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,477 [INFO] __main__ — [Generator] id=2608 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 09:56:12,483 [INFO] __main__ — [PRM batch] n_problems=75  n_rubrics=10  skipped(tool_call)=0
+2026-05-03 09:56:12,484 [INFO] API_PRM_Batch — 추론 시작: n=75  model=deepseek-chat
+2026-05-03 09:56:45,039 [INFO] API_PRM_Batch — 추론 완료 (wall=32.6s) | 평균 호출 19.3s
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=585 step=2  batch 2/11 fail (Number Theoretic Reasoning, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=135 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=70 step=1  batch 2/11 fail (Abstract and Linear Algebra Operations, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=437 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=35 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2037 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2097 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1380 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1853 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1983 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=161 step=2  batch 1/11 fail (Number Theoretic Reasoning) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=312 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=457 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=708 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1424 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2465 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=127 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1572 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1060 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1173 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=147 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=164 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1841 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1022 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=516 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2226 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2338 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1862 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2428 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1155 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=695 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=380 step=1  batch 3/11 fail (Algebraic Manipulation, Function and Limit Analysis, Logical and Discrete Reasoning) → stage2 3개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1994 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=581 step=2  batch 2/11 fail (Algebraic Manipulation, Progress and Non-Repetition) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=39 step=1  batch 2/11 fail (Algebraic Manipulation, Calculus Computation) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=2113 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,041 [INFO] __main__ — [Stage1] id=1176 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1655 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=716 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=250 step=2  batch 2/11 fail (Algebraic Manipulation, Geometric Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2522 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1116 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2225 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2182 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1647 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2211 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2086 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=3076 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2259 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2483 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=578 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2584 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2530 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2351 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2220 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2357 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=546 step=2  batch 2/11 fail (Algebraic Manipulation, Calculus Computation) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2046 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2409 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2072 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=562 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2173 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2439 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2327 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2447 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2168 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1348 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2309 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2322 step=2  batch 2/11 fail (Algebraic Manipulation, Geometric Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=3222 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1389 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2436 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=1322 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2267 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [Stage1] id=2608 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 09:56:45,042 [INFO] __main__ — [2-Stage PRM] stage1: 75개 중 fail=29, pass=46
+2026-05-03 09:56:45,042 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,043 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,046 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,047 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,047 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,047 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,048 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,048 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,048 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,048 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,049 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,049 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 09:56:45,049 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,050 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,056 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,050 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,053 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,059 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,092 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,094 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,097 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,102 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,109 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,110 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,110 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 09:56:45,112 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,113 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,113 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:45,114 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 09:56:48,241 [INFO] API_PRM — 추론 완료 (wall=3.2s) | 평균 호출 3.1s
+2026-05-03 09:56:48,296 [INFO] API_PRM — 추론 완료 (wall=3.2s) | 평균 호출 3.2s
+2026-05-03 09:56:48,398 [INFO] API_PRM — 추론 완료 (wall=3.3s) | 평균 호출 3.2s
+2026-05-03 09:56:48,406 [INFO] API_PRM — 추론 완료 (wall=3.3s) | 평균 호출 3.3s
+2026-05-03 09:56:48,690 [INFO] API_PRM — 추론 완료 (wall=3.6s) | 평균 호출 3.6s
+2026-05-03 09:56:48,726 [INFO] API_PRM — 추론 완료 (wall=3.6s) | 평균 호출 3.6s
+2026-05-03 09:56:48,968 [INFO] API_PRM — 추론 완료 (wall=3.9s) | 평균 호출 3.8s
+2026-05-03 09:56:49,059 [INFO] API_PRM — 추론 완료 (wall=3.9s) | 평균 호출 3.9s
+2026-05-03 09:56:49,108 [INFO] API_PRM — 추론 완료 (wall=4.0s) | 평균 호출 4.0s
+2026-05-03 09:56:49,317 [INFO] API_PRM — 추론 완료 (wall=4.3s) | 평균 호출 4.2s
+2026-05-03 09:56:49,419 [INFO] API_PRM — 추론 완료 (wall=4.4s) | 평균 호출 4.3s
+2026-05-03 09:56:49,436 [INFO] API_PRM — 추론 완료 (wall=4.4s) | 평균 호출 4.3s
+2026-05-03 09:56:49,503 [INFO] API_PRM — 추론 완료 (wall=4.4s) | 평균 호출 4.4s
+2026-05-03 09:56:50,083 [INFO] API_PRM — 추론 완료 (wall=5.0s) | 평균 호출 5.0s
+2026-05-03 09:56:51,095 [INFO] API_PRM — 추론 완료 (wall=6.0s) | 평균 호출 5.6s
+2026-05-03 09:56:51,115 [INFO] API_PRM — 추론 완료 (wall=6.1s) | 평균 호출 6.0s
+2026-05-03 09:56:51,121 [INFO] API_PRM — 추론 완료 (wall=6.1s) | 평균 호출 6.0s
+2026-05-03 09:56:51,509 [INFO] API_PRM — 추론 완료 (wall=6.4s) | 평균 호출 6.3s
+2026-05-03 09:56:52,238 [INFO] API_PRM — 추론 완료 (wall=7.2s) | 평균 호출 6.8s
+2026-05-03 09:56:52,692 [INFO] API_PRM — 추론 완료 (wall=7.6s) | 평균 호출 7.1s
+2026-05-03 09:56:53,680 [INFO] API_PRM — 추론 완료 (wall=8.6s) | 평균 호출 8.5s
+2026-05-03 09:56:54,642 [INFO] API_PRM — 추론 완료 (wall=9.6s) | 평균 호출 9.2s
+2026-05-03 09:56:54,906 [INFO] API_PRM — 추론 완료 (wall=9.9s) | 평균 호출 8.2s
+2026-05-03 09:56:56,170 [INFO] API_PRM — 추론 완료 (wall=11.1s) | 평균 호출 11.1s
+2026-05-03 09:56:56,752 [INFO] API_PRM — 추론 완료 (wall=11.6s) | 평균 호출 8.5s
+2026-05-03 09:56:58,481 [INFO] API_PRM — 추론 완료 (wall=13.4s) | 평균 호출 12.8s
+2026-05-03 09:56:59,975 [INFO] API_PRM — 추론 완료 (wall=14.9s) | 평균 호출 14.9s
+2026-05-03 09:57:01,240 [INFO] API_PRM — 추론 완료 (wall=16.1s) | 평균 호출 16.1s
+2026-05-03 09:57:02,473 [INFO] API_PRM — 추론 완료 (wall=17.4s) | 평균 호출 15.2s
+2026-05-03 09:57:02,484 [INFO] __main__ — [AllSummaries] n=75
+2026-05-03 09:57:23,579 [INFO] __main__ — [PRM→fail] id=585 step=2 wrong=2/11 rubrics=['Number Theoretic Reasoning', 'Logical and Discrete Reasoning']
+2026-05-03 09:57:23,580 [INFO] __main__ — [API_PRM_checklist] id=135 step=2: correct wrong=0/11
+2026-05-03 09:57:23,581 [INFO] __main__ — [PRM→fail] id=70 step=1 wrong=2/11 rubrics=['Abstract and Linear Algebra Operations', 'Logical and Discrete Reasoning']
+2026-05-03 09:57:23,582 [INFO] __main__ — [API_PRM_checklist] id=437 step=2: correct wrong=0/11
+2026-05-03 09:57:23,582 [INFO] __main__ — [API_PRM_checklist] id=35 step=2: correct wrong=0/11
+2026-05-03 09:57:23,583 [INFO] __main__ — [PRM→fail] id=2037 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,583 [INFO] __main__ — [API_PRM_checklist] id=2097 step=2: correct wrong=0/11
+2026-05-03 09:57:23,584 [INFO] __main__ — [API_PRM_checklist] id=1380 step=1: correct wrong=0/11
+2026-05-03 09:57:23,584 [INFO] __main__ — [API_PRM_checklist] id=1853 step=2: correct wrong=0/11
+2026-05-03 09:57:23,584 [INFO] __main__ — [API_PRM_checklist] id=1983 step=2: correct wrong=0/11
+2026-05-03 09:57:23,585 [INFO] __main__ — [PRM→fail] id=161 step=2 wrong=1/11 rubrics=['Number Theoretic Reasoning']
+2026-05-03 09:57:23,586 [INFO] __main__ — [API_PRM_checklist] id=312 step=2: correct wrong=0/11
+2026-05-03 09:57:23,586 [INFO] __main__ — [PRM→fail] id=457 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,587 [INFO] __main__ — [API_PRM_checklist] id=708 step=2: correct wrong=0/11
+2026-05-03 09:57:23,587 [INFO] __main__ — [API_PRM_checklist] id=1424 step=2: correct wrong=0/11
+2026-05-03 09:57:23,587 [INFO] __main__ — [API_PRM_checklist] id=2465 step=2: correct wrong=0/11
+2026-05-03 09:57:23,588 [INFO] __main__ — [API_PRM_checklist] id=127 step=2: correct wrong=0/11
+2026-05-03 09:57:23,588 [INFO] __main__ — [API_PRM_checklist] id=1572 step=1: correct wrong=0/11
+2026-05-03 09:57:23,589 [INFO] __main__ — [PRM→fail] id=1060 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,589 [INFO] __main__ — [API_PRM_checklist] id=1173 step=2: correct wrong=0/11
+2026-05-03 09:57:23,590 [INFO] __main__ — [API_PRM_checklist] id=147 step=2: correct wrong=0/11
+2026-05-03 09:57:23,590 [INFO] __main__ — [PRM→fail] id=164 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,591 [INFO] __main__ — [PRM→fail] id=1841 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,592 [INFO] __main__ — [API_PRM_checklist] id=1022 step=2: correct wrong=0/11
+2026-05-03 09:57:23,592 [INFO] __main__ — [PRM→fail] id=516 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,593 [INFO] __main__ — [API_PRM_checklist] id=2226 step=2: correct wrong=0/11
+2026-05-03 09:57:23,593 [INFO] __main__ — [API_PRM_checklist] id=2338 step=2: correct wrong=0/11
+2026-05-03 09:57:23,593 [INFO] __main__ — [PRM→fail] id=1862 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,594 [INFO] __main__ — [API_PRM_checklist] id=2428 step=2: correct wrong=0/11
+2026-05-03 09:57:23,594 [INFO] __main__ — [API_PRM_checklist] id=1155 step=2: correct wrong=0/11
+2026-05-03 09:57:23,595 [INFO] __main__ — [API_PRM_checklist] id=695 step=2: correct wrong=0/11
+2026-05-03 09:57:23,595 [INFO] __main__ — [PRM→fail] id=380 step=1 wrong=3/11 rubrics=['Algebraic Manipulation', 'Function and Limit Analysis', 'Logical and Discrete Reasoning']
+2026-05-03 09:57:23,596 [INFO] __main__ — [API_PRM_checklist] id=1994 step=2: correct wrong=0/11
+2026-05-03 09:57:23,596 [INFO] __main__ — [PRM→fail] id=581 step=2 wrong=2/11 rubrics=['Algebraic Manipulation', 'Progress and Non-Repetition']
+2026-05-03 09:57:23,597 [INFO] __main__ — [PRM→fail] id=39 step=1 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,598 [INFO] __main__ — [API_PRM_checklist] id=2113 step=2: correct wrong=0/11
+2026-05-03 09:57:23,598 [INFO] __main__ — [PRM→fail] id=1176 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,599 [INFO] __main__ — [API_PRM_checklist] id=1655 step=2: correct wrong=0/11
+2026-05-03 09:57:23,599 [INFO] __main__ — [API_PRM_checklist] id=716 step=2: correct wrong=0/11
+2026-05-03 09:57:23,600 [INFO] __main__ — [PRM→fail] id=250 step=2 wrong=2/11 rubrics=['Algebraic Manipulation', 'Geometric Reasoning']
+2026-05-03 09:57:23,600 [INFO] __main__ — [API_PRM_checklist] id=2522 step=2: correct wrong=0/11
+2026-05-03 09:57:23,601 [INFO] __main__ — [API_PRM_checklist] id=1116 step=2: correct wrong=0/11
+2026-05-03 09:57:23,601 [INFO] __main__ — [API_PRM_checklist] id=2225 step=2: correct wrong=0/11
+2026-05-03 09:57:23,601 [INFO] __main__ — [API_PRM_checklist] id=2182 step=2: correct wrong=0/11
+2026-05-03 09:57:23,602 [INFO] __main__ — [API_PRM_checklist] id=1647 step=2: correct wrong=0/11
+2026-05-03 09:57:23,602 [INFO] __main__ — [API_PRM_checklist] id=2211 step=1: correct wrong=0/11
+2026-05-03 09:57:23,602 [INFO] __main__ — [API_PRM_checklist] id=2086 step=2: correct wrong=0/11
+2026-05-03 09:57:23,603 [INFO] __main__ — [PRM→fail] id=3076 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,603 [INFO] __main__ — [API_PRM_checklist] id=2259 step=2: correct wrong=0/11
+2026-05-03 09:57:23,604 [INFO] __main__ — [PRM→fail] id=2483 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,604 [INFO] __main__ — [API_PRM_checklist] id=578 step=2: correct wrong=0/11
+2026-05-03 09:57:23,605 [INFO] __main__ — [API_PRM_checklist] id=2584 step=2: correct wrong=0/11
+2026-05-03 09:57:23,605 [INFO] __main__ — [PRM→fail] id=2530 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,606 [INFO] __main__ — [API_PRM_checklist] id=2351 step=2: correct wrong=0/11
+2026-05-03 09:57:23,606 [INFO] __main__ — [PRM→fail] id=2220 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,607 [INFO] __main__ — [API_PRM_checklist] id=2357 step=2: correct wrong=0/11
+2026-05-03 09:57:23,607 [INFO] __main__ — [PRM→fail] id=546 step=2 wrong=1/11 rubrics=['Calculus Computation']
+2026-05-03 09:57:23,608 [INFO] __main__ — [PRM→fail] id=2046 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,609 [INFO] __main__ — [API_PRM_checklist] id=2409 step=2: correct wrong=0/11
+2026-05-03 09:57:23,610 [INFO] __main__ — [API_PRM_checklist] id=2072 step=2: correct wrong=0/11
+2026-05-03 09:57:23,610 [INFO] __main__ — [API_PRM_checklist] id=562 step=2: correct wrong=0/11
+2026-05-03 09:57:23,610 [INFO] __main__ — [API_PRM_checklist] id=2173 step=2: correct wrong=0/11
+2026-05-03 09:57:23,611 [INFO] __main__ — [API_PRM_checklist] id=2439 step=2: correct wrong=0/11
+2026-05-03 09:57:23,611 [INFO] __main__ — [API_PRM_checklist] id=2327 step=1: correct wrong=0/11
+2026-05-03 09:57:23,611 [INFO] __main__ — [API_PRM_checklist] id=2447 step=2: correct wrong=0/11
+2026-05-03 09:57:23,612 [INFO] __main__ — [API_PRM_checklist] id=2168 step=2: correct wrong=0/11
+2026-05-03 09:57:23,612 [INFO] __main__ — [API_PRM_checklist] id=1348 step=2: correct wrong=0/11
+2026-05-03 09:57:23,612 [INFO] __main__ — [PRM→fail] id=2309 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,613 [INFO] __main__ — [PRM→fail] id=2322 step=2 wrong=2/11 rubrics=['Algebraic Manipulation', 'Geometric Reasoning']
+2026-05-03 09:57:23,614 [INFO] __main__ — [API_PRM_checklist] id=3222 step=2: correct wrong=0/11
+2026-05-03 09:57:23,614 [INFO] __main__ — [PRM→fail] id=1389 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,615 [INFO] __main__ — [API_PRM_checklist] id=2436 step=2: correct wrong=0/11
+2026-05-03 09:57:23,615 [INFO] __main__ — [PRM→fail] id=1322 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 09:57:23,616 [INFO] __main__ — [PRM→fail] id=2267 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,617 [INFO] __main__ — [PRM→fail] id=2608 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 09:57:23,617 [INFO] __main__ — [Generator batch] n=72  [Patcher API] n=3
+2026-05-03 09:57:23,625 [INFO] __main__ — [Patcher API] id=70 step=1 model=deepseek-pro
+2026-05-03 09:57:23,627 [INFO] __main__ — [Patcher API] id=380 step=1 model=deepseek-pro
+2026-05-03 09:57:23,630 [INFO] __main__ — [Patcher API] id=39 step=1 model=deepseek-pro
+2026-05-03 09:58:56,271 [INFO] __main__ — [Patcher API] id=70 step=1 pred_action=<|solve|> len=1665
+2026-05-03 10:01:47,998 [INFO] __main__ — [Generator] id=585 step=2 rethink=True pred_action=<|solve|> correct=8 incorrect=3 na=0
+2026-05-03 10:01:47,999 [INFO] __main__ — [Generator] id=135 step=3 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:01:48,000 [INFO] __main__ — [Generator] id=437 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,001 [INFO] __main__ — [Generator] id=35 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,003 [INFO] __main__ — [Generator] id=2037 step=2 rethink=True pred_action=<|solve|> correct=18 incorrect=3 na=0
+2026-05-03 10:01:48,003 [INFO] __main__ — [Generator] id=2097 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,005 [INFO] __main__ — [Generator] id=1380 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,006 [INFO] __main__ — [Generator] id=1853 step=3 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:01:48,006 [INFO] __main__ — [Generator] id=1983 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,007 [INFO] __main__ — [Generator] id=161 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,008 [INFO] __main__ — [Generator] id=312 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,010 [INFO] __main__ — [Generator] id=457 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,011 [INFO] __main__ — [Generator] id=708 step=3 rethink=False pred_action=<|solve|> correct=12 incorrect=0 na=8
+2026-05-03 10:01:48,011 [INFO] __main__ — [Generator] id=1424 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,013 [INFO] __main__ — [Generator] id=2465 step=3 rethink=False pred_action=<|end|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,016 [INFO] __main__ — [Generator] id=127 step=3 rethink=False pred_action=<|end|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,016 [INFO] __main__ — [Generator] id=1572 step=2 rethink=False pred_action=<|solve|> correct=3 incorrect=0 na=0
+2026-05-03 10:01:48,017 [INFO] __main__ — [Generator] id=1060 step=2 rethink=True pred_action=<|rethink|> correct=0 incorrect=3 na=0
+2026-05-03 10:01:48,018 [INFO] __main__ — [Generator] id=1173 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,019 [INFO] __main__ — [Generator] id=147 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,020 [INFO] __main__ — [Generator] id=164 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,021 [INFO] __main__ — [Generator] id=1841 step=2 rethink=True pred_action=<|end|> correct=16 incorrect=5 na=0
+2026-05-03 10:01:48,022 [INFO] __main__ — [Generator] id=1022 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,023 [INFO] __main__ — [Generator] id=516 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,024 [INFO] __main__ — [Generator] id=2226 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,025 [INFO] __main__ — [Generator] id=2338 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,025 [INFO] __main__ — [Generator] id=1862 step=2 rethink=True pred_action=<|solve|> correct=8 incorrect=2 na=0
+2026-05-03 10:01:48,027 [INFO] __main__ — [Generator] id=2428 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,027 [INFO] __main__ — [Generator] id=1155 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,028 [INFO] __main__ — [Generator] id=695 step=3 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:01:48,029 [INFO] __main__ — [Generator] id=1994 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,030 [INFO] __main__ — [Generator] id=581 step=2 rethink=True pred_action=<|end|> correct=7 incorrect=4 na=0
+2026-05-03 10:01:48,032 [INFO] __main__ — [Generator] id=2113 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,033 [INFO] __main__ — [Generator] id=1176 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,034 [INFO] __main__ — [Generator] id=1655 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,035 [INFO] __main__ — [Generator] id=716 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,036 [INFO] __main__ — [Generator] id=250 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,037 [INFO] __main__ — [Generator] id=2522 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,038 [INFO] __main__ — [Generator] id=1116 step=3 rethink=False pred_action=<|solve|> correct=3 incorrect=3 na=0
+2026-05-03 10:01:48,039 [INFO] __main__ — [Generator] id=2225 step=3 rethink=False pred_action=<|solve|> correct=12 incorrect=0 na=8
+2026-05-03 10:01:48,040 [INFO] __main__ — [Generator] id=2182 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,040 [INFO] __main__ — [Generator] id=1647 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,042 [INFO] __main__ — [Generator] id=2211 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,043 [INFO] __main__ — [Generator] id=2086 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,044 [INFO] __main__ — [Generator] id=3076 step=2 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 10:01:48,045 [INFO] __main__ — [Generator] id=2259 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,046 [INFO] __main__ — [Generator] id=2483 step=2 rethink=True pred_action=<|rethink|> correct=0 incorrect=22 na=0
+2026-05-03 10:01:48,047 [INFO] __main__ — [Generator] id=578 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,047 [INFO] __main__ — [Generator] id=2584 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,048 [INFO] __main__ — [Generator] id=2530 step=2 rethink=True pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,050 [INFO] __main__ — [Generator] id=2351 step=3 rethink=False pred_action=<|rethink|> correct=0 incorrect=8 na=0
+2026-05-03 10:01:48,051 [INFO] __main__ — [Generator] id=2220 step=2 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 10:01:48,052 [INFO] __main__ — [Generator] id=2357 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,055 [INFO] __main__ — [Generator] id=546 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,056 [INFO] __main__ — [Generator] id=2046 step=2 rethink=True pred_action=<|solve|> correct=8 incorrect=2 na=0
+2026-05-03 10:01:48,058 [INFO] __main__ — [Generator] id=2409 step=3 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:01:48,059 [INFO] __main__ — [Generator] id=2072 step=3 rethink=False pred_action=<|solve|> correct=22 incorrect=0 na=0
+2026-05-03 10:01:48,060 [INFO] __main__ — [Generator] id=562 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,061 [INFO] __main__ — [Generator] id=2173 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,062 [INFO] __main__ — [Generator] id=2439 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,063 [INFO] __main__ — [Generator] id=2327 step=2 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,064 [INFO] __main__ — [Generator] id=2447 step=3 rethink=False pred_action=<|solve|> correct=11 incorrect=0 na=9
+2026-05-03 10:01:48,064 [INFO] __main__ — [Generator] id=2168 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,065 [INFO] __main__ — [Generator] id=1348 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,066 [INFO] __main__ — [Generator] id=2309 step=2 rethink=True pred_action=<|rethink|> correct=0 incorrect=10 na=0
+2026-05-03 10:01:48,068 [INFO] __main__ — [Generator] id=2322 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,069 [INFO] __main__ — [Generator] id=3222 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,069 [INFO] __main__ — [Generator] id=1389 step=2 rethink=True pred_action=<|solve|> correct=8 incorrect=3 na=0
+2026-05-03 10:01:48,071 [INFO] __main__ — [Generator] id=2436 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:01:48,072 [INFO] __main__ — [Generator] id=1322 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:01:48,074 [INFO] __main__ — [Generator] id=2267 step=2 rethink=True pred_action=<|solve|> correct=10 incorrect=10 na=0
+2026-05-03 10:01:48,075 [INFO] __main__ — [Generator] id=2608 step=2 rethink=True pred_action=<|solve|> correct=16 incorrect=5 na=0
+2026-05-03 10:02:20,516 [INFO] __main__ — [Patcher API] id=380 step=1 pred_action=<|solve|> len=1764
+2026-05-03 10:02:30,989 [INFO] __main__ — [Patcher API] id=39 step=1 pred_action=<|end|> len=1938
+2026-05-03 10:02:30,990 [INFO] __main__ — [PRM batch] n_problems=75  n_rubrics=10  skipped(tool_call)=0
+2026-05-03 10:02:30,992 [INFO] API_PRM_Batch — 추론 시작: n=75  model=deepseek-chat
+2026-05-03 10:03:03,471 [INFO] API_PRM_Batch — 추론 완료 (wall=32.5s) | 평균 호출 20.4s
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=585 step=2  batch 2/11 fail (Number Theoretic Reasoning, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=135 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=70 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=437 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=35 step=3  batch 1/11 fail (Function and Limit Analysis) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=2037 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=2097 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=1380 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=1853 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=1983 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=161 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=312 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=457 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=708 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=1424 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=2465 step=3  batch 3/11 fail (Algebraic Manipulation, Calculus Computation, Counting and Probability) → stage2 3개 루브릭 호출
+2026-05-03 10:03:03,474 [INFO] __main__ — [Stage1] id=127 step=3  batch 3/11 fail (Algebraic Manipulation, Calculus Computation, Function and Limit Analysis) → stage2 3개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1572 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1060 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1173 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=147 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=164 step=2  batch 3/11 fail (Algebraic Manipulation, Abstract and Linear Algebra Operations, Logical and Discrete Reasoning) → stage2 3개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1841 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1022 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=516 step=2  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2226 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2338 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1862 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2428 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1155 step=3  batch 3/11 fail (Algebraic Manipulation, Number Theoretic Reasoning, Atomicity) → stage2 3개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=695 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=380 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1994 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=581 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=39 step=1  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2113 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1176 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1655 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=716 step=3  batch 2/11 fail (Algebraic Manipulation, Calculus Computation) → stage2 2개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=250 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2522 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1116 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2225 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2182 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=1647 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2211 step=2  batch 3/11 fail (Number Theoretic Reasoning, Logical and Discrete Reasoning, Atomicity) → stage2 3개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2086 step=3  batch 1/11 fail (Atomicity) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=3076 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2259 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,475 [INFO] __main__ — [Stage1] id=2483 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=578 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2584 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2530 step=2  batch 2/11 fail (Algebraic Manipulation, Calculus Computation) → stage2 2개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2351 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2220 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2357 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=546 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2046 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2409 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2072 step=3  batch 1/11 fail (Logical and Discrete Reasoning) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=562 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2173 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2439 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2327 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2447 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2168 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=1348 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2309 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2322 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=3222 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=1389 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2436 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=1322 step=2  batch 2/11 fail (Algebraic Manipulation, Atomicity) → stage2 2개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2267 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:03:03,476 [INFO] __main__ — [Stage1] id=2608 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:03:03,476 [INFO] __main__ — [2-Stage PRM] stage1: 75개 중 fail=32, pass=43
+2026-05-03 10:03:03,477 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:03:03,477 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,478 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,478 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,479 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,480 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,480 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:03:03,481 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:03:03,481 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,481 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,482 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:03:03,482 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,482 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,483 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,505 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:03:03,505 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,506 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,506 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:03:03,506 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,507 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,507 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,507 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:03:03,508 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,508 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:03:03,508 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,509 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,509 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,509 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,509 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,510 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:03,510 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:03:06,908 [INFO] API_PRM — 추론 완료 (wall=3.4s) | 평균 호출 3.4s
+2026-05-03 10:03:07,033 [INFO] API_PRM — 추론 완료 (wall=3.5s) | 평균 호출 3.5s
+2026-05-03 10:03:07,134 [INFO] API_PRM — 추론 완료 (wall=3.7s) | 평균 호출 3.6s
+2026-05-03 10:03:07,520 [INFO] API_PRM — 추론 완료 (wall=4.0s) | 평균 호출 3.9s
+2026-05-03 10:03:07,647 [INFO] API_PRM — 추론 완료 (wall=4.1s) | 평균 호출 4.1s
+2026-05-03 10:03:07,936 [INFO] API_PRM — 추론 완료 (wall=4.5s) | 평균 호출 4.4s
+2026-05-03 10:03:07,964 [INFO] API_PRM — 추론 완료 (wall=4.5s) | 평균 호출 4.4s
+2026-05-03 10:03:08,013 [INFO] API_PRM — 추론 완료 (wall=4.5s) | 평균 호출 4.4s
+2026-05-03 10:03:08,280 [INFO] API_PRM — 추론 완료 (wall=4.8s) | 평균 호출 4.7s
+2026-05-03 10:03:08,307 [INFO] API_PRM — 추론 완료 (wall=4.8s) | 평균 호출 4.7s
+2026-05-03 10:03:08,340 [INFO] API_PRM — 추론 완료 (wall=4.9s) | 평균 호출 4.8s
+2026-05-03 10:03:08,413 [INFO] API_PRM — 추론 완료 (wall=4.9s) | 평균 호출 4.8s
+2026-05-03 10:03:08,768 [INFO] API_PRM — 추론 완료 (wall=5.3s) | 평균 호출 5.3s
+2026-05-03 10:03:09,013 [INFO] API_PRM — 추론 완료 (wall=5.5s) | 평균 호출 5.3s
+2026-05-03 10:03:09,665 [INFO] API_PRM — 추론 완료 (wall=6.2s) | 평균 호출 6.2s
+2026-05-03 10:03:10,546 [INFO] API_PRM — 추론 완료 (wall=7.0s) | 평균 호출 7.0s
+2026-05-03 10:03:10,625 [INFO] API_PRM — 추론 완료 (wall=7.1s) | 평균 호출 7.1s
+2026-05-03 10:03:10,750 [INFO] API_PRM — 추론 완료 (wall=7.2s) | 평균 호출 6.7s
+2026-05-03 10:03:10,969 [INFO] API_PRM — 추론 완료 (wall=7.5s) | 평균 호출 7.4s
+2026-05-03 10:03:11,097 [INFO] API_PRM — 추론 완료 (wall=7.6s) | 평균 호출 7.6s
+2026-05-03 10:03:11,441 [INFO] API_PRM — 추론 완료 (wall=8.0s) | 평균 호출 7.9s
+2026-05-03 10:03:12,615 [INFO] API_PRM — 추론 완료 (wall=9.1s) | 평균 호출 9.1s
+2026-05-03 10:03:12,643 [INFO] API_PRM — 추론 완료 (wall=9.2s) | 평균 호출 8.0s
+2026-05-03 10:03:12,912 [INFO] API_PRM — 추론 완료 (wall=9.4s) | 평균 호출 8.7s
+2026-05-03 10:03:13,012 [INFO] API_PRM — 추론 완료 (wall=9.5s) | 평균 호출 9.5s
+2026-05-03 10:03:13,426 [INFO] API_PRM — 추론 완료 (wall=9.9s) | 평균 호출 9.0s
+2026-05-03 10:03:13,958 [INFO] API_PRM — 추론 완료 (wall=10.5s) | 평균 호출 9.8s
+2026-05-03 10:03:14,169 [INFO] API_PRM — 추론 완료 (wall=10.7s) | 평균 호출 10.6s
+2026-05-03 10:03:14,606 [INFO] API_PRM — 추론 완료 (wall=11.1s) | 평균 호출 11.1s
+2026-05-03 10:03:20,759 [INFO] API_PRM — 추론 완료 (wall=17.3s) | 평균 호출 11.4s
+2026-05-03 10:03:22,709 [INFO] API_PRM — 추론 완료 (wall=19.2s) | 평균 호출 12.4s
+2026-05-03 10:03:22,726 [INFO] __main__ — [AllSummaries] n=75
+2026-05-03 10:03:47,395 [INFO] __main__ — [PRM→fail] id=585 step=2 wrong=2/11 rubrics=['Number Theoretic Reasoning', 'Logical and Discrete Reasoning']
+2026-05-03 10:03:47,397 [INFO] __main__ — [API_PRM_checklist] id=135 step=3: correct wrong=0/11
+2026-05-03 10:03:47,398 [INFO] __main__ — [API_PRM_checklist] id=70 step=1: correct wrong=0/11
+2026-05-03 10:03:47,400 [INFO] __main__ — [API_PRM_checklist] id=437 step=3: correct wrong=0/11
+2026-05-03 10:03:47,401 [INFO] __main__ — [PRM→fail] id=35 step=3 wrong=1/11 rubrics=['Function and Limit Analysis']
+2026-05-03 10:03:47,402 [INFO] __main__ — [API_PRM_checklist] id=2037 step=2: correct wrong=0/11
+2026-05-03 10:03:47,404 [INFO] __main__ — [PRM→fail] id=2097 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,405 [INFO] __main__ — [API_PRM_checklist] id=1380 step=2: correct wrong=0/11
+2026-05-03 10:03:47,406 [INFO] __main__ — [API_PRM_checklist] id=1853 step=3: correct wrong=0/11
+2026-05-03 10:03:47,407 [INFO] __main__ — [PRM→fail] id=1983 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,409 [INFO] __main__ — [API_PRM_checklist] id=161 step=2: correct wrong=0/11
+2026-05-03 10:03:47,409 [INFO] __main__ — [API_PRM_checklist] id=312 step=3: correct wrong=0/11
+2026-05-03 10:03:47,410 [INFO] __main__ — [PRM→fail] id=457 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,412 [INFO] __main__ — [PRM→fail] id=708 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,414 [INFO] __main__ — [API_PRM_checklist] id=1424 step=3: correct wrong=0/11
+2026-05-03 10:03:47,416 [INFO] __main__ — [PRM→fail] id=2465 step=3 wrong=3/11 rubrics=['Algebraic Manipulation', 'Calculus Computation', 'Counting and Probability']
+2026-05-03 10:03:47,418 [INFO] __main__ — [PRM→fail] id=127 step=3 wrong=3/11 rubrics=['Algebraic Manipulation', 'Calculus Computation', 'Function and Limit Analysis']
+2026-05-03 10:03:47,420 [INFO] __main__ — [API_PRM_checklist] id=1572 step=2: correct wrong=0/11
+2026-05-03 10:03:47,421 [INFO] __main__ — [PRM→fail] id=1060 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,422 [INFO] __main__ — [API_PRM_checklist] id=1173 step=3: correct wrong=0/11
+2026-05-03 10:03:47,423 [INFO] __main__ — [PRM→fail] id=147 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,425 [INFO] __main__ — [PRM→fail] id=164 step=2 wrong=3/11 rubrics=['Algebraic Manipulation', 'Abstract and Linear Algebra Operations', 'Logical and Discrete Reasoning']
+2026-05-03 10:03:47,427 [INFO] __main__ — [API_PRM_checklist] id=1841 step=2: correct wrong=0/11
+2026-05-03 10:03:47,432 [INFO] __main__ — [API_PRM_checklist] id=1841 step=2: approved but pred≠gold_answer → force wrong
+2026-05-03 10:03:47,434 [INFO] __main__ — [API_PRM_checklist] id=1022 step=3: correct wrong=0/11
+2026-05-03 10:03:47,435 [INFO] __main__ — [PRM→fail] id=516 step=2 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,437 [INFO] __main__ — [PRM→fail] id=2226 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,439 [INFO] __main__ — [PRM→fail] id=2338 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,440 [INFO] __main__ — [API_PRM_checklist] id=1862 step=2: correct wrong=0/11
+2026-05-03 10:03:47,441 [INFO] __main__ — [API_PRM_checklist] id=2428 step=3: correct wrong=0/11
+2026-05-03 10:03:47,443 [INFO] __main__ — [PRM→fail] id=1155 step=3 wrong=3/11 rubrics=['Algebraic Manipulation', 'Number Theoretic Reasoning', 'Atomicity']
+2026-05-03 10:03:47,445 [INFO] __main__ — [PRM→fail] id=695 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,446 [INFO] __main__ — [API_PRM_checklist] id=380 step=1: correct wrong=0/11
+2026-05-03 10:03:47,447 [INFO] __main__ — [API_PRM_checklist] id=1994 step=3: correct wrong=0/11
+2026-05-03 10:03:47,448 [INFO] __main__ — [API_PRM_checklist] id=581 step=2: correct wrong=0/11
+2026-05-03 10:03:47,448 [INFO] __main__ — [API_PRM_checklist] id=581 step=2: approved but pred≠gold_answer → force wrong
+2026-05-03 10:03:47,450 [INFO] __main__ — [id=39] patcher solved correctly → treat as correct
+2026-05-03 10:03:47,450 [INFO] __main__ — [API_PRM_checklist] id=39 step=1: correct wrong=0/11
+2026-05-03 10:03:47,453 [INFO] __main__ — [API_PRM_checklist] id=2113 step=3: correct wrong=0/11
+2026-05-03 10:03:47,454 [INFO] __main__ — [PRM→fail] id=1176 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,456 [INFO] __main__ — [API_PRM_checklist] id=1655 step=3: correct wrong=0/11
+2026-05-03 10:03:47,457 [INFO] __main__ — [API_PRM_checklist] id=716 step=3: correct wrong=0/11
+2026-05-03 10:03:47,458 [INFO] __main__ — [API_PRM_checklist] id=250 step=2: correct wrong=0/11
+2026-05-03 10:03:47,459 [INFO] __main__ — [PRM→fail] id=2522 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,461 [INFO] __main__ — [API_PRM_checklist] id=1116 step=3: correct wrong=0/11
+2026-05-03 10:03:47,462 [INFO] __main__ — [PRM→fail] id=2225 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,464 [INFO] __main__ — [PRM→fail] id=2182 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,465 [INFO] __main__ — [API_PRM_checklist] id=1647 step=3: correct wrong=0/11
+2026-05-03 10:03:47,467 [INFO] __main__ — [PRM→fail] id=2211 step=2 wrong=3/11 rubrics=['Number Theoretic Reasoning', 'Logical and Discrete Reasoning', 'Atomicity']
+2026-05-03 10:03:47,468 [INFO] __main__ — [PRM→fail] id=2086 step=3 wrong=1/11 rubrics=['Atomicity']
+2026-05-03 10:03:47,469 [INFO] __main__ — [API_PRM_checklist] id=3076 step=2: correct wrong=0/11
+2026-05-03 10:03:47,470 [INFO] __main__ — [PRM→fail] id=2259 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,471 [INFO] __main__ — [API_PRM_checklist] id=2483 step=2: correct wrong=0/11
+2026-05-03 10:03:47,472 [INFO] __main__ — [API_PRM_checklist] id=2483 step=2: approved but pred≠gold_answer → force wrong
+2026-05-03 10:03:47,473 [INFO] __main__ — [API_PRM_checklist] id=578 step=3: correct wrong=0/11
+2026-05-03 10:03:47,473 [INFO] __main__ — [API_PRM_checklist] id=2584 step=3: correct wrong=0/11
+2026-05-03 10:03:47,474 [INFO] __main__ — [PRM→fail] id=2530 step=2 wrong=2/11 rubrics=['Algebraic Manipulation', 'Calculus Computation']
+2026-05-03 10:03:47,475 [INFO] __main__ — [API_PRM_checklist] id=2351 step=3: correct wrong=0/11
+2026-05-03 10:03:47,476 [INFO] __main__ — [API_PRM_checklist] id=2220 step=2: correct wrong=0/11
+2026-05-03 10:03:47,477 [INFO] __main__ — [API_PRM_checklist] id=2357 step=3: correct wrong=0/11
+2026-05-03 10:03:47,477 [INFO] __main__ — [API_PRM_checklist] id=546 step=2: correct wrong=0/11
+2026-05-03 10:03:47,478 [INFO] __main__ — [API_PRM_checklist] id=2046 step=2: correct wrong=0/11
+2026-05-03 10:03:47,479 [INFO] __main__ — [API_PRM_checklist] id=2409 step=3: correct wrong=0/11
+2026-05-03 10:03:47,480 [INFO] __main__ — [PRM→fail] id=2072 step=3 wrong=1/11 rubrics=['Logical and Discrete Reasoning']
+2026-05-03 10:03:47,481 [INFO] __main__ — [API_PRM_checklist] id=562 step=3: correct wrong=0/11
+2026-05-03 10:03:47,482 [INFO] __main__ — [API_PRM_checklist] id=2173 step=3: correct wrong=0/11
+2026-05-03 10:03:47,483 [INFO] __main__ — [PRM→fail] id=2439 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:03:47,484 [INFO] __main__ — [API_PRM_checklist] id=2327 step=2: correct wrong=0/11
+2026-05-03 10:03:47,485 [INFO] __main__ — [API_PRM_checklist] id=2447 step=3: correct wrong=0/11
+2026-05-03 10:03:47,485 [INFO] __main__ — [API_PRM_checklist] id=2168 step=3: correct wrong=0/11
+2026-05-03 10:03:47,486 [INFO] __main__ — [API_PRM_checklist] id=1348 step=3: correct wrong=0/11
+2026-05-03 10:03:47,487 [INFO] __main__ — [API_PRM_checklist] id=2309 step=2: correct wrong=0/11
+2026-05-03 10:03:47,487 [INFO] __main__ — [API_PRM_checklist] id=2322 step=2: correct wrong=0/11
+2026-05-03 10:03:47,488 [INFO] __main__ — [API_PRM_checklist] id=3222 step=3: correct wrong=0/11
+2026-05-03 10:03:47,489 [INFO] __main__ — [PRM→fail] id=1389 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,490 [INFO] __main__ — [API_PRM_checklist] id=2436 step=3: correct wrong=0/11
+2026-05-03 10:03:47,490 [INFO] __main__ — [PRM→fail] id=1322 step=2 wrong=2/11 rubrics=['Algebraic Manipulation', 'Atomicity']
+2026-05-03 10:03:47,491 [INFO] __main__ — [API_PRM_checklist] id=2267 step=2: correct wrong=0/11
+2026-05-03 10:03:47,491 [INFO] __main__ — [PRM→fail] id=2608 step=2 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:03:47,492 [INFO] __main__ — [Generator batch] n=61  [Patcher API] n=13
+2026-05-03 10:03:47,493 [INFO] __main__ — [Patcher API] id=585 step=2 model=deepseek-pro
+2026-05-03 10:03:47,497 [INFO] __main__ — [Patcher API] id=457 step=2 model=deepseek-pro
+2026-05-03 10:03:47,499 [INFO] __main__ — [Patcher API] id=1060 step=2 model=deepseek-pro
+2026-05-03 10:03:47,501 [INFO] __main__ — [Patcher API] id=164 step=2 model=deepseek-pro
+2026-05-03 10:03:47,503 [INFO] __main__ — [Patcher API] id=1841 step=2 model=deepseek-pro
+2026-05-03 10:03:47,505 [INFO] __main__ — [Patcher API] id=516 step=2 model=deepseek-pro
+2026-05-03 10:03:47,507 [INFO] __main__ — [Patcher API] id=581 step=2 model=deepseek-pro
+2026-05-03 10:03:47,508 [INFO] __main__ — [Patcher API] id=1176 step=2 model=deepseek-pro
+2026-05-03 10:03:47,510 [INFO] __main__ — [Patcher API] id=2483 step=2 model=deepseek-pro
+2026-05-03 10:03:47,511 [INFO] __main__ — [Patcher API] id=2530 step=2 model=deepseek-pro
+2026-05-03 10:03:47,513 [INFO] __main__ — [Patcher API] id=1389 step=2 model=deepseek-pro
+2026-05-03 10:03:47,515 [INFO] __main__ — [Patcher API] id=1322 step=2 model=deepseek-pro
+2026-05-03 10:03:47,517 [INFO] __main__ — [Patcher API] id=2608 step=2 model=deepseek-pro
+2026-05-03 10:04:39,964 [INFO] __main__ — [Patcher API] id=581 step=2 pred_action=<|solve|> len=1186
+2026-05-03 10:04:49,536 [INFO] __main__ — [Patcher API] id=1841 step=2 pred_action=<|solve|> len=1468
+2026-05-03 10:05:08,925 [INFO] __main__ — [Patcher API] id=1176 step=2 pred_action=<|solve|> len=783
+2026-05-03 10:05:15,508 [INFO] __main__ — [Patcher API] id=1389 step=2 pred_action=<|solve|> len=1447
+2026-05-03 10:05:39,647 [INFO] __main__ — [Patcher API] id=2530 step=2 pred_action=<|solve|> len=1737
+2026-05-03 10:06:13,454 [INFO] __main__ — [Patcher API] id=457 step=2 pred_action=<|solve|> len=1465
+2026-05-03 10:06:26,716 [INFO] __main__ — [Generator] id=135 step=4 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:06:26,716 [INFO] __main__ — [Generator] id=70 step=2 rethink=False pred_action=<|solve|> correct=1 incorrect=1 na=0
+2026-05-03 10:06:26,717 [INFO] __main__ — [Generator] id=437 step=4 rethink=False pred_action=<|solve|> correct=9 incorrect=2 na=0
+2026-05-03 10:06:26,718 [INFO] __main__ — [Generator] id=35 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,720 [INFO] __main__ — [Generator] id=2037 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,721 [INFO] __main__ — [Generator] id=2097 step=3 rethink=True pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,722 [INFO] __main__ — [Generator] id=1380 step=3 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,723 [INFO] __main__ — [Generator] id=1853 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,724 [INFO] __main__ — [Generator] id=1983 step=3 rethink=True pred_action=<|solve|> correct=2 incorrect=0 na=0
+2026-05-03 10:06:26,725 [INFO] __main__ — [Generator] id=161 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,725 [INFO] __main__ — [Generator] id=312 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,726 [INFO] __main__ — [Generator] id=708 step=3 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=9
+2026-05-03 10:06:26,727 [INFO] __main__ — [Generator] id=1424 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,728 [INFO] __main__ — [Generator] id=2465 step=3 rethink=True pred_action=<|solve|> correct=14 incorrect=0 na=6
+2026-05-03 10:06:26,730 [INFO] __main__ — [Generator] id=127 step=3 rethink=True pred_action=<|end|> correct=0 incorrect=0 na=0
+2026-05-03 10:06:26,731 [INFO] __main__ — [Generator] id=1572 step=3 rethink=False pred_action=<|solve|> correct=2 incorrect=0 na=0
+2026-05-03 10:06:26,732 [INFO] __main__ — [Generator] id=1173 step=4 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,733 [INFO] __main__ — [Generator] id=147 step=3 rethink=True pred_action=<|end|> correct=18 incorrect=4 na=0
+2026-05-03 10:06:26,734 [INFO] __main__ — [Generator] id=1022 step=4 rethink=False pred_action=<|solve|> correct=8 incorrect=0 na=0
+2026-05-03 10:06:26,735 [INFO] __main__ — [Generator] id=2226 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=4 na=8
+2026-05-03 10:06:26,736 [INFO] __main__ — [Generator] id=2338 step=3 rethink=True pred_action=<|solve|> correct=21 incorrect=0 na=0
+2026-05-03 10:06:26,737 [INFO] __main__ — [Generator] id=1862 step=3 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,739 [INFO] __main__ — [Generator] id=2428 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,740 [INFO] __main__ — [Generator] id=1155 step=3 rethink=True pred_action=<|solve|> correct=8 incorrect=3 na=0
+2026-05-03 10:06:26,741 [INFO] __main__ — [Generator] id=695 step=3 rethink=True pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,742 [INFO] __main__ — [Generator] id=380 step=2 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,744 [INFO] __main__ — [Generator] id=1994 step=4 rethink=False pred_action=<|solve|> correct=12 incorrect=0 na=8
+2026-05-03 10:06:26,744 [INFO] __main__ — [Generator] id=2113 step=4 rethink=False pred_action=<|solve|> correct=2 incorrect=0 na=0
+2026-05-03 10:06:26,745 [INFO] __main__ — [Generator] id=1655 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,746 [INFO] __main__ — [Generator] id=716 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,747 [INFO] __main__ — [Generator] id=250 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,748 [INFO] __main__ — [Generator] id=2522 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,750 [INFO] __main__ — [Generator] id=1116 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,751 [INFO] __main__ — [Generator] id=2225 step=3 rethink=True pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,752 [INFO] __main__ — [Generator] id=2182 step=3 rethink=True pred_action=<|solve|> correct=12 incorrect=0 na=8
+2026-05-03 10:06:26,753 [INFO] __main__ — [Generator] id=1647 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,754 [INFO] __main__ — [Generator] id=2211 step=2 rethink=True pred_action=<|solve|> correct=18 incorrect=4 na=0
+2026-05-03 10:06:26,755 [INFO] __main__ — [Generator] id=2086 step=3 rethink=True pred_action=<|end|> correct=9 incorrect=2 na=0
+2026-05-03 10:06:26,756 [INFO] __main__ — [Generator] id=3076 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,757 [INFO] __main__ — [Generator] id=2259 step=3 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 10:06:26,758 [INFO] __main__ — [Generator] id=578 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,759 [INFO] __main__ — [Generator] id=2584 step=4 rethink=False pred_action=<|solve|> correct=7 incorrect=4 na=0
+2026-05-03 10:06:26,760 [INFO] __main__ — [Generator] id=2351 step=4 rethink=False pred_action=<|rethink|> correct=1 incorrect=9 na=0
+2026-05-03 10:06:26,760 [INFO] __main__ — [Generator] id=2220 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,761 [INFO] __main__ — [Generator] id=2357 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,763 [INFO] __main__ — [Generator] id=546 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,765 [INFO] __main__ — [Generator] id=2046 step=3 rethink=False pred_action=<|end|> correct=0 incorrect=0 na=0
+2026-05-03 10:06:26,766 [INFO] __main__ — [Generator] id=2409 step=4 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:06:26,767 [INFO] __main__ — [Generator] id=2072 step=3 rethink=True pred_action=<|solve|> correct=9 incorrect=2 na=0
+2026-05-03 10:06:26,768 [INFO] __main__ — [Generator] id=562 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,768 [INFO] __main__ — [Generator] id=2173 step=4 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,769 [INFO] __main__ — [Generator] id=2439 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,770 [INFO] __main__ — [Generator] id=2327 step=3 rethink=False pred_action=<|rethink|> correct=1 incorrect=8 na=0
+2026-05-03 10:06:26,771 [INFO] __main__ — [Generator] id=2447 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,773 [INFO] __main__ — [Generator] id=2168 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,774 [INFO] __main__ — [Generator] id=1348 step=4 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:06:26,774 [INFO] __main__ — [Generator] id=2309 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,775 [INFO] __main__ — [Generator] id=2322 step=3 rethink=False pred_action=<|solve|> correct=3 incorrect=0 na=0
+2026-05-03 10:06:26,776 [INFO] __main__ — [Generator] id=3222 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:26,778 [INFO] __main__ — [Generator] id=2436 step=4 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:06:26,778 [INFO] __main__ — [Generator] id=2267 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:06:34,976 [INFO] __main__ — [Patcher API] id=2608 step=2 pred_action=<|end|> len=2210
+2026-05-03 10:06:58,413 [INFO] __main__ — [Patcher API] id=585 step=2 pred_action=<|end|> len=1923
+2026-05-03 10:07:11,069 [INFO] __main__ — [Patcher API] id=1060 step=2 pred_action=<|solve|> len=1986
+2026-05-03 10:07:40,957 [INFO] __main__ — [Patcher API] id=2483 step=2 pred_action=<|end|> len=2231
+2026-05-03 10:07:45,496 [INFO] __main__ — [Patcher API] id=516 step=2 pred_action=<|end|> len=1997
+2026-05-03 10:09:45,674 [INFO] __main__ — [Patcher API] id=1322 step=2 pred_action=<|solve|> len=2608
+2026-05-03 10:12:00,022 [INFO] __main__ — [Patcher API] id=164 step=2 pred_action=<|end|> len=1815
+2026-05-03 10:12:00,029 [INFO] __main__ — [PRM batch] n_problems=74  n_rubrics=10  skipped(tool_call)=0
+2026-05-03 10:12:00,030 [INFO] API_PRM_Batch — 추론 시작: n=74  model=deepseek-chat
+2026-05-03 10:12:35,399 [INFO] API_PRM_Batch — 추론 완료 (wall=35.4s) | 평균 호출 18.3s
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=585 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=135 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=70 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=437 step=4  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=35 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=2037 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=2097 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1380 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1853 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1983 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=161 step=3  batch 3/11 fail (Counting and Probability, Number Theoretic Reasoning, Logical and Discrete Reasoning) → stage2 3개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=312 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=457 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=708 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1424 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=2465 step=3  batch 3/11 fail (Algebraic Manipulation, Calculus Computation, Counting and Probability) → stage2 3개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=127 step=3  batch 4/11 fail (Algebraic Manipulation, Calculus Computation, Function and Limit Analysis, Atomicity) → stage2 4개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1572 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1060 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1173 step=4  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=147 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=164 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,403 [INFO] __main__ — [Stage1] id=1841 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1022 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=516 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2226 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2338 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1862 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2428 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1155 step=3  batch 10/11 fail (Algebraic Manipulation, Abstract and Linear Algebra Operations, Calculus Computation, Function and Limit Analysis, Geometric Reasoning, Counting and Probability, Number Theoretic Reasoning, Logical and Discrete Reasoning, Differential Equations, Atomicity) → stage2 10개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=695 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=380 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1994 step=4  batch 2/11 fail (Algebraic Manipulation, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=581 step=2  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2113 step=4  batch 2/11 fail (Progress and Non-Repetition, Atomicity) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1176 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1655 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=716 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=250 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2522 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1116 step=4  batch 3/11 fail (Algebraic Manipulation, Calculus Computation, Geometric Reasoning) → stage2 3개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2225 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2182 step=3  batch 2/11 fail (Algebraic Manipulation, Number Theoretic Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=1647 step=4  batch 2/11 fail (Algebraic Manipulation, Number Theoretic Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2211 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2086 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=3076 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2259 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2483 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=578 step=4  batch 2/11 fail (Algebraic Manipulation, Progress and Non-Repetition) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2584 step=4  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2530 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2351 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2220 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=2357 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,404 [INFO] __main__ — [Stage1] id=546 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2046 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2409 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2072 step=3  batch 2/11 fail (Counting and Probability, Logical and Discrete Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=562 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2173 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2439 step=3  batch 2/11 fail (Algebraic Manipulation, Progress and Non-Repetition) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2327 step=3  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2447 step=4  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2168 step=4  batch 2/11 fail (Algebraic Manipulation, Number Theoretic Reasoning) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=1348 step=4  batch 2/11 fail (Algebraic Manipulation, Function and Limit Analysis) → stage2 2개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2309 step=3  batch 1/11 fail (Progress and Non-Repetition) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2322 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=3222 step=4  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=1389 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2436 step=4  batch 3/11 fail (Counting and Probability, Logical and Discrete Reasoning, Atomicity) → stage2 3개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=1322 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2267 step=3  batch 1/11 fail (Algebraic Manipulation) → stage2 1개 루브릭 호출
+2026-05-03 10:12:35,405 [INFO] __main__ — [Stage1] id=2608 step=2  batch 0/11 pass → stage2 없음
+2026-05-03 10:12:35,405 [INFO] __main__ — [2-Stage PRM] stage1: 74개 중 fail=33, pass=41
+2026-05-03 10:12:35,406 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,406 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,407 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:12:35,407 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,408 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:12:35,408 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:12:35,409 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,409 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,410 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,410 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,410 [INFO] API_PRM — 추론 시작: n=9  model=deepseek-chat
+2026-05-03 10:12:35,411 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,411 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,411 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,412 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,412 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,412 [INFO] API_PRM — 추론 시작: n=3  model=deepseek-chat
+2026-05-03 10:12:35,413 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,413 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,413 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,414 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,414 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,414 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,415 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,415 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,415 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,416 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,416 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,416 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,416 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,417 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:35,417 [INFO] API_PRM — 추론 시작: n=2  model=deepseek-chat
+2026-05-03 10:12:35,417 [INFO] API_PRM — 추론 시작: n=1  model=deepseek-chat
+2026-05-03 10:12:39,102 [INFO] API_PRM — 추론 완료 (wall=3.7s) | 평균 호출 3.7s
+2026-05-03 10:12:39,275 [INFO] API_PRM — 추론 완료 (wall=3.9s) | 평균 호출 3.8s
+2026-05-03 10:12:39,632 [INFO] API_PRM — 추론 완료 (wall=4.2s) | 평균 호출 4.1s
+2026-05-03 10:12:39,722 [INFO] API_PRM — 추론 완료 (wall=4.3s) | 평균 호출 4.3s
+2026-05-03 10:12:39,788 [INFO] API_PRM — 추론 완료 (wall=4.4s) | 평균 호출 4.4s
+2026-05-03 10:12:40,033 [INFO] API_PRM — 추론 완료 (wall=4.6s) | 평균 호출 4.6s
+2026-05-03 10:12:40,062 [INFO] API_PRM — 추론 완료 (wall=4.6s) | 평균 호출 4.6s
+2026-05-03 10:12:40,196 [INFO] API_PRM — 추론 완료 (wall=4.8s) | 평균 호출 4.1s
+2026-05-03 10:12:40,631 [INFO] API_PRM — 추론 완료 (wall=5.2s) | 평균 호출 5.2s
+2026-05-03 10:12:40,664 [INFO] API_PRM — 추론 완료 (wall=5.3s) | 평균 호출 5.2s
+2026-05-03 10:12:40,817 [INFO] API_PRM — 추론 완료 (wall=5.4s) | 평균 호출 5.3s
+2026-05-03 10:12:41,111 [INFO] API_PRM — 추론 완료 (wall=5.7s) | 평균 호출 5.6s
+2026-05-03 10:12:41,271 [INFO] API_PRM — 추론 완료 (wall=5.9s) | 평균 호출 5.8s
+2026-05-03 10:12:41,311 [INFO] API_PRM — 추론 완료 (wall=5.9s) | 평균 호출 5.4s
+2026-05-03 10:12:41,424 [INFO] API_PRM — 추론 완료 (wall=6.0s) | 평균 호출 6.0s
+2026-05-03 10:12:41,538 [INFO] API_PRM — 추론 완료 (wall=6.1s) | 평균 호출 6.0s
+2026-05-03 10:12:41,591 [INFO] API_PRM — 추론 완료 (wall=6.2s) | 평균 호출 5.9s
+2026-05-03 10:12:41,765 [INFO] API_PRM — 추론 완료 (wall=6.3s) | 평균 호출 6.3s
+2026-05-03 10:12:42,975 [INFO] API_PRM — 추론 완료 (wall=7.6s) | 평균 호출 7.5s
+2026-05-03 10:12:43,167 [INFO] API_PRM — 추론 완료 (wall=7.8s) | 평균 호출 7.7s
+2026-05-03 10:12:43,819 [INFO] API_PRM — 추론 완료 (wall=8.4s) | 평균 호출 8.3s
+2026-05-03 10:12:43,976 [INFO] API_PRM — 추론 완료 (wall=8.6s) | 평균 호출 7.8s
+2026-05-03 10:12:44,048 [INFO] API_PRM — 추론 완료 (wall=8.6s) | 평균 호출 8.4s
+2026-05-03 10:12:44,103 [INFO] API_PRM — 추론 완료 (wall=8.7s) | 평균 호출 8.6s
+2026-05-03 10:12:44,219 [INFO] API_PRM — 추론 완료 (wall=8.8s) | 평균 호출 8.5s
+2026-05-03 10:12:45,577 [INFO] API_PRM — 추론 완료 (wall=10.2s) | 평균 호출 10.0s
+2026-05-03 10:12:45,661 [INFO] API_PRM — 추론 완료 (wall=10.2s) | 평균 호출 9.3s
+2026-05-03 10:12:45,662 [INFO] API_PRM — 추론 완료 (wall=10.3s) | 평균 호출 9.0s
+2026-05-03 10:12:46,098 [INFO] API_PRM — 추론 완료 (wall=10.7s) | 평균 호출 8.0s
+2026-05-03 10:12:47,733 [INFO] API_PRM — 추론 완료 (wall=12.3s) | 평균 호출 8.6s
+2026-05-03 10:12:47,959 [INFO] API_PRM — 추론 완료 (wall=12.5s) | 평균 호출 12.5s
+2026-05-03 10:12:53,478 [INFO] API_PRM — 추론 완료 (wall=18.1s) | 평균 호출 14.6s
+2026-05-03 10:12:54,516 [INFO] API_PRM — 추론 완료 (wall=19.1s) | 평균 호출 13.3s
+2026-05-03 10:12:54,521 [INFO] __main__ — [AllSummaries] n=74
+2026-05-03 10:13:23,948 [INFO] __main__ — [id=585] patcher solved correctly → treat as correct
+2026-05-03 10:13:23,948 [INFO] __main__ — [API_PRM_checklist] id=585 step=2: correct wrong=0/11
+2026-05-03 10:13:23,951 [INFO] __main__ — [API_PRM_checklist] id=135 step=4: correct wrong=0/11
+2026-05-03 10:13:23,952 [INFO] __main__ — [API_PRM_checklist] id=70 step=2: correct wrong=0/11
+2026-05-03 10:13:23,954 [INFO] __main__ — [PRM→fail] id=437 step=4 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:23,955 [INFO] __main__ — [API_PRM_checklist] id=35 step=3: correct wrong=0/11
+2026-05-03 10:13:23,956 [INFO] __main__ — [API_PRM_checklist] id=2037 step=3: correct wrong=0/11
+2026-05-03 10:13:23,958 [INFO] __main__ — [API_PRM_checklist] id=2097 step=3: correct wrong=0/11
+2026-05-03 10:13:23,959 [INFO] __main__ — [API_PRM_checklist] id=1380 step=3: correct wrong=0/11
+2026-05-03 10:13:23,960 [INFO] __main__ — [API_PRM_checklist] id=1853 step=4: correct wrong=0/11
+2026-05-03 10:13:23,960 [INFO] __main__ — [API_PRM_checklist] id=1983 step=3: correct wrong=0/11
+2026-05-03 10:13:23,962 [INFO] __main__ — [PRM→fail] id=161 step=3 wrong=3/11 rubrics=['Counting and Probability', 'Number Theoretic Reasoning', 'Logical and Discrete Reasoning']
+2026-05-03 10:13:23,963 [INFO] __main__ — [API_PRM_checklist] id=312 step=4: correct wrong=0/11
+2026-05-03 10:13:23,964 [INFO] __main__ — [API_PRM_checklist] id=457 step=2: correct wrong=0/11
+2026-05-03 10:13:23,966 [INFO] __main__ — [PRM→fail] id=708 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:23,967 [INFO] __main__ — [API_PRM_checklist] id=1424 step=4: correct wrong=0/11
+2026-05-03 10:13:23,969 [INFO] __main__ — [PRM→fail] id=2465 step=3 wrong=3/11 rubrics=['Algebraic Manipulation', 'Calculus Computation', 'Counting and Probability']
+2026-05-03 10:13:23,971 [INFO] __main__ — [PRM→fail] id=127 step=3 wrong=4/11 rubrics=['Algebraic Manipulation', 'Calculus Computation', 'Function and Limit Analysis', 'Atomicity']
+2026-05-03 10:13:23,973 [INFO] __main__ — [API_PRM_checklist] id=1572 step=3: correct wrong=0/11
+2026-05-03 10:13:23,974 [INFO] __main__ — [API_PRM_checklist] id=1060 step=2: correct wrong=0/11
+2026-05-03 10:13:23,975 [INFO] __main__ — [PRM→fail] id=1173 step=4 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:23,977 [INFO] __main__ — [PRM→fail] id=147 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:23,981 [INFO] __main__ — [id=164] patcher wrong final answer → patcher_fail
+2026-05-03 10:13:23,982 [INFO] __main__ — [API_PRM_checklist] id=1841 step=2: correct wrong=0/11
+2026-05-03 10:13:23,983 [INFO] __main__ — [API_PRM_checklist] id=1022 step=4: correct wrong=0/11
+2026-05-03 10:13:23,985 [INFO] __main__ — [id=516] patcher wrong final answer → patcher_fail
+2026-05-03 10:13:23,987 [INFO] __main__ — [PRM→fail] id=2226 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:23,988 [INFO] __main__ — [API_PRM_checklist] id=2338 step=3: correct wrong=0/11
+2026-05-03 10:13:23,990 [INFO] __main__ — [PRM→fail] id=1862 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:23,992 [INFO] __main__ — [API_PRM_checklist] id=2428 step=4: correct wrong=0/11
+2026-05-03 10:13:23,994 [INFO] __main__ — [PRM→fail] id=1155 step=3 wrong=8/11 rubrics=['Algebraic Manipulation', 'Abstract and Linear Algebra Operations', 'Calculus Computation', 'Function and Limit Analysis', 'Number Theoretic Reasoning', 'Logical and Discrete Reasoning', 'Differential Equations', 'Atomicity']
+2026-05-03 10:13:23,996 [INFO] __main__ — [PRM→fail] id=695 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:23,997 [INFO] __main__ — [API_PRM_checklist] id=380 step=2: correct wrong=0/11
+2026-05-03 10:13:23,999 [INFO] __main__ — [PRM→fail] id=1994 step=4 wrong=2/11 rubrics=['Algebraic Manipulation', 'Logical and Discrete Reasoning']
+2026-05-03 10:13:24,001 [INFO] __main__ — [id=581] patcher mid-step PRM wrong → override to correct
+2026-05-03 10:13:24,001 [INFO] __main__ — [API_PRM_checklist] id=581 step=2: correct wrong=1/11
+2026-05-03 10:13:24,003 [INFO] __main__ — [PRM→fail] id=2113 step=4 wrong=2/11 rubrics=['Progress and Non-Repetition', 'Atomicity']
+2026-05-03 10:13:24,004 [INFO] __main__ — [API_PRM_checklist] id=1176 step=2: correct wrong=0/11
+2026-05-03 10:13:24,005 [INFO] __main__ — [API_PRM_checklist] id=1655 step=4: correct wrong=0/11
+2026-05-03 10:13:24,006 [INFO] __main__ — [API_PRM_checklist] id=716 step=4: correct wrong=0/11
+2026-05-03 10:13:24,007 [INFO] __main__ — [API_PRM_checklist] id=250 step=3: correct wrong=0/11
+2026-05-03 10:13:24,008 [INFO] __main__ — [PRM→fail] id=2522 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,010 [INFO] __main__ — [PRM→fail] id=1116 step=4 wrong=3/11 rubrics=['Algebraic Manipulation', 'Calculus Computation', 'Geometric Reasoning']
+2026-05-03 10:13:24,012 [INFO] __main__ — [API_PRM_checklist] id=2225 step=3: correct wrong=0/11
+2026-05-03 10:13:24,013 [INFO] __main__ — [API_PRM_checklist] id=2182 step=3: correct wrong=0/11
+2026-05-03 10:13:24,014 [INFO] __main__ — [PRM→fail] id=1647 step=4 wrong=2/11 rubrics=['Algebraic Manipulation', 'Number Theoretic Reasoning']
+2026-05-03 10:13:24,015 [INFO] __main__ — [API_PRM_checklist] id=2211 step=2: correct wrong=0/11
+2026-05-03 10:13:24,016 [INFO] __main__ — [API_PRM_checklist] id=2086 step=3: correct wrong=0/11
+2026-05-03 10:13:24,017 [INFO] __main__ — [API_PRM_checklist] id=2086 step=3: approved but pred≠gold_answer → force wrong
+2026-05-03 10:13:24,018 [INFO] __main__ — [API_PRM_checklist] id=3076 step=3: correct wrong=0/11
+2026-05-03 10:13:24,019 [INFO] __main__ — [API_PRM_checklist] id=2259 step=3: correct wrong=0/11
+2026-05-03 10:13:24,020 [INFO] __main__ — [id=2483] patcher solved correctly → treat as correct
+2026-05-03 10:13:24,020 [INFO] __main__ — [API_PRM_checklist] id=2483 step=2: correct wrong=0/11
+2026-05-03 10:13:24,022 [INFO] __main__ — [PRM→fail] id=578 step=4 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:24,023 [INFO] __main__ — [PRM→fail] id=2584 step=4 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,024 [INFO] __main__ — [API_PRM_checklist] id=2530 step=2: correct wrong=0/11
+2026-05-03 10:13:24,025 [INFO] __main__ — [API_PRM_checklist] id=2351 step=4: correct wrong=0/11
+2026-05-03 10:13:24,026 [INFO] __main__ — [PRM→fail] id=2220 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:24,028 [INFO] __main__ — [API_PRM_checklist] id=2357 step=4: correct wrong=0/11
+2026-05-03 10:13:24,028 [INFO] __main__ — [API_PRM_checklist] id=546 step=3: correct wrong=0/11
+2026-05-03 10:13:24,030 [INFO] __main__ — [PRM→fail] id=2046 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,031 [INFO] __main__ — [API_PRM_checklist] id=2409 step=4: correct wrong=0/11
+2026-05-03 10:13:24,032 [INFO] __main__ — [PRM→fail] id=2072 step=3 wrong=2/11 rubrics=['Counting and Probability', 'Logical and Discrete Reasoning']
+2026-05-03 10:13:24,033 [INFO] __main__ — [API_PRM_checklist] id=562 step=4: correct wrong=0/11
+2026-05-03 10:13:24,034 [INFO] __main__ — [API_PRM_checklist] id=2173 step=4: correct wrong=0/11
+2026-05-03 10:13:24,035 [INFO] __main__ — [PRM→fail] id=2439 step=3 wrong=2/11 rubrics=['Algebraic Manipulation', 'Progress and Non-Repetition']
+2026-05-03 10:13:24,036 [INFO] __main__ — [API_PRM_checklist] id=2327 step=3: correct wrong=0/11
+2026-05-03 10:13:24,036 [INFO] __main__ — [API_PRM_checklist] id=2447 step=4: correct wrong=0/11
+2026-05-03 10:13:24,037 [INFO] __main__ — [PRM→fail] id=2168 step=4 wrong=2/11 rubrics=['Algebraic Manipulation', 'Number Theoretic Reasoning']
+2026-05-03 10:13:24,037 [INFO] __main__ — [API_PRM_checklist] id=1348 step=4: correct wrong=0/11
+2026-05-03 10:13:24,038 [INFO] __main__ — [PRM→fail] id=2309 step=3 wrong=1/11 rubrics=['Progress and Non-Repetition']
+2026-05-03 10:13:24,039 [INFO] __main__ — [PRM→fail] id=2322 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,039 [INFO] __main__ — [PRM→fail] id=3222 step=4 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,040 [INFO] __main__ — [API_PRM_checklist] id=1389 step=2: correct wrong=0/11
+2026-05-03 10:13:24,041 [INFO] __main__ — [PRM→fail] id=2436 step=4 wrong=3/11 rubrics=['Counting and Probability', 'Logical and Discrete Reasoning', 'Atomicity']
+2026-05-03 10:13:24,042 [INFO] __main__ — [API_PRM_checklist] id=1322 step=2: correct wrong=0/11
+2026-05-03 10:13:24,042 [INFO] __main__ — [PRM→fail] id=2267 step=3 wrong=1/11 rubrics=['Algebraic Manipulation']
+2026-05-03 10:13:24,043 [INFO] __main__ — [id=2608] patcher solved correctly → treat as correct
+2026-05-03 10:13:24,043 [INFO] __main__ — [API_PRM_checklist] id=2608 step=2: correct wrong=0/11
+2026-05-03 10:13:24,043 [INFO] __main__ — [Generator batch] n=58  [Patcher API] n=11
+2026-05-03 10:13:24,045 [INFO] __main__ — [Patcher API] id=708 step=3 model=deepseek-pro
+2026-05-03 10:13:24,048 [INFO] __main__ — [Patcher API] id=2465 step=3 model=deepseek-pro
+2026-05-03 10:13:24,050 [INFO] __main__ — [Patcher API] id=127 step=3 model=deepseek-pro
+2026-05-03 10:13:24,053 [INFO] __main__ — [Patcher API] id=147 step=3 model=deepseek-pro
+2026-05-03 10:13:24,056 [INFO] __main__ — [Patcher API] id=2226 step=3 model=deepseek-pro
+2026-05-03 10:13:24,058 [INFO] __main__ — [Patcher API] id=1155 step=3 model=deepseek-pro
+2026-05-03 10:13:24,060 [INFO] __main__ — [Patcher API] id=695 step=3 model=deepseek-pro
+2026-05-03 10:13:24,062 [INFO] __main__ — [Patcher API] id=2522 step=3 model=deepseek-pro
+2026-05-03 10:13:24,064 [INFO] __main__ — [Patcher API] id=2086 step=3 model=deepseek-pro
+2026-05-03 10:13:24,064 [INFO] __main__ — [Patcher API] id=2072 step=3 model=deepseek-pro
+2026-05-03 10:13:24,068 [INFO] __main__ — [Patcher API] id=2439 step=3 model=deepseek-pro
+  ✓  [id=39]  G_01  G+_02  P*_03  → correct (mix)
+  ✓  [id=585]  G_01  G_02  G+_03  P*_04  → correct (mix)
+  [id=164]  G_01  G_02  G+_03  P*_04  → patcher_fail
+  [id=516]  G_01  G_02  G+_03  P*_04  → patcher_fail
+  ✓  [id=2483]  G_01  G_02  G+_03  P*_04  → correct (mix)
+  ✓  [id=2608]  G_01  G_02  G+_03  P*_04  → correct (mix)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  API 비용 요약
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  [DEEPSEEK-CHAT] deepseek-chat
+    input     2,521,568 tok  $0.3530
+    cached    2,253,952 tok  $0.0063  (절약 $0.3092)
+    output      930,122 tok  $0.2604
+    소계                      $0.6198
+  [DEEPSEEK-PRO] deepseek-pro
+    input         5,635 tok  $0.0025
+    cached       20,608 tok  $0.0001  (절약 $0.0089)
+    output      106,926 tok  $0.0930
+    소계                      $0.0956
+────────────────────────────────────────────────────────────
+  총 비용:                        $0.7153
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2026-05-03 10:14:49,625 [INFO] __main__ — [Patcher API] id=2465 step=3 pred_action=<|end|> len=1583
+2026-05-03 10:14:51,793 [INFO] __main__ — [Patcher API] id=1155 step=3 pred_action=<|solve|> len=1560
+2026-05-03 10:15:06,561 [INFO] __main__ — [Patcher API] id=708 step=3 pred_action=<|end|> len=1588
+2026-05-03 10:15:11,416 [INFO] __main__ — [Patcher API] id=2522 step=3 pred_action=<|end|> len=1839
+2026-05-03 10:15:35,391 [INFO] __main__ — [Generator] id=135 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,392 [INFO] __main__ — [Generator] id=70 step=3 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:15:35,393 [INFO] __main__ — [Generator] id=437 step=4 rethink=True pred_action=<|solve|> correct=8 incorrect=3 na=0
+2026-05-03 10:15:35,394 [INFO] __main__ — [Generator] id=35 step=4 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,395 [INFO] __main__ — [Generator] id=2037 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,396 [INFO] __main__ — [Generator] id=2097 step=4 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:15:35,397 [INFO] __main__ — [Generator] id=1380 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,398 [INFO] __main__ — [Generator] id=1853 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,399 [INFO] __main__ — [Generator] id=1983 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,399 [INFO] __main__ — [Generator] id=161 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,400 [INFO] __main__ — [Generator] id=312 step=5 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,401 [INFO] __main__ — [Generator] id=457 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,402 [INFO] __main__ — [Generator] id=1424 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,403 [INFO] __main__ — [Generator] id=1572 step=4 rethink=False pred_action=<|end|> correct=0 incorrect=0 na=0
+2026-05-03 10:15:35,404 [INFO] __main__ — [Generator] id=1060 step=3 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,404 [INFO] __main__ — [Generator] id=1173 step=4 rethink=True pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,405 [INFO] __main__ — [Generator] id=1841 step=3 rethink=False pred_action=<|solve|> correct=0 incorrect=0 na=0
+2026-05-03 10:15:35,407 [INFO] __main__ — [Generator] id=1022 step=5 rethink=False pred_action=<|end|> correct=11 incorrect=0 na=7
+2026-05-03 10:15:35,407 [INFO] __main__ — [Generator] id=2338 step=4 rethink=False pred_action=<|solve|> correct=1 incorrect=0 na=0
+2026-05-03 10:15:35,408 [INFO] __main__ — [Generator] id=1862 step=3 rethink=True pred_action=<|solve|> correct=15 incorrect=0 na=5
+2026-05-03 10:15:35,410 [INFO] __main__ — [Generator] id=2428 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,412 [INFO] __main__ — [Generator] id=380 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,413 [INFO] __main__ — [Generator] id=1994 step=4 rethink=True pred_action=<|end|> correct=8 incorrect=3 na=0
+2026-05-03 10:15:35,414 [INFO] __main__ — [Generator] id=581 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,415 [INFO] __main__ — [Generator] id=2113 step=4 rethink=True pred_action=<|end|> correct=13 incorrect=0 na=7
+2026-05-03 10:15:35,416 [INFO] __main__ — [Generator] id=1176 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,417 [INFO] __main__ — [Generator] id=1655 step=5 rethink=False pred_action=<|solve|> correct=13 incorrect=0 na=7
+2026-05-03 10:15:35,418 [INFO] __main__ — [Generator] id=716 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,418 [INFO] __main__ — [Generator] id=250 step=4 rethink=False pred_action=<|solve|> correct=13 incorrect=0 na=7
+2026-05-03 10:15:35,420 [INFO] __main__ — [Generator] id=1116 step=4 rethink=True pred_action=<|solve|> correct=16 incorrect=0 na=4
+2026-05-03 10:15:35,421 [INFO] __main__ — [Generator] id=2225 step=4 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:15:35,423 [INFO] __main__ — [Generator] id=2182 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,425 [INFO] __main__ — [Generator] id=1647 step=4 rethink=True pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,426 [INFO] __main__ — [Generator] id=2211 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,427 [INFO] __main__ — [Generator] id=3076 step=4 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,428 [INFO] __main__ — [Generator] id=2259 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,428 [INFO] __main__ — [Generator] id=578 step=4 rethink=True pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:15:35,429 [INFO] __main__ — [Generator] id=2584 step=4 rethink=True pred_action=<|solve|> correct=8 incorrect=3 na=0
+2026-05-03 10:15:35,431 [INFO] __main__ — [Generator] id=2530 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,432 [INFO] __main__ — [Generator] id=2351 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,433 [INFO] __main__ — [Generator] id=2220 step=3 rethink=True pred_action=<|solve|> correct=11 incorrect=0 na=0
+2026-05-03 10:15:35,435 [INFO] __main__ — [Generator] id=2357 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,436 [INFO] __main__ — [Generator] id=546 step=4 rethink=False pred_action=<|solve|> correct=20 incorrect=0 na=0
+2026-05-03 10:15:35,437 [INFO] __main__ — [Generator] id=2046 step=3 rethink=True pred_action=<|solve|> correct=8 incorrect=2 na=0
+2026-05-03 10:15:35,439 [INFO] __main__ — [Generator] id=2409 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,439 [INFO] __main__ — [Generator] id=562 step=5 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,440 [INFO] __main__ — [Generator] id=2173 step=5 rethink=False pred_action=<|solve|> correct=9 incorrect=0 na=0
+2026-05-03 10:15:35,440 [INFO] __main__ — [Generator] id=2327 step=4 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,441 [INFO] __main__ — [Generator] id=2447 step=5 rethink=False pred_action=<|solve|> correct=12 incorrect=0 na=6
+2026-05-03 10:15:35,444 [INFO] __main__ — [Generator] id=2168 step=4 rethink=True pred_action=<|solve|> correct=19 incorrect=0 na=1
+2026-05-03 10:15:35,445 [INFO] __main__ — [Generator] id=1348 step=5 rethink=False pred_action=<|end|> correct=18 incorrect=0 na=0
+2026-05-03 10:15:35,446 [INFO] __main__ — [Generator] id=2309 step=3 rethink=True pred_action=<|solve|> correct=10 incorrect=1 na=0
+2026-05-03 10:15:35,448 [INFO] __main__ — [Generator] id=2322 step=3 rethink=True pred_action=<|solve|> correct=18 incorrect=3 na=0
+2026-05-03 10:15:35,449 [INFO] __main__ — [Generator] id=3222 step=4 rethink=True pred_action=<|solve|> correct=8 incorrect=2 na=0
+2026-05-03 10:15:35,450 [INFO] __main__ — [Generator] id=1389 step=3 rethink=False pred_action=<|solve|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,451 [INFO] __main__ — [Generator] id=2436 step=4 rethink=True pred_action=<|solve|> correct=18 incorrect=3 na=0
+2026-05-03 10:15:35,453 [INFO] __main__ — [Generator] id=1322 step=3 rethink=False pred_action=<|end|> correct=10 incorrect=0 na=0
+2026-05-03 10:15:35,454 [INFO] __main__ — [Generator] id=2267 step=3 rethink=True pred_action=<|solve|> correct=18 incorrect=3 na=0
+2026-05-03 10:15:52,426 [INFO] __main__ — [Patcher API] id=2086 step=3 pred_action=<|end|> len=2091
+2026-05-03 10:16:04,617 [INFO] __main__ — [Patcher API] id=2072 step=3 pred_action=<|solve|> len=1207
+2026-05-03 10:16:16,509 [INFO] __main__ — [Patcher API] id=2226 step=3 pred_action=<|end|> len=1770
+2026-05-03 10:17:40,934 [INFO] __main__ — [Patcher API] id=127 step=3 pred_action=<|end|> len=1962
+2026-05-03 10:18:18,497 [INFO] __main__ — [Patcher API] id=2439 step=3 pred_action=<|solve|> len=1783
+2026-05-03 10:19:11,316 [INFO] __main__ — [Patcher API] id=147 step=3 pred_action=<|solve|> len=2180

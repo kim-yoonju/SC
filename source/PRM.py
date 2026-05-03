@@ -403,11 +403,17 @@ def _parse_batch_verdict(response: str, rubric_names: list[str]) -> list[dict]:
 
         # one-line critique: first non-header, non-verdict line in the block
         _critique = None
+        _section_header_pat = re.compile(
+            r"^\*{0,2}(?:checks|analysis|rubric|gate|step\s*\d+|n/a\s*rule|evidence|additional\s+checks?)[:\.]?\*{0,2}\s*$",
+            re.IGNORECASE,
+        )
         for _line in block.split("\n"):
             _l = _line.strip()
             if not _l:
                 continue
             if re.match(r"\[RUBRIC", _l, re.I) or re.match(r"verdict", _l, re.I):
+                continue
+            if _section_header_pat.match(_l):
                 continue
             _critique = _l
             break

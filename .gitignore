@@ -7,3 +7,6 @@ vllm/
 checkpoints/
 configs/
 datasets/
+checkpoints/
+configs/
+datasets/

@@ -47,7 +47,7 @@ from tqdm import tqdm
 
 _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from utils_sft import setup_tokenizer, collate_fn, CONF, build_input, build_target
+from utils_sft import setup_tokenizer, collate_fn, CONF, build_messages, build_target
 
 _sft = CONF.get("sft", {})
 MODEL_ID      = CONF["checkpoint"].get("sft_checkpoint") or CONF["checkpoint"]["base"]
@@ -111,12 +111,19 @@ class TrajDataset(Dataset):
             if skip_error and step.get("is_error"):
                 continue
 
-            prefix_str = build_input(problem, steps, k, tokenizer)
-            target_str = build_target(step)
+            system_str, user_str = build_messages(problem, steps, k)
+            assistant_str = build_target(step)
 
-            prefix_ids = tokenizer.encode(prefix_str, add_special_tokens=False)
-            target_ids = tokenizer.encode(target_str, add_special_tokens=False)
-            full_ids   = prefix_ids + target_ids
+            full_msgs = [
+                {"role": "system",    "content": system_str},
+                {"role": "user",      "content": user_str},
+                {"role": "assistant", "content": assistant_str},
+            ]
+            full_str   = tokenizer.apply_chat_template(full_msgs,      tokenize=False, add_generation_prompt=False)
+            prefix_str = tokenizer.apply_chat_template(full_msgs[:2],  tokenize=False, add_generation_prompt=True)
+
+            full_ids   = tokenizer.encode(full_str,   add_special_tokens=False)
+            prefix_len = len(tokenizer.encode(prefix_str, add_special_tokens=False))
 
             if len(full_ids) > self.max_length:
                 skipped += 1
@@ -124,7 +131,7 @@ class TrajDataset(Dataset):
 
             input_ids = torch.tensor(full_ids, dtype=torch.long)
             labels    = torch.full_like(input_ids, -100)
-            labels[len(prefix_ids):] = input_ids[len(prefix_ids):]
+            labels[prefix_len:] = input_ids[prefix_len:]
 
             self.samples.append((input_ids, labels))
 
@@ -152,10 +159,20 @@ def preview(data_path: str, tokenizer, n: int = 2):
         for k, step in enumerate(steps):
             if count >= n:
                 return
-            prefix_str = build_input(problem, steps, k, tokenizer)
-            target_str = build_target(step)
+            system_str, user_str = build_messages(problem, steps, k)
+            assistant_str = build_target(step)
+
+            full_msgs = [
+                {"role": "system",    "content": system_str},
+                {"role": "user",      "content": user_str},
+                {"role": "assistant", "content": assistant_str},
+            ]
+            full_str   = tokenizer.apply_chat_template(full_msgs,     tokenize=False, add_generation_prompt=False)
+            prefix_str = tokenizer.apply_chat_template(full_msgs[:2], tokenize=False, add_generation_prompt=True)
+
             p_ids = tokenizer.encode(prefix_str, add_special_tokens=False)
-            t_ids = tokenizer.encode(target_str, add_special_tokens=False)
+            f_ids = tokenizer.encode(full_str,   add_special_tokens=False)
+            t_len = len(f_ids) - len(p_ids)
 
             print(f"\n{'='*72}")
             print(f"[traj_id={item['traj_id']}  step={step['step']}  "
@@ -163,11 +180,11 @@ def preview(data_path: str, tokenizer, n: int = 2):
             print(f"problem: {problem[:100]}...")
             print(f"\n[INPUT — {len(p_ids)} tok]")
             print(sep)
-            print(prefix_str[-800:])   # 마지막 800자만 출력
-            print(f"\n[TARGET — {len(t_ids)} tok]")
+            print(prefix_str[-800:])
+            print(f"\n[TARGET — {t_len} tok]")
             print(sep)
-            print(target_str[:400])
-            print(f"\n토큰: prefix={len(p_ids)}  target={len(t_ids)}  total={len(p_ids)+len(t_ids)}")
+            print(assistant_str[:400])
+            print(f"\n토큰: prefix={len(p_ids)}  target={t_len}  total={len(f_ids)}")
             count += 1
 
 
