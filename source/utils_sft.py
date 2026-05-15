@@ -7,6 +7,7 @@ SFT 전용 유틸리티
 import json
 import os
 import pathlib as _pathlib
+import re as _re
 from functools import lru_cache
 
 import torch
@@ -97,11 +98,39 @@ def collate_fn(batch, pad_token_id: int) -> dict:
 # 모델 Input / Target 빌더
 # ─────────────────────────────────────────────────────────────────────────────
 
+_STEP_PREFIX    = _re.compile(r"^Step\s+\d+[:.]\s*", _re.I)
+_CRITIC_MARKER  = "\n\nFast critic:"
+
+
+def _inference_end_idx(tokenizer, prefix_str: str, target_str: str) -> int | None:
+    """
+    is_error=True 스텝에서 inference 부분의 마지막 토큰 인덱스(exclusive) 반환.
+    target_str에서 '\\n\\nFast critic:' 앞까지를 inference로 간주.
+    경계를 찾지 못하면 None 반환 (= 전체 target을 inference로 취급).
+    """
+    split = target_str.find(_CRITIC_MARKER)
+    inference_only = target_str[:split] if split != -1 else target_str
+    # prefix_str 끝에 inference를 이어붙여 토크나이징 → 토큰 수 측정
+    boundary_ids = tokenizer.encode(prefix_str + inference_only, add_special_tokens=False)
+    return len(boundary_ids)
+
+
+def _strip_newlines(text: str) -> str:
+    return " ".join(text.split())
+
+
+def _strip_step_prefix(text: str) -> str:
+    return _STEP_PREFIX.sub("", text, count=1)
+
+
 def _history_text(steps: list[dict], up_to: int) -> list[str]:
-    """steps[:up_to]에서 history용 텍스트 추출 (does 요약 우선, 없으면 inference 전체)."""
+    """steps[:up_to]에서 is_error=False 스텝만 history용 텍스트로 추출."""
     result = []
     for s in steps[:up_to]:
+        if s.get("is_error", False):
+            continue
         text = s.get("does") or (s.get("inference") or "")
+        text = _strip_step_prefix(_strip_newlines(text))
         result.append(text)
     return result
 
@@ -114,11 +143,11 @@ def _error_explanation(steps: list[dict], rethink_idx: int) -> str:
             parts = []
             does = s.get("does")
             if does:
-                parts.append(does)
+                parts.append(_strip_newlines(does))
             summary = s.get("prm_critique_summary") or s.get("gen_critique_summary")
             if summary:
-                parts.append(summary)
-            return "\n".join(parts) if parts else "the previous step contained an error"
+                parts.append(_strip_newlines(summary))
+            return " ".join(parts) if parts else "the previous step contained an error"
     return "the previous step contained an error"
 
 
@@ -130,9 +159,9 @@ def build_messages(problem: str, steps: list[dict], k: int,
     lines = [f"[Problem]\n{problem}"]
     if history:
         lines.append("\n[Previous steps]")
-        for i, h in enumerate(history, 1):
-            lines.append(f"Step {i}: {h}")
-    lines.append(f"\nWrite Step {k + 1}.")
+        for h in history:
+            lines.append(h)
+    lines.append("\nReason the next step.")
     user_msg = "\n".join(lines)
 
     state = steps[k].get("state", "")
@@ -145,7 +174,6 @@ def build_messages(problem: str, steps: list[dict], k: int,
     return system, user_msg
 
 
-import re as _re
 _NUMERIC_VERDICT = _re.compile(r"^\d+\s*:\s*(correct|incorrect)\s*$", _re.I)
 
 
@@ -169,16 +197,17 @@ def build_target(step: dict, rubric_tokens: dict | None = None) -> str:
     """
     parts = []
 
-    # 1. math step — gen self-correction이 섞여 있으면 제거 (API gen은 분리 없이 저장됨)
+    # 1. math step — gen self-correction 제거, Step N: 접두사 제거
     inference = step.get("inference") or ""
     sc_idx = inference.find("\nSelf-correction:")
     if sc_idx != -1:
         inference = inference[:sc_idx].strip()
+    inference = _strip_step_prefix(inference.strip())
     parts.append(inference)
 
     def _verdict(raw: str) -> str:
         v = (raw or "").lower()
-        return "incorrect" if v == "incorrect" else "correct"
+        return "incorrect" if v in ("incorrect", "fail") else "correct"
 
     # 2. fast critic
     fast = step.get("prm_fast_critique") or {}
@@ -209,10 +238,9 @@ def build_target(step: dict, rubric_tokens: dict | None = None) -> str:
             rubric   = d.get("rubric", "")
             raw      = (d.get("verdict") or "")
             critique = d.get("critique") or ""
-            # deep critic는 자르지 않음 — 모델이 full reasoning을 학습해야 함
-            critique_text = critique.strip() if critique.strip() and not _NUMERIC_VERDICT.match(critique.strip()) else ""
-            line = f"  {rubric}: {critique_text} Verdict: {_verdict(raw)}" if critique_text else f"  {rubric}: Verdict: {_verdict(raw)}"
-            parts.append(f"\n\n{line}")
+            critique_clean = _strip_newlines(critique) if critique.strip() and not _NUMERIC_VERDICT.match(critique.strip()) else ""
+            line = f"  {rubric}: {critique_clean} Verdict: {_verdict(raw)}" if critique_clean else f"  {rubric}: Verdict: {_verdict(raw)}"
+            parts.append(f"\n{line}")
 
     # 4. fail rubric special tokens — 없으면 none (모델이 항상 이 섹션을 출력하도록)
     _rubric_tokens = rubric_tokens or {}
@@ -268,6 +296,9 @@ class TrajDataset(Dataset):
         max_length: int = 3072,
         skip_error: bool = False,
     ):
+        from preprocess import get_system_prompts
+        self._system_solve, self._system_rethink = get_system_prompts()
+
         self.max_length = max_length
         self.samples    = []
 
@@ -294,7 +325,8 @@ class TrajDataset(Dataset):
             if skip_error and is_error:
                 continue
 
-            system_str, user_str = build_messages(problem, steps, k)
+            system_str, user_str = build_messages(problem, steps, k,
+                                                   self._system_solve, self._system_rethink)
             assistant_str = build_target(step)
 
             full_msgs = [
@@ -315,11 +347,9 @@ class TrajDataset(Dataset):
             labels[prefix_len:] = input_ids[prefix_len:]
 
             if is_error:
-                inference_str = step.get("inference", "")
-                if inference_str:
-                    inf_len = len(tokenizer.encode(inference_str, add_special_tokens=False))
-                    inf_end = min(prefix_len + inf_len, len(full_ids))
-                    labels[prefix_len:inf_end] = -100
+                inf_end = _inference_end_idx(tokenizer, prefix_str, assistant_str)
+                if inf_end is not None:
+                    labels[prefix_len:min(inf_end, len(full_ids))] = -100
 
             self.samples.append((input_ids, labels))
 
@@ -388,15 +418,10 @@ class PreprocessedDataset(Dataset):
             labels    = torch.full_like(input_ids, -100)
             labels[prefix_len:] = input_ids[prefix_len:]
 
-            # 실패한 스텝(is_error=True)은 inference 토큰을 loss에서 제외.
-            # rethink까지 간 generator 스텝, patching까지 간 rethink 스텝이 해당.
-            # critic + action 토큰은 그대로 학습.
             if is_error:
-                inference_str = item.get("inference", "")
-                if inference_str:
-                    inf_len = len(tokenizer.encode(inference_str, add_special_tokens=False))
-                    inf_end = min(prefix_len + inf_len, len(full_ids))
-                    labels[prefix_len:inf_end] = -100
+                inf_end = _inference_end_idx(tokenizer, prefix_str, target_str)
+                if inf_end is not None:
+                    labels[prefix_len:min(inf_end, len(full_ids))] = -100
 
             self.samples.append((input_ids, labels))
 
@@ -410,20 +435,40 @@ class PreprocessedDataset(Dataset):
         return self.samples[idx]
 
 
-def debug(data_path: str, tokenizer, n: int = 0):
-    """전처리된 JSONL(input/target 포맷)에서 n번째 샘플을 토크나이징해 출력."""
+def _build_samples(data_path: str):
+    """데이터 파일을 읽어 (idx, msgs, target_str, state, is_error, rubric_tokens) 리스트 반환."""
     raw = [json.loads(l) for l in open(data_path, encoding="utf-8") if l.strip()]
+    first = raw[0] if raw else {}
+    is_preprocessed = "input" in first and "target" in first
+
+    if is_preprocessed:
+        result = []
+        for i, item in enumerate(raw):
+            result.append((i, item["input"], item["target"],
+                           item.get("state"), item.get("is_error"), {}))
+        return result
+    else:
+        from preprocess import get_system_prompts, RUBRIC_TOKENS
+        system_solve, system_rethink = get_system_prompts()
+        result = []
+        idx = 0
+        for traj in raw:
+            problem = traj["problem"]
+            steps   = traj["steps"]
+            for k, step in enumerate(steps):
+                system_str, user_str = build_messages(problem, steps, k, system_solve, system_rethink)
+                target_str = build_target(step, RUBRIC_TOKENS)
+                msgs = [{"role": "system", "content": system_str},
+                        {"role": "user",   "content": user_str}]
+                result.append((idx, msgs, target_str,
+                               step.get("state"), step.get("is_error"), RUBRIC_TOKENS))
+                idx += 1
+        return result
+
+
+def _print_sample(tokenizer, idx, msgs, target_str, state, is_error):
     sep = "─" * 72
-
-    if n >= len(raw):
-        print(f"[debug] 인덱스 {n}이 범위를 초과했습니다. (총 {len(raw)}개)")
-        return
-
-    item       = raw[n]
-    msgs       = item["input"]   # [system, user]
-    target_str = item["target"]
     full_msgs  = msgs + [{"role": "assistant", "content": target_str}]
-
     full_str   = tokenizer.apply_chat_template(full_msgs, tokenize=False, add_generation_prompt=False)
     prefix_str = tokenizer.apply_chat_template(msgs,      tokenize=False, add_generation_prompt=True)
 
@@ -432,12 +477,52 @@ def debug(data_path: str, tokenizer, n: int = 0):
     t_len = len(f_ids) - len(p_ids)
 
     print(f"\n{'='*72}")
-    print(f"[샘플 {n}  state={item.get('state')}  is_error={item.get('is_error')}]")
+    print(f"[샘플 {idx}  state={state}  is_error={is_error}]")
     print(f"\n[INPUT — {len(p_ids)} tok]\n{sep}")
-    print(prefix_str[-800:])
+    for msg in msgs:
+        role    = msg["role"]
+        content = msg["content"]
+        print(f"\n<{role}>")
+        if role == "system" and len(content) > 300:
+            print(content[:300])
+            print("...")
+        else:
+            print(content)
     print(f"\n[TARGET — {t_len} tok]\n{sep}")
     print(target_str)
     print(f"\n토큰: input={len(p_ids)}  target={t_len}  total={len(f_ids)}")
+
+
+def debug(data_path: str, tokenizer, n: int | None = None):
+    """
+    n=None : is_error=False 중 fail_rubrics 있는 것 + 없는 것 각 하나씩 자동 출력
+    n=int  : n번째 샘플 출력
+    """
+    samples = _build_samples(data_path)
+
+    if n is not None:
+        if n >= len(samples):
+            print(f"[debug] 인덱스 {n}이 범위를 초과했습니다. (총 {len(samples)}개)")
+            return
+        idx, msgs, target_str, state, is_error, _ = samples[n]
+        _print_sample(tokenizer, idx, msgs, target_str, state, is_error)
+        return
+
+    # 자동 모드: is_error=False 중 fail_rubrics 유/무 각 하나씩
+    picked = {}   # key: True(fail rubrics 있음) / False(없음)
+    for idx, msgs, target_str, state, is_error, _ in samples:
+        if is_error:
+            continue
+        has_fail = "Fail rubrics:\nnone" not in target_str and "Fail rubrics:" in target_str
+        key = has_fail
+        if key not in picked:
+            picked[key] = (idx, msgs, target_str, state, is_error)
+        if len(picked) == 2:
+            break
+
+    for key in (True, False):
+        if key in picked:
+            _print_sample(tokenizer, *picked[key])
 
 
 # ─────────────────────────────────────────────────────────────────────────────

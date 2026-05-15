@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 # ─────────────────────────────────────────────────────────────────────────────
 # 빠른 설정 (config 값을 덮어씀; 기본값으로 두려면 그대로 유지)
 # ─────────────────────────────────────────────────────────────────────────────
-GPUS      = [7]    # 비어있으면 config의 inference.rollout_gpus 사용
+GPUS      = []     # 비어있으면 config의 inference.rollout_gpus 사용
 N_SAMPLES = -1    # -1이면 전체 데이터셋 사용, 양수이면 해당 개수만 추출
 MODEL     = ""    # 비어있으면 config의 inference.model 사용
 

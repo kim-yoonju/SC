@@ -38,7 +38,6 @@ import torch.nn.functional as F
 import torch.distributed as dist
 from torch.utils.data import DataLoader, DistributedSampler
 from transformers import AutoModelForCausalLM
-import bitsandbytes as bnb
 import deepspeed
 from tqdm import tqdm
 
@@ -172,16 +171,20 @@ def train(args):
         print(f"샘플: {len(dataset)}  |  effective batch: {eff_batch}  |  steps: {total_steps}")
 
     # ── DeepSpeed ZeRO-2 설정 ────────────────────────────────────────────────
-    # bnb 8-bit Adam: optimizer state를 8-bit로 양자화해서 21 GB → 7 GB로 절감
-    base_optimizer = bnb.optim.AdamW8bit(
-        model.parameters(), lr=args.lr, weight_decay=args.weight_decay
-    )
-
     ds_config = {
         "train_micro_batch_size_per_gpu": args.batch_per_gpu,
         "gradient_accumulation_steps":    effective_grad_accum,
         "gradient_clipping":              args.max_grad_norm,
         "bf16": {"enabled": True},
+        "optimizer": {
+            "type": "AdamW",
+            "params": {
+                "lr":           args.lr,
+                "betas":        [0.9, 0.999],
+                "eps":          1e-8,
+                "weight_decay": args.weight_decay,
+            },
+        },
         "zero_optimization": {
             "stage": 2,
             "allgather_partitions":          True,
@@ -189,14 +192,12 @@ def train(args):
             "overlap_comm":                  True,
             "contiguous_gradients":          True,
         },
-        "zero_allow_untested_optimizer": True,
         "steps_per_print":       9999999,
         "wall_clock_breakdown":  False,
     }
 
     model_engine, optimizer, _, _ = deepspeed.initialize(
         model=model,
-        optimizer=base_optimizer,
         config=ds_config,
     )
 
@@ -299,8 +300,8 @@ def parse_args():
     p.add_argument("--skip_error",    action="store_true",
                    help="is_error=True 스텝 학습 제외")
     p.add_argument("--wandb",         action="store_true", default=True)
-    p.add_argument("--debug",         type=int, nargs="?", const=0, default=None,
-                   help="N번째 샘플 디버그 출력 후 종료 (인자 생략 시 0번째)")
+    p.add_argument("--debug",         type=int, nargs="?", const=-1, default=None,
+                   help="N번째 샘플 디버그 출력 후 종료 (인자 생략 시 is_error별 자동 샘플링)")
     p.add_argument("--resume_checkpoint", default=None,
                    help="이어서 학습할 체크포인트 경로 (예: checkpoints/sft/20260505_130300/epoch2)")
     p.add_argument("--resume_epoch",  type=int, default=0,
@@ -314,7 +315,7 @@ def main():
     args = parse_args()
     if args.debug is not None:
         tok = setup_tokenizer(args.model_path, CACHE_DIR)
-        debug(args.data_path, tok, n=args.debug)
+        debug(args.data_path, tok, n=None if args.debug == -1 else args.debug)
         return
     train(args)
 

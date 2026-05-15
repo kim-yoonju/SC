@@ -59,18 +59,18 @@ logger = logging.getLogger(__name__)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # 실험할 루브릭 버전 리스트 — 여기에 버전 번호를 추가하면 자동으로 모두 실험
-RUBRIC_VERSIONS = ["6.3"]  # 예: ["4.0", "4.1", "4.2"]
-RUBRIC_FILES = [ROOT / "prompts" / f"prm_rubric_v{v}.json" for v in RUBRIC_VERSIONS]
+DEEP_RUBRIC_VERSIONS = ["6.3"]  # 예: ["4.0", "4.1", "4.2"]
+DEEP_RUBRIC_FILES = [ROOT / "prompts" / f"prm_rubric_v{v}.json" for v in DEEP_RUBRIC_VERSIONS]
 
-# 사용c할 루브릭 번호 리스트 (1-indexed). None이면 전체 사용.
+# 사용할 루브릭 번호 리스트 (1-indexed). None이면 전체 사용.
 # 예: [1, 2, 3] → 1~3번 루브릭만 사용 / None → 전체
-RUBRIC_INDICES = [11] # range(1,10) # [10,11]
+DEEP_RUBRIC_INDICES = [11] # range(1,10) # [10,11]
 
 
 
-def load_rubrics(path: Path | str | None = None) -> list[dict]:
+def load_deep_rubrics(path: Path | str | None = None) -> list[dict]:
     """JSONL 파일에서 루브릭 목록 로드. 각 항목에 name, criterion, system_prompt 포함."""
-    path = Path(path) if path else RUBRIC_FILES[0]
+    path = Path(path) if path else DEEP_RUBRIC_FILES[0]
     if not path.exists():
         logger.error(f"루브릭 파일 없음: {path}")
         sys.exit(1)
@@ -322,6 +322,54 @@ class ApiPrm:
             f"  output {self.total_output:>10,} tok  ${cost_out:.4f}\n"
             f"  총계                    ${cost_in+cost_cached+cost_out:.4f} USD"
         )
+
+
+def _rebuild_fast_rubric_for_indices(path: Path, indices: list[int]) -> dict:
+    """Fast rubric JSON에서 1-indexed 위치의 루브릭만 추출해 시스템 프롬프트를 재조립."""
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+
+    if isinstance(data, list):
+        rubric_items = [item for item in data if item["type"] == "rubric"]
+        selected = [rubric_items[i - 1] for i in indices if 1 <= i <= len(rubric_items)]
+        selected_ids = {id(item) for item in selected}
+        filtered = [item for item in data if item["type"] != "rubric" or id(item) in selected_ids]
+
+        rubric_names = [item["label"] for item in filtered if item["type"] == "rubric"]
+        n = len(rubric_names)
+        output_format = "\n\n".join(
+            f'[RUBRIC {i}] {name}\n<analysis>\nVerdict: correct/incorrect'
+            for i, name in enumerate(rubric_names, 1)
+        )
+        parts = []
+        rubric_counter = 0
+        for item in filtered:
+            text = "\n".join(item["content"]) if isinstance(item["content"], list) else item["content"]
+            if item["type"] == "rubric":
+                rubric_counter += 1
+                text = re.sub(r'\[RUBRIC\s+\d+\]', f'[RUBRIC {rubric_counter}]', text)
+            text = text.replace("{{n_rubrics}}", str(n)).replace("{{output_format}}", output_format)
+            parts.append(text)
+        return {"system_prompt": "\n\n".join(parts), "rubric_names": rubric_names}
+    else:
+        rubrics = data["rubrics"]
+        selected = [rubrics[i - 1] for i in indices if 1 <= i <= len(rubrics)]
+        n = len(selected)
+        output_format = "\n\n".join(
+            f'[RUBRIC {i}] {r["name"]}\n<analysis>\nVerdict: correct'
+            for i, r in enumerate(selected, 1)
+        )
+        rubric_sections = "\n\n".join(
+            f'━━━ [RUBRIC {i}] {r["name"]} ━━━\n{r["system_prompt"]}'
+            for i, r in enumerate(selected, 1)
+        )
+        system_prompt = (
+            data["shared_prompt"]
+            .replace("{{n_rubrics}}", str(n))
+            .replace("{{output_format}}", output_format)
+            + "\n\n" + rubric_sections
+        )
+        return {"system_prompt": system_prompt, "rubric_names": [r["name"] for r in selected]}
 
 
 def load_fast_rubric(path: "Path | str") -> dict:
@@ -623,7 +671,7 @@ def evaluate_step(
         rubric_path = Path(_DEFAULT_RUBRIC_FILE)
         if not rubric_path.is_absolute():
             rubric_path = ROOT / rubric_path
-        rubrics = load_rubrics(rubric_path)
+        rubrics = load_deep_rubrics(rubric_path)
 
     if not rubrics:
         return "pass", {}
@@ -1253,7 +1301,8 @@ def _run_batch_rubric_experiment(
     # gold_fail_rubrics가 있으면 전체 label은 "fail"(어느 루브릭이든 하나라도 실패)
     # gold_answer 기반 기존 포맷도 병행 지원
     def _overall_label(d):
-        if str(d.get("gold_answer", "")).strip() == "Yes":
+        gold = str(d.get("gold_answer", "")).strip()
+        if gold in ("Yes", "correct"):
             return "correct"
         if d.get("gold_fail_rubrics") is not None:
             return "incorrect" if d["gold_fail_rubrics"] else "correct"
@@ -1339,13 +1388,13 @@ def _run_batch_rubric_experiment(
     result_file.close()
 
     # ── summary.json 저장 + 출력 ──────────────────────────────────────────────
-    per_rubric_metrics = {n: compute_metrics(per_rubric[n]) for n in rubric_names}
+    per_rubric_metrics = {n: _compute_binary_metrics(per_rubric[n]) for n in rubric_names}
 
     overall_pairs = []
     for label, verdicts in zip(labels, verdicts_list):
-        any_fail = any(v.get("pred") == "fail" for v in verdicts)
-        overall_pairs.append({"pred": "fail" if any_fail else "pass", "label": label})
-    overall = compute_metrics(overall_pairs)
+        any_fail = any(v.get("pred") == "incorrect" for v in verdicts)
+        overall_pairs.append({"pred": "incorrect" if any_fail else "correct", "label": label})
+    overall = _compute_binary_metrics(overall_pairs)
 
     summary = {
         "model":          model.model_name,
@@ -1397,10 +1446,8 @@ def main():
                         help="클래스별 슬라이스 시작 인덱스 (포함, 기본: SAMPLE_START)")
     parser.add_argument("--end", type=int, default=SAMPLE_END,
                         help="클래스별 슬라이스 끝 인덱스 (미포함, 기본: SAMPLE_END)")
-    parser.add_argument("--rubric_file", type=str, default=None,
-                        help="루브릭 jsonl 파일 경로 (단일).")
-    parser.add_argument("--rubric_files", type=str, nargs="+", default=None,
-                        help="루브릭 jsonl 파일 경로 리스트 (스페이스 구분).")
+    parser.add_argument("--deep_rubric_file", type=str, default=None,
+                        help="딥 루브릭 jsonl 파일 경로.")
     parser.add_argument("--fast_rubric_file", type=str, default=None,
                         help="배치 루브릭 JSON 경로. 지정 시 ApiPrmBatch(stage1) 모드로 실행. "
                              "예: prompts/batch_prm_rubric_v6.9.json")
@@ -1408,13 +1455,9 @@ def main():
                         help="평가할 데이터 JSON 파일 경로 (기본: output/deepmath_100.json)")
     parser.add_argument("--max_new_tokens", type=int, default=None,
                         help="API 호출 최대 토큰 수 (기본: config PRM.max_new_tokens)")
-    parser.add_argument("--rubric_start", type=int, default=None,
-                        help="사용할 루브릭 시작 번호 (1-indexed, 포함). 예: --rubric_start 3")
-    parser.add_argument("--rubric_end", type=int, default=None,
-                        help="사용할 루브릭 끝 번호 (1-indexed, 포함). 예: --rubric_end 7")
-    parser.add_argument("--rubric_indices", type=int, nargs="+", default=None,
+    parser.add_argument("--rubric_index", type=int, nargs="+", default=None,
                         help="사용할 루브릭 번호 리스트 (1-indexed, 스페이스 구분). "
-                             "예: --rubric_indices 1 3 10 11")
+                             "예: --rubric_index 11  또는  --rubric_index 1 3 10 11")
     args = parser.parse_args()
 
     if args.max_new_tokens is not None:
@@ -1423,31 +1466,15 @@ def main():
     data = load_data(args.start, args.end, path=args.data_file)
 
     def _slice_rubrics(rubrics: list[dict]) -> list[dict]:
-        """루브릭 선택 우선순위: --rubric_indices > --rubric_start/end > RUBRIC_INDICES."""
+        """루브릭 선택 우선순위: --rubric_index > DEEP_RUBRIC_INDICES > 전체."""
         total = len(rubrics)
-        # 1순위: --rubric_indices (임의 인덱스 리스트)
-        if args.rubric_indices is not None:
-            selected = [rubrics[i - 1] for i in args.rubric_indices if 1 <= i <= total]
+        indices = args.rubric_index if args.rubric_index is not None else (
+            list(DEEP_RUBRIC_INDICES) if DEEP_RUBRIC_INDICES is not None else None
+        )
+        if indices is not None:
+            selected = [rubrics[i - 1] for i in indices if 1 <= i <= total]
             logger.info(
-                f"루브릭 선택 (--rubric_indices={args.rubric_indices}): "
-                f"{len(selected)}개 / 전체 {total}개  → {[r['name'] for r in selected]}"
-            )
-            return selected
-        # 2순위: --rubric_start/--rubric_end (연속 범위)
-        if args.rubric_start is not None or args.rubric_end is not None:
-            s = (args.rubric_start - 1) if args.rubric_start is not None else 0
-            e = args.rubric_end if args.rubric_end is not None else total
-            selected = rubrics[s:e]
-            logger.info(
-                f"루브릭 선택 (--rubric_start/end): {s+1}~{min(e, total)}번 "
-                f"({len(selected)}개) / 전체 {total}개  → {[r['name'] for r in selected]}"
-            )
-            return selected
-        # 3순위: 하드코딩 RUBRIC_INDICES
-        if RUBRIC_INDICES is not None:
-            selected = [rubrics[i - 1] for i in RUBRIC_INDICES if 1 <= i <= total]
-            logger.info(
-                f"루브릭 선택 (RUBRIC_INDICES={list(RUBRIC_INDICES)}): "
+                f"루브릭 선택 ({indices}): "
                 f"{len(selected)}개 / 전체 {total}개  → {[r['name'] for r in selected]}"
             )
             return selected
@@ -1456,6 +1483,12 @@ def main():
     # ── 배치 루브릭 모드 ──────────────────────────────────────────────────────
     if args.fast_rubric_file:
         fast_rubric = load_fast_rubric(Path(args.fast_rubric_file))
+        if args.rubric_index:
+            fast_rubric = _rebuild_fast_rubric_for_indices(Path(args.fast_rubric_file), args.rubric_index)
+            logger.info(
+                f"루브릭 선택 (--rubric_index={args.rubric_index}): "
+                f"{len(fast_rubric['rubric_names'])}개 → {fast_rubric['rubric_names']}"
+            )
         batch_model = ApiPrmBatch(api_model, fast_rubric, max_workers=len(data))
         timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
         out_dir     = ROOT / "output" / "PRM" / f"{timestamp}_batch_{Path(args.fast_rubric_file).stem}"
@@ -1464,51 +1497,44 @@ def main():
         batch_model.print_cost()
         return
 
-    # ── 개별 루브릭 모드 (기존) ───────────────────────────────────────────────
-    if args.rubric_files:
-        rubric_file_list = [Path(p) for p in args.rubric_files]
-    elif args.rubric_file:
-        rubric_file_list = [Path(args.rubric_file)]
-    else:
-        rubric_file_list = RUBRIC_FILES
-
-    logger.info(f"실험할 루브릭 파일 {len(rubric_file_list)}개: {[p.name for p in rubric_file_list]}")
+    # ── 딥 루브릭 모드 ────────────────────────────────────────────────────────
+    deep_rubric_file_path = Path(args.deep_rubric_file) if args.deep_rubric_file else DEEP_RUBRIC_FILES[0]
+    logger.info(f"딥 루브릭 파일: {deep_rubric_file_path.name}")
 
     shared_model = ApiPrm(api_model)
 
-    for rubric_file_path in rubric_file_list:
-        rubrics = load_rubrics(rubric_file_path)
-        rubrics = _slice_rubrics(rubrics)
-        logger.info(f"[{rubric_file_path.name}] 평가 루브릭 ({len(rubrics)}개): {[r['name'] for r in rubrics]}")
+    rubrics = load_deep_rubrics(deep_rubric_file_path)
+    rubrics = _slice_rubrics(rubrics)
+    logger.info(f"평가 루브릭 ({len(rubrics)}개): {[r['name'] for r in rubrics]}")
 
-        timestamp  = datetime.now().strftime("%Y%m%d_%H%M%S")
-        rubric_ver = rubric_file_path.stem.replace(".", "_")
-        out_dir    = ROOT / "output" / "PRM" / f"{timestamp}_{rubric_ver}"
-        logger.info(f"출력 디렉토리: {out_dir}")
+    timestamp       = datetime.now().strftime("%Y%m%d_%H%M%S")
+    deep_rubric_ver = deep_rubric_file_path.stem.replace(".", "_")
+    out_dir         = ROOT / "output" / "PRM" / f"{timestamp}_{deep_rubric_ver}"
+    logger.info(f"출력 디렉토리: {out_dir}")
 
-        logger.info(f"max_new_tokens: {max_new_tokens}")
-        all_results, inference_elapsed = run_experiment(
-            model_path=api_model,
-            cache_dir="",
-            gpu_ids=[],
-            batch_size=len(data) * len(rubrics),
-            data=data,
-            rubrics=rubrics,
-            max_new_tokens=max_new_tokens,
-            model=shared_model,
-        )
-        eval_names = {r["name"] for r in rubrics[:10]}
-        metrics_by_rubric = print_results(all_results, api_model, eval_names=eval_names)
+    logger.info(f"max_new_tokens: {max_new_tokens}")
+    all_results, inference_elapsed = run_experiment(
+        model_path=api_model,
+        cache_dir="",
+        gpu_ids=[],
+        batch_size=len(data) * len(rubrics),
+        data=data,
+        rubrics=rubrics,
+        max_new_tokens=max_new_tokens,
+        model=shared_model,
+    )
+    eval_names = {r["name"] for r in rubrics[:10]}
+    metrics_by_rubric = print_results(all_results, api_model, eval_names=eval_names)
 
-        if len(all_results) >= 2:
-            corr = analyze_rubric_correlation(all_results)
-            print_correlation(corr, list(all_results.keys()))
-        else:
-            corr = {}
+    if len(all_results) >= 2:
+        corr = analyze_rubric_correlation(all_results)
+        print_correlation(corr, list(all_results.keys()))
+    else:
+        corr = {}
 
-        save_results(out_dir, all_results, metrics_by_rubric, corr, api_model, rubrics,
-                     inference_elapsed=inference_elapsed, rubric_file=rubric_file_path)
-        print(f"\n[{rubric_file_path.name}] 결과 저장 완료: {out_dir}")
+    save_results(out_dir, all_results, metrics_by_rubric, corr, api_model, rubrics,
+                 inference_elapsed=inference_elapsed, rubric_file=deep_rubric_file_path)
+    print(f"\n결과 저장 완료: {out_dir}")
 
     shared_model.print_cost()
 

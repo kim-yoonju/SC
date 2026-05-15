@@ -36,11 +36,19 @@ SAVE_FREQ=$(py "${V}['save_freq']")
 TOTAL_STEPS=$(py "${V}['total_training_steps']")
 
 TS=$(date +%Y%m%d_%H%M%S)
+CKPT_DIR=$WORK_DIR/checkpoints/grpo/$TS
 RUN_DIR=$WORK_DIR/output/GRPO/$TS
-mkdir -p $RUN_DIR
+mkdir -p $CKPT_DIR $RUN_DIR
 
 N_GPUS=$(awk -F',' '{print NF}' <<<"$GPU_IDS")
 export CUDA_VISIBLE_DEVICES=$GPU_IDS
+
+# 이전 Ray 클러스터 정리 후 재시작 (잔여 GPU 프로세스 제거)
+ray stop --force &>/dev/null 2>&1
+sleep 2
+echo "Starting Ray on GPUs: $GPU_IDS"
+CUDA_VISIBLE_DEVICES=$GPU_IDS ray start --head --num-gpus=$N_GPUS
+sleep 3
 
 TRAIN_FILE=$(py "c['data_path']['rl_data']")
 VAL_FILE=$WORK_DIR/datasets/deepmath_1k_eval.parquet
@@ -58,7 +66,7 @@ ray job submit --address="http://127.0.0.1:8265" \
     hydra.run.dir=$RUN_DIR \
     data.train_files=$TRAIN_FILE \
     data.val_files=$VAL_FILE \
-    data.prompt_key=prompt \
+    data.prompt_key=problem \
     data.truncation=left \
     +data.rm_system_prompt=False \
     data.train_batch_size=$TRAIN_BSZ \
@@ -97,15 +105,16 @@ ray job submit --address="http://127.0.0.1:8265" \
     actor_rollout_ref.rollout.disable_log_stats=False \
     actor_rollout_ref.rollout.log_prob_max_token_len_per_gpu=$LP_MAX_TOK \
     actor_rollout_ref.rollout.enforce_eager=True \
+    actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=4096 \
     actor_rollout_ref.ref.log_prob_use_dynamic_bsz=True \
     actor_rollout_ref.ref.fsdp_config.param_offload=$PARAM_OFF \
     actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=$LP_MAX_TOK \
-    reward.custom_reward_function.path=$WORK_DIR/utils/reward_utils/reward_func.py \
+    reward.custom_reward_function.path=$WORK_DIR/utils/reward_utils/reward_func_pure.py \
     reward.custom_reward_function.name=reward_func \
-    trainer.project_name=sc-grpo \
-    trainer.experiment_name=sc-grpo-$TS \
+    trainer.project_name=sc-grpo-pure \
+    trainer.experiment_name=sc-grpo-pure-$TS \
     +trainer.run_id=$TS \
-    trainer.default_local_dir=$RUN_DIR \
+    trainer.default_local_dir=$CKPT_DIR \
     trainer.val_before_train=False \
     trainer.use_legacy_worker_impl=enable \
     trainer.n_gpus_per_node=$N_GPUS \
@@ -116,4 +125,4 @@ ray job submit --address="http://127.0.0.1:8265" \
     trainer.total_epochs=1 \
     trainer.total_training_steps=$TOTAL_STEPS \
     trainer.logger=['console','wandb'] \
-    2>&1 | tee -a $RUN_DIR/train.log
+    2>&1 | tee -a $CKPT_DIR/train.log

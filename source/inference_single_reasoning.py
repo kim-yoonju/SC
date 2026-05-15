@@ -37,7 +37,7 @@ from utils import (
 )
 from generate_utils import load_prompts as _load_prompts, load_dataset_file
 
-GPUS = [4,5]
+GPUS = CONF["inference"].get("rollout_gpus", [0])  # config의 inference.rollout_gpus 사용 (여기서 직접 지정 시 override)
 N_SAMPLES = -1     # -1이면 전체 데이터셋 사용, 양수이면 해당 개수만 추출
 MODEL = None # None이면 config의 checkpoint.base 사용, 직접 지정 시 해당 경로 사용
 VLLM_MAX_MODEL_LEN = CONF["vllm"]["max_model_len"]

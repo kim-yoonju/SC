@@ -23,10 +23,12 @@ GENERATOR -> local (config.checkpoint.base)
   traj_all.jsonl   모든 완결 trajectory (gen 단독 + gen-PRM_log 혼합)
 
 스텝 state / next_gold_action:
-  일반 gen 스텝      : state=solve       / →<|solve|>
-  오류 gen 스텝      : state=solve       / →<|rethink|>
-  오류 직후 첫 gen   : state=rethink_pat / →<|solve|>
-  마지막 스텝        : (위와 동일)      / →<|end|>
+  state = {gen|pat}_{solve|rethink|end}
+  prefix  gen : source=gen (rethink 모드 포함)
+          pat : source=patcher
+  suffix  end     : boxed{} 답 출력 스텝
+          rethink : 이전 스텝 next_gold_action=<|rethink|>
+          solve   : 그 외 (첫 스텝 포함)
 """
 
 import argparse
@@ -62,6 +64,7 @@ from utils_math import extract_boxed, has_boxed, check_solved
 from generate_utils import (
     load_dataset_file,
     _prm_is_fail, _extract_verdicts_from_text,
+    build_solve_user_msg,
 )
 
 _PROMPTS_PATH = Path(__file__).resolve().parent.parent / "prompts"
@@ -98,7 +101,7 @@ _CRITIQUE_REVIEW_SYSTEM    = _ACTION_PROMPTS["critique_review_system"]
 
 from PRM import (
     ApiPrm, ApiPrmBatch, ApiPrmTwoStage,
-    evaluate_step, load_rubrics, load_fast_rubric,
+    evaluate_step, load_deep_rubrics, load_fast_rubric,
 )
 
 _PRM_API       = CONF.get("PRM", {}).get("model_id")
@@ -204,8 +207,6 @@ def _build_rethink_explanation(state: "ProblemState") -> str:
         )
 
     if fail_entries:
-        parts.append("[Fail rubrics]\n" + "\n".join(f"- {e['rubric']}" for e in fail_entries))
-
         why_lines = [
             f"- {e['rubric']}: {e['critique'].strip()}"
             for e in fail_entries if e.get("critique")
@@ -342,34 +343,28 @@ def _batch_run_generator_vllm(
     messages_list = []
     for state in states:
         step_number = len(state.history) + 1
-        lines = [f"[Problem]\n{state.item['problem']}"]
+        history_does = [s["summary"]["does"] for s in state.history]
         if state.is_rethink:
             system_prompt = GEN_RETHINK_PROMPT
+            lines = [f"[Problem]\n{state.item['problem']}"]
             if state.history:
                 if state.last_wrong_answer:
-                    # pred≠gold_answer: 이전 스텝들도 틀린 접근법의 일부
                     lines.append(
                         "\n[Previous approach — produced a wrong final answer, DO NOT continue from this]"
                     )
-                    for i, s in enumerate(state.history, 1):
-                        step_ctx = (s.get("summary") or {}).get("does") or s.get("inference") or s["text"]
-                        lines.append(f"Step {i}: {step_ctx}")
+                    for i, does in enumerate(history_does, 1):
+                        lines.append(f"Step {i}: {does}")
                     lines.append("⚠️ The approach above is WRONG. Start over with a different method.")
                 else:
                     lines.append("\n[Already completed — do NOT repeat or restate any of these]")
-                    for i, s in enumerate(state.history, 1):
-                        step_ctx = (s.get("summary") or {}).get("does") or s.get("inference") or s["text"]
-                        lines.append(f"Step {i}: {step_ctx}")
+                    for i, does in enumerate(history_does, 1):
+                        lines.append(f"Step {i}: {does}")
             lines.append(f"\n[Previous step attempt — INCORRECT]\n{_build_rethink_explanation(state)}")
+            lines.append(f"\nWrite Step {step_number}.")
+            user_content = "\n".join(lines)
         else:
             system_prompt = GEN_SOLVE_PROMPT
-            if state.history:
-                lines.append("\n[Previous steps]")
-                for i, s in enumerate(state.history, 1):
-                    step_ctx = (s.get("summary") or {}).get("does") or s.get("inference") or s["text"]
-                    lines.append(f"Step {i}: {step_ctx}")
-        lines.append(f"\nWrite Step {step_number}.")
-        user_content = "\n".join(lines)
+            user_content  = build_solve_user_msg(state.item["problem"], history_does)
         messages_list.append([
             {"role": "system", "content": system_prompt},
             {"role": "user",   "content": user_content},
@@ -397,6 +392,29 @@ def _batch_run_generator_vllm(
     )
     outputs = llm.generate(prompts, params, use_tqdm=False)
 
+    # action stop token 없이 끝난 케이스를 모아 logits 강제 파싱
+    _fallback_idxs = [
+        i for i, out in enumerate(outputs)
+        if not (isinstance(out.outputs[0].stop_reason, int)
+                and out.outputs[0].stop_reason in _tok_to_action)
+    ]
+    _forced_action: dict[int, str] = {}
+    if _fallback_idxs:
+        _force_params = SamplingParams(
+            max_tokens=1,
+            temperature=0,
+            allowed_token_ids=list(_action_ids),
+        )
+        _force_prompts = [
+            prompts[i] + outputs[i].outputs[0].text
+            for i in _fallback_idxs
+        ]
+        _force_outputs = llm.generate(_force_prompts, _force_params, use_tqdm=False)
+        for idx, fout in zip(_fallback_idxs, _force_outputs):
+            gen_tids = fout.outputs[0].token_ids
+            if gen_tids and gen_tids[0] in _tok_to_action:
+                _forced_action[idx] = _tok_to_action[gen_tids[0]]
+
     for i, (output, state) in enumerate(zip(outputs, states)):
         step_number = len(state.history) + 1
         full_text   = output.outputs[0].text
@@ -413,11 +431,16 @@ def _batch_run_generator_vllm(
             step_text       = full_text.strip()
             self_check_text = ""
 
-        # stop_reason으로 액션 결정 (int 이면 stop_token_ids 중 하나)
+        # stop_reason으로 액션 결정
         stop_reason = output.outputs[0].stop_reason
         if isinstance(stop_reason, int) and stop_reason in _tok_to_action:
             pred_action = _tok_to_action[stop_reason]
+            full_text += pred_action  # stop token을 text에 보존
+        elif i in _forced_action:
+            pred_action = _forced_action[i]
+            full_text += pred_action  # 강제 파싱된 action token을 text에 보존
         else:
+            # 최후 fallback (forced inference도 실패한 경우)
             correct_count, incorrect_count, _ = _extract_verdicts_from_text(self_check_text)
             if incorrect_count > correct_count:
                 pred_action = TOKEN_CORRECT
@@ -459,7 +482,7 @@ def _batch_run_generator_vllm(
             "inference":        step_text,
             "full_text":        full_text,
             "pred_action":      pred_action,
-            "next_pred_action": _parse_next_pred_action(self_check_text),
+            "next_pred_action": pred_action.strip("<|>") if (isinstance(stop_reason, int) and stop_reason in _tok_to_action) else (_parse_next_pred_action(self_check_text) or pred_action.strip("<|>")),
             "source":           "gen",
             "role":             "rethink" if state.is_rethink else "gen",
             "was_rethink":      state.is_rethink,
@@ -481,19 +504,11 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
     def _call_one(state: ProblemState) -> None:
         step_number = len(state.history) + 1
         problem_id  = state.item.get("id", "?")
-        lines       = [f"[Problem]\n{state.item['problem']}"]
-        if state.history:
-            lines.append("\n[Previous steps]")
-            for i, s in enumerate(state.history, 1):
-                step_ctx = (s.get("summary") or {}).get("does") or s.get("inference") or s["text"]
-                lines.append(f"Step {i}: {step_ctx}")
-        explanation = _build_rethink_explanation(state)
-        if explanation and explanation != "the previous step contained an error":
-            lines.append(f"\n[Note: previous attempts at Step {step_number} were rejected]\n{explanation}")
-        lines.append(f"\nWrite Step {step_number}.")
+        history_does = [s["summary"]["does"] for s in state.history]
+        user_content = build_solve_user_msg(state.item["problem"], history_does)
         messages    = [
             {"role": "system", "content": PAT_SOLVE_PROMPT},
-            {"role": "user",   "content": "\n".join(lines)},
+            {"role": "user",   "content": user_content},
         ]
         logger.info(f"[Patcher API] id={problem_id} step={step_number} model={PATCHER}")
         try:
@@ -526,7 +541,7 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
             "inference":        step_text,
             "full_text":        text,
             "pred_action":      pred_action,
-            "next_pred_action": _parse_next_pred_action(text),
+            "next_pred_action": pred_action.strip("<|>"),
             "source":           "patcher",
             "role":             "patcher",
             "was_rethink":      True,
@@ -566,7 +581,7 @@ def _run_prm_batch(
         for state in prm_states:
             prev_lines = [f"Step {i+1}: {s['summary']['does']}"
                           for i, s in enumerate(state.history)
-                          if not s.get("is_error") and (s.get("summary") or {}).get("does")]
+                          if not s.get("is_error") and s["summary"]["does"]]
             prev_steps_list.append("\n".join(prev_lines))
             step_numbers.append(len(state.history) + 1)
 
@@ -642,7 +657,7 @@ def _run_prm_batch(
                 problem_id  = str(state.item.get("id", "?"))
                 prev_lines  = [f"Step {i+1}: {s['summary']['does']}"
                                for i, s in enumerate(state.history)
-                               if not s.get("is_error") and (s.get("summary") or {}).get("does")]
+                               if not s.get("is_error") and s["summary"]["does"]]
                 # stage1에서 fail인 루브릭만 재평가
                 failed_names   = {n for n, v in s1_results[sid]["votes"].items() if v == "incorrect"}
                 stage2_rubrics = [r for r in prm_model.rubrics if r["name"] in failed_names]
@@ -725,7 +740,7 @@ def _run_prm_batch(
         for state in prm_states:
             prev_lines = [f"Step {i+1}: {s['summary']['does']}"
                           for i, s in enumerate(state.history)
-                          if not s.get("is_error") and (s.get("summary") or {}).get("does")]
+                          if not s.get("is_error") and s["summary"]["does"]]
             prev_steps_list.append("\n".join(prev_lines))
             step_numbers.append(len(state.history) + 1)
 
@@ -780,7 +795,7 @@ def _run_prm_batch(
         problem_id  = str(state.item.get("id", "?"))
         prev_lines  = [f"Step {i+1}: {s['summary']['does']}"
                        for i, s in enumerate(state.history)
-                       if not s.get("is_error") and (s.get("summary") or {}).get("does")]
+                       if not s.get("is_error") and s["summary"]["does"]]
         verdict, detail = evaluate_step(
             question     = state.item["problem"],
             prev_steps   = "\n".join(prev_lines),
@@ -951,8 +966,13 @@ def _parse_generator_deep_check(text: str, rubric_names: list[str]) -> dict[str,
 
 def _parse_next_pred_action(text: str) -> str | None:
     """Self-correction 블록에서 'Next action: solve/rethink/end' 를 추출.
-    'Next action:\\n solve' 처럼 줄바꿈 뒤에 오는 경우도 지원."""
-    m = re.search(r"Next\s+action\s*:\s*\n?\s*(solve|rethink|end)\b", text, re.IGNORECASE)
+    'Next action:\\n solve' 또는 'Next action:\\n <|solve|>' 형태 모두 지원.
+    "Next action:" 없이 텍스트 끝에 바로 액션 토큰이 붙은 경우도 fallback으로 처리."""
+    m = re.search(r"Next\s+action\s*:\s*\n?\s*(?:<\|)?(solve|rethink|end)(?:\|>)?", text, re.IGNORECASE)
+    if m:
+        return m.group(1).lower()
+    # 텍스트 끝에 <|solve|> / <|rethink|> / <|end|> 가 바로 붙은 경우
+    m = re.search(r"<\|(solve|rethink|end)\|>\s*$", text, re.IGNORECASE)
     if m:
         return m.group(1).lower()
     return None
@@ -1117,7 +1137,7 @@ def _batch_run_all_summaries_and_gen_critique(
             state.pending_step["critique_review"] = [
                 filled.get(rn, {"rubric": rn, "verdict": None, "critique": None})
                 for rn in votes
-            ] or None
+            ] or Noneㅐ
 
 
 def _batch_generate_critique_review(
@@ -1220,7 +1240,7 @@ def _parse_pred_fail_rubrics(gen_critique_review: str | None) -> list[str]:
 
 
 def _compute_step_action(s: dict) -> tuple[list[str], str]:
-    """prm_deep_critique 기반으로 fail_rubrics와 next_gold_action을 계산."""
+    """prm_deep_critique + is_error 기반으로 fail_rubrics와 next_gold_action을 계산."""
     summ = s.get("summary") or {}
     deep = summ.get("prm_deep_critique") if isinstance(summ, dict) else None
     if deep is None:
@@ -1228,10 +1248,11 @@ def _compute_step_action(s: dict) -> tuple[list[str], str]:
 
     fail_rubrics = [
         e["rubric"] for e in (deep or [])
-        if e.get("verdict") in ("incorrect", "incorrect")
+        if e.get("verdict") == "incorrect"
     ]
 
-    if fail_rubrics:
+    # is_error=True면 PRM 또는 check_solved로 감지된 오류 → 반드시 rethink
+    if fail_rubrics or s.get("is_error"):
         action = TOKEN_CORRECT
     elif has_boxed(s.get("full_text") or s.get("text", "")):
         action = TOKEN_END
@@ -1263,14 +1284,16 @@ def _build_traj(
     for i, (s, label) in enumerate(zip(steps, labels)):
         is_last = (i == last)
         step_src = s.get("source", "gen")
-        _is_last_correct = (is_last and not s["is_error"])
         _has_box = has_boxed(s.get("full_text") or s.get("text", ""))
-        if _is_last_correct and _has_box:
-            state = "end"
-        elif s.get("was_rethink") or step_src == "patcher":
-            state = "rethink"
+
+        prefix = "pat" if step_src == "patcher" else "gen"
+        if _has_box:
+            suffix = "end"
+        elif i > 0 and step_dicts[i - 1]["next_gold_action"] == TOKEN_CORRECT:
+            suffix = "rethink"
         else:
-            state = "solve"
+            suffix = "solve"
+        state = f"{prefix}_{suffix}"
 
         fail_rubrics, next_action = _compute_step_action(s)
 
@@ -1534,7 +1557,7 @@ def _process_prm_result(
             state.step_rethink_tried            = True
             state.last_wrong_step_text          = step["text"]
             state.last_wrong_rubric_details     = _rubric_details
-            state.last_wrong_does               = step.get("wrong_step_summary") or (step.get("summary") or {}).get("does") or ""
+            state.last_wrong_does               = step.get("wrong_step_summary") or step.get("does_summary") or ""
             state.last_wrong_gen_deep_critique  = step.get("gen_deep_critique") or {}
         elif not state.step_substep_tried:
             # rethink 실패 → Atomicity 기준으로 서브스텝 분해 시도
@@ -1857,7 +1880,7 @@ def generate_batch(
     _gpu_batch = _GT_CFG["batch_per_gpu"]
 
     if USE_VLLM and generators:
-        # ── vLLM 모드: 단일 LLM 인스턴스, gen + sum 공유 (직렬화 lock으로 보호) ──
+        # ── vLLM 모드: gen은 vLLM, sum은 step_manager(base HF) 또는 vLLM 공유 ──
         _vllm_lock = threading.Lock()
         llm_v, tok_v = generators[0][0], generators[0][1]
 
@@ -1865,14 +1888,28 @@ def generate_batch(
             with _vllm_lock:
                 _batch_run_generator_vllm(llm, tok, _, states)
 
-        def _sum_fn_vllm(llm, tok, _, states):
-            prm_map = {id(s): s._prm_result for s in states}
-            with _vllm_lock:
-                _batch_run_all_summaries_and_gen_critique(llm, tok, None, states, prm_map)
-                _batch_generate_critique_review(llm, tok, None, states, source="prm")
-
         gen_worker = _GPUBatchWorker(_gen_fn_vllm, llm_v, tok_v, None, max_batch=_gpu_batch)
-        sum_worker = _GPUBatchWorker(_sum_fn_vllm, llm_v, tok_v, None, max_batch=_gpu_batch)
+
+        if step_manager_model is not None:
+            # 2+ GPU: step_manager(base) HF 모델로 요약 — SFT 모델 대신 base 모델 사용
+            sm_device = next(step_manager_model.parameters()).device
+
+            def _sum_fn_sm(model, tokenizer, device, states):
+                prm_map = {id(s): s._prm_result for s in states}
+                _batch_run_all_summaries_and_gen_critique(model, tokenizer, device, states, prm_map)
+
+            sum_worker = _GPUBatchWorker(_sum_fn_sm, step_manager_model, step_manager_tok,
+                                         sm_device, max_batch=_gpu_batch)
+            logger.info(f"vLLM mode: Summary worker → step_manager HF ({sm_device}, path={STEP_MANAGER_PATH})")
+        else:
+            # single GPU: vLLM으로 요약 (gen과 직렬화 lock 공유)
+            def _sum_fn_vllm(llm, tok, _, states):
+                prm_map = {id(s): s._prm_result for s in states}
+                with _vllm_lock:
+                    _batch_run_all_summaries_and_gen_critique(llm, tok, None, states, prm_map)
+
+            sum_worker = _GPUBatchWorker(_sum_fn_vllm, llm_v, tok_v, None, max_batch=_gpu_batch)
+            logger.info("vLLM mode: Summary worker → vLLM (single GPU, SFT 공유)")
 
     elif len(generators) >= 1:
         # ── HF 모드: gen worker(rollout GPU) + summary worker(step_manager GPU 0) ──
@@ -1884,7 +1921,6 @@ def generate_batch(
             prm_map = {id(s): s._prm_result for s in states}
             _batch_run_step_summary_only(model, tokenizer, device, states)
             _batch_run_all_summaries_and_gen_critique(model, tokenizer, device, states, prm_map)
-            _batch_generate_critique_review(model, tokenizer, device, states, source="prm")
 
         # step_manager가 로드된 경우 요약 전용 GPU(0) 사용, 아니면 gen GPU 공유
         if step_manager_model is not None:
@@ -1926,7 +1962,6 @@ def generate_batch(
                 sm_device = next(step_manager_model.parameters()).device
                 _batch_run_step_summary_only(step_manager_model, step_manager_tok, sm_device, [state])
                 _batch_run_all_summaries_and_gen_critique(step_manager_model, step_manager_tok, sm_device, [state], prm_map)
-                _batch_generate_critique_review(step_manager_model, step_manager_tok, sm_device, [state], source="prm")
 
             # ⑤ 결과 처리
             _process_prm_result(
@@ -1949,7 +1984,6 @@ def generate_batch(
         if USE_VLLM:
             llm_s, tok_s = generators[0][0], generators[0][1]
             _batch_run_all_summaries_and_gen_critique(llm_s, tok_s, None, states, prm_results_map)
-            _batch_generate_critique_review(llm_s, tok_s, None, states, source="prm")
         elif generators:
             _parallel_gen(_batch_run_step_summary_only, generators, states)
             _prm_snap = prm_results_map
@@ -1957,15 +1991,10 @@ def generate_batch(
                 lambda m, t, d, sts: _batch_run_all_summaries_and_gen_critique(m, t, d, sts, _prm_snap),
                 generators, states,
             )
-            _parallel_gen(
-                lambda m, t, d, sts: _batch_generate_critique_review(m, t, d, sts, source="prm"),
-                generators, states,
-            )
         elif step_manager_model is not None:
             sm_device = next(step_manager_model.parameters()).device
             _batch_run_step_summary_only(step_manager_model, step_manager_tok, sm_device, states)
             _batch_run_all_summaries_and_gen_critique(step_manager_model, step_manager_tok, sm_device, states, prm_results_map)
-            _batch_generate_critique_review(step_manager_model, step_manager_tok, sm_device, states, source="prm")
 
     def _eval_cycle(states: list) -> list:
         prm_results_map: dict[int, dict] = {}
@@ -2165,7 +2194,7 @@ def main():
     if not Path(rubric_path).is_absolute():
         rubric_path = str(root / rubric_path)
 
-    rubrics      = load_rubrics(rubric_path)
+    rubrics      = load_deep_rubrics(rubric_path)
     fast_rubric  = None
 
     n_rubrics  = len(rubrics)
@@ -2185,16 +2214,21 @@ def main():
     # rollout_gpus[0] → step_manager (상대 인덱스 0)
     # rollout_gpus[1:] → vLLM generation (physical ids for vLLM worker subprocess)
     sm_gpu   = 0  # 상대 인덱스 0 = physical rollout_gpus[0]
-    gen_gpus = rollout_gpus[1:] if len(rollout_gpus) > 1 else rollout_gpus
-    logger.info(f"GPU 배분: step_manager=cuda:{sm_gpu}(physical {rollout_gpus[0]})  generator={gen_gpus}")
+    single_gpu = len(rollout_gpus) == 1
+    gen_gpus = rollout_gpus[1:] if not single_gpu else rollout_gpus
+    logger.info(f"GPU 배분: step_manager=cuda:{sm_gpu}(physical {rollout_gpus[0]})  generator={gen_gpus}  single_gpu={single_gpu}")
 
     # ── Step Manager 로드 (요약·분해 전용) ────────────────────────────────────
+    # single_gpu: generator 로드 후 동일 모델을 공유 (별도 로드 생략)
     step_manager_model = None
     step_manager_tok   = None
-    sm_model, sm_tok = load_step_manager(gpu_id=sm_gpu)
-    step_manager_model = sm_model
-    step_manager_tok   = sm_tok
-    logger.info(f"Step Manager 로드 완료: cuda:{sm_gpu}(physical {rollout_gpus[0]})  path={STEP_MANAGER_PATH}")
+    if not single_gpu:
+        sm_model, sm_tok = load_step_manager(gpu_id=sm_gpu)
+        step_manager_model = sm_model
+        step_manager_tok   = sm_tok
+        logger.info(f"Step Manager 로드 완료: cuda:{sm_gpu}(physical {rollout_gpus[0]})  path={STEP_MANAGER_PATH}")
+    else:
+        logger.info("rollout_gpus=1 → Step Manager를 Generator와 공유 (별도 로드 생략)")
 
     # ── Generator 로드 ────────────────────────────────────────────────────────
     if USE_VLLM:
@@ -2217,12 +2251,18 @@ def main():
         logger.info("Generator vLLM 로드 완료")
     else:
         for i, _gpu in enumerate(gen_gpus):
-            device_map = {"": f"cuda:{i + 1}"}  # 상대 인덱스: sm=0, gen=1,2,...
+            # single_gpu: sm=gen=cuda:0 / multi_gpu: sm=cuda:0, gen=cuda:1,2,...
+            rel_idx = i if single_gpu else i + 1
+            device_map = {"": f"cuda:{rel_idx}"}
             logger.info(f"Generator 로딩 중: {base_model_id}  device_map={device_map}(physical {_gpu})")
             model, tokenizer = load_generator(model_path=base_model_id, device_map=device_map)
             generators.append((model, tokenizer, next(model.parameters()).device))
             logger.info(f"Generator 로드 완료 (device={generators[-1][2]})")
         logger.info(f"Generator {len(generators)}개 로드 완료")
+        if single_gpu and generators:
+            step_manager_model = generators[0][0]
+            step_manager_tok   = generators[0][1]
+            logger.info("rollout_gpus=1 → step_manager_model을 generators[0]와 공유")
 
     # ── PRM 로드 ──────────────────────────────────────────────────────────────
     if not _PRM_API:

@@ -16,6 +16,17 @@ logger = logging.getLogger(__name__)
 _PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
 
+def build_solve_user_msg(problem: str, history_does: list[str]) -> str:
+    """[Problem] / [Previous steps] / Write Step N. 포맷 유저 메시지 생성."""
+    lines = [f"[Problem]\n{problem}"]
+    if history_does:
+        lines.append("\n[Previous steps]")
+        for i, does in enumerate(history_does, 1):
+            lines.append(f"Step {i}: {does}")
+    lines.append(f"\nWrite Step {len(history_does) + 1}.")
+    return "\n".join(lines)
+
+
 def load_prompts() -> dict[str, str]:
     """action_prompts.jsonl을 로드하고 {{rubric}} 등 변수를 치환해 반환."""
     rubric_path = _PROMPTS_DIR / "action_prompts_rubric.jsonl"

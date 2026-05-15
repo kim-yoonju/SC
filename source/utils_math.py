@@ -74,6 +74,8 @@ def _angle_equal(a: str, b: str) -> bool:
 
 
 def extract_boxed(text: str, is_gsm8k: bool = False) -> str | None:
+    if not text:
+        return None
     if not is_gsm8k:
         marker = r"\boxed{"
         pos = text.rfind(marker)
