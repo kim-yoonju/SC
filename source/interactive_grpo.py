@@ -277,11 +277,15 @@ def run_rollout(args):
             batch_problems = [next(problems_cycle) for _ in range(args.batch_size)]
             all_records: list[dict] = []   # 저장할 샘플들
 
-            for prob in batch_problems:
+            n_probs = len(batch_problems)
+            print(f"[R{round_idx:06d}] 시작: {n_probs}문제 × K={ROLLOUT_N} = {n_probs * ROLLOUT_N}개 생성", flush=True)
+
+            for pi, prob in enumerate(batch_problems):
                 group_id   = prob.get("id", prob["problem"][:40])
                 rewards    = []
                 rollout_steps_list = []   # K × steps
 
+                syms = []
                 for k in range(ROLLOUT_N):
                     steps = _generate_one_trajectory(
                         prob["problem"], prob["answer"],
@@ -293,6 +297,11 @@ def run_rollout(args):
                     reward = 1.0 if (steps is not None) else 0.0
                     rewards.append(reward)
                     rollout_steps_list.append(steps)
+                    syms.append(f"G{k}={'✓' if reward == 1.0 else '✗'}")
+
+                rollout_str = "  ".join(syms)
+                n_solved = sum(rewards)
+                print(f"  P{pi:02d}/{n_probs}  [{rollout_str}]  ({int(n_solved)}/{ROLLOUT_N} solved)", flush=True)
 
                 advantages = _compute_advantages(rewards)
 
@@ -321,17 +330,20 @@ def run_rollout(args):
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
             (round_dir / "ready").touch()
 
-            msg = (
-                f"[Rollout] Round {round_idx:06d} | "
-                f"샘플 {len(all_records)}개 | ckpt={Path(current_ckpt).name}"
+            total_gen = n_probs * ROLLOUT_N
+            avg_rew = sum(r["reward"] for r in all_records) / max(len(all_records), 1)
+            print(
+                f"[R{round_idx:06d}] 완료 → queue 저장 | "
+                f"유효 {len(all_records)}/{total_gen}개 | avg_reward={avg_rew:.3f} | "
+                f"ckpt={Path(current_ckpt).name}",
+                flush=True,
             )
-            print(msg, flush=True)
             _log({
                 "round":      round_idx,
                 "n_samples":  len(all_records),
-                "n_problems": len(batch_problems),
+                "n_problems": n_probs,
                 "ckpt":       current_ckpt,
-                "avg_reward": sum(r["reward"] for r in all_records) / max(len(all_records), 1),
+                "avg_reward": avg_rew,
             })
             round_idx += 1
 

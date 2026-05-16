@@ -4,4 +4,4 @@ datasets/
 checkpoints/
 configs/
 output/
-docker/sc_rl_env.tar.gz
+data_optimizer/

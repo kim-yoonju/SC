@@ -57,8 +57,8 @@ NUM_END=$(py "str(c['generate_trajectory'].get('num_end', 'None'))")
 BATCH_SIZE=$(py "str(c['generate_trajectory'].get('batch_per_gpu', 16))")
 
 TS=$(date +%Y%m%d_%H%M%S)
-QUEUE_DIR=$WORK_DIR/queue/igrpo_$TS
 RUN_DIR=$WORK_DIR/output/GRPO/$TS          # 데이터 생성 로그
+QUEUE_DIR=$RUN_DIR/queue
 CKPT_DIR=$WORK_DIR/checkpoints/grpo/$TS   # 모델 학습 로그 + 체크포인트
 mkdir -p "$QUEUE_DIR" "$RUN_DIR" "$CKPT_DIR"
 

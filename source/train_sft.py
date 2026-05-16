@@ -83,7 +83,8 @@ def cosine_lr(step, warmup_steps, total_steps, base_lr):
 
 
 def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
-                    chunk=64, ignore_index=-100):
+                    action_weight_map: dict | None = None,
+                    chunk=16, ignore_index=-100):
     hidden = model_module.model(
         input_ids=input_ids, attention_mask=attention_mask
     ).last_hidden_state                                     # [B, T, H]
@@ -92,18 +93,36 @@ def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
     shift_labels = labels[..., 1:].contiguous().to(shift_hidden.device)
     del hidden
 
+    # 액션 토큰 위치에 클래스 가중치를 적용한 per-token weight 텐서 생성.
+    # 가중치 정규화: sum(w_i for valid) — loss 스케일을 안정적으로 유지.
+    if action_weight_map:
+        token_weights = torch.ones(shift_labels.shape, dtype=torch.float32,
+                                   device=shift_labels.device)
+        for tid, w in action_weight_map.items():
+            token_weights[shift_labels == tid] = w
+        valid_mask = shift_labels != ignore_index
+        n_valid = (token_weights * valid_mask).sum().clamp(min=1)
+    else:
+        token_weights = None
+        n_valid = (shift_labels != ignore_index).sum().clamp(min=1).float()
+
     V = model_module.lm_head.weight.shape[0]
     T = shift_hidden.shape[1]
-    n_valid = (shift_labels != ignore_index).sum().clamp(min=1).float()
 
     parts = []
     for s in range(0, T, chunk):
         e = min(s + chunk, T)
         c_logits = F.linear(shift_hidden[:, s:e],
                             model_module.lm_head.weight).float()   # [B, chunk, V]
-        c_loss = F.cross_entropy(c_logits.view(-1, V),
-                                 shift_labels[:, s:e].reshape(-1),
-                                 ignore_index=ignore_index, reduction="sum")
+        c_labels = shift_labels[:, s:e].reshape(-1)
+        if token_weights is not None:
+            c_weights = token_weights[:, s:e].reshape(-1)
+            c_loss = (F.cross_entropy(c_logits.view(-1, V), c_labels,
+                                      ignore_index=ignore_index, reduction="none")
+                      * c_weights).sum()
+        else:
+            c_loss = F.cross_entropy(c_logits.view(-1, V), c_labels,
+                                     ignore_index=ignore_index, reduction="sum")
         parts.append(c_loss)
         del c_logits
 
@@ -145,6 +164,23 @@ def train(args):
                            sampler=sampler,
                            collate_fn=partial(collate_fn, pad_token_id=tokenizer.pad_token_id),
                            num_workers=2, pin_memory=True)
+
+    # ── 액션 토큰 클래스 가중치 ──────────────────────────────────────────────
+    # --action_weights "solve:1,rethink:5,end:40" 형식으로 전달.
+    # 각 액션 토큰 ID → 가중치로 변환해 loss 계산에 사용.
+    action_weight_map = None
+    if args.action_weights:
+        from utils_sft import TOKEN_SOLVE, TOKEN_RETHINK, TOKEN_END
+        _name2tok = {"solve": TOKEN_SOLVE, "rethink": TOKEN_RETHINK, "end": TOKEN_END}
+        action_weight_map = {}
+        for part in args.action_weights.split(","):
+            name, w = part.strip().split(":")
+            tids = tokenizer.encode(_name2tok[name.strip()], add_special_tokens=False)
+            if tids:
+                action_weight_map[tids[-1]] = float(w)
+        if is_main:
+            readable = {tokenizer.decode([tid]): w for tid, w in action_weight_map.items()}
+            print(f"액션 클래스 가중치: {readable}")
 
     # ── 모델 로드 ────────────────────────────────────────────────────────────
     load_path = args.resume_checkpoint if args.resume_checkpoint else args.model_path
@@ -229,7 +265,8 @@ def train(args):
             attention_mask = batch["attention_mask"].to(primary_device)
             labels         = batch["labels"].to(primary_device)
 
-            loss = chunked_lm_loss(model_engine.module, input_ids, attention_mask, labels)
+            loss = chunked_lm_loss(model_engine.module, input_ids, attention_mask, labels,
+                                   action_weight_map=action_weight_map)
             model_engine.backward(loss)   # gradient_accumulation은 DeepSpeed가 처리
             accum_loss += loss.item()
 
@@ -308,6 +345,9 @@ def parse_args():
                    help="완료된 에폭 수 (예: epoch2 체크포인트면 2)")
     p.add_argument("--run_dir",       default=None,
                    help="기존 run 디렉토리 재사용 (없으면 새 타임스탬프 디렉토리 생성)")
+    p.add_argument("--action_weights", default=None,
+                   help="액션 토큰 클래스 가중치. 예: 'solve:1,rethink:5,end:40'\n"
+                        "자연 분포 데이터와 함께 사용해 minority class gradient를 보정.")
     return p.parse_args()
 
 

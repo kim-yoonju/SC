@@ -297,15 +297,14 @@ def preprocess(
     solve_ratio: int = 43,
     rethink_ratio: int = 43,
     end_ratio: int = 14,
+    no_balance: bool = False,
 ) -> str:
     """
-    trajectory를 스텝 단위로 분류해 균형 잡힌 SFT 데이터를 생성합니다.
+    trajectory를 스텝 단위로 분류해 SFT 데이터를 생성합니다.
 
-    균형화 전략:
-      - is_right=True 필터
-      - rethink 전부 사용 (gen + patcher)
-      - solve, end는 rethink 수 기준으로 solve_ratio:rethink_ratio:end_ratio 비율에 맞게 샘플링
-      - 각 버킷에서 generator 우선, 부족하면 patcher 보충
+    no_balance=False (기본): solve_ratio:rethink_ratio:end_ratio 비율로 샘플링
+    no_balance=True        : is_right=True 전체를 자연 분포 그대로 사용
+                             → class weighted loss (--action_weights)와 함께 쓸 것
     """
     import random
 
@@ -362,50 +361,66 @@ def preprocess(
     for lst in [gen_solve, gen_rethink, gen_end, pat_solve, pat_rethink, pat_end]:
         rng.shuffle(lst)
 
-    # ── 목표 수 계산 (rethink 전부 기준) ────────────────────────────────────
-    all_rethink = gen_rethink + pat_rethink
-    n_rethink   = len(all_rethink)
-    n_solve_tgt = round(n_rethink * solve_ratio   / rethink_ratio)
-    n_end_tgt   = round(n_rethink * end_ratio     / rethink_ratio)
-
-    # ── solve: gen 우선, 부족하면 patcher 보충 ───────────────────────────────
-    solve_pool  = gen_solve[:n_solve_tgt]
-    if len(solve_pool) < n_solve_tgt:
-        solve_pool += pat_solve[:n_solve_tgt - len(solve_pool)]
-
-    # ── end: gen 우선, 부족하면 patcher 보충 ─────────────────────────────────
-    end_pool = gen_end[:n_end_tgt]
-    if len(end_pool) < n_end_tgt:
-        end_pool += pat_end[:n_end_tgt - len(end_pool)]
-
-    # ── 통계 출력 ────────────────────────────────────────────────────────────
     def _count_src(pool):
         ng = sum(1 for _, steps, k in pool if steps[k].get("source", "gen") == "gen")
         return ng, len(pool) - ng
 
-    sg, sp = _count_src(solve_pool)
-    rg, rp = _count_src(all_rethink)
-    eg, ep = _count_src(end_pool)
-    total  = len(solve_pool) + n_rethink + len(end_pool)
+    if no_balance:
+        # ── 자연 분포: is_right=True 전체 사용 (균형화 없음) ─────────────────
+        solve_pool   = gen_solve   + pat_solve
+        all_rethink  = gen_rethink + pat_rethink
+        end_pool     = gen_end     + pat_end
+        all_samples  = solve_pool + all_rethink + end_pool
+        rng.shuffle(all_samples)
 
-    print(f"\n  [ 스텝 비율 (목표 {solve_ratio}:{rethink_ratio}:{end_ratio}) ]")
-    print(f"  {'액션':<10} {'수':>6}  {'비율':>6}    {'gen':>6} {'gen%':>6}    {'patcher':>7} {'pat%':>6}")
-    print(f"  {'─'*62}")
-    for label, n, ng, np in [
-        ("solve",   len(solve_pool), sg, sp),
-        ("rethink", n_rethink,       rg, rp),
-        ("end",     len(end_pool),   eg, ep),
-    ]:
-        print(f"  {label:<10} {n:6d}  {n/max(total,1):5.1%}    {ng:6d} {ng/max(n,1):5.1%}    {np:7d} {np/max(n,1):5.1%}")
-    print(f"  {'─'*62}")
-    print(f"  {'합계':<10} {total:6d}")
+        total = len(all_samples)
+        print(f"\n  [ 스텝 비율 (자연 분포 — no_balance) ]")
+        print(f"  {'액션':<10} {'수':>6}  {'비율':>6}")
+        print(f"  {'─'*30}")
+        for label, pool in [("solve", solve_pool), ("rethink", all_rethink), ("end", end_pool)]:
+            print(f"  {label:<10} {len(pool):6d}  {len(pool)/max(total,1):5.1%}")
+        print(f"  {'─'*30}")
+        print(f"  {'합계':<10} {total:6d}")
+    else:
+        # ── 목표 수 계산 (rethink 전부 기준) ────────────────────────────────
+        all_rethink = gen_rethink + pat_rethink
+        n_rethink   = len(all_rethink)
+        n_solve_tgt = round(n_rethink * solve_ratio   / rethink_ratio)
+        n_end_tgt   = round(n_rethink * end_ratio     / rethink_ratio)
+
+        # ── solve: gen 우선, 부족하면 patcher 보충 ───────────────────────────
+        solve_pool  = gen_solve[:n_solve_tgt]
+        if len(solve_pool) < n_solve_tgt:
+            solve_pool += pat_solve[:n_solve_tgt - len(solve_pool)]
+
+        # ── end: gen 우선, 부족하면 patcher 보충 ─────────────────────────────
+        end_pool = gen_end[:n_end_tgt]
+        if len(end_pool) < n_end_tgt:
+            end_pool += pat_end[:n_end_tgt - len(end_pool)]
+
+        sg, sp = _count_src(solve_pool)
+        rg, rp = _count_src(all_rethink)
+        eg, ep = _count_src(end_pool)
+        total  = len(solve_pool) + n_rethink + len(end_pool)
+
+        print(f"\n  [ 스텝 비율 (목표 {solve_ratio}:{rethink_ratio}:{end_ratio}) ]")
+        print(f"  {'액션':<10} {'수':>6}  {'비율':>6}    {'gen':>6} {'gen%':>6}    {'patcher':>7} {'pat%':>6}")
+        print(f"  {'─'*62}")
+        for label, n, ng, np in [
+            ("solve",   len(solve_pool), sg, sp),
+            ("rethink", n_rethink,       rg, rp),
+            ("end",     len(end_pool),   eg, ep),
+        ]:
+            print(f"  {label:<10} {n:6d}  {n/max(total,1):5.1%}    {ng:6d} {ng/max(n,1):5.1%}    {np:7d} {np/max(n,1):5.1%}")
+        print(f"  {'─'*62}")
+        print(f"  {'합계':<10} {total:6d}")
+
+        all_samples = solve_pool + all_rethink + end_pool
+        rng.shuffle(all_samples)
 
     # ── 저장 ─────────────────────────────────────────────────────────────────
     out_path = Path(output_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    all_samples = solve_pool + all_rethink + end_pool
-    rng.shuffle(all_samples)
 
     with open(out_path, "w", encoding="utf-8") as f:
         for problem, steps, k in tqdm(all_samples, desc="  전처리"):
@@ -429,6 +444,8 @@ def main():
     p.add_argument("--solve_ratio",  type=int, default=43)
     p.add_argument("--rethink_ratio", type=int, default=43)
     p.add_argument("--end_ratio",    type=int, default=14)
+    p.add_argument("--no-balance",   dest="no_balance", action="store_true",
+                   help="균형화 없이 자연 분포 그대로 출력. --action_weights와 함께 사용.")
     p.add_argument("--debug", action="store_true",
                    help="저장된 전처리 파일에서 샘플 1개 출력")
     p.add_argument("--grpo", action="store_true",
@@ -467,6 +484,7 @@ def main():
         solve_ratio=args.solve_ratio,
         rethink_ratio=args.rethink_ratio,
         end_ratio=args.end_ratio,
+        no_balance=args.no_balance,
     )
 
 

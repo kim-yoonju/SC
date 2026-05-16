@@ -3,7 +3,7 @@ eval_action_cls.py
 trajectory jsonl에서 gold/pred next action을 파싱해 classification 성능을 측정한다.
 
 사용법:
-    python source/eval_action_cls.py /mnt/yoonju/SC/output/sft_trajectory/20260515_064458/traj_all.jsonl
+    python source/eval_action_cls.py /mnt/yoonju/SC/output/sft_trajectory/20260515_130033/traj_all.jsonl
     python source/eval_action_cls.py <path> --skip-missing   # pred=None 스텝 제외
     python source/eval_action_cls.py <path> --by-state       # state별 breakdown
 """
