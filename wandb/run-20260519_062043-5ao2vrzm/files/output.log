@@ -1,0 +1,51 @@
+
+[action_weights] Next action 역빈도 가중치 (solve=1.0 기준)
+  액션           count      비율    weight
+  ──────────────────────────────────────
+  solve         4514  24.6%     1.000
+  rethink      10554  57.6%     0.428
+  end           3267  17.8%     1.382
+  ──────────────────────────────────────
+
+
+[rubric_weights] Fail rubrics 역빈도 가중치 (비율 보존 스케일다운, max=10.0)
+  루브릭 토큰                                          count      비율    weight
+  ────────────────────────────────────────────────────────────────────────
+  <|none|>                                         9848  36.5%     0.161
+  <|progress_and_non-repetition|>                  5504  20.4%     0.289
+  <|atomicity|>                                    2834  10.5%     0.561
+  <|algebraic_manipulation|>                       2794  10.3%     0.569
+  <|differential_equations|>                       1780   6.6%     0.893
+  <|function_and_limit_analysis|>                  1483   5.5%     1.072
+  <|calculus_computation|>                         1322   4.9%     1.203
+  <|logical_and_discrete_reasoning|>                600   2.2%     2.650
+  <|number_theoretic_reasoning|>                    259   1.0%     6.139
+  <|counting_and_probability|>                      233   0.9%     6.824
+  <|geometric_reasoning|>                           198   0.7%     8.030
+  <|abstract_and_linear_algebra_operations|>        159   0.6%    10.000
+  ────────────────────────────────────────────────────────────────────────
+
+[PreprocessedDataset] 18340개 샘플 로드, 토크나이징 중...
+Tokenizing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 18340/18340 [03:03<00:00, 99.98it/s]
+[PreprocessedDataset] 학습 샘플: 14098  (제외: 0)
+[PreprocessedDataset] Next action 파싱 실패로 건너뜀: 4235개
+[PreprocessedDataset] Fail rubrics 파싱 실패로 건너뜀: 7개
+Loading checkpoint shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:00<00:00, 194.18it/s]
+[재개] 체크포인트 로드: /mnt/yoonju/SC/checkpoints/sft/20260518_173806/epoch2  (완료 에폭: 2)
+샘플: 14098  |  effective batch: 64  |  steps: 660
+저장 경로: /mnt/yoonju/SC/checkpoints/sft/20260518_173806
+/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py:4876: UserWarning: barrier(): using the device under current context. You can specify `device_id` in `init_process_group` to mute this warning.
+  warnings.warn(  # warn only once
+Epoch 3/3:   0%|                                                                                                                                                                               | 0/1763 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+Epoch 3/3: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1763/1763 [2:51:04<00:00,  5.82s/it, loss=1.1978, lr=0.00e+00, step=660]
+
+[저장] /mnt/yoonju/SC/checkpoints/sft/20260518_173806/step_448
+
+[저장] /mnt/yoonju/SC/checkpoints/sft/20260518_173806/step_512
+
+[저장] /mnt/yoonju/SC/checkpoints/sft/20260518_173806/step_576
+
+[저장] /mnt/yoonju/SC/checkpoints/sft/20260518_173806/step_640
+
+[에폭 3] avg_loss=1.2845
+[저장] /mnt/yoonju/SC/checkpoints/sft/20260518_173806/epoch3

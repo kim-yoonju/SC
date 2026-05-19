@@ -1,0 +1,10 @@
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_setup.py:_flush():81] Current SDK version is 0.27.0
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_setup.py:_flush():81] Configure stats pid to 1185145
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_init.py:setup_run_log_directory():723] Logging user logs to /mnt/yoonju/SC/wandb/run-20260518_091840-yldm6tvr/logs/debug.log
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_init.py:setup_run_log_directory():724] Logging internal logs to /mnt/yoonju/SC/wandb/run-20260518_091840-yldm6tvr/logs/debug-internal.log
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_init.py:init():851] calling init triggers
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_init.py:init():856] wandb.init called with sweep_config: {}
+config: {'model_path': '/mnt/.cache/huggingface/mdels/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28', 'data_path': '/mnt/yoonju/SC/output/sft_trajectory/cls_preprocessed.jsonl', 'output_dir': '/mnt/yoonju/SC/checkpoints/sft', 'lr': 5e-06, 'num_epochs': 3, 'batch_per_gpu': 4, 'grad_accum': 16, 'max_length': 3072, 'warmup_ratio': 0.1, 'weight_decay': 0.01, 'max_grad_norm': 0.5, 'save_steps': 16, 'skip_error': False, 'wandb': True, 'debug': None, 'resume_checkpoint': None, 'resume_epoch': 0, 'run_dir': None, 'action_weights': None, '_wandb': {}}
+2026-05-18 09:18:40,502 INFO    MainThread:1185145 [wandb_init.py:init():899] starting backend
+2026-05-18 09:18:40,799 INFO    MainThread:1185145 [wandb_init.py:init():914] sending inform_init request

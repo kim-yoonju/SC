@@ -1,0 +1,53 @@
+[Auto] Next action 역빈도 가중치: {'<|solve|>': '1.000', '<|rethink|>': '0.432', '<|end|>': '1.654'}
+[PreprocessedDataset] 17699개 샘플 로드, 토크나이징 중...
+Tokenizing: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 17699/17699 [01:32<00:00, 192.19it/s]
+[PreprocessedDataset] 학습 샘플: 16721  (제외: 0)
+[PreprocessedDataset] Next action 파싱 실패로 건너뜀: 978개
+Loading checkpoint shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:00<00:00, 204.76it/s]
+샘플: 16721  |  effective batch: 64  |  steps: 783
+Traceback (most recent call last):
+  File "/mnt/yoonju/SC/source/train_sft.py", line 358, in <module>
+    main()
+  File "/mnt/yoonju/SC/source/train_sft.py", line 354, in main
+    train(args)
+  File "/mnt/yoonju/SC/source/train_sft.py", line 230, in train
+    model_engine, optimizer, _, _ = deepspeed.initialize(
+                                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/__init__.py", line 214, in initialize
+    engine = DeepSpeedEngine(args=args,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 365, in __init__
+    self._configure_optimizer(optimizer, model_parameters)
+  File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 1628, in _configure_optimizer
+    self.optimizer = self._configure_zero_optimizer(basic_optimizer)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 1935, in _configure_zero_optimizer
+    optimizer = Stage1And2ZeroOptimizer(
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 472, in __init__
+    weights_partition = self.parallel_partitioned_bit16_groups[i][partition_id].detach().clone().to(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 14.18 GiB. GPU 0 has a total capacity of 94.97 GiB of which 11.26 GiB is free. Process 1806739 has 61.52 GiB memory in use. Including non-PyTorch memory, this process has 22.18 GiB memory in use. Of the allocated memory 21.27 GiB is allocated by PyTorch, and 61.44 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/mnt/yoonju/SC/source/train_sft.py", line 358, in <module>
+[rank0]:     main()
+[rank0]:   File "/mnt/yoonju/SC/source/train_sft.py", line 354, in main
+[rank0]:     train(args)
+[rank0]:   File "/mnt/yoonju/SC/source/train_sft.py", line 230, in train
+[rank0]:     model_engine, optimizer, _, _ = deepspeed.initialize(
+[rank0]:                                     ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/__init__.py", line 214, in initialize
+[rank0]:     engine = DeepSpeedEngine(args=args,
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 365, in __init__
+[rank0]:     self._configure_optimizer(optimizer, model_parameters)
+[rank0]:   File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 1628, in _configure_optimizer
+[rank0]:     self.optimizer = self._configure_zero_optimizer(basic_optimizer)
+[rank0]:                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 1935, in _configure_zero_optimizer
+[rank0]:     optimizer = Stage1And2ZeroOptimizer(
+[rank0]:                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/home/yoonju/miniconda3/envs/SC_rl/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 472, in __init__
+[rank0]:     weights_partition = self.parallel_partitioned_bit16_groups[i][partition_id].detach().clone().to(
+[rank0]:                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 14.18 GiB. GPU 0 has a total capacity of 94.97 GiB of which 11.26 GiB is free. Process 1806739 has 61.52 GiB memory in use. Including non-PyTorch memory, this process has 22.18 GiB memory in use. Of the allocated memory 21.27 GiB is allocated by PyTorch, and 61.44 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

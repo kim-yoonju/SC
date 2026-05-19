@@ -1,0 +1,32 @@
+# Large data/model files
+data/
+data_optimize/
+*.tar.gz
+!docker/*.tar.gz
+*.zip
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+*.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Git
+.git/
+
+# Env/IDE
+.env
+.venv/
+*.egg-info/
+.vscode/
+.idea/
+
+# Logs/outputs
+logs/
+outputs/
+wandb/

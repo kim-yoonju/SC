@@ -1,0 +1,35 @@
+FROM nvidia/cuda:12.8.1-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CONDA_DIR=/opt/conda
+ENV PATH="${CONDA_DIR}/envs/SC_container/bin:${CONDA_DIR}/bin:${PATH}"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        bash \
+        curl \
+        git \
+        libgl1 \
+        libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+        -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -b -p ${CONDA_DIR} \
+    && rm /tmp/miniconda.sh \
+    && conda clean -afy
+
+COPY docker/sc_container_env.tar.gz /tmp/sc_container_env.tar.gz
+RUN mkdir -p ${CONDA_DIR}/envs/SC_container \
+    && tar -xzf /tmp/sc_container_env.tar.gz -C ${CONDA_DIR}/envs/SC_container \
+    && rm /tmp/sc_container_env.tar.gz \
+    && conda run -n SC_container conda-unpack
+
+COPY . /workspace/SC
+WORKDIR /workspace/SC
+
+# editable 패키지는 재빌드 없이 .pth로 경로만 등록
+RUN SITE_PKGS=$(python -c "import site; print(site.getsitepackages()[0])") && \
+    echo "/workspace/SC/verl" > "${SITE_PKGS}/verl.pth" && \
+    echo "/workspace/SC/vllm" > "${SITE_PKGS}/vllm.pth"
+
+ENV PYTHONPATH="/workspace/SC"

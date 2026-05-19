@@ -1,0 +1,96 @@
+_wandb:
+    value:
+        cli_version: 0.27.0
+        e:
+            an1hi4a5msylrzh8c70ke5mz3j1w5xss:
+                args:
+                    - --data_path
+                    - /mnt/yoonju/SC/output/sft_trajectory/sft_preprocessed.jsonl
+                    - --action_weights
+                    - --rubric_weights
+                codePath: source/train_sft.py
+                codePathLocal: source/train_sft.py
+                cpu_count: 192
+                cpu_count_logical: 192
+                cudaVersion: "13.0"
+                disk:
+                    /:
+                        total: "15147421802496"
+                        used: "12766148288512"
+                email: beads0105@gmail.com
+                executable: /home/yoonju/miniconda3/envs/SC_rl/bin/python3.12
+                gpu: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-7203fcf7-079e-0b87-e7d5-0e147a8bd6ba
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-fb7c18d7-3bc3-030d-94a3-b5ab4d8e2209
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-1b179fd9-cf66-170f-84ba-b3d94d3a220c
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-dc9fc490-e0a2-6493-e810-6ccfc2015bba
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-56b8f91f-dc15-1ac9-e228-230355c34197
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-e1ce4c49-62ff-04f4-1881-02b6b030aaca
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-0e472f99-2575-5b74-f269-3b9c00f9aa93
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-1f7ec963-88c1-5822-674b-681a4e9bb4fc
+                host: vega
+                memory:
+                    total: "811218984960"
+                os: Linux-6.8.0-79-generic-x86_64-with-glibc2.39
+                program: /mnt/yoonju/SC/source/train_sft.py
+                python: CPython 3.12.12
+                root: /mnt/yoonju/SC
+                startedAt: "2026-05-18T17:34:05.009992Z"
+                writerId: an1hi4a5msylrzh8c70ke5mz3j1w5xss
+        m: []
+        python_version: 3.12.12
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 71
+            "2":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 71
+            "3":
+                - 16
+                - 61
+            "4": 3.12.1
