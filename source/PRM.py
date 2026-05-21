@@ -28,6 +28,7 @@ from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "utils"))
 from utils import _call_llm, CONF, set_call_role, set_run_log, set_problem_context
 
 _DEFAULT_PRM_MODEL   = CONF.get("PRM", {}).get("model_id_checklist") or CONF.get("PRM", {}).get("model_id_batch")

@@ -7,4 +7,5 @@ vllm/
 
 configs/
 output/
-data_optimizer/
+data_optimizer/output/
+__pycache__/

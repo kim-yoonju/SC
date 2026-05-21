@@ -221,30 +221,33 @@ def _rubric_pie(ax, stats: list[dict], title: str):
     ax.set_title(f"{title}  (n={sum(sizes)})", fontsize=12, fontweight="bold")
 
 
-def plot(stats: list[dict], input_path: str, out_path: str | None):
+def plot(stats: list[dict], input_path: str, out_path: str | None,
+         critique_counts: dict | None = None):
     n = len(stats)
     correct   = [s for s in stats if s["is_right"]]
     incorrect = [s for s in stats if not s["is_right"]]
 
     total_cnt = Counter(s["n_total"] for s in stats)
 
-    fig = plt.figure(figsize=(22, 15))
+    from matplotlib.gridspec import GridSpec
+    fig = plt.figure(figsize=(24, 18))
     fig.suptitle(f"{Path(input_path).name}  (n={n})", fontsize=14, fontweight="bold", y=0.99)
+    gs = GridSpec(3, 3, figure=fig, hspace=0.45, wspace=0.35)
 
     # ── 1. state pie (correct) ────────────────────────────────────────────────
-    ax1 = fig.add_subplot(3, 3, 1)
+    ax1 = fig.add_subplot(gs[0, 0])
     _state_pie(ax1, correct, "state distribution  [correct]")
 
     # ── 2. state pie (incorrect) ──────────────────────────────────────────────
-    ax2 = fig.add_subplot(3, 3, 2)
+    ax2 = fig.add_subplot(gs[0, 1])
     _state_pie(ax2, incorrect, "state distribution  [incorrect]")
 
     # ── 3. trajectory category pie (correct) ─────────────────────────────────
-    ax3 = fig.add_subplot(3, 3, 3)
+    ax3 = fig.add_subplot(gs[0, 2])
     _cat_pie(ax3, correct, "trajectory category  [correct]")
 
     # ── 4. bubble chart (rethink vs patcher) ─────────────────────────────────
-    ax4 = fig.add_subplot(3, 3, 4)
+    ax4 = fig.add_subplot(gs[1, 0])
     bubble_cnt: Counter = Counter((s["n_rethink"], s["n_patcher"]) for s in stats)
     bx     = [k[0] for k in bubble_cnt]
     by     = [k[1] for k in bubble_cnt]
@@ -263,11 +266,11 @@ def plot(stats: list[dict], input_path: str, out_path: str | None):
     ax4.grid(True, linestyle="--", alpha=0.4)
 
     # ── 5. trajectory category pie (incorrect) ───────────────────────────────
-    ax5 = fig.add_subplot(3, 3, 5)
+    ax5 = fig.add_subplot(gs[1, 1])
     _cat_pie(ax5, incorrect, "trajectory category  [incorrect]")
 
     # ── 6. total steps distribution ───────────────────────────────────────────
-    ax6 = fig.add_subplot(3, 3, 6)
+    ax6 = fig.add_subplot(gs[1, 2])
     STEP_CLIP  = 20
     step_clip  = Counter({min(k, STEP_CLIP): v for k, v in total_cnt.items()})
     step_xs    = list(range(1, STEP_CLIP + 1))
@@ -281,19 +284,133 @@ def plot(stats: list[dict], input_path: str, out_path: str | None):
     ax6.tick_params(axis="x", labelsize=7)
 
     # ── 7. next gold action pie (all steps) ──────────────────────────────────
-    ax7 = fig.add_subplot(3, 3, 7)
+    ax7 = fig.add_subplot(gs[2, 0])
     _action_pie(ax7, stats, "next gold action  [all steps]")
 
     # ── 8. fail rubrics pie (all steps) ──────────────────────────────────────
-    ax8 = fig.add_subplot(3, 3, 8)
+    ax8 = fig.add_subplot(gs[2, 1])
     _rubric_pie(ax8, stats, "gold fail rubrics  [all steps]")
 
-    plt.tight_layout()
+    # ── 9. fast→deep critique transition table ───────────────────────────────
+    ax9 = fig.add_subplot(gs[2, 2])
+    _critique_table(ax9, critique_counts or {})
 
     if not out_path:
         out_path = str(Path(input_path).with_suffix(".png"))
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     print(f"저장: {out_path}")
+
+
+RUBRICS = [
+    "Progress and Non-Repetition", "Atomicity", "Algebraic Manipulation",
+    "Differential Equations", "Function and Limit Analysis", "Calculus Computation",
+    "Logical and Discrete Reasoning", "Abstract and Linear Algebra Operations",
+    "Number Theoretic Reasoning", "Geometric Reasoning", "Counting and Probability",
+]
+RUBRIC_SHORT = {
+    "Progress and Non-Repetition":          "P+NR",
+    "Atomicity":                            "Atom",
+    "Algebraic Manipulation":               "Alg",
+    "Differential Equations":               "DE",
+    "Function and Limit Analysis":          "F+L",
+    "Calculus Computation":                 "Calc",
+    "Logical and Discrete Reasoning":       "Logic",
+    "Abstract and Linear Algebra Operations": "Abst",
+    "Number Theoretic Reasoning":           "NTR",
+    "Geometric Reasoning":                  "Geo",
+    "Counting and Probability":             "C+P",
+}
+TRANSITION_COLORS = {
+    "inc→inc": "#1565C0",
+    "inc→cor": "#E53935",
+    "inc→N/A": "#FB8C00",
+    "cor→cor": "#43A047",
+    "cor→N/A": "#B0BEC5",
+    "cor→inc": "#6A1B9A",
+}
+
+
+def _compute_critique_transitions(path: str) -> dict:
+    """루브릭별 fast→deep 전환 카운트 반환.
+    반환: {rubric: Counter({transition: count})}
+    transition = "inc→inc" | "inc→cor" | "inc→N/A" | "cor→N/A"
+    """
+    def verd(raw): return "inc" if (raw or "").lower() in ("incorrect", "fail") else "cor"
+    from collections import defaultdict
+    counts = defaultdict(Counter)
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            traj = json.loads(line)
+            for step in traj.get("steps", []):
+                fast = step.get("prm_fast_critique") or {}
+                deep_list = step.get("prm_deep_critique") or []
+                if not fast and not deep_list:
+                    continue
+                deep = {d["rubric"]: d for d in deep_list if d.get("rubric")}
+                for r in RUBRICS:
+                    if r not in fast:
+                        continue
+                    fv = verd(fast[r].get("verdict"))
+                    dv_raw = deep[r].get("verdict") if r in deep else None
+                    dv = verd(dv_raw) if dv_raw is not None else "N/A"
+                    counts[r][f"{fv}→{dv}"] += 1
+    return dict(counts)
+
+
+def _critique_table(ax, counts: dict):
+    """루브릭별 fast→deep 전환 분포 테이블."""
+    rubrics = [r for r in RUBRICS if r in counts]
+    ax.axis("off")
+    ax.set_title("Fast→Deep Critique Transition", fontsize=11, fontweight="bold", pad=8)
+
+    if not rubrics:
+        ax.text(0.5, 0.5, "no critique data", ha="center", va="center", transform=ax.transAxes)
+        return
+
+    keys = ["inc→inc", "inc→cor", "inc→N/A", "cor→N/A"]
+    col_labels = ["Rubric"] + keys
+
+    rows = []
+    for r in rubrics:
+        c = counts[r]
+        row = [RUBRIC_SHORT[r]] + [str(c.get(k, 0)) for k in keys]
+        rows.append(row)
+
+    tbl = ax.table(
+        cellText=rows,
+        colLabels=col_labels,
+        cellLoc="right",
+        loc="center",
+    )
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(9)
+    tbl.auto_set_column_width(list(range(len(col_labels))))
+    for (row_i, col_i), cell in tbl.get_celld().items():
+        cell.set_height(0.08)
+
+    # 헤더 스타일
+    HDR_COLORS = {"Rubric": "#37474F",
+                  "inc→inc": "#1565C0", "inc→cor": "#C62828",
+                  "inc→N/A": "#E65100", "cor→N/A": "#546E7A"}
+    for j, lbl in enumerate(col_labels):
+        cell = tbl[0, j]
+        cell.set_facecolor(HDR_COLORS.get(lbl, "#37474F"))
+        cell.set_text_props(color="white", fontweight="bold")
+        cell.set_edgecolor("white")
+
+    # 행 교차 색상 + inc→cor 비율 높으면 강조
+    for i, r in enumerate(rubrics):
+        bg = "#F5F5F5" if i % 2 == 0 else "white"
+        c = counts[r]
+        total = sum(c.values())
+        for j in range(len(col_labels)):
+            tbl[i + 1, j].set_facecolor(bg)
+            tbl[i + 1, j].set_edgecolor("#E0E0E0")
+        if total > 0 and c.get("inc→cor", 0) / total > 0.3:
+            tbl[i + 1, keys.index("inc→cor") + 1].set_facecolor("#FFCDD2")
 
 
 def main():
@@ -306,7 +423,8 @@ def main():
     stats = load_stats(args.input)
     n_correct = sum(1 for s in stats if s["is_right"])
     print(f"로드: {len(stats)}개 trajectory  (correct={n_correct}, incorrect={len(stats)-n_correct})")
-    plot(stats, args.input, args.out)
+    critique_counts = _compute_critique_transitions(args.input)
+    plot(stats, args.input, args.out, critique_counts=critique_counts)
 
 
 if __name__ == "__main__":

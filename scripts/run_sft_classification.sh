@@ -1,23 +1,27 @@
 #!/bin/bash
 # Classification SFT 학습 스크립트
 #
-# 입력: math step (inference + Does)
-# 출력: Fast critic + Deep critic + Fail rubrics + Next action
-#
 # 사용법:
-#   bash scripts/run_sft_classification.sh [--resume <checkpoint_dir>] [--data_path <path>] [--action_weights] [--rubric_weights] [--debug [N]]
+'''
+bash scripts/run_sft_classification.sh \
+--data_path /mnt/yoonju/SC/output/sft_trajectory/traj_4000_2000_deep.jsonl \
+--rubric_weights \
+--gpus 0,1,2,3 --debug
+
+'''
+#
+# 주요 옵션:
+#   --data_path <path>   raw trajectory 또는 preprocessed jsonl 경로
+#   --gpus <ids>         사용할 GPU (예: 0,1,2,3)
+#   --resume <ckpt>      체크포인트에서 재개
+#   --action_weights     Next action 역빈도 가중치
+#   --rubric_weights     Fail rubrics focal loss
+#   --debug [N]          학습 없이 전처리 후 N번째 샘플 출력 (N 생략 시 0번째)
 #
 # 예시:
-#   bash scripts/run_sft_classification.sh                                              # 처음부터 학습
-#   bash scripts/run_sft_classification.sh --resume checkpoints/sft/20260505/epoch2    # epoch2 이후 재개
-#   bash scripts/run_sft_classification.sh --data_path output/sft_trajectory/xxx/traj_all.jsonl
-#   bash scripts/run_sft_classification.sh --action_weights                             # Next action 역빈도 가중치 적용
-#   bash scripts/run_sft_classification.sh --rubric_weights                             # Fail rubrics 역빈도 가중치 적용
-#   bash scripts/run_sft_classification.sh --action_weights --rubric_weights            # 둘 다 적용
-#   bash scripts/run_sft_classification.sh --debug        # 0번째 샘플 출력
-#   bash scripts/run_sft_classification.sh --debug 3      # 3번째 샘플 출력
-#
-# --data_path에 raw trajectory(steps 키 있는 파일)를 넘기면 classification 전처리 후 학습합니다.
+#   bash scripts/run_sft_classification.sh --gpus 0,1,2,3 --data_path output/.../traj.jsonl
+#   bash scripts/run_sft_classification.sh --gpus 0,1,2,3 --data_path output/.../traj.jsonl --debug
+#   bash scripts/run_sft_classification.sh --gpus 0,1,2,3 --data_path output/.../traj.jsonl --debug 5
 
 set -e
 cd "$(dirname "$0")/.."
@@ -100,18 +104,22 @@ if [[ "$IS_RAW" == "1" ]]; then
     echo "====== Classification 전처리 ======"
     echo "  입력:  $DATA_PATH"
     echo "  출력:  $PREPROCESSED_PATH"
-    conda run -n SC_rl python3 source/preprocess.py \
-        --data_path    "$DATA_PATH" \
-        --output_path  "$PREPROCESSED_PATH" \
-        --mode         classification \
-        --no-balance \
+    PREPROCESS_ARGS=(
+        --data_path    "$DATA_PATH"
+        --output_path  "$PREPROCESSED_PATH"
+        --mode         classification
+        --no-balance
         --no-filter
+    )
+    [[ -n "$RUBRIC_WEIGHTS" ]] && PREPROCESS_ARGS+=(--rubric_weights)
+    [[ -n "$ACTION_WEIGHTS" ]] && PREPROCESS_ARGS+=(--action_weights)
+    conda run -n SC_rl python3 source/preprocess.py "${PREPROCESS_ARGS[@]}"
     DATA_PATH="$PREPROCESSED_PATH"
 fi
 
 EXTRA_ARGS=(--data_path "$DATA_PATH")
 if [[ -n "$ACTION_WEIGHTS" ]]; then
-    echo "[경고] --action_weights: next action이 target에서 제거됐으므로 효과 없음. 무시합니다."
+    EXTRA_ARGS+=(--action_weights)
 fi
 if [[ -n "$RUBRIC_WEIGHTS" ]]; then
     EXTRA_ARGS+=(--rubric_weights)
@@ -137,6 +145,7 @@ if [[ -n "$RESUME_CKPT" ]]; then
     echo "  데이터:     $DATA_PATH"
     echo "  run_dir:    $RUN_DIR"
     echo "  GPU:        $GPUS (${N_GPUS}개 프로세스)"
+    [[ -n "$ACTION_WEIGHTS" ]] && echo "  action_weights:  ON (Next action focal loss, γ=${FOCAL_GAMMA:-2.0})"
     [[ -n "$RUBRIC_WEIGHTS" ]] && echo "  rubric_weights:  ON (Fail rubrics focal loss, γ=${FOCAL_GAMMA:-2.0})"
 
     EXTRA_ARGS+=(
@@ -144,25 +153,22 @@ if [[ -n "$RESUME_CKPT" ]]; then
         --resume_epoch      "$RESUME_EPOCH"
         --run_dir           "$RUN_DIR"
     )
-else
+elif [[ -z "$DEBUG_N" ]]; then
     echo "====== SFT 시작 ======"
     echo "  데이터: $DATA_PATH"
     echo "  GPU:    $GPUS (${N_GPUS}개 프로세스)"
+    [[ -n "$ACTION_WEIGHTS" ]] && echo "  action_weights:  ON (Next action focal loss, γ=${FOCAL_GAMMA:-2.0})"
     [[ -n "$RUBRIC_WEIGHTS" ]] && echo "  rubric_weights:  ON (Fail rubrics focal loss, γ=${FOCAL_GAMMA:-2.0})"
 fi
 
 if [[ -n "$DEBUG_N" ]]; then
-    if [[ "$DEBUG_N" == "auto" ]]; then
-        echo "====== DEBUG 모드 (fail_rubrics 자동 샘플링, preprocessed: $DATA_PATH) ======"
-        conda run -n SC_rl python3 source/train_sft.py \
-            --data_path "$DATA_PATH" \
-            --debug
-    else
-        echo "====== DEBUG 모드 (샘플 $DEBUG_N) ======"
-        conda run -n SC_rl python3 source/train_sft.py \
-            "${EXTRA_ARGS[@]}" \
-            --debug "$DEBUG_N"
-    fi
+    SAMPLE_IDX=0
+    [[ "$DEBUG_N" =~ ^[0-9]+$ ]] && SAMPLE_IDX="$DEBUG_N"
+    echo "====== DEBUG 모드 (샘플 $SAMPLE_IDX, 학습 안 함) ======"
+    echo "  데이터: $DATA_PATH"
+    conda run -n SC_rl python3 source/train_sft.py \
+        --data_path "$DATA_PATH" \
+        --debug "$SAMPLE_IDX"
 else
     MASTER_PORT=$(python3 -c "import socket; s=socket.socket(); s.bind(('',0)); print(s.getsockname()[1]); s.close()")
     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \

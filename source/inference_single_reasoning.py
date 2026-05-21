@@ -27,6 +27,7 @@ from tqdm import tqdm
 
 _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(_ROOT / "utils"))
 from utils import (
     CONF,
     load_config,
@@ -35,7 +36,7 @@ from utils import (
     _call_llm,
     _print_cost_summary,
 )
-from generate_utils import load_prompts as _load_prompts, load_dataset_file
+from generate_utils import load_dataset_file
 
 GPUS = CONF["inference"].get("gpus", [0])  # config의 inference.gpus 사용 (여기서 직접 지정 시 override)
 N_SAMPLES = -1     # -1이면 전체 데이터셋 사용, 양수이면 해당 개수만 추출
@@ -99,7 +100,7 @@ def evaluate(dataset_path: str, llm, tokenizer, cfg: dict, system_prompt: str, o
     fmt_results = []
     for out, it in tqdm(zip(outputs, items), total=len(items), desc="  평가"):
         r  = out.outputs[0].text.strip()
-        fc = check_solved(r, it["answer"], is_gsm8k=is_gsm8k)
+        fc = check_solved(r, it["answer"], is_gsm8k=is_gsm8k, problem=it.get("problem", ""))
         fmt_results.append(fc)
 
         if out_file is not None:
@@ -153,7 +154,7 @@ def evaluate_api(dataset_path: str, model_name: str, cfg: dict, system_prompt: s
         ]
         r = _call_llm(model_name, messages, max_completion_tokens=max_new_tokens) or ""
         r = r.strip()
-        fc = check_solved(r, it["answer"], is_gsm8k=is_gsm8k)
+        fc = check_solved(r, it["answer"], is_gsm8k=is_gsm8k, problem=it.get("problem", ""))
         row = {"id": it.get("id", "?"), "problem": it.get("problem", ""), "answer": it.get("answer", ""), "response": r, "is_correct": fc}
         if out_file is not None:
             with lock:
@@ -198,6 +199,7 @@ def parse_args():
     p.add_argument("--max_new_tokens", type=int, default=None, help="최대 생성 토큰 수 (config 값 override)")
     p.add_argument("--dataset", default=None, help="단일 데이터셋 경로 (config 값 override)")
     p.add_argument("--resume", default=None, help="이어서 실행할 이전 출력 폴더 경로 (예: output/evaluate_single_reasoning/20260419_073753)")
+    p.add_argument("--gpus", default=None, help="사용할 GPU 번호 (예: 0,1 또는 2,3), config 값 override")
     return p.parse_args()
 
 
@@ -214,10 +216,14 @@ def print_summary(results: list[dict]):
 
 
 def main():
+    global GPUS
     args = parse_args()
     cfg = load_config()
 
-    system_prompt = _load_prompts()["single_step_reasoning"]
+    if args.gpus is not None:
+        GPUS = [int(g) for g in args.gpus.split(",")]
+
+    system_prompt = "You are a math problem solver. Solve the problem step by step and put your final answer in \\boxed{}."
 
     eval_cfg = cfg["inference"]
     if args.batch_per_gpu is not None:

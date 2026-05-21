@@ -19,4 +19,5 @@ def reward_func(
     extra_info: dict = None,
     **kwargs,
 ) -> float:
-    return 1.0 if check_solved(solution_str, ground_truth) else 0.0
+    problem = (extra_info or {}).get("problem", "")
+    return 1.0 if check_solved(solution_str, ground_truth, problem=problem) else 0.0

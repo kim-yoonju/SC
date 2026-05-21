@@ -23,6 +23,7 @@ from pathlib import Path
 
 
 sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent / "utils"))
 
 from utils import (
     CONF,
@@ -214,7 +215,7 @@ def main():
 
     def _save(fout, state: _State) -> bool:
         full_output = "\n\n".join(state.full_steps)
-        is_correct  = check_solved(full_output, state.item["answer"])
+        is_correct  = check_solved(full_output, state.item["answer"], problem=state.item.get("problem", ""))
         record = {
             "id":          str(state.item.get("id", "?")),
             "problem":     state.item["problem"],

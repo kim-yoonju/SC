@@ -47,7 +47,8 @@ from tqdm import tqdm
 
 _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from utils_sft import setup_tokenizer, collate_fn, CONF, PreprocessedDataset, debug, compute_action_weights, compute_rubric_weights, FOCAL_SENTINEL
+sys.path.insert(0, str(_ROOT / "utils"))
+from utils_sft import setup_tokenizer, collate_fn, CONF, PreprocessedDataset, debug, compute_action_weights, compute_rubric_weights
 
 _sft = CONF.get("sft", {})
 MODEL_ID      = CONF["checkpoint"].get("sft_checkpoint") or CONF["checkpoint"]["base"]
@@ -85,9 +86,14 @@ def cosine_lr(step, warmup_steps, total_steps, base_lr):
 def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
                     token_weights: torch.Tensor | None = None,
                     focal_gamma: float = 2.0,
+                    action_token_weights: torch.Tensor | None = None,
+                    action_focal_gamma: float = 0.0,
                     chunk=16, ignore_index=-100):
     """
-    token_weights 텐서에서 FOCAL_SENTINEL(-1.0) 위치는 focal loss 적용.
+    token_weights (rubric): 음수 위치에 focal loss × class weight 적용 (γ=focal_gamma).
+    action_token_weights:   음수 위치에 별도 focal loss × class weight 적용 (γ=action_focal_gamma).
+    - 음수 값의 절댓값 = class weight (역빈도 정규화)
+    - focal weight = (1 - p_t)^γ × class_weight  (γ=0이면 plain class weight만)
     그 외 위치는 일반 CE loss (weight=1.0).
     정규화: 유효 토큰 수 기준 (안정적인 loss scale 유지).
     """
@@ -101,6 +107,8 @@ def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
 
     tw = token_weights[..., :-1].contiguous().to(shift_hidden.device) \
         if token_weights is not None else None
+    atw = action_token_weights[..., :-1].contiguous().to(shift_hidden.device) \
+        if action_token_weights is not None else None
     n_valid = (shift_labels != ignore_index).sum().clamp(min=1).float()
 
     V = model_module.lm_head.weight.shape[0]
@@ -116,24 +124,40 @@ def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
         c_loss = F.cross_entropy(c_logits.view(-1, V), c_labels,
                                  ignore_index=ignore_index, reduction="none")
 
+        _p_t = None   # p_t는 필요한 경우에만 한 번 계산
+
+        # [1] rubric focal loss
         if tw is not None:
             c_weights = tw[:, s:e].reshape(-1).clone()
-            focal_mask = c_weights == FOCAL_SENTINEL
+            focal_mask = c_weights < 0
             if focal_mask.any() and focal_gamma > 0:
                 with torch.no_grad():
                     probs = F.softmax(c_logits.view(-1, V), dim=-1)
                     safe_labels = c_labels.clone()
                     safe_labels[safe_labels == ignore_index] = 0
-                    p_t = probs.gather(1, safe_labels.unsqueeze(1)).squeeze(1)
-                    c_weights[focal_mask] = (1.0 - p_t[focal_mask]).pow(focal_gamma)
+                    _p_t = probs.gather(1, safe_labels.unsqueeze(1)).squeeze(1)
+                c_weights[focal_mask] = (1.0 - _p_t[focal_mask]).pow(focal_gamma) * c_weights[focal_mask].abs()
             else:
-                c_weights[focal_mask] = 1.0   # focal 비활성화 시 weight=1
+                c_weights[focal_mask] = c_weights[focal_mask].abs()
+            c_loss = c_loss * c_weights
 
-            c_loss = (c_loss * c_weights).sum()
-        else:
-            c_loss = c_loss.sum()
+        # [2] action focal loss (rubric와 독립적으로 적용)
+        if atw is not None:
+            a_weights = atw[:, s:e].reshape(-1).clone()
+            a_focal_mask = a_weights < 0
+            if a_focal_mask.any() and action_focal_gamma > 0:
+                if _p_t is None:
+                    with torch.no_grad():
+                        probs = F.softmax(c_logits.view(-1, V), dim=-1)
+                        safe_labels = c_labels.clone()
+                        safe_labels[safe_labels == ignore_index] = 0
+                        _p_t = probs.gather(1, safe_labels.unsqueeze(1)).squeeze(1)
+                a_weights[a_focal_mask] = (1.0 - _p_t[a_focal_mask]).pow(action_focal_gamma) * a_weights[a_focal_mask].abs()
+            else:
+                a_weights[a_focal_mask] = a_weights[a_focal_mask].abs()
+            c_loss = c_loss * a_weights
 
-        parts.append(c_loss)
+        parts.append(c_loss.sum())
         del c_logits
 
     return torch.stack(parts).sum() / n_valid
@@ -142,6 +166,30 @@ def chunked_lm_loss(model_module, input_ids, attention_mask, labels,
 # ─────────────────────────────────────────────────────────────────────────────
 # 학습 루프  (DeepSpeed ZeRO-2)
 # ─────────────────────────────────────────────────────────────────────────────
+
+def _load_data_sample(data_path: str) -> dict:
+    try:
+        import json
+        with open(data_path) as f:
+            return json.loads(f.readline())
+    except Exception:
+        return {}
+
+
+def save_meta(ckpt: str, args, start_time: datetime.datetime, data_sample: dict):
+    import json
+    gpu_ids = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+    meta = {
+        "model": args.model_path,
+        "data_path": args.data_path,
+        "gpus": gpu_ids,
+        "train_start": start_time.isoformat(),
+        "save_time": datetime.datetime.now().isoformat(),
+        "data_sample": data_sample,
+    }
+    with open(os.path.join(ckpt, "training_meta.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+
 
 def train(args):
     # ── 분산 초기화 ──────────────────────────────────────────────────────────
@@ -152,6 +200,9 @@ def train(args):
     torch.cuda.set_device(local_rank)
     primary_device = torch.device(f"cuda:{local_rank}")
     is_main = (global_rank == 0)
+
+    train_start = datetime.datetime.now()
+    data_sample = _load_data_sample(args.data_path) if is_main else {}
 
     # ── WandB ────────────────────────────────────────────────────────────────
     use_wandb = args.wandb and is_main
@@ -280,7 +331,9 @@ def train(args):
 
             loss = chunked_lm_loss(model_engine.module, input_ids, attention_mask, labels,
                                    token_weights=batch.get("token_weights"),
-                                   focal_gamma=args.focal_gamma)
+                                   focal_gamma=args.focal_gamma,
+                                   action_token_weights=batch.get("action_weights"),
+                                   action_focal_gamma=args.action_focal_gamma)
             model_engine.backward(loss)   # gradient_accumulation은 DeepSpeed가 처리
             accum_loss += loss.item()
 
@@ -307,6 +360,7 @@ def train(args):
                     ckpt = os.path.join(run_dir, f"step_{global_step}")
                     model_engine.module.save_pretrained(ckpt)
                     tokenizer.save_pretrained(ckpt)
+                    save_meta(ckpt, args, train_start, data_sample)
                     print(f"\n[저장] {ckpt}")
 
                 accum_loss = 0.0
@@ -318,6 +372,7 @@ def train(args):
             ckpt = os.path.join(run_dir, f"epoch{epoch+1}")
             model_engine.module.save_pretrained(ckpt)
             tokenizer.save_pretrained(ckpt)
+            save_meta(ckpt, args, train_start, data_sample)
             print(f"[저장] {ckpt}")
             if use_wandb:
                 import wandb
@@ -365,16 +420,17 @@ def parse_args():
                    help="Fail rubrics 스페셜 토큰 위치에 focal loss 적용 (--focal_gamma로 γ 조정)")
     p.add_argument("--rubric_max_weight", type=float, default=10.0,
                    help="(미사용, focal loss 전환으로 deprecated)")
-    p.add_argument("--focal_gamma",    type=float, default=2.0,
-                   help="Focal loss γ (기본 2.0, 0이면 weight=1.0 유지)")
+    p.add_argument("--focal_gamma",        type=float, default=2.0,
+                   help="Rubric focal loss γ (기본 2.0, 0이면 class weight만 적용)")
+    p.add_argument("--action_focal_gamma", type=float, default=0.0,
+                   help="Next action 토큰 focal loss γ (기본 0.0 = plain class weight만 적용)")
     return p.parse_args()
 
 
 def main():
     args = parse_args()
     if args.debug is not None:
-        tok = setup_tokenizer(args.model_path, CACHE_DIR)
-        debug(args.data_path, tok, n=None if args.debug == -1 else args.debug)
+        debug(args.data_path, tokenizer=None, n=None if args.debug == -1 else args.debug)
         return
     train(args)
 

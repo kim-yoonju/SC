@@ -26,6 +26,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "utils"))
 from utils_sft import (build_messages, build_target,
                         build_messages_inference, build_messages_classification,
                         build_target_inference, build_target_classification,
@@ -251,11 +252,15 @@ def build_sft_sample_classification(
     steps: list[dict],
     k: int,
     system: str,
+    include_rubrics: bool = True,
+    include_actions: bool = True,
 ) -> dict:
-    """classification model용 샘플 — math step + Does를 input으로, Fast/Deep critic + fail rubrics + next action을 target으로."""
+    """classification model용 샘플 — math step + Does를 input으로, Fast/Deep critic (+ Fail rubrics? + Next action?)을 target으로."""
     step = steps[k]
     system_str, user_str = build_messages_classification(problem, steps, k, system)
-    target = build_target_classification(step, RUBRIC_TOKENS)
+    target = build_target_classification(step, RUBRIC_TOKENS,
+                                         include_rubrics=include_rubrics,
+                                         include_actions=include_actions)
     return {
         "input": [
             {"role": "system", "content": system_str},
@@ -278,6 +283,8 @@ def preprocess_mode(
     end_ratio: int = 14,
     no_balance: bool = False,
     no_filter: bool = False,
+    include_rubrics: bool = True,
+    include_actions: bool = True,
 ) -> str:
     """
     trajectory를 inference 또는 classification 모드로 전처리합니다.
@@ -300,7 +307,9 @@ def preprocess_mode(
     elif mode == "classification":
         system_cls = get_classification_prompt()
         def _build(problem, steps, k):
-            return build_sft_sample_classification(problem, steps, k, system_cls)
+            return build_sft_sample_classification(problem, steps, k, system_cls,
+                                                   include_rubrics=include_rubrics,
+                                                   include_actions=include_actions)
     else:
         raise ValueError(f"알 수 없는 mode: {mode}. 'inference' 또는 'classification'을 사용하세요.")
 
@@ -328,6 +337,7 @@ def preprocess_mode(
     n_total_steps  = 0
     n_action_skipped = 0
     _missing_field_counts: dict = {}   # classification 모드 필드별 누락 집계
+    _fail_rubric_counts:   dict = {}   # fail rubric 빈도 집계
     for item in raw:
         n_total_steps += len(item["steps"])
         if not no_filter and not item.get("is_right", False):
@@ -364,6 +374,9 @@ def preprocess_mode(
                 (gen_end     if src == "gen" else pat_end).append(entry)
             elif state == "rethink":
                 (gen_rethink if src == "gen" else pat_rethink).append(entry)
+                if mode == "classification":  # rethink로 확정된 스텝에서만 집계
+                    for r in (_raw_rubrics if isinstance(_raw_rubrics, list) else []):
+                        _fail_rubric_counts[r] = _fail_rubric_counts.get(r, 0) + 1
             else:
                 (gen_solve   if src == "gen" else pat_solve).append(entry)
 
@@ -395,6 +408,17 @@ def preprocess_mode(
     for lst in [gen_solve, gen_rethink, gen_end, pat_solve, pat_rethink, pat_end]:
         rng.shuffle(lst)
 
+    def _print_fail_rubric_stats(rubric_counts: dict, n_rethink_steps: int) -> None:
+        if not rubric_counts or mode != "classification":
+            return
+        total_fails = sum(rubric_counts.values())
+        print(f"\n  [ Fail rubrics 분포 (rethink 스텝 {n_rethink_steps}개 기준) ]")
+        for rubric, cnt in sorted(rubric_counts.items(), key=lambda x: -x[1]):
+            pct_of_fails   = cnt / max(total_fails, 1)
+            pct_of_rethink = cnt / max(n_rethink_steps, 1)
+            print(f"  {rubric:<40} {cnt:5d}  {pct_of_fails:5.1%} of fails  {pct_of_rethink:5.1%} of rethink")
+        print(f"  {'합계 (rubric 언급 수)':<40} {total_fails:5d}")
+
     if no_balance:
         solve_pool  = gen_solve   + pat_solve
         all_rethink = gen_rethink + pat_rethink
@@ -404,6 +428,7 @@ def preprocess_mode(
         for label, pool in [("solve", solve_pool), ("rethink", all_rethink), ("end", end_pool)]:
             print(f"  {label:<10} {len(pool):6d}  {len(pool)/max(total,1):5.1%}")
         print(f"  {'합계':<10} {total:6d}")
+        _print_fail_rubric_stats(_fail_rubric_counts, len(all_rethink))
 
         all_samples = _group_and_order_trajectories(
             solve_pool + all_rethink + end_pool, rng)
@@ -426,6 +451,7 @@ def preprocess_mode(
         for label, pool in [("solve", solve_pool), ("rethink", all_rethink), ("end", end_pool)]:
             print(f"  {label:<10} {len(pool):6d}  {len(pool)/max(total,1):5.1%}")
         print(f"  {'합계':<10} {total:6d}")
+        _print_fail_rubric_stats(_fail_rubric_counts, n_rethink)
 
         all_samples = _group_and_order_trajectories(
             solve_pool + all_rethink + end_pool, rng)
@@ -754,6 +780,10 @@ def main():
                    help="균형화 없이 자연 분포 그대로 출력. --action_weights와 함께 사용.")
     p.add_argument("--no-filter",    dest="no_filter",  action="store_true",
                    help="is_right 필터 없이 전체 trajectory의 모든 스텝 사용.")
+    p.add_argument("--rubric_weights", action="store_true", default=False,
+                   help="classification mode: Fail rubrics 섹션을 target에 포함 (학습 대상에 추가)")
+    p.add_argument("--action_weights", action="store_true", default=False,
+                   help="classification mode: Next action 섹션을 target에 포함 (학습 대상에 추가)")
     p.add_argument("--debug", action="store_true",
                    help="저장된 전처리 파일에서 샘플 1개 출력")
     p.add_argument("--grpo", action="store_true",
@@ -796,6 +826,8 @@ def main():
             end_ratio=args.end_ratio,
             no_balance=args.no_balance,
             no_filter=args.no_filter,
+            include_rubrics=True,
+            include_actions=args.action_weights,
         )
     else:
         preprocess(

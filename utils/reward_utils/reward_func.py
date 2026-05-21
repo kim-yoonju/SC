@@ -264,7 +264,7 @@ def reward_func(
         return {"score": 0.0, "rubric_rewards": [], "action_rewards": []}
 
     question = (extra_info or {}).get("problem", "")
-    outcome = 1.0 if check_solved(solution_str, ground_truth) else 0.0
+    outcome = 1.0 if check_solved(solution_str, ground_truth, problem=question) else 0.0
 
     step_results = _evaluate_steps(question, steps)
 

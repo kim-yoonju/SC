@@ -65,8 +65,8 @@ echo "Starting Ray on GPUs: $GPU_IDS"
 CUDA_VISIBLE_DEVICES=$GPU_IDS ray start --head --num-gpus=$N_GPUS
 sleep 3
 
-TRAIN_FILE=$(py "c['data_path']['deepmath_16k']")
-VAL_FILE=$WORK_DIR/datasets/deepmath_1k_eval.parquet
+TRAIN_FILE=$(py "c['grpo_pure']['train_data']")
+VAL_FILE=$(py "c['grpo_pure']['eval_data']")
 
 ray job submit --address="http://127.0.0.1:8265" \
     --runtime-env-json="{
