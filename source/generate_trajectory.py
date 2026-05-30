@@ -1,9 +1,10 @@
 """
 python source/generate_trajectory.py \
---gpus 4,5 \
---num_start 4000 \
---num_end 4100 \
---resume_folder /mnt/yoonju/SC/output/sft_trajectory/20260521_142445_4000
+--gpus 4 \
+--num_start 0 \
+--num_end 500 \
+--data_path /mnt/yoonju/SC/datasets/deepmath_16k/base_inference_wrong.jsonl \
+--resume_folder /mnt/yoonju/SC/output/sft_trajectory/20260525_024833_4
 
 base_problems JSONL에서 generator → PRM_log 반복으로 trajectory SFT 데이터 생성.
 
@@ -111,23 +112,29 @@ def _load_action_prompts() -> dict[str, str]:
         re.DOTALL,
     )
 
+    _NO_RUBRIC_RE = re.compile(
+        r"ERROR TYPES TO AVOID[^\n]*\n\{\{rubric\}\}\n+",
+    )
+
     prompts: dict[str, str] = {}
-    with open(_PROMPTS_PATH / "action_prompts.json", encoding="utf-8") as f:
-        for e in json.load(f):
-            prompts[e["name"]] = e["content"].replace("{{rubric}}", rubric_full)
-            if "{{rubric}}" in e["content"]:
-                simple = e["content"].replace("{{rubric}}", rubric_simple)
-                simple = _FAIL_RUBRICS_RE.sub(_FAIL_RUBRICS_SIMPLE, simple)
-                prompts[e["name"] + "_simple"] = simple
+    for fname in ["generator.json", "prm.json", "step_manager.json", "patcher.json"]:
+        with open(_PROMPTS_PATH / fname, encoding="utf-8") as f:
+            for e in json.load(f):
+                prompts[e["name"]] = e["content"].replace("{{rubric}}", rubric_full)
+                if "{{rubric}}" in e["content"]:
+                    simple = e["content"].replace("{{rubric}}", rubric_simple)
+                    simple = _FAIL_RUBRICS_RE.sub(_FAIL_RUBRICS_SIMPLE, simple)
+                    prompts[e["name"] + "_simple"] = simple
+                    prompts[e["name"] + "_no_rubric"] = _NO_RUBRIC_RE.sub("", e["content"])
     return prompts
 
 _ACTION_PROMPTS = _load_action_prompts()
 _IS_SFT_MODEL   = False  # generate_trajectory.py는 항상 base 모델로 실행
+_BASE_MODE      = False  # --base_mode 시 True: generator 프롬프트에서 루브릭 제거 (PRM은 그대로)
 
 GEN_SOLVE_PROMPT   = _ACTION_PROMPTS["gen_inference"]
 GEN_RETHINK_PROMPT = _ACTION_PROMPTS["gen_rethink_inference"]
 PAT_SOLVE_PROMPT           = _ACTION_PROMPTS["pat_solve"]
-_CRITIQUE_REVIEW_PROMPT    = _ACTION_PROMPTS["critique_review"]
 _SUMMARIZE_SYSTEM          = _ACTION_PROMPTS["step_summary_system"]
 _WRONG_STEP_SUMMARIZE_SYSTEM = _ACTION_PROMPTS["wrong_step_summary_system"]
 _RUBRIC_DOES_SYSTEM        = _ACTION_PROMPTS["rubric_does_system"]
@@ -223,6 +230,9 @@ class ProblemState:
 
 def _build_rethink_explanation(state: "ProblemState") -> str:
     """rethink 프롬프트용 오류 설명 — 틀린 스텝 does + PRM critique + guidance."""
+    if _BASE_MODE:
+        return "The previous step was incorrect — try a completely different approach."
+
     parts = []
 
     if state.last_wrong_does:
@@ -286,6 +296,19 @@ def _load_atomicity_system_prompt() -> str:
 _DECOMPOSE_SYSTEM = _load_atomicity_system_prompt()
 
 
+def _load_devide_step_prompt() -> str:
+    path = Path(__file__).resolve().parent.parent / "prompts" / "step_manager.json"
+    if not path.exists():
+        return ""
+    with open(path, encoding="utf-8") as f:
+        for obj in json.load(f):
+            if obj.get("name") == "devide_step":
+                return obj.get("content", "")
+    return ""
+
+_DEVIDE_STEP_PROMPT = _load_devide_step_prompt()
+
+
 def _load_rethink_guidance() -> dict[str, str]:
     _prm_cfg = CONF.get("PRM", {})
     _prompts_cfg = CONF.get("prompts", {})
@@ -301,6 +324,14 @@ def _load_rethink_guidance() -> dict[str, str]:
 _RETHINK_GUIDANCE: dict[str, str] = _load_rethink_guidance()
 
 
+_DECOMPOSE_LOCK = threading.Lock()
+
+# vLLM 단일 GPU 모드에서 generate_batch가 초기화 후 채워주는 전역 핸들
+_VLLM_LLM  = None
+_VLLM_TOK  = None
+_VLLM_LOCK: "threading.Lock | None" = None
+
+
 def _decompose_with_atomicity(
     problem: str,
     history: list[str],
@@ -310,24 +341,31 @@ def _decompose_with_atomicity(
 ) -> list[dict] | None:
     """step_manager로 Atomicity 기준 분해 시도.
     반환: [{"goal": ...}, {"goal": ...}] 또는 None (atomic이면 분해 불가)
+    HF step_manager가 없으면 vLLM(_VLLM_LLM)으로 fallback.
     """
-    if sm_model is None:
-        return None
-
     prev = "\n\n".join(history) if history else "(none)"
     user_msg = (
         f"Problem:\n{problem}\n\n"
         f"Previous steps (correct):\n{prev}\n\n"
         f"Current Step:\n{wrong_step}"
     )
-    prompt = build_chat_prompt(sm_tok, _DECOMPOSE_SYSTEM, user_msg)
-    inputs = sm_tok(prompt, return_tensors="pt").to(sm_model.device)
-    with torch.no_grad():
-        out = sm_model.generate(
-            **inputs, max_new_tokens=512, do_sample=False,
-            pad_token_id=sm_tok.pad_token_id,
-        )
-    resp = sm_tok.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+
+    if sm_model is not None:
+        prompt = build_chat_prompt(sm_tok, _DECOMPOSE_SYSTEM, user_msg)
+        with _DECOMPOSE_LOCK:
+            inputs = sm_tok(prompt, return_tensors="pt").to(sm_model.device)
+            with torch.no_grad():
+                out = sm_model.generate(
+                    **inputs, max_new_tokens=512, do_sample=False,
+                    pad_token_id=sm_tok.pad_token_id,
+                )
+            resp = sm_tok.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+    elif _VLLM_LLM is not None:
+        prompt = build_chat_prompt(_VLLM_TOK, _DECOMPOSE_SYSTEM, user_msg)
+        with _VLLM_LOCK:
+            resp = _vllm_texts(_VLLM_LLM, [prompt], 512)[0].strip()
+    else:
+        return None
 
     # v7.7 출력 형식: CoT 후 "Verdict: incorrect/correct" + "Sub-step A/B:" 섹션
     if not re.search(r"Verdict:\s*incorrect", resp, re.I):
@@ -341,6 +379,57 @@ def _decompose_with_atomicity(
         return None
     return [{"goal": sub1, "depth": 0}, {"goal": sub2, "depth": 0}]
 
+
+def _split_step_with_devide_step(
+    step_text: str,
+    sm_model,
+    sm_tok,
+) -> tuple[str, str] | None:
+    """devide_step 프롬프트로 스텝을 두 파트로 분리.
+    반환: (part1, part2) 또는 None (atomic or 분리 불가)
+    HF step_manager가 없으면 vLLM(_VLLM_LLM)으로 fallback.
+    """
+    if not _DEVIDE_STEP_PROMPT:
+        return None
+
+    if sm_model is not None:
+        prompt = build_chat_prompt(sm_tok, _DEVIDE_STEP_PROMPT, f"Step:\n{step_text}")
+        with _DECOMPOSE_LOCK:
+            inputs = sm_tok(prompt, return_tensors="pt").to(sm_model.device)
+            with torch.no_grad():
+                out = sm_model.generate(
+                    **inputs, max_new_tokens=256, do_sample=False,
+                    pad_token_id=sm_tok.pad_token_id,
+                )
+            resp = sm_tok.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+    elif _VLLM_LLM is not None:
+        prompt = build_chat_prompt(_VLLM_TOK, _DEVIDE_STEP_PROMPT, f"Step:\n{step_text}")
+        with _VLLM_LOCK:
+            resp = _vllm_texts(_VLLM_LLM, [prompt], 256)[0].strip()
+    else:
+        return None
+
+    if resp.upper().startswith("ATOMIC"):
+        return None
+
+    m = re.match(r"SPLIT:\s*(.+)", resp, re.DOTALL)
+    if not m:
+        return None
+
+    boundary = m.group(1).strip()
+    idx = step_text.find(boundary)
+    if idx == -1:
+        logger.warning(f"[devide_step] boundary not found in step: {boundary[:80]!r}")
+        return None
+
+    split_end = idx + len(boundary)
+    part1 = step_text[:split_end].strip()
+    part2 = step_text[split_end:].strip()
+
+    if not part1 or not part2:
+        return None
+
+    return part1, part2
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -379,14 +468,14 @@ def _batch_run_generator_vllm(
 
     for state in states:
         step_number = len(state.history) + 1
-        history_inferences = [s["inference"] for s in state.history if not s.get("is_error")]
+        _hist_items = _build_gen_history_items(state.history)
         if state.is_rethink:
             system_prompt = GEN_RETHINK_PROMPT
             rethink_suffix = (
                 f"\n[Previous step attempt — INCORRECT]\n{_build_rethink_explanation(state)}"
                 f"\n\nWrite Step {step_number}."
             )
-            if history_inferences:
+            if _hist_items:
                 if state.last_wrong_answer:
                     hist_header = "\n[Previous approach — produced a wrong final answer, DO NOT continue from this]"
                     hist_footer = "⚠️ The approach above is WRONG. Start over with a different method."
@@ -406,21 +495,24 @@ def _batch_run_generator_vllm(
                 _budget = _MAX_PROMPT_TOKENS - _fixed_tokens
                 # 최신 스텝부터 역순으로 budget 내에서 담기
                 kept = []
-                for inf in reversed(history_inferences):
-                    _chunk = tokenizer.encode(inf)
+                for item in reversed(_hist_items):
+                    _chunk = tokenizer.encode(item[0])
                     if _budget - len(_chunk) < 0:
                         break
-                    kept.insert(0, inf)
+                    kept.insert(0, item)
                     _budget -= len(_chunk)
-                if len(kept) < len(history_inferences):
+                if len(kept) < len(_hist_items):
                     logger.warning(
                         f"[history truncation] state id={state.item.get('id','?')}: "
-                        f"{len(history_inferences) - len(kept)}개 오래된 스텝 잘림 "
-                        f"({len(history_inferences)} → {len(kept)})"
+                        f"{len(_hist_items) - len(kept)}개 오래된 스텝 잘림 "
+                        f"({len(_hist_items)} → {len(kept)})"
                     )
                 lines = [f"[Problem]\n{state.item['problem']}", hist_header]
-                for i, inf in enumerate(kept, 1):
-                    lines.append(f"\nStep {i}:\n{inf}")
+                for i, (text, is_full) in enumerate(kept, 1):
+                    if is_full:
+                        lines.append(f"\nStep {i}:\n{text}")
+                    else:
+                        lines.append(f"\nStep {i}: {text}")
                 if hist_footer:
                     lines.append(hist_footer)
             else:
@@ -429,8 +521,8 @@ def _batch_run_generator_vllm(
             user_content = "\n".join(lines)
         else:
             system_prompt = GEN_SOLVE_PROMPT
-            suffix_line = f"\nWrite Step {len(history_inferences) + 1}."
-            if history_inferences:
+            suffix_line = f"\nWrite Step {len(_hist_items) + 1}."
+            if _hist_items:
                 # 고정 부분 토큰 수 측정 (problem + suffix)
                 _fixed = f"[Problem]\n{state.item['problem']}\n[Previous steps]{suffix_line}"
                 _fixed_tokens = len(tokenizer.encode(
@@ -438,21 +530,24 @@ def _batch_run_generator_vllm(
                 ))
                 _budget = _MAX_PROMPT_TOKENS - _fixed_tokens
                 kept = []
-                for inf in reversed(history_inferences):
-                    _chunk = tokenizer.encode(inf)
+                for item in reversed(_hist_items):
+                    _chunk = tokenizer.encode(item[0])
                     if _budget - len(_chunk) < 0:
                         break
-                    kept.insert(0, inf)
+                    kept.insert(0, item)
                     _budget -= len(_chunk)
-                if len(kept) < len(history_inferences):
+                if len(kept) < len(_hist_items):
                     logger.warning(
                         f"[history truncation] state id={state.item.get('id','?')}: "
-                        f"{len(history_inferences) - len(kept)}개 오래된 스텝 잘림 "
-                        f"({len(history_inferences)} → {len(kept)})"
+                        f"{len(_hist_items) - len(kept)}개 오래된 스텝 잘림 "
+                        f"({len(_hist_items)} → {len(kept)})"
                     )
                 lines = [f"[Problem]\n{state.item['problem']}", "\n[Previous steps]"]
-                for i, inf in enumerate(kept, 1):
-                    lines.append(f"\nStep {i}:\n{inf}")
+                for i, (text, is_full) in enumerate(kept, 1):
+                    if is_full:
+                        lines.append(f"\nStep {i}:\n{text}")
+                    else:
+                        lines.append(f"\nStep {i}: {text}")
             else:
                 lines = [f"[Problem]\n{state.item['problem']}"]
             lines.append(suffix_line)
@@ -549,7 +644,7 @@ def _batch_run_generator_vllm(
         _TEMPLATE_PLACEHOLDERS = ("[Your one reasoning step", "[Your one corrected reasoning step")
         has_tool_call   = any(m in full_text for m in _TOOL_CALL_MARKERS)
         has_placeholder = any(step_text.strip().startswith(p) for p in _TEMPLATE_PLACEHOLDERS)
-        is_error        = has_tool_call or has_placeholder
+        is_fail        = has_tool_call or has_placeholder
         error_reason    = (
             "tool_call token hallucination" if has_tool_call else
             "template placeholder echo"     if has_placeholder else None
@@ -592,10 +687,10 @@ def _batch_run_generator_vllm(
             "source":           "gen",
             "role":             "rethink" if state.is_rethink else "gen",
             "was_rethink":      state.is_rethink,
-            "is_error":         is_error,
-            "is_first_pat":     state.is_rethink and not is_error,
+            "is_fail":         is_fail,
+            "is_first_pat":     state.is_rethink and not is_fail,
             "summary":          (
-                {"step_analysis": f"{error_reason} — skipped PRM_log"} if is_error else None
+                {"step_analysis": f"{error_reason} — skipped PRM_log"} if is_fail else None
             ),
         }
 
@@ -610,7 +705,7 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
     def _call_one(state: ProblemState) -> None:
         step_number = len(state.history) + 1
         problem_id  = state.item.get("id", "?")
-        history_inferences = [s["inference"] for s in state.history if not s.get("is_error")]
+        history_inferences = [s["inference"] for s in state.history if not s.get("is_fail")]
         user_content = build_solve_user_msg(state.item["problem"], history_inferences)
         messages    = [
             {"role": "system", "content": PAT_SOLVE_PROMPT},
@@ -627,13 +722,13 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
             logger.warning(f"[Patcher API] id={problem_id} 호출 실패: {e}")
             text = ""
 
-        is_error    = not text
+        is_fail    = not text
         pred_action = TOKEN_END if has_boxed(text) else TOKEN_SOLVE
 
         logger.info(
             f"[Patcher API] id={problem_id} step={step_number} "
             f"pred_action={pred_action} len={len(text)}"
-            + (" [empty response]" if is_error else "")
+            + (" [empty response]" if is_fail else "")
         )
 
         _sc_m = re.search(
@@ -651,11 +746,11 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
             "source":           "patcher",
             "role":             "patcher",
             "was_rethink":      True,
-            "is_error":         is_error,
-            "is_first_pat":     not is_error,
+            "is_fail":         is_fail,
+            "is_first_pat":     not is_fail,
             "summary":          (
                 {"step_analysis": "patcher API empty response — skipped PRM_log"}
-                if is_error else None
+                if is_fail else None
             ),
         }
         state.use_patcher = False
@@ -670,7 +765,7 @@ def _run_patcher_api(states: list[ProblemState]) -> None:
 
 def _build_prm_prev_lines(history: list[dict]) -> list[str]:
     """PRM prev_lines: t-2까지는 does 요약, t-1은 원문 그대로."""
-    valid = [s for s in history if not s.get("is_error")]
+    valid = [s for s in history if not s.get("is_fail")]
     lines = []
     for i, s in enumerate(valid):
         if i == len(valid) - 1:
@@ -681,6 +776,27 @@ def _build_prm_prev_lines(history: list[dict]) -> list[str]:
             if does:
                 lines.append(f"Step {i+1}: {does}")
     return lines
+
+
+def _build_gen_history_items(history: list[dict], recent_k: int = 2) -> list[tuple[str, bool]]:
+    """Generator 프롬프트용 history items.
+    최근 recent_k 스텝: inference 원문 (is_full=True).
+    그 이전 스텝: does 요약 (is_full=False). does 없으면 inference fallback."""
+    valid = [s for s in history if not s.get("is_fail")]
+    n = len(valid)
+    result = []
+    for i, s in enumerate(valid):
+        if i >= n - recent_k:
+            text = s.get("inference") or s.get("text") or ""
+            result.append((text, True))
+        else:
+            does = (s.get("summary") or {}).get("does") or s.get("does_summary") or ""
+            if does:
+                result.append((does, False))
+            else:
+                text = s.get("inference") or s.get("text") or ""
+                result.append((text, True))
+    return result
 
 
 def _run_prm_batch(
@@ -903,7 +1019,7 @@ def _run_prm_batch(
 _SUMMARIZE_MAX_TOKENS             = 128
 _WRONG_STEP_SUMMARIZE_MAX_TOKENS  = 384
 _CRITIQUE_REVIEW_MAX_TOKENS       = 256
-_INFERENCE_SUMMARY_MAX_TOKENS     = 500
+_INFERENCE_SUMMARY_MAX_TOKENS     = 512
 _INFERENCE_LONG_CHAR_THRESHOLD    = 8000   # ≈ 2048 tokens
 
 
@@ -1057,7 +1173,7 @@ def _batch_run_step_summary_only(
 
     for state in states:
         step = state.pending_step
-        if step.get("is_error"):
+        if step.get("is_fail"):
             step["does_summary"]      = None
             step["inference_summary"] = None
             continue
@@ -1103,20 +1219,28 @@ def _batch_run_step_summary_only(
 
 
 
+_HF_GENERATE_SUBBATCH = 16  # step_manager HF generate 최대 배치 크기 (OOM 방지)
+
 def _generate_texts(model, tokenizer, device, prompts: list[str], max_new_tokens: int) -> list[str]:
     """Batch generate text completions. device=None → vLLM, otherwise HF."""
     if device is None:
         return _vllm_texts(model, prompts, max_new_tokens)
+    results: list[str] = []
     orig_side = tokenizer.padding_side
     tokenizer.padding_side = "left"
-    enc = tokenizer(prompts, return_tensors="pt", padding=True).to(device)
+    for i in range(0, len(prompts), _HF_GENERATE_SUBBATCH):
+        chunk = prompts[i : i + _HF_GENERATE_SUBBATCH]
+        enc = tokenizer(chunk, return_tensors="pt", padding=True).to(device)
+        input_len = enc["input_ids"].shape[1]
+        with torch.no_grad():
+            out = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=False,
+                                 pad_token_id=tokenizer.eos_token_id)
+        results.extend(
+            tokenizer.decode(out[j, input_len:], skip_special_tokens=True)
+            for j in range(len(chunk))
+        )
     tokenizer.padding_side = orig_side
-    input_len = enc["input_ids"].shape[1]
-    with torch.no_grad():
-        out = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=False,
-                             pad_token_id=tokenizer.eos_token_id)
-    return [tokenizer.decode(out[j, input_len:], skip_special_tokens=True)
-            for j in range(len(prompts))]
+    return results
 
 
 def _batch_run_all_summaries_and_gen_critique(
@@ -1135,7 +1259,7 @@ def _batch_run_all_summaries_and_gen_critique(
         step   = state.pending_step
         result = prm_results_map.get(id(state), {})
 
-        if not step.get("is_error"):
+        if not step.get("is_fail"):
             inference_full = step.get("inference") or step.get("text") or ""
             step_text = inference_full[:1200]
 
@@ -1155,13 +1279,22 @@ def _batch_run_all_summaries_and_gen_critique(
 
             votes   = result.get("votes", {})
             details = result.get("details", {})
-            step_short = inference_full[:600]
+            history_does = [
+                (i + 1, s.get("does_summary") or s.get("does"))
+                for i, s in enumerate(state.history)
+                if not s.get("is_fail") and (s.get("does_summary") or s.get("does"))
+            ]
+            history_block = (
+                "Previous steps:\n" + "\n".join(
+                    f"Step {idx}: {does}" for idx, does in history_does
+                ) + "\n\n"
+            ) if history_does else ""
             for rn in votes:
                 response = (details.get(rn) or {}).get("response") or ""
                 user_msg  = (
+                    f"{history_block}"
                     f"Rubric: {rn} (verdict: {votes[rn]})\n"
-                    f"Rubric reasoning:\n{response}\n\n"
-                    f"Step:\n{step_short}"
+                    f"Rubric reasoning:\n{response}"
                 )
                 prompts.append(build_chat_prompt(tokenizer, _CRITIQUE_REVIEW_SYSTEM, user_msg))
                 tasks.append(("critique", state, rn))
@@ -1201,7 +1334,7 @@ def _batch_run_all_summaries_and_gen_critique(
             })
 
     for state in states:
-        if not state.pending_step.get("is_error"):
+        if not state.pending_step.get("is_fail"):
             result = prm_results_map.get(id(state), {})
             votes  = result.get("votes", {})
             filled = {e["rubric"]: e for e in critique_by_state.get(id(state), [])}
@@ -1306,7 +1439,7 @@ def _parse_pred_fail_rubrics(
 
 
 def _compute_step_action(s: dict) -> tuple[list[str], str]:
-    """prm_deep_critique + is_error 기반으로 fail_rubrics와 next_gold_action을 계산."""
+    """prm_deep_critique + is_fail 기반으로 fail_rubrics와 next_gold_action을 계산."""
     summ = s.get("summary") or {}
     deep = summ.get("prm_deep_critique") if isinstance(summ, dict) else None
     if deep is None:
@@ -1317,8 +1450,8 @@ def _compute_step_action(s: dict) -> tuple[list[str], str]:
         if e.get("verdict") == "incorrect"
     ]
 
-    # is_error=True면 PRM 또는 check_solved로 감지된 오류 → 반드시 rethink
-    if fail_rubrics or s.get("is_error"):
+    # is_fail=True면 PRM 또는 check_solved로 감지된 오류 → 반드시 rethink
+    if fail_rubrics or s.get("is_fail"):
         action = TOKEN_CORRECT
     elif has_boxed(s.get("full_text") or s.get("text", "")):
         action = TOKEN_END
@@ -1383,7 +1516,7 @@ def _build_traj(
             "text":                  s.get("full_text") or s["text"],
             "inference":             s["text"],
             "source":                s["source"],
-            "is_error":              s["is_error"],
+            "is_fail":              s["is_fail"],
             "state":                 state,
             "gold_fail_rubrics":     fail_rubrics if fail_rubrics else TOKEN_NONE,
             "next_gold_action":      next_action,
@@ -1539,7 +1672,7 @@ def _process_prm_result(
 
     def _apply_wrong(reason_suffix: str = ""):
         """step을 wrong으로 처리하고 rethink/patcher/abort 분기."""
-        step["is_error"]     = True
+        step["is_fail"]     = True
         step["is_first_pat"] = False
         # 오류 스텝에도 substep_meta 기록
         if state.in_substep_mode and state.substep_queue:
@@ -1588,20 +1721,19 @@ def _process_prm_result(
             cur_depth = state.substep_queue[0].get("depth", 0) if state.substep_queue else 0
             decomposed = False
             if cur_depth < MAX_SUBSTEP_DEPTH and state.substep_queue:
-                sub_substeps = _decompose_with_atomicity(
-                    state.item.get("problem", ""),
-                    [s["text"] for s in state.all_steps if not s.get("is_error")],
-                    step["text"],   # 방금 실패한 서브스텝 rethink 결과
+                split = _split_step_with_devide_step(
+                    step["text"],
                     step_manager_model, step_manager_tok,
                 )
-                if sub_substeps:
-                    for s in sub_substeps:
-                        s["depth"] = cur_depth + 1
-                    # 현재 서브스텝 대신 2개 sub-substep으로 교체
+                if split:
+                    part1, part2 = split
+                    sub_substeps = [
+                        {"goal": part1, "depth": cur_depth + 1},
+                        {"goal": part2, "depth": cur_depth + 1},
+                    ]
                     state.substep_queue = sub_substeps + state.substep_queue[1:]
                     state.is_rethink    = True
-                    logger.info(f"[id={problem_id}] 서브스텝 재분해 성공 depth={cur_depth+1}: "
-                                f"{[s['goal'][:40] for s in sub_substeps]}")
+                    logger.info(f"[id={problem_id}] 서브스텝 재분해 성공 depth={cur_depth+1} (devide_step)")
                     decomposed = True
             if not decomposed:
                 # 더 못 쪼갬 (atomic or max_depth) → patcher
@@ -1625,31 +1757,36 @@ def _process_prm_result(
                 maxsplit=1, flags=re.IGNORECASE,
             )[0].rstrip()
         elif not state.step_substep_tried:
-            # rethink 실패 → Atomicity 기준으로 서브스텝 분해 시도
-            state.step_substep_tried = True
-            substeps = _decompose_with_atomicity(
-                state.item.get("problem", ""),
-                [s["text"] for s in state.all_steps if not s.get("is_error")],
+            # rethink 실패 → devide_step으로 part1만 rethink, part2는 버림
+            split = _split_step_with_devide_step(
                 state.last_wrong_step_text,
                 step_manager_model, step_manager_tok,
-            )
-            if substeps:
-                # NON-ATOMIC → 서브스텝 큐 설정, rethink 모드로 진입
-                state.substep_queue   = substeps
-                state.substep_passed  = []
-                state.in_substep_mode = True
-                state.is_rethink      = True
-                state.last_wrong_rubric_details = _rubric_details
-                logger.info(f"[id={problem_id}] substep 분해 성공: {[s['goal'][:50] for s in substeps]}")
+            ) if state.substep_depth < MAX_SUBSTEP_DEPTH else None
+
+            if split:
+                part1, _part2 = split
+                # part1만 rethink 대상으로, part2는 버림 (이후 스텝에서 자연스럽게 커버)
+                state.last_wrong_does  = part1
+                state.substep_depth   += 1
+                # 상태 리셋: part1에 대한 rethink → split 사이클 재시작
+                state.step_rethink_tried = False
+                state.step_substep_tried = False
+                state.is_rethink         = True
+                logger.info(
+                    f"[id={problem_id}] devide_step 분해(depth={state.substep_depth}): "
+                    f"part1 rethink, part2 버림"
+                )
             else:
-                # ATOMIC → 바로 patcher
-                state.use_patcher        = True
-                state.is_rethink         = False
-                state.step_patcher_tried = True
-                state.patcher_count     += 1
-                state.last_wrong_rubrics = wrong_rubrics
+                # 분리 불가(ATOMIC) or max_depth → patcher
+                reason = "max_depth" if state.substep_depth >= MAX_SUBSTEP_DEPTH else "atomic"
+                state.step_substep_tried     = True
+                state.use_patcher            = True
+                state.is_rethink             = False
+                state.step_patcher_tried     = True
+                state.patcher_count         += 1
+                state.last_wrong_rubrics     = wrong_rubrics
                 state.last_wrong_rubric_details = _rubric_details
-                logger.info(f"[id={problem_id}] substep 분해 불가(atomic) → patcher")
+                logger.info(f"[id={problem_id}] substep 분해 불가({reason}) → patcher")
         elif not state.step_patcher_tried:
             # substep도 실패 → patcher 1회
             state.use_patcher               = True
@@ -1661,10 +1798,11 @@ def _process_prm_result(
             state.last_wrong_rubric_details = _rubric_details
         else:
             # patcher도 실패 → 종료
-            print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → patcher_fail")
+            _fail_reason = "gen_wrong_answer" if state.last_wrong_answer else "patcher_fail"
+            print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → {_fail_reason}")
             traj = _build_traj(problem_id, problem, gold_answer,
                                state.all_steps, False, "all",
-                               fail_reason="patcher_fail", rubric_names=rubric_names)
+                               fail_reason=_fail_reason, rubric_names=rubric_names)
             state.traj_list.append(traj)
             if save_fn:
                 save_fn(traj)
@@ -1674,13 +1812,14 @@ def _process_prm_result(
 
     # ── patcher step 특별 처리 ────────────────────────────────────────────────
     if step.get("source") == "patcher":
-        if step.get("is_error"):
+        if step.get("is_fail"):
             # 빈 응답 → patcher_fail
-            logger.info(f"[id={problem_id}] patcher empty response → patcher_fail")
-            print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → patcher_fail")
+            _fail_reason = "gen_wrong_answer" if state.last_wrong_answer else "patcher_fail"
+            logger.info(f"[id={problem_id}] patcher empty response → {_fail_reason}")
+            print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → {_fail_reason}")
             traj = _build_traj(problem_id, problem, gold_answer,
                                state.all_steps, False, "all",
-                               fail_reason="patcher_fail", rubric_names=rubric_names)
+                               fail_reason=_fail_reason, rubric_names=rubric_names)
             state.traj_list.append(traj)
             if save_fn:
                 save_fn(traj)
@@ -1692,13 +1831,14 @@ def _process_prm_result(
                 logger.info(f"[id={problem_id}] patcher solved correctly → treat as correct")
                 result = {**result, "result": "correct", "wrong_count": 0}
             else:
-                # patcher가 틀린 답 제출 → patcher_fail
-                logger.info(f"[id={problem_id}] patcher wrong final answer → patcher_fail")
+                # patcher가 틀린 답 제출
+                _fail_reason = "gen_wrong_answer" if state.last_wrong_answer else "patcher_wrong_answer"
+                logger.info(f"[id={problem_id}] patcher wrong final answer → {_fail_reason}")
                 state.all_steps.append(step)
-                print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → patcher_fail")
+                print(f"  [id={problem_id}]  {_fmt(state.all_steps)}  → {_fail_reason}")
                 traj = _build_traj(problem_id, problem, gold_answer,
                                    state.all_steps, False, "all",
-                                   fail_reason="patcher_fail", rubric_names=rubric_names)
+                                   fail_reason=_fail_reason, rubric_names=rubric_names)
                 state.traj_list.append(traj)
                 if save_fn:
                     save_fn(traj)
@@ -1715,6 +1855,7 @@ def _process_prm_result(
             f"[PRM→fail] id={problem_id} step={step_number} "
             f"wrong={wrong_count}/{total} rubrics={wrong_rubrics}"
         )
+
         _apply_wrong()
 
     # ── 오류 없음 ─────────────────────────────────────────────────────────────
@@ -1935,7 +2076,7 @@ def generate_batch(
 
     # ── PRM API: 단일 state 평가 ─────────────────────────────────────────────
     def _run_prm_one(state: ProblemState) -> dict:
-        if state.pending_step.get("is_error"):
+        if state.pending_step.get("is_fail"):
             n = len(rubrics)
             logger.info(f"[Generator] id={state.item.get('id','?')} tool_call hallucination → force wrong")
             return {"result": "incorrect", "wrong_count": n, "total": n,
@@ -1961,6 +2102,9 @@ def generate_batch(
         _vllm_lock = threading.Lock()
         llm_v, tok_v = generators[0][0], generators[0][1]
 
+        global _VLLM_LLM, _VLLM_TOK, _VLLM_LOCK
+        _VLLM_LLM, _VLLM_TOK, _VLLM_LOCK = llm_v, tok_v, _vllm_lock
+
         def _gen_fn_vllm(llm, tok, _, states):
             with _vllm_lock:
                 _batch_run_generator_vllm(llm, tok, _, states)
@@ -1973,7 +2117,8 @@ def generate_batch(
 
             def _sum_fn_sm(model, tokenizer, device, states):
                 prm_map = {id(s): s._prm_result for s in states}
-                _batch_run_all_summaries_and_gen_critique(model, tokenizer, device, states, prm_map)
+                with _DECOMPOSE_LOCK:
+                    _batch_run_all_summaries_and_gen_critique(model, tokenizer, device, states, prm_map)
 
             sum_worker = _GPUBatchWorker(_sum_fn_sm, step_manager_model, step_manager_tok,
                                          sm_device, max_batch=_gpu_batch)
@@ -2243,27 +2388,42 @@ def main():
                         help="이전 실행 폴더. 해당 폴더의 traj_all.jsonl에 있는 problem_id는 건너뜀")
     parser.add_argument("--num_end",      type=int, default=None,
                         help="처리 끝 인덱스 (config의 num_end 오버라이드)")
-    parser.add_argument("--base",         type=str, default=None,
+    parser.add_argument("--base_model",    type=str, default=None,
                         help="Generator 체크포인트 경로 (config의 checkpoint.base 오버라이드)")
+    parser.add_argument("--base_mode",    action="store_true",
+                        help="베이스 모델 평가 모드: 루브릭 없는 기본 프롬프트 사용 (rethink/PRM은 유지)")
     parser.add_argument("--rollout_gpus", type=str, default=None,
                         help="Generator GPU 번호 콤마 구분 (예: 5,6)")
     parser.add_argument("--gpus",         type=str, default=None,
                         help="사용할 GPU 번호 콤마 구분 (--rollout_gpus 와 동일, 예: 0,1,2)")
+    parser.add_argument("--data_path",    type=str, default=None,
+                        help="입력 데이터 파일 경로 (config의 generate_trajectory.base_problems 오버라이드)")
     args = parser.parse_args()
 
     root   = Path(__file__).resolve().parent.parent
     gt_cfg = _GT_CFG
 
     # ── CLI 오버라이드 ────────────────────────────────────────────────────────
-    if args.base:
-        CONF["checkpoint"]["base"] = args.base
+    if args.base_model:
+        CONF["checkpoint"]["base"] = args.base_model
     _gpus_arg = args.gpus or args.rollout_gpus
     if _gpus_arg:
         gt_cfg["rollout_gpus"] = [int(g) for g in _gpus_arg.split(",")]
 
-    if "base_problems" not in gt_cfg:
-        raise KeyError("config.generate_trajectory.base_problems 설정이 없습니다")
-    dataset_path = gt_cfg["base_problems"]
+    if args.data_path:
+        dataset_path = args.data_path
+    elif "base_problems" in gt_cfg:
+        dataset_path = gt_cfg["base_problems"]
+    else:
+        raise KeyError("--data_path 인자 또는 config.generate_trajectory.base_problems 설정이 필요합니다")
+
+    # ── base_mode: generator 프롬프트에서 루브릭 제거 (PRM/rethink는 그대로) ─────────
+    if args.base_mode:
+        global GEN_SOLVE_PROMPT, GEN_RETHINK_PROMPT, _BASE_MODE
+        GEN_SOLVE_PROMPT   = _ACTION_PROMPTS.get("gen_inference_no_rubric",        GEN_SOLVE_PROMPT)
+        GEN_RETHINK_PROMPT = _ACTION_PROMPTS.get("gen_rethink_inference_no_rubric", GEN_RETHINK_PROMPT)
+        _BASE_MODE = True
+        print("[base_mode] generator 프롬프트 루브릭 제거 (PRM/rethink는 기존과 동일)")
 
     ts          = datetime.now().strftime("%Y%m%d_%H%M%S")
     if args.resume_folder:
@@ -2548,6 +2708,8 @@ def main():
             prm_filter_save_fn=_save_prm_filter,
             step_cache_fn=_save_cache,
             partial_cache=partial_cache,
+            step_manager_model=step_manager_model,
+            step_manager_tok=step_manager_tok,
         )
     finally:
         traj_all_file.close()

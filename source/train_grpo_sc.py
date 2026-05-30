@@ -39,6 +39,18 @@ from pathlib import Path
 _gpus_idx = next((i for i, a in enumerate(sys.argv) if a == "--gpus"), None)
 if _gpus_idx is not None and _gpus_idx + 1 < len(sys.argv):
     os.environ["CUDA_VISIBLE_DEVICES"] = sys.argv[_gpus_idx + 1]
+elif "CUDA_VISIBLE_DEVICES" not in os.environ:
+    # --gpus 미지정 시 config.yaml의 train_gpus로 CUDA_VISIBLE_DEVICES 설정 (torch import 전)
+    try:
+        import yaml as _yaml
+        _cfg_path = Path(__file__).resolve().parent.parent / "configs" / "config.yaml"
+        with open(_cfg_path) as _f:
+            _early_cfg = _yaml.safe_load(_f)
+        _train_gpus = _early_cfg.get("grpo_sc", {}).get("train_gpus", [])
+        if _train_gpus:
+            os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(str(g) for g in _train_gpus)
+    except Exception:
+        pass
 
 import torch
 import torch.nn.functional as F
@@ -68,7 +80,7 @@ CLS_CKPT        = (_SC.get("cls_checkpoint") or
                    CONF["checkpoint"]["base"])
 CACHE_DIR       = CONF["checkpoint"].get("cache_dir")
 
-TRAIN_GPUS      = _SC.get("train_gpus", [0])
+TRAIN_GPUS      = list(range(len(_SC.get("train_gpus", [0]))))  # always relative (CUDA_VISIBLE_DEVICES handles physical mapping)
 INF_GPU_COUNT   = _SC.get("inf_gpu_count", max(1, len(_SC.get("train_gpus", [0])) // 2))
 ROLLOUT_N       = _SC.get("rollout_n", 4)
 LR              = float(_SC.get("lr", 1e-6))
@@ -79,12 +91,13 @@ PRM_COEF        = float(_SC.get("prm_coef", 0.0))      # α
 OUTCOME_COEF    = float(_SC.get("outcome_coef", 1.0))  # β
 MAX_STEPS       = _SC.get("max_steps_per_problem", 20)
 INF_MAX_NEW     = _SC.get("inf_max_new_tokens", 1024)
-CLS_MAX_NEW     = _SC.get("cls_max_new_tokens", 512)
+CLS_MAX_NEW     = _SC.get("cls_max_new_tokens", 4096)
 SUMMARY_MAX_NEW = _SC.get("summary_max_new_tokens", 128)
-RETHINK_TEMP    = _SC.get("rethink_temperature", 0.7)
+RETHINK_TEMP    = _SC.get("rethink_temperature", 1.0)
 MAX_SEQ_LEN     = _SC.get("max_seq_len", 4096)
 TOTAL_PROBLEMS  = _SC.get("total_problems", 5000)
 MIN_RECORDS          = _SC.get("min_records_per_update", 64)
+ITER_PROBLEMS        = _SC.get("iter_problems", 64)
 MAX_COMPLETION_STEPS = _SC.get("max_completion_steps", 30)  # rollout 완성용 최대 추가 스텝
 WANDB_PROJECT   = _SC.get("wandb_project", "sc-grpo")
 PROBLEM_BATCH_SIZE = _SC.get("problem_batch_size", 64)
@@ -127,6 +140,7 @@ def _load_model(ckpt: str, gpu_ids: list[int], trainable: bool = False) -> AutoM
         device_map="auto",
         max_memory=max_memory,
         trust_remote_code=True,
+        attn_implementation="sdpa",
     )
     if ckpt.startswith("/") or ckpt.startswith("."):
         kwargs["local_files_only"] = True
@@ -142,28 +156,99 @@ def _load_model(ckpt: str, gpu_ids: list[int], trainable: bool = False) -> AutoM
     return model
 
 
+def _load_inf_vllm(ckpt: str, n_inf: int):
+    """vLLM으로 inference 모델 로드. 처음 n_inf개의 visible GPU를 사용."""
+    os.environ.setdefault("NCCL_P2P_DISABLE", "1")
+    os.environ.setdefault("TORCHDYNAMO_DISABLE", "1")
+    from vllm import LLM
+    return LLM(
+        model=ckpt,
+        dtype="bfloat16",
+        tensor_parallel_size=n_inf,
+        gpu_memory_utilization=0.85,
+        trust_remote_code=True,
+        enforce_eager=True,
+    )
+
+
+def _load_cls_vllm(ckpt: str, gpu_id: str, all_visible: str):
+    """cls generation용 vLLM. CUDA_VISIBLE_DEVICES 조작으로 특정 GPU에만 로드.
+
+    gpu_id: physical GPU ID 문자열 (CUDA_VISIBLE_DEVICES 기준 변환 후 전달).
+    vLLM worker는 별도 프로세스로 spawn되므로 spawn 직전 env 변경이 반영된다.
+    main process의 CUDA 컨텍스트(이미 초기화)는 영향받지 않는다.
+    """
+    from vllm import LLM
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+    try:
+        llm = LLM(
+            model=ckpt,
+            dtype="bfloat16",
+            tensor_parallel_size=1,
+            gpu_memory_utilization=0.70,
+            trust_remote_code=True,
+            enforce_eager=True,
+        )
+    finally:
+        os.environ["CUDA_VISIBLE_DEVICES"] = all_visible
+    return llm
+
+
+def sync_cls_llm(cls_llm, cls_model) -> None:
+    """GRPO 업데이트 후 cls_model의 최신 가중치를 cls_llm(vLLM)에 반영.
+
+    vLLM 내부 API로 in-place 업데이트를 시도한다.
+    실패 시 경고만 출력하고 넘어간다 (다음 iteration에서 약간 off-policy).
+    """
+    try:
+        state_dict = [(k, v.detach().cpu()) for k, v in cls_model.named_parameters()]
+        executor = cls_llm.llm_engine.model_executor
+        worker = (getattr(executor, "driver_worker", None)
+                  or getattr(executor, "_driver_worker", None))
+        if worker is None:
+            raise AttributeError("driver_worker not found")
+        worker.model_runner.model.load_weights(state_dict)
+        log.info("cls_llm weights synced (in-place)")
+    except Exception as e:
+        log.warning(f"cls_llm weight sync failed: {e} — weights stale this iteration")
+
+
 def setup_models_and_tokenizer():
-    # inf_gpu_count개 GPU → base_model, 나머지 → cls_model
-    n_inf = min(INF_GPU_COUNT, len(TRAIN_GPUS) - 1) or 1
-    inf_gpus = TRAIN_GPUS[:n_inf]
-    cls_gpus = TRAIN_GPUS[n_inf:] or TRAIN_GPUS[-1:]
+    """
+    GPU 레이아웃:
+      TRAIN_GPUS[0 .. n_inf-1]  → inf_llm  (vLLM, frozen)
+      TRAIN_GPUS[n_inf]         → cls_llm  (vLLM, generation only, synced each iter)
+      TRAIN_GPUS[n_inf+1 ..]    → cls_model + ref_cls (HF, pipeline parallel, grad)
+    """
+    # inf_llm에 최대 n_inf개, cls_llm에 1개, 나머지 cls HF에 할당
+    n_inf        = min(INF_GPU_COUNT, len(TRAIN_GPUS) - 2) or 1
+    cls_vllm_idx = TRAIN_GPUS[n_inf]          # cls_llm용 GPU (relative index)
+    cls_hf_gpus  = TRAIN_GPUS[n_inf + 1:] or TRAIN_GPUS[-1:]  # HF용 GPU들
 
-    log.info(f"base_model : {INF_CKPT} → cuda:{inf_gpus} (frozen)")
-    tokenizer  = setup_tokenizer(INF_CKPT, cache_dir=CACHE_DIR)
-    base_model = _load_model(INF_CKPT, inf_gpus, trainable=False)
-    base_model.resize_token_embeddings(len(tokenizer))
+    all_visible = os.environ.get("CUDA_VISIBLE_DEVICES",
+                                 ",".join(str(g) for g in TRAIN_GPUS))
+    # relative index → physical GPU ID (_load_cls_vllm은 CUDA_VISIBLE_DEVICES를 직접 조작하므로 physical ID 필요)
+    _vis_list = [s.strip() for s in all_visible.split(",") if s.strip()]
+    physical_cls_gpu = _vis_list[cls_vllm_idx] if cls_vllm_idx < len(_vis_list) else str(cls_vllm_idx)
 
-    log.info(f"cls_model  : {CLS_CKPT} → cuda:{cls_gpus} (trainable)")
-    cls_model = _load_model(CLS_CKPT, cls_gpus, trainable=True)
+    log.info(f"inf_llm  (vLLM): {INF_CKPT} → GPU {TRAIN_GPUS[:n_inf]}")
+    tokenizer = setup_tokenizer(INF_CKPT, cache_dir=CACHE_DIR)
+    inf_llm   = _load_inf_vllm(INF_CKPT, n_inf)
+
+    log.info(f"cls_llm  (vLLM): {CLS_CKPT} → GPU {cls_vllm_idx} (physical {physical_cls_gpu})")
+    cls_llm = _load_cls_vllm(CLS_CKPT, physical_cls_gpu, all_visible)
+
+    log.info(f"cls_model  (HF): {CLS_CKPT} → GPUs {cls_hf_gpus} (trainable)")
+    cls_model = _load_model(CLS_CKPT, cls_hf_gpus, trainable=True)
     cls_model.resize_token_embeddings(len(tokenizer))
 
-    log.info(f"ref_cls    : deepcopy of cls_model → cuda:{cls_gpus} (frozen)")
+    log.info(f"ref_cls    (HF): deepcopy → GPUs {cls_hf_gpus} (frozen)")
     ref_cls = copy.deepcopy(cls_model)
     ref_cls.eval()
     for p in ref_cls.parameters():
         p.requires_grad_(False)
 
-    return base_model, cls_model, ref_cls, tokenizer
+    return inf_llm, cls_llm, cls_model, ref_cls, tokenizer
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -267,18 +352,26 @@ def generate_batched(
     max_new: int,
     temperature: float,
 ) -> list[tuple[str, list[int]]]:
-    """여러 프롬프트를 left-padding으로 묶어 배치 생성."""
+    """여러 프롬프트를 left-padding으로 묶어 배치 생성.
+
+    길이 내림차순 정렬 후 처리해 padding 낭비를 최소화한다.
+    반환 순서는 입력 순서와 동일하게 복원된다.
+    """
     if not prompt_ids_list:
         return []
     device = _first_device(model)
     do_sample = temperature > 0
-    results = []
 
-    for start in range(0, len(prompt_ids_list), MAX_GEN_BATCH_SIZE):
-        sub = prompt_ids_list[start : start + MAX_GEN_BATCH_SIZE]
-        max_len = max(len(p) for p in sub)
-        pad_id  = tokenizer.pad_token_id
+    # 길이 내림차순으로 정렬 (padding 낭비 최소화), 원래 인덱스 보존
+    order = sorted(range(len(prompt_ids_list)), key=lambda i: len(prompt_ids_list[i]), reverse=True)
+    sorted_prompts = [prompt_ids_list[i] for i in order]
 
+    raw_results: list[tuple[str, list[int]]] = []
+    pad_id = tokenizer.pad_token_id
+
+    for start in range(0, len(sorted_prompts), MAX_GEN_BATCH_SIZE):
+        sub = sorted_prompts[start : start + MAX_GEN_BATCH_SIZE]
+        max_len = len(sub[0])  # 내림차순 정렬이므로 첫 번째가 최장
         input_ids      = torch.full((len(sub), max_len), pad_id, dtype=torch.long, device=device)
         attention_mask = torch.zeros(len(sub), max_len,           dtype=torch.long, device=device)
         for i, p in enumerate(sub):
@@ -296,11 +389,15 @@ def generate_batched(
         )
         for i in range(len(sub)):
             resp = out[i, max_len:].tolist()
-            # strip trailing pad/eos
             while resp and resp[-1] in (pad_id, tokenizer.eos_token_id):
                 resp.pop()
-            results.append((tokenizer.decode(resp, skip_special_tokens=False), resp))
-    return results
+            raw_results.append((tokenizer.decode(resp, skip_special_tokens=False), resp))
+
+    # 원래 순서로 복원
+    results: list[tuple[str, list[int]] | None] = [None] * len(prompt_ids_list)
+    for rank, orig_idx in enumerate(order):
+        results[orig_idx] = raw_results[rank]
+    return results  # type: ignore[return-value]
 
 
 @torch.no_grad()
@@ -309,6 +406,56 @@ def generate_does_batched(model, tokenizer, inferences: list[str], system_summar
     prompts = [_tokenize(tokenizer, system_summary, inf) for inf in inferences]
     results = generate_batched(model, tokenizer, prompts, SUMMARY_MAX_NEW, 0.0)
     return [text.strip() for text, _ in results]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# vLLM generation helpers (inference model, frozen)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def vllm_generate_batched(
+    llm,
+    prompt_ids_list: list[list[int]],
+    max_new: int,
+    temperature: float,
+    return_logprobs: bool = False,
+) -> list[tuple[str, list[int]]] | list[tuple[str, list[int], list[float]]]:
+    """vLLM 배치 생성. MAX_GEN_BATCH_SIZE 단위로 청킹해 KV 캐시 과부하 방지.
+
+    return_logprobs=True: (text, token_ids, log_probs) 반환.
+    greedy (temperature=0) 생성 시 top-1 = 선택 토큰이 보장되므로 logprobs=1로 충분.
+    """
+    from vllm import SamplingParams
+    sp = SamplingParams(
+        temperature=temperature,
+        max_tokens=max_new,
+        skip_special_tokens=False,
+        logprobs=1 if return_logprobs else None,
+    )
+    results: list = []
+    for start in range(0, len(prompt_ids_list), MAX_GEN_BATCH_SIZE):
+        chunk = prompt_ids_list[start : start + MAX_GEN_BATCH_SIZE]
+        outputs = llm.generate([{"prompt_token_ids": ids} for ids in chunk], sampling_params=sp)
+        for o in outputs:
+            out = o.outputs[0]
+            text     = out.text
+            tok_ids  = list(out.token_ids)
+            if return_logprobs:
+                lps = [
+                    out.logprobs[i][tid].logprob
+                    if (out.logprobs and i < len(out.logprobs) and tid in out.logprobs[i])
+                    else 0.0
+                    for i, tid in enumerate(tok_ids)
+                ]
+                results.append((text, tok_ids, lps))
+            else:
+                results.append((text, tok_ids))
+    return results
+
+
+def vllm_generate_does_batched(llm, tokenizer, inferences: list[str], system_summary: str) -> list[str]:
+    """여러 inference에 대해 does를 vLLM으로 배치 생성."""
+    prompts = [_tokenize(tokenizer, system_summary, inf) for inf in inferences]
+    return [text.strip() for text, _ in vllm_generate_batched(llm, prompts, SUMMARY_MAX_NEW, 0.0)]
 
 
 @torch.no_grad()
@@ -327,7 +474,7 @@ def complete_rollout_greedy(
     """
     does = generate_does(base_model, tokenizer, rollout_inference, system_summary)
     local_history = history_before_rethink + [
-        {"inference": rollout_inference, "does": does, "is_error": False}
+        {"inference": rollout_inference, "does": does, "is_fail": False}
     ]
 
     for _ in range(MAX_COMPLETION_STEPS):
@@ -338,7 +485,7 @@ def complete_rollout_greedy(
         inference, _ = generate_step(base_model, tokenizer, prompt_inf, INF_MAX_NEW, 0.0)
 
         does = generate_does(base_model, tokenizer, inference, system_summary)
-        local_history.append({"inference": inference, "does": does, "is_error": False})
+        local_history.append({"inference": inference, "does": does, "is_fail": False})
 
         if extract_boxed(inference) is not None:
             return 1.0 if check_solved(inference, gold_answer, problem=problem) else 0.0
@@ -374,12 +521,93 @@ def cls_forward_logprobs(model, prompt_ids: list[int], response_ids: list[int],
     return F.log_softmax(resp_logits, dim=-1).gather(-1, resp_ids_t.unsqueeze(-1)).squeeze(-1)
 
 
+@torch.no_grad()
+def cls_forward_logprobs_batched(
+    model,
+    pairs: list[tuple[list[int], list[int]]],
+    batch_size: int = 4,
+) -> list[list[float]]:
+    """여러 (prompt_ids, response_ids) 쌍의 log probs를 mini-batch forward로 계산.
+
+    left-padding으로 배치를 구성해 sequential 호출 대비 ~batch_size배 빠르게 처리.
+    """
+    if not pairs:
+        return []
+
+    results: list[list[float]] = []
+    device = _first_device(model)
+
+    for start in range(0, len(pairs), batch_size):
+        sub = pairs[start : start + batch_size]
+        full_seqs = [p + r for p, r in sub]
+        max_len = max(len(s) for s in full_seqs)
+
+        input_ids      = torch.zeros(len(sub), max_len, dtype=torch.long, device=device)
+        attention_mask = torch.zeros(len(sub), max_len, dtype=torch.long, device=device)
+        for i, seq in enumerate(full_seqs):
+            offset = max_len - len(seq)
+            input_ids[i, offset:]      = torch.tensor(seq, dtype=torch.long, device=device)
+            attention_mask[i, offset:] = 1
+
+        logits = model(input_ids, attention_mask=attention_mask).logits  # (B, L, V)
+
+        for i, (prompt_ids, response_ids) in enumerate(sub):
+            R = len(response_ids)
+            if R == 0:
+                results.append([])
+                continue
+            P = len(prompt_ids)
+            offset = max_len - len(full_seqs[i])
+            resp_logits = logits[i, offset + P - 1 : offset + P + R - 1].float()
+            resp_ids_t  = torch.tensor(response_ids, dtype=torch.long, device=resp_logits.device)
+            lps = F.log_softmax(resp_logits, dim=-1).gather(-1, resp_ids_t.unsqueeze(-1)).squeeze(-1)
+            results.append(lps.tolist())
+
+    return results
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Action parsing
 # ─────────────────────────────────────────────────────────────────────────────
 _FAIL_RB_RE      = re.compile(r"Fail rubrics:\n(.*?)(?=\n\n|\Z)", re.DOTALL)
 _DEEP_CRITIC_RE  = re.compile(r"Deep critic:\s*\n(.*?)(?:\n\n|\Z)", re.DOTALL)
 _RUBRIC_TOKENS   = set(CONF["model"].get("special_tokens", []))
+_ACTION_TOKENS   = {TOKEN_SOLVE, TOKEN_RETHINK, TOKEN_END, "<|none|>"}
+RUBRIC_ORDER     = [t for t in CONF["model"].get("special_tokens", []) if t not in _ACTION_TOKENS]
+
+_RUBRIC_NAME_TO_TOKEN = {
+    "Algebraic Manipulation":                 "<|algebraic_manipulation|>",
+    "Abstract and Linear Algebra Operations": "<|abstract_and_linear_algebra_operations|>",
+    "Calculus Computation":                   "<|calculus_computation|>",
+    "Function and Limit Analysis":            "<|function_and_limit_analysis|>",
+    "Geometric Reasoning":                    "<|geometric_reasoning|>",
+    "Counting and Probability":               "<|counting_and_probability|>",
+    "Number Theoretic Reasoning":             "<|number_theoretic_reasoning|>",
+    "Logical and Discrete Reasoning":         "<|logical_and_discrete_reasoning|>",
+    "Differential Equations":                 "<|differential_equations|>",
+    "Progress and Non-Repetition":            "<|progress_and_non-repetition|>",
+    "Atomicity":                              "<|atomicity|>",
+}
+_RUBRIC_SPLIT_RE = re.compile(
+    r"\n  (" + "|".join(re.escape(n) for n in _RUBRIC_NAME_TO_TOKEN) + r"):"
+)
+
+
+def _rubric_scores(cls_output: str) -> list[int | None]:
+    """cls_output에서 루브릭별 Verdict 파싱 → correct=0, incorrect=1, 미등장=None."""
+    token_to_score: dict[str, int] = {}
+    parts = _RUBRIC_SPLIT_RE.split(cls_output)
+    # parts: [pre, name1, text1, name2, text2, ...]
+    for i in range(1, len(parts), 2):
+        name = parts[i].strip()
+        text = parts[i + 1] if i + 1 < len(parts) else ""
+        token = _RUBRIC_NAME_TO_TOKEN.get(name)
+        if not token:
+            continue
+        m = re.search(r"Verdict:\s*(correct|incorrect)", text, re.IGNORECASE)
+        if m:
+            token_to_score[token] = 0 if m.group(1).lower() == "correct" else 1
+    return [token_to_score.get(tok) for tok in RUBRIC_ORDER]
 
 
 def _first_line(text: str, maxlen: int = 120) -> str:
@@ -464,14 +692,21 @@ def parse_action(cls_output: str, inference: str) -> tuple[list[str], str]:
       fail_rubrics 있음             → <|rethink|>
       fail_rubrics 없음 + boxed     → <|end|>
       fail_rubrics 없음 + no boxed  → <|solve|>
+
+    cls 모델 출력 포맷: Deep critic 섹션에 각 루브릭별 "Verdict: incorrect/correct".
+    "Verdict: incorrect" 루브릭을 fail_rubrics로 추출한다.
     """
     fail_rubrics: list[str] = []
-    m = _FAIL_RB_RE.search(cls_output)
-    if m:
-        for tok in m.group(1).strip().splitlines():
-            tok = tok.strip()
-            if tok and tok in _RUBRIC_TOKENS:
-                fail_rubrics.append(tok)
+
+    parts = _RUBRIC_SPLIT_RE.split(cls_output)
+    for i in range(1, len(parts), 2):
+        name = parts[i].strip()
+        text = parts[i + 1] if i + 1 < len(parts) else ""
+        token = _RUBRIC_NAME_TO_TOKEN.get(name)
+        if not token:
+            continue
+        if re.search(r"Verdict:\s*incorrect", text, re.IGNORECASE):
+            fail_rubrics.append(token)
 
     has_boxed = extract_boxed(inference) is not None
 
@@ -537,18 +772,17 @@ def grpo_update(
     rethink_records: list[dict],
 ) -> float:
     """
-    rethink_records: 배치 내 모든 trajectory의 rollout 데이터.
-      각 항목: {prompt_ids, response_ids, old_log_probs, prm_reward, outcome}
+    rethink_records: 배치 내 모든 cls 기록 (main step + rollout).
+      각 항목: {prompt_ids, response_ids, old_log_probs, reward}
 
-    reward_i  = α·prm_i + β·outcome_i  (rollout별 개별 outcome)
+    reward = backward propagation으로 미리 계산된 future-value
     advantage = 배치 전체에 대해 cross-normalization
     """
     if not rethink_records:
         return 0.0
 
     rewards = torch.tensor(
-        [PRM_COEF * r["prm_reward"] + OUTCOME_COEF * r["outcome"]
-         for r in rethink_records],
+        [r["reward"] for r in rethink_records],
         dtype=torch.float32,
     )
 
@@ -593,9 +827,25 @@ def grpo_update(
 # ─────────────────────────────────────────────────────────────────────────────
 # Batched trajectory runner
 # ─────────────────────────────────────────────────────────────────────────────
+def _fmt_step_sequence(step_infos: list[dict]) -> str:
+    """step_infos → 스텝 구성 문자열.
+    solve/end: G,  rethink: G+_XX(k/N)
+    """
+    parts = []
+    for info in step_infos:
+        if info["action"] == TOKEN_RETHINK:
+            rollouts = info.get("rollouts") or []
+            k = sum(1 for r in rollouts if r["outcome"] == 1.0)
+            n = len(rollouts)
+            parts.append(f"G+_{info['step']:02d}({k}/{n})")
+        else:
+            parts.append("G")
+    return " ".join(parts)
+
+
 def _process_rethinks_batched(
     rethink_batch: list,   # list of (state_dict, inf_text, step_info)
-    base_model, cls_model, tokenizer,
+    inf_llm, cls_llm, cls_model, tokenizer,
     system_inf: str, system_rethink: str, system_cls: str, system_summary: str,
 ) -> None:
     """rethink 발생 states에 대해 rollout + completion + cls 평가를 배치 처리."""
@@ -609,14 +859,14 @@ def _process_rethinks_batched(
         ))
         rollout_prompts.extend([prompt] * ROLLOUT_N)
 
-    rollout_results  = generate_batched(base_model, tokenizer, rollout_prompts, INF_MAX_NEW, RETHINK_TEMP)
+    rollout_results  = vllm_generate_batched(inf_llm, rollout_prompts, INF_MAX_NEW, RETHINK_TEMP)
     rollout_texts    = [t for t, _ in rollout_results]
     rollout_ids_list = [ids for _, ids in rollout_results]
     # layout: [s0_r0, s0_r1, ..., s0_rN, s1_r0, ...]
 
     # ── 6b. 배치 completion ───────────────────────────────────────────────
     # initial does for all rollout inferences
-    init_does = generate_does_batched(base_model, tokenizer, rollout_texts, system_summary)
+    init_does = vllm_generate_does_batched(inf_llm, tokenizer, rollout_texts, system_summary)
 
     total = R * ROLLOUT_N
     local_histories = []
@@ -626,7 +876,7 @@ def _process_rethinks_batched(
         for j in range(ROLLOUT_N):
             fi = idx * ROLLOUT_N + j
             local_histories.append(
-                s["history"] + [{"inference": rollout_texts[fi], "does": init_does[fi], "is_error": False}]
+                s["history"] + [{"inference": rollout_texts[fi], "does": init_does[fi], "is_fail": False}]
             )
             gold_answers.append(s["gold_answer"])
             problems.append(s["problem"])
@@ -645,13 +895,13 @@ def _process_rethinks_batched(
             ))
             for i in active
         ]
-        inf_results = generate_batched(base_model, tokenizer, inf_prompts, INF_MAX_NEW, 0.0)
+        inf_results = vllm_generate_batched(inf_llm, inf_prompts, INF_MAX_NEW, 0.0)
         active_texts = [t for t, _ in inf_results]
 
-        does_list = generate_does_batched(base_model, tokenizer, active_texts, system_summary)
+        does_list = vllm_generate_does_batched(inf_llm, tokenizer, active_texts, system_summary)
 
         for ri, (rollout_idx, text, does) in enumerate(zip(active, active_texts, does_list)):
-            local_histories[rollout_idx].append({"inference": text, "does": does, "is_error": False})
+            local_histories[rollout_idx].append({"inference": text, "does": does, "is_fail": False})
             if extract_boxed(text) is not None:
                 outcomes[rollout_idx]   = 1.0 if check_solved(text, gold_answers[rollout_idx], problem=problems[rollout_idx]) else 0.0
                 done_flags[rollout_idx] = True
@@ -666,64 +916,69 @@ def _process_rethinks_batched(
     for idx, (s, inf, step_info) in enumerate(rethink_batch):
         for j in range(ROLLOUT_N):
             fi = idx * ROLLOUT_N + j
-            r_steps = s["history"] + [{"inference": rollout_texts[fi], "is_error": False}]
+            r_steps = s["history"] + [{"inference": rollout_texts[fi], "is_fail": False}]
             cls_prompts.append(_tokenize(tokenizer, *build_messages_classification(
                 s["problem"], r_steps, len(s["history"]), system_cls
             )))
 
-    cls_results = generate_batched(cls_model, tokenizer, cls_prompts, CLS_MAX_NEW, 0.0)
+    cls_results       = vllm_generate_batched(cls_llm, cls_prompts, CLS_MAX_NEW, 0.0, return_logprobs=True)
+    rollout_cls_texts = [t   for t, _, _   in cls_results]
+    rollout_old_lps   = [lps for _, _, lps in cls_results]
 
-    for fi, ((text, ids), prompt) in enumerate(zip(cls_results, cls_prompts)):
-        old_lps = cls_forward_logprobs(cls_model, prompt, ids, no_grad=True).tolist() if ids else []
+    all_rollout_cls_records = [None] * (len(rethink_batch) * ROLLOUT_N)
+    for fi, ((text, ids, _), prompt, old_lps) in enumerate(zip(cls_results, cls_prompts, rollout_old_lps)):
         idx = fi // ROLLOUT_N
         s, inf, step_info = rethink_batch[idx]
-        s["rethink_records"].append({
+        rec = {
             "prompt_ids":    prompt,
             "response_ids":  ids,
             "old_log_probs": old_lps,
             "prm_reward":    0.0,
             "outcome":       outcomes[fi],
-        })
+        }
+        s["rethink_records"].append(rec)
+        all_rollout_cls_records[fi] = rec
 
-    # ── 6d. 랜덤 rollout 선택 → history 업데이트 ─────────────────────────
+    # ── 6d. rollout 결과 처리 → 항상 랜덤 선택 (전부 실패 시 is_fail=True로 마킹 후 계속) ──
     for idx, (s, inf, step_info) in enumerate(rethink_batch):
         s["n_rethinks"] += 1
         step_info["rethink_idx"] = s["n_rethinks"] - 1
 
-        best_j   = random.randrange(ROLLOUT_N)
-        best_fi  = idx * ROLLOUT_N + best_j
-        best_inf = rollout_texts[best_fi]
-        best_does = init_does[best_fi]
-        s["history"].append({"inference": best_inf, "does": best_does, "is_error": False})
-
         rollout_outcome_list = [outcomes[idx * ROLLOUT_N + j] for j in range(ROLLOUT_N)]
-        # local_histories[fi] 길이에서 rethink 이전 history 길이(line 697로 +1된 것 보정)를 빼면
-        # 해당 rollout이 rethink 이후 정답에 도달하기까지 걸린 스텝 수
-        base_len = len(s["history"]) - 1
+        base_len = len(s["history"])   # rethink rollout 추가 전 history 길이
         rollout_step_list = [
             len(local_histories[idx * ROLLOUT_N + j]) - base_len
             for j in range(ROLLOUT_N)
         ]
+        rollout_recs = [all_rollout_cls_records[idx * ROLLOUT_N + j] for j in range(ROLLOUT_N)]
+        rollout_avg  = sum(r["outcome"] for r in rollout_recs) / ROLLOUT_N
+
+        # rollout 성공 여부에 관계없이 랜덤 선택 후 history에 추가 → cls가 다시 rethink 판단
+        best_j  = random.randrange(ROLLOUT_N)
+        best_fi = idx * ROLLOUT_N + best_j
+        all_failed = rollout_avg == 0.0
+        s["history"].append({
+            "inference": rollout_texts[best_fi],
+            "does":      init_does[best_fi],
+            "is_fail":   all_failed,
+        })
+        if all_failed:
+            s["fail_reason"] = "consecutive_all_rollouts_failed"
+
         step_info["rollouts"] = [
             {
-                "text":    _first_line(rollout_texts[idx * ROLLOUT_N + j]),
-                "prm":     0.0,
-                "outcome": rollout_outcome_list[j],
-                "n_steps": rollout_step_list[j],
-                "best":    j == best_j,
+                "text":       _first_line(rollout_texts[idx * ROLLOUT_N + j]),
+                "cls_output": rollout_cls_texts[idx * ROLLOUT_N + j],
+                "prm":        0.0,
+                "outcome":    rollout_outcome_list[j],
+                "n_steps":    rollout_step_list[j],
+                "best":       j == best_j,
             }
             for j in range(ROLLOUT_N)
         ]
+        step_info["cls_rollout_records"] = rollout_recs
+        step_info["rollout_avg_outcome"] = rollout_avg
         s["step_infos"].append(step_info)
-
-        if DEBUG:
-            tags = "  ".join(
-                f"R{j}{'*' if j == best_j else ''}:"
-                f"{'✓' if rollout_outcome_list[j] == 1.0 else '✗'}"
-                f"({rollout_step_list[j]})"
-                for j in range(ROLLOUT_N)
-            )
-            print(f"{s['prob_idx']}_{step_info['step']} rethink  {tags}", flush=True)
 
 
 def _append_jsonl(path: Path, record: dict) -> None:
@@ -731,8 +986,8 @@ def _append_jsonl(path: Path, record: dict) -> None:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def _finalize_state(s: dict, all_path: Path) -> None:
-    """outcome 계산 후 traj_all.jsonl에 기록."""
+def _finalize_state(s: dict, all_path: Path, cls_all_path: Path) -> None:
+    """outcome 계산 후 inference_all.jsonl과 cls_all.jsonl에 기록."""
     final = s["final_text"]
     s["outcome"]   = 1.0 if (final and check_solved(final, s["gold_answer"], problem=s.get("problem", ""))) else 0.0
     s["extracted"] = extract_boxed(final) if final else None
@@ -744,26 +999,51 @@ def _finalize_state(s: dict, all_path: Path) -> None:
         "outcome":         s["outcome"],
         "n_rethinks":      s["n_rethinks"],
         "n_steps":         s["n_steps"],
-        "steps":           s["step_infos"],
+        "actions":         [info["action"] for info in s["step_infos"]],
         "rethink_records": s["rethink_records"],
+        "fail_reason":     s.get("fail_reason"),
+    })
+    _append_jsonl(cls_all_path, {
+        "problem_id":  s["prob_idx"],
+        "problem":     s["problem"],
+        "gold_answer": s["gold_answer"],
+        "outcome":     s["outcome"],
+        "steps": [
+            {
+                "step_idx":            info["step"],
+                "action":              info["action"],
+                "cls_output":          info.get("cls_output", ""),
+                "fail_rubrics":        info["fail_rubrics"],
+                "deep_critic":         info["deep_critic"],
+                "rubric_scores":       _rubric_scores(info.get("cls_output", "")),
+                "rollout_cls_outputs": [r.get("cls_output", "") for r in (info.get("rollouts") or [])],
+            }
+            for info in s["step_infos"]
+        ],
     })
 
 
-def _record_step(s: dict, step_info: dict, cache_path: Path) -> None:
-    """스텝 완료 시 traj_cache.jsonl에 기록."""
+def _record_step(s: dict, step_info: dict, cache_path: Path, cls_cache_path: Path) -> None:
+    """스텝 완료 시 inference_cache.jsonl과 cls_cache.jsonl에 기록."""
     _append_jsonl(cache_path, {
-        "problem_id":       s["prob_idx"],
-        "step_idx":         step_info["step"],
-        "action":           step_info["action"],
-        "inf_line":         step_info["inf_line"],
-        "fail_rubrics":     step_info["fail_rubrics"],
-        "rollout_outcomes": [r["outcome"] for r in (step_info["rollouts"] or [])],
+        "problem_id": s["prob_idx"],
+        "step_idx":   step_info["step"],
+        "action":     step_info["action"],
+    })
+    _append_jsonl(cls_cache_path, {
+        "problem_id":    s["prob_idx"],
+        "step_idx":      step_info["step"],
+        "cls_output":    step_info.get("cls_output", ""),
+        "action":        step_info["action"],
+        "fail_rubrics":  step_info["fail_rubrics"],
+        "deep_critic":   step_info["deep_critic"],
+        "rubric_scores": _rubric_scores(step_info.get("cls_output", "")),
     })
 
 
 def generate_trajectories_pool(
     all_problems: list[dict],
-    base_model, cls_model, tokenizer,
+    inf_llm, cls_llm, cls_model, tokenizer,
     out_dir: Path,
 ):
     """Pool 크기를 PROBLEM_BATCH_SIZE로 유지하며 trajectory 생성 (generator).
@@ -777,8 +1057,10 @@ def generate_trajectories_pool(
     system_cls     = PROMPTS.get("gen_classification",   "")
     system_summary = PROMPTS.get("step_summary_system",  "")
 
-    cache_path = out_dir / "traj_cache.jsonl"
-    all_path   = out_dir / "traj_all.jsonl"
+    cache_path     = out_dir / "inference_cache.jsonl"
+    all_path       = out_dir / "inference_all.jsonl"
+    cls_cache_path = out_dir / "cls_cache.jsonl"
+    cls_all_path   = out_dir / "cls_all.jsonl"
 
     def _new_state(p: dict) -> dict:
         return {
@@ -792,6 +1074,7 @@ def generate_trajectories_pool(
             "final_text":      "",
             "done":            False,
             "step_count":      0,
+            "fail_reason":     None,
         }
 
     queue: list[dict] = list(all_problems)
@@ -799,8 +1082,6 @@ def generate_trajectories_pool(
                          for _ in range(min(PROBLEM_BATCH_SIZE, len(queue)))]
     if not pool and queue:
         pool.append(_new_state(queue.pop(0)))
-
-    action_short = {TOKEN_END: "end", TOKEN_SOLVE: "solve", TOKEN_RETHINK: "rethink"}
 
     while pool:
         active = [s for s in pool if not s["done"]]
@@ -814,33 +1095,39 @@ def generate_trajectories_pool(
             ))
             for s in active
         ]
-        inf_results = generate_batched(base_model, tokenizer, inf_prompts, INF_MAX_NEW, 0.0)
+        inf_results = vllm_generate_batched(inf_llm, inf_prompts, INF_MAX_NEW, 0.0)
         inferences  = [t for t, _ in inf_results]
 
         # ── 2. Batch cls evaluation ────────────────────────────────────────
         cls_prompts = [
             _tokenize(tokenizer, *build_messages_classification(
                 s["problem"],
-                s["history"] + [{"inference": inf, "is_error": False}],
+                s["history"] + [{"inference": inf, "is_fail": False}],
                 len(s["history"]),
                 system_cls,
             ))
             for s, inf in zip(active, inferences)
         ]
-        cls_results = generate_batched(cls_model, tokenizer, cls_prompts, CLS_MAX_NEW, 0.0)
-        cls_outputs = [t for t, _ in cls_results]
+        cls_results      = vllm_generate_batched(cls_llm, cls_prompts, CLS_MAX_NEW, 0.0, return_logprobs=True)
+        cls_outputs      = [t   for t, _, _   in cls_results]
+        cls_ids_list     = [ids for _, ids, _ in cls_results]
+        cls_old_lps_list = [lps for _, _, lps in cls_results]
 
         # ── 3. Parse & categorize ──────────────────────────────────────────
         end_batch, solve_batch, rethink_batch = [], [], []
-        for s, inf, cls_out in zip(active, inferences, cls_outputs):
+        for i, (s, inf, cls_out) in enumerate(zip(active, inferences, cls_outputs)):
             fail_rubrics, action = parse_action(cls_out, inf)
             step_info = {
-                "step":         s["step_count"],
-                "action":       action,
-                "inf_line":     _first_line(inf),
-                "deep_critic":  _deep_critic_line(cls_out),
-                "fail_rubrics": fail_rubrics,
-                "rollouts":     None,
+                "step":              s["step_count"],
+                "action":            action,
+                "inf_line":          _first_line(inf),
+                "deep_critic":       _deep_critic_line(cls_out),
+                "fail_rubrics":      fail_rubrics,
+                "rollouts":          None,
+                "cls_output":        cls_out,
+                "cls_prompt_ids":    cls_prompts[i],
+                "cls_response_ids":  cls_ids_list[i],
+                "cls_old_log_probs": cls_old_lps_list[i],
             }
             if action == TOKEN_END:
                 end_batch.append((s, inf, step_info))
@@ -849,42 +1136,37 @@ def generate_trajectories_pool(
             else:
                 rethink_batch.append((s, inf, step_info))
 
-        if DEBUG:
-            for s, inf, step_info in end_batch + solve_batch:
-                print(f"{s['prob_idx']}_{s['step_count']} {action_short.get(step_info['action'], step_info['action'])}", flush=True)
-            # rethink는 rollout 결과와 함께 _process_rethinks_batched에서 출력
-
         # ── 4. END ────────────────────────────────────────────────────────
         if end_batch:
-            does_list = generate_does_batched(base_model, tokenizer,
-                                              [inf for s, inf, _ in end_batch], system_summary)
+            does_list = vllm_generate_does_batched(inf_llm, tokenizer,
+                                                   [inf for s, inf, _ in end_batch], system_summary)
             for (s, inf, step_info), does in zip(end_batch, does_list):
                 s["final_text"] = inf
-                s["history"].append({"inference": inf, "does": does, "is_error": False})
+                s["history"].append({"inference": inf, "does": does, "is_fail": False})
                 s["step_infos"].append(step_info)
                 s["step_count"] += 1
                 s["done"] = True
-                _record_step(s, step_info, cache_path)
+                _record_step(s, step_info, cache_path, cls_cache_path)
 
         # ── 5. SOLVE ──────────────────────────────────────────────────────
         if solve_batch:
-            does_list = generate_does_batched(base_model, tokenizer,
-                                              [inf for s, inf, _ in solve_batch], system_summary)
+            does_list = vllm_generate_does_batched(inf_llm, tokenizer,
+                                                   [inf for s, inf, _ in solve_batch], system_summary)
             for (s, inf, step_info), does in zip(solve_batch, does_list):
-                s["history"].append({"inference": inf, "does": does, "is_error": False})
+                s["history"].append({"inference": inf, "does": does, "is_fail": False})
                 s["step_infos"].append(step_info)
                 s["step_count"] += 1
-                _record_step(s, step_info, cache_path)
+                _record_step(s, step_info, cache_path, cls_cache_path)
 
         # ── 6. RETHINK ────────────────────────────────────────────────────
         if rethink_batch:
             _process_rethinks_batched(
-                rethink_batch, base_model, cls_model, tokenizer,
+                rethink_batch, inf_llm, cls_llm, cls_model, tokenizer,
                 system_inf, system_rethink, system_cls, system_summary,
             )
             for s, inf, step_info in rethink_batch:
                 s["step_count"] += 1
-                _record_step(s, step_info, cache_path)
+                _record_step(s, step_info, cache_path, cls_cache_path)
 
         # ── 7. MAX_STEPS 초과 강제 종료 ───────────────────────────────────
         for s in active:
@@ -896,13 +1178,68 @@ def generate_trajectories_pool(
         still_active = []
         for s in pool:
             if s["done"]:
-                _finalize_state(s, all_path)
+                _finalize_state(s, all_path, cls_all_path)
+                seq = _fmt_step_sequence(s["step_infos"])
+                outcome_str = "✓" if s["outcome"] == 1.0 else "✗"
+                fail_tag    = f"  [{s['fail_reason']}]" if s.get("fail_reason") else ""
+                print(
+                    f"[traj] {s['prob_idx']} {outcome_str}  steps={s['n_steps']}  rethinks={s['n_rethinks']}  [{seq}]{fail_tag}",
+                    flush=True,
+                )
                 yield s
                 if queue:
                     still_active.append(_new_state(queue.pop(0)))
             else:
                 still_active.append(s)
         pool = still_active
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Reward computation
+# ─────────────────────────────────────────────────────────────────────────────
+
+def compute_trajectory_records(traj: dict) -> list[dict]:
+    """trajectory의 모든 cls 기록에 backward reward propagation으로 reward 할당.
+
+    carry = trajectory_outcome 으로 시작해 역방향으로 전파:
+      - rethink 스텝: main_reward = rollout_avg × carry; carry 갱신
+      - solve/end 스텝: main_reward = carry; carry 유지
+
+    rollout 기록(rethink 시 각 rollout 평가): reward = rollout_outcome_i
+    """
+    step_infos = traj.get("step_infos", [])
+    carry = traj.get("outcome", 0.0)
+
+    records = []
+    for step_info in reversed(step_infos):
+        if step_info["action"] == TOKEN_RETHINK:
+            rollout_avg = step_info.get("rollout_avg_outcome", 0.0)
+            main_reward = rollout_avg * carry
+            carry = main_reward
+        else:
+            main_reward = carry
+
+        # main step cls record
+        prompt_ids   = step_info.get("cls_prompt_ids",   [])
+        response_ids = step_info.get("cls_response_ids", [])
+        if prompt_ids and response_ids:
+            records.append({
+                "prompt_ids":    prompt_ids,
+                "response_ids":  response_ids,
+                "old_log_probs": step_info.get("cls_old_log_probs", []),
+                "reward":        main_reward,
+            })
+
+        # rollout cls records (rethink 스텝에만 존재)
+        for rec in step_info.get("cls_rollout_records", []):
+            records.append({
+                "prompt_ids":    rec["prompt_ids"],
+                "response_ids":  rec["response_ids"],
+                "old_log_probs": rec["old_log_probs"],
+                "reward":        rec["outcome"],
+            })
+
+    return records
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -931,6 +1268,7 @@ def _parse_args():
     p.add_argument("--prm_coef",           type=float, default=None)
     p.add_argument("--outcome_coef",       type=float, default=None)
     p.add_argument("--min_records",        type=int,   default=None)
+    p.add_argument("--iter_problems",      type=int,   default=None)
     p.add_argument("--inf_gpu_count",      type=int,   default=None)
     p.add_argument("--problem_batch_size", type=int,   default=None)
     p.add_argument("--max_gen_batch_size", type=int,   default=None)
@@ -939,7 +1277,7 @@ def _parse_args():
     args, _ = p.parse_known_args()
 
     global INF_CKPT, CLS_CKPT, RESUME, PRM_COEF, OUTCOME_COEF, TRAIN_GPUS, DEBUG
-    global INF_GPU_COUNT, MIN_RECORDS, PROBLEM_BATCH_SIZE, MAX_GEN_BATCH_SIZE
+    global INF_GPU_COUNT, MIN_RECORDS, ITER_PROBLEMS, PROBLEM_BATCH_SIZE, MAX_GEN_BATCH_SIZE
     if args.gpus:
         TRAIN_GPUS = list(range(len(args.gpus.split(","))))
     if args.inf_checkpoint:              INF_CKPT       = args.inf_checkpoint
@@ -948,6 +1286,7 @@ def _parse_args():
     if args.prm_coef        is not None: PRM_COEF       = args.prm_coef
     if args.outcome_coef    is not None: OUTCOME_COEF   = args.outcome_coef
     if args.min_records     is not None: MIN_RECORDS    = args.min_records
+    if args.iter_problems   is not None: ITER_PROBLEMS  = args.iter_problems
     if args.inf_gpu_count   is not None: INF_GPU_COUNT  = args.inf_gpu_count
     if args.problem_batch_size is not None: PROBLEM_BATCH_SIZE = args.problem_batch_size
     if args.max_gen_batch_size is not None: MAX_GEN_BATCH_SIZE = args.max_gen_batch_size
@@ -959,12 +1298,12 @@ def main():
     _parse_args()
     ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    base_model, cls_model, ref_cls, tokenizer = setup_models_and_tokenizer()
+    inf_llm, cls_llm, cls_model, ref_cls, tokenizer = setup_models_and_tokenizer()
     problems = load_problems()
     log.info(
         f"Loaded {len(problems)} problems | "
-        f"ROLLOUT_N={ROLLOUT_N} MIN_RECORDS={MIN_RECORDS} "
-        f"PRM_COEF={PRM_COEF} OUTCOME_COEF={OUTCOME_COEF}"
+        f"ROLLOUT_N={ROLLOUT_N} ITER_PROBLEMS={ITER_PROBLEMS} "
+        f"TOTAL_PROBLEMS={TOTAL_PROBLEMS}"
     )
 
     optimizer = torch.optim.AdamW(
@@ -992,40 +1331,69 @@ def main():
             global_step = start_idx
         log.info(f"Resumed from {RESUME}, step={global_step}")
 
-    end_idx = min(start_idx + TOTAL_PROBLEMS, len(problems))
-
     # 출력 디렉터리
-    out_dir = _ROOT / "output" / "GRPO" / ts
+    out_dir = _ROOT / "output" / "GRPO_SC" / ts
     out_dir.mkdir(parents=True, exist_ok=True)
     log.info(f"Output dir: {out_dir}")
 
-    # records가 MIN_RECORDS 이상 쌓이면 한 번 학습 (1 iteration)
-    all_records:   list[dict]  = []
-    iter_outcomes: list[float] = []
-    iter_rethinks: list[int]   = []
-    iter_steps:    list[int]   = []
-    n_trajs = 0
+    start_dt  = datetime.datetime.now()
+    meta_path = out_dir / "run_meta.json"
+    run_meta  = {
+        "ts":                   ts,
+        "start_time":           start_dt.isoformat(),
+        "end_time":             None,
+        "elapsed_seconds":      None,
+        "total_steps":          None,
+        "inference_model":      INF_CKPT,
+        "cls_model":            CLS_CKPT,
+        "gpus":                 TRAIN_GPUS,
+        "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES", ""),
+        "config": {
+            "rollout_n":          ROLLOUT_N,
+            "lr":                 LR,
+            "kl_coef":            KL_COEF,
+            "clip_eps":           CLIP_EPS,
+            "iter_problems":      ITER_PROBLEMS,
+            "total_problems":     TOTAL_PROBLEMS,
+            "problem_batch_size": PROBLEM_BATCH_SIZE,
+            "max_gen_batch_size": MAX_GEN_BATCH_SIZE,
+        },
+    }
+    meta_path.write_text(json.dumps(run_meta, indent=2, ensure_ascii=False))
 
-    for s in generate_trajectories_pool(
-        problems[start_idx:end_idx], base_model, cls_model, tokenizer, out_dir
-    ):
-        all_records.extend(s["rethink_records"])
-        iter_outcomes.append(s["outcome"])
-        iter_rethinks.append(s["n_rethinks"])
-        iter_steps.append(s["n_steps"])
-        n_trajs += 1
+    # ITER_PROBLEMS개 문제를 랜덤 샘플 → 전체 trajectory 완료 → backward reward → GRPO update
+    n_iterations = TOTAL_PROBLEMS // max(ITER_PROBLEMS, 1)
+    log.info(f"총 {n_iterations} iterations (ITER_PROBLEMS={ITER_PROBLEMS})")
 
-        if len(all_records) < MIN_RECORDS:
+    for iter_idx in range(global_step, n_iterations):
+        batch = random.sample(problems, min(ITER_PROBLEMS, len(problems)))
+        log.info(f"[iter {iter_idx + 1}/{n_iterations}] {len(batch)} problems sampled")
+
+        # 모든 trajectory 완료
+        trajectories = list(generate_trajectories_pool(batch, inf_llm, cls_llm, cls_model, tokenizer, out_dir))
+
+        # backward reward propagation → 전체 cls records 구성
+        all_records = []
+        for traj in trajectories:
+            all_records.extend(compute_trajectory_records(traj))
+
+        if not all_records:
+            log.warning("No records collected — skip GRPO update")
             continue
 
         # GRPO update
         loss_val     = grpo_update(cls_model, ref_cls, optimizer, all_records)
         global_step += 1
+        sync_cls_llm(cls_llm, cls_model)
 
-        avg_outcome  = sum(iter_outcomes) / len(iter_outcomes)
-        avg_rethinks = sum(iter_rethinks) / len(iter_rethinks)
-        avg_steps    = sum(iter_steps)    / len(iter_steps)
-        n_records    = len(all_records)
+        iter_outcomes = [t["outcome"]    for t in trajectories]
+        iter_rethinks = [t["n_rethinks"] for t in trajectories]
+        iter_steps    = [t["n_steps"]    for t in trajectories]
+        avg_outcome   = sum(iter_outcomes) / len(iter_outcomes)
+        avg_rethinks  = sum(iter_rethinks) / len(iter_rethinks)
+        avg_steps     = sum(iter_steps)    / len(iter_steps)
+        n_records     = len(all_records)
+        n_trajs       = len(trajectories)
 
         log.info(
             f"[{global_step}] loss={loss_val:.4f}  outcome={avg_outcome:.2f}  "
@@ -1041,11 +1409,14 @@ def main():
             })
         save_checkpoint(cls_model, tokenizer, optimizer, global_step, ts)
 
-        all_records = []; iter_outcomes = []; iter_rethinks = []; iter_steps = []
-        n_trajs = 0
-
     if wandb_run:
         wandb_run.finish()
+
+    end_dt = datetime.datetime.now()
+    run_meta["end_time"]        = end_dt.isoformat()
+    run_meta["elapsed_seconds"] = (end_dt - start_dt).total_seconds()
+    run_meta["total_steps"]     = global_step
+    meta_path.write_text(json.dumps(run_meta, indent=2, ensure_ascii=False))
     log.info("Training complete.")
 
 

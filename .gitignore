@@ -1,11 +1,20 @@
+# 1. 전역 제외 폴더 설정
 checkpoints/
-data_optimize/
-datasets/
-output/
-vllm/
-
-
 configs/
-output/
-data_optimizer/output/
-__pycache__/
+datasets/
+very/
+wandb/
+
+# 2. output 폴더 기본 규칙
+# output 폴더 자체는 Git이 추적하도록 하되, 하위 항목은 일단 모두 제외합니다.
+output/*
+
+# 3. output/sft_trajectory 폴더 예외 처리
+# sft_trajectory 폴더와 그 내부의 모든 파일/폴더를 다시 추적 대상으로 포함합니다.
+!output/sft_trajectory/
+!output/sft_trajectory/**
+
+# 4. sft_trajectory 하위 폴더 내에서 특정 파일만 제한
+# 하위 폴더 내의 모든 파일을 일단 제외한 후, traj_all.jsonl 파일만 예외로 허용합니다.
+output/sft_trajectory/*/**
+!output/sft_trajectory/*/**/traj_all.jsonls

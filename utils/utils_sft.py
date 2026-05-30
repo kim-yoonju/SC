@@ -49,7 +49,6 @@ TOKEN_SOLVE   = _model_cfg.get("token_solve",   "<|solve|>")
 TOKEN_RETHINK = _model_cfg.get("token_rethink", "<|rethink|>")
 TOKEN_END     = _model_cfg.get("token_end",     "<|end|>")
 
-FOCAL_SENTINEL = -1.0   # (deprecated sentinel — focal 위치는 이제 음수 class weight로 인코딩)
 TOKEN_NONE    = _model_cfg.get("token_none",    "<|none|>")
 ACTION_TOKENS  = [TOKEN_SOLVE, TOKEN_RETHINK, TOKEN_END]
 SPECIAL_TOKENS = _model_cfg.get("special_tokens", [])
@@ -95,7 +94,7 @@ def build_chat_prompt(tokenizer, system: str, user: str, model_id: str = None) -
 
 def collate_fn(batch, pad_token_id: int) -> dict:
     """가변 길이 시퀀스를 패딩해 배치로 묶는다."""
-    input_ids_list, labels_list, token_weights_list, action_weights_list = zip(*batch)
+    input_ids_list, labels_list = zip(*batch)
     max_len = max(x.size(0) for x in input_ids_list)
     padded_input   = torch.full((len(batch), max_len), pad_token_id, dtype=torch.long)
     padded_labels  = torch.full((len(batch), max_len), -100,         dtype=torch.long)
@@ -105,22 +104,7 @@ def collate_fn(batch, pad_token_id: int) -> dict:
         padded_input[i, :seq_len]   = inp
         padded_labels[i, :seq_len]  = lbl
         attention_mask[i, :seq_len] = 1
-    result = {"input_ids": padded_input, "attention_mask": attention_mask, "labels": padded_labels}
-    if any(tw is not None for tw in token_weights_list):
-        padded_weights = torch.ones(len(batch), max_len, dtype=torch.float32)
-        for i, tw in enumerate(token_weights_list):
-            if tw is not None:
-                seq_len = tw.size(0)
-                padded_weights[i, :seq_len] = tw
-        result["token_weights"] = padded_weights
-    if any(aw is not None for aw in action_weights_list):
-        padded_action = torch.ones(len(batch), max_len, dtype=torch.float32)
-        for i, aw in enumerate(action_weights_list):
-            if aw is not None:
-                seq_len = aw.size(0)
-                padded_action[i, :seq_len] = aw
-        result["action_weights"] = padded_action
-    return result
+    return {"input_ids": padded_input, "attention_mask": attention_mask, "labels": padded_labels}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 모델 Input / Target 빌더
@@ -131,35 +115,9 @@ _CRITIC_MARKER    = "\n\nFast critic:"
 _NEXT_ACTION_RE   = _re.compile(r"Next action:\n(.+)", _re.MULTILINE)
 
 
-def _find_next_action_pos(target_str: str, labels: torch.Tensor, prefix_len: int,
-                          tokenizer, action_weight_map: dict) -> tuple[int, int] | None:
-    """
-    target_str에서 "Next action:\\n" 뒤 스페셜 토큰을 파싱하고,
-    labels에서 해당 토큰의 위치와 token_id를 반환. 실패 시 None.
-    """
-    m = _NEXT_ACTION_RE.search(target_str)
-    if not m:
-        return None
-    tok_str = m.group(1).strip()
-    tids = tokenizer.encode(tok_str, add_special_tokens=False)
-    if not tids:
-        return None
-    tid = tids[-1]
-    if tid not in action_weight_map:
-        return None
-    if prefix_len >= len(labels):
-        return None
-    positions = (labels[prefix_len:] == tid).nonzero(as_tuple=True)[0]
-    if len(positions) == 0:
-        return None
-    # Next action은 target 맨 끝 — 마지막 occurrence 사용
-    pos = prefix_len + positions[-1].item()
-    return pos, tid
-
-
 def _inference_end_idx(tokenizer, prefix_str: str, target_str: str) -> int | None:
     """
-    is_error=True 스텝에서 inference 부분의 마지막 토큰 인덱스(exclusive) 반환.
+    is_fail=True 스텝에서 inference 부분의 마지막 토큰 인덱스(exclusive) 반환.
     target_str에서 '\\n\\nFast critic:' 앞까지를 inference로 간주.
     경계를 찾지 못하면 None 반환 (= 마스킹 없이 전체 loss 유지).
     """
@@ -179,9 +137,9 @@ def mask_inference_for_error(
     target_str: str,
 ) -> None:
     """
-    is_error=True 스텝에서 inference 부분의 loss를 제거한다.
-    - 좋은 inference(is_error=False)는 전체 시퀀스에 loss.
-    - 나쁜 inference(is_error=True)는 inference를 건너뛰고
+    is_fail=True 스텝에서 inference 부분의 loss를 제거한다.
+    - 좋은 inference(is_fail=False)는 전체 시퀀스에 loss.
+    - 나쁜 inference(is_fail=True)는 inference를 건너뛰고
       Fast critic ~ Next action 구간만 loss.
     - Fast critic 마커를 찾지 못하면 마스킹 없이 전체 loss 유지.
     """
@@ -200,10 +158,10 @@ def _strip_step_prefix(text: str) -> str:
 
 
 def _history_text(steps: list[dict], up_to: int) -> list[str]:
-    """steps[:up_to]에서 is_error=False 스텝만 history용 텍스트로 추출."""
+    """steps[:up_to]에서 is_fail=False 스텝만 history용 텍스트로 추출."""
     result = []
     for s in steps[:up_to]:
-        if s.get("is_error", False):
+        if s.get("is_fail", False):
             continue
         text = s.get("does") or (s.get("inference") or "")
         text = _strip_step_prefix(_strip_newlines(text))
@@ -215,7 +173,7 @@ def _error_explanation(steps: list[dict], rethink_idx: int) -> str:
     """rethink 스텝 직전 wrong step에서 오류 설명 추출."""
     for i in range(rethink_idx - 1, -1, -1):
         s = steps[i]
-        if s.get("is_error"):
+        if s.get("is_fail"):
             parts = []
             does = s.get("does")
             if does:
@@ -243,25 +201,72 @@ def build_messages_inference(problem: str, steps: list[dict], k: int,
     return system, user_msg
 
 
+def _extract_inference(step: dict) -> str:
+    """스텝에서 inference 텍스트 추출 (self-correction·step prefix 제거)."""
+    text = step.get("inference_summary") or step.get("inference") or ""
+    sc_idx = text.find("\nSelf-correction:")
+    if sc_idx != -1:
+        text = text[:sc_idx].strip()
+    return _strip_step_prefix(text.strip())
+
+
+_PREV_MARKER      = "\n\n[Previous steps]\n"
+_CUR_MARKER       = "\n\n[Current step]"
+_ONELINER_PREFIX  = "approach: "   # _strip_newlines 처리된 단일 줄 스텝 접두어
+
+def _trim_oldest_history_step(user_msg: str) -> str | None:
+    """[Previous steps] 섹션에서 가장 오래된 스텝 한 항목 제거. 제거할 게 없으면 None.
+
+    - 단일 줄 스텝("approach: ..."): 한 줄씩 제거
+    - 마지막 multiline 스텝(직전 inference 전체): 섹션 통째 제거
+    """
+    prev_start = user_msg.find(_PREV_MARKER)
+    if prev_start == -1:
+        return None
+    steps_start = prev_start + len(_PREV_MARKER)
+    cur_start = user_msg.find(_CUR_MARKER, steps_start)
+    if cur_start == -1:
+        return None
+    steps_section = user_msg[steps_start:cur_start]
+
+    # 단일 줄 스텝이 아니면(= multiline 마지막 스텝만 남음) 섹션 전체 제거
+    if not steps_section.startswith(_ONELINER_PREFIX):
+        return user_msg[:prev_start] + user_msg[cur_start:]
+
+    # 첫 번째 단일 줄 스텝 제거
+    newline_pos = steps_section.find("\n")
+    if newline_pos == -1 or not steps_section[newline_pos + 1:]:
+        return user_msg[:prev_start] + user_msg[cur_start:]
+    return user_msg[:steps_start] + steps_section[newline_pos + 1:] + user_msg[cur_start:]
+
+
 def build_messages_classification(problem: str, steps: list[dict], k: int,
                                    system: str) -> tuple[str, str]:
     """k번째 스텝의 classification model용 (system, user) 메시지 반환.
-    유저 메시지에 현재 스텝의 inference + Does 텍스트를 포함해 평가 요청.
-    inference 모델 출력 형식([math step]\\n\\nDoes: [summary])과 일치시킴.
-    """
-    history = _history_text(steps, k)
-    step = steps[k]
 
-    inference = step.get("inference_summary") or step.get("inference") or ""
-    sc_idx = inference.find("\nSelf-correction:")
-    if sc_idx != -1:
-        inference = inference[:sc_idx].strip()
-    inference = _strip_step_prefix(inference.strip())
+    History 포맷:
+      - 직전 비오류 스텝 (k-1에 해당): inference 전체 그대로
+      - 그 이전 비오류 스텝들: does 요약 (없으면 inference) 한 줄
+    """
+    history_steps = [s for s in steps[:k] if not s.get("is_fail", False)]
+
+    history_texts = []
+    for i, s in enumerate(history_steps):
+        if i == len(history_steps) - 1:
+            # 직전 스텝: inference 그대로
+            history_texts.append(_extract_inference(s))
+        else:
+            # 그 이전 스텝: does 요약
+            text = s.get("does") or (s.get("inference") or "")
+            history_texts.append(_strip_step_prefix(_strip_newlines(text)))
+
+    step = steps[k]
+    inference = _extract_inference(step)
 
     lines = [f"[Problem]\n{problem}"]
-    if history:
+    if history_texts:
         lines.append("\n[Previous steps]")
-        for h in history:
+        for h in history_texts:
             lines.append(h)
     lines.append(f"\n[Current step]\n{inference}")
     lines.append("\nEvaluate this step.")
@@ -307,204 +312,6 @@ def _clean_critique(text: str, max_chars: int = 120) -> str:
     return (cut[:dot + 1] if dot > 30 else cut).rstrip()
 
 
-def compute_action_weights(data_path: str, tokenizer) -> dict | None:
-    """
-    전처리 JSONL의 next action 분포를 자동 계산해 역빈도 가중치 반환.
-    - solve를 기준(1.0)으로 정규화: weight_i = count_solve / count_i
-    - action token이 없는 데이터(inference 모드 등)면 None 반환.
-    """
-    import re
-    pattern = re.compile(r"Next action:\n(.+)$", re.MULTILINE)
-    counts: dict[str, int] = {"solve": 0, "rethink": 0, "end": 0}
-
-    with open(data_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            item = json.loads(line)
-            target = item.get("target", "")
-            m = pattern.search(target)
-            if not m:
-                continue
-            tok = m.group(1).strip()
-            if TOKEN_SOLVE in tok:
-                counts["solve"] += 1
-            elif TOKEN_RETHINK in tok:
-                counts["rethink"] += 1
-            elif TOKEN_END in tok:
-                counts["end"] += 1
-
-    if counts["solve"] == 0:
-        return None  # inference 모드 등 — action token 없음
-
-    _name2str = {"solve": TOKEN_SOLVE, "rethink": TOKEN_RETHINK, "end": TOKEN_END}
-    weight_map: dict[int, float] = {}
-    solve_n = counts["solve"]
-    for name, n in counts.items():
-        if n == 0:
-            continue
-        tids = tokenizer.encode(_name2str[name], add_special_tokens=False)
-        if tids:
-            weight_map[tids[-1]] = solve_n / n  # solve=1 기준 역빈도
-
-    total = sum(counts.values())
-    print(f"\n[action_weights] Next action 역빈도 가중치 (solve=1.0 기준)")
-    print(f"  {'액션':<10} {'count':>7}  {'비율':>6}  {'weight':>8}")
-    print(f"  {'─'*38}")
-    for name in ("solve", "rethink", "end"):
-        n = counts[name]
-        if n == 0:
-            continue
-        tids = tokenizer.encode(_name2str[name], add_special_tokens=False)
-        w = weight_map.get(tids[-1], 0.0) if tids else 0.0
-        print(f"  {name:<10} {n:>7d}  {n/max(total,1):>5.1%}  {w:>8.3f}")
-    print(f"  {'─'*38}\n")
-
-    return weight_map
-
-
-_FAIL_RUBRICS_RE = _re.compile(r"\n\nFail rubrics:\n(.*?)$", _re.DOTALL)
-
-
-def compute_rubric_weights(data_path: str, tokenizer, max_weight: float = 10.0) -> dict | None:
-    """
-    전처리 JSONL의 fail rubric 토큰 분포를 계산해 역빈도 가중치 반환.
-    - <|none|>을 제외한 가장 많이 등장한 루브릭을 기준(1.0)으로 정규화.
-    - <|none|>은 count_max_rubric / count_none 으로 down-weight (<1.0).
-    - 실제 루브릭은 count_max_rubric / count_i (≥1.0), max_weight로 상한 클리핑.
-    - multi-label: 한 샘플에 여러 루브릭이 있으면 각각 카운트.
-    """
-    counts: dict[str, int] = {}   # rubric_token_str → count
-    _valid_tokens = set(SPECIAL_TOKENS)  # 유효한 special token만 카운트 (오염 항목 제외)
-    _action_set   = set(ACTION_TOKENS)   # solve/rethink/end — action 분류 태스크, rubric 가중치 제외
-
-    with open(data_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            item = json.loads(line)
-            target = item.get("target", "")
-            m = _FAIL_RUBRICS_RE.search(target)
-            if not m:
-                continue
-            section = m.group(1).strip()
-            for tok in section.split("\n"):
-                tok = tok.strip()
-                if tok and tok in _valid_tokens and tok not in _action_set:
-                    counts[tok] = counts.get(tok, 0) + 1
-
-    if not counts:
-        return None
-
-    # <|none|>을 제외한 실제 루브릭 카운트로 기준값 계산
-    rubric_counts = {k: v for k, v in counts.items() if k != TOKEN_NONE}
-    none_count = counts.get(TOKEN_NONE, 0)
-
-    if not rubric_counts:
-        return None  # 실제 루브릭 없음 — 가중치 미적용
-
-    count_max = max(rubric_counts.values())
-    weight_map: dict[int, float] = {}
-
-    # 실제 루브릭: 역빈도 원시값 계산
-    raw_weights = {tok_str: count_max / n for tok_str, n in rubric_counts.items()}
-
-    # max_weight 초과 시 전체를 비율 유지하며 스케일다운
-    actual_max = max(raw_weights.values())
-    scale = min(1.0, max_weight / actual_max)
-
-    for tok_str, raw_w in raw_weights.items():
-        tids = tokenizer.encode(tok_str, add_special_tokens=False)
-        if tids:
-            weight_map[tids[-1]] = raw_w * scale
-
-    # <|none|>: 실제 루브릭과 같은 scale 적용
-    if none_count:
-        tids = tokenizer.encode(TOKEN_NONE, add_special_tokens=False)
-        if tids:
-            weight_map[tids[-1]] = (count_max / none_count) * scale
-
-    total = sum(counts.values())
-    print(f"\n[rubric_focal] Fail rubrics 토큰 분포 (focal loss × class weight 적용)")
-    print(f"  {'루브릭 토큰':<45} {'count':>7}  {'비율':>6}  {'weight':>8}")
-    print(f"  {'─'*70}")
-    for tok_str, n in sorted(counts.items(), key=lambda x: -x[1]):
-        tids = tokenizer.encode(tok_str, add_special_tokens=False)
-        w = weight_map.get(tids[-1], 0.0) if tids else 0.0
-        print(f"  {tok_str:<45} {n:>7d}  {n/max(total,1):>5.1%}  {w:>8.4f}")
-    print(f"  {'─'*70}\n")
-
-    return weight_map
-
-
-def _find_action_pos(
-    target_str: str, labels: torch.Tensor, prefix_len: int, tokenizer
-) -> int | None:
-    """Return the token position of the next action token (used as upper bound for rubric search)."""
-    m = _NEXT_ACTION_RE.search(target_str)
-    if not m:
-        return None
-    tok_str = m.group(1).strip()
-    tids = tokenizer.encode(tok_str, add_special_tokens=False)
-    if not tids:
-        return None
-    tid = tids[-1]
-    if prefix_len >= len(labels):
-        return None
-    positions = (labels[prefix_len:] == tid).nonzero(as_tuple=True)[0]
-    if len(positions) == 0:
-        return None
-    return prefix_len + positions[-1].item()
-
-
-def _find_rubric_positions(
-    target_str: str,
-    labels: torch.Tensor,
-    prefix_len: int,
-    tokenizer,
-    rubric_weight_map: dict,
-    max_pos: int | None = None,
-) -> list[tuple[int, int, float]] | None:
-    """
-    target_str의 Fail rubrics 섹션에서 루브릭 특수 토큰 위치와 가중치를 반환.
-    max_pos: 탐색 상한 (exclusive) — "Next action:" 이전으로 제한해 action 토큰과의 위치 충돌 방지.
-    반환:
-      None  — 섹션 자체가 없거나 루브릭 토큰이 labels에서 발견되지 않은 파싱 실패
-      [...]  — 발견된 (pos, token_id, weight) 리스트 (<|none|> 포함)
-    """
-    m = _FAIL_RUBRICS_RE.search(target_str)
-    if not m:
-        return None
-    section = m.group(1).strip()
-
-    if not section:
-        return []   # fail rubrics 없음 — focal 적용 위치 없음 (정상)
-
-    results = []
-    end = max_pos if max_pos is not None else len(labels)
-    for tok_str in section.split("\n"):
-        tok_str = tok_str.strip()
-        if not tok_str:
-            continue
-        tids = tokenizer.encode(tok_str, add_special_tokens=False)
-        if not tids:
-            return None
-        tid = tids[-1]
-        if tid not in rubric_weight_map:
-            continue  # action 토큰 등 rubric 태스크 외 토큰 → focal 미적용, 파싱 실패 아님
-        if prefix_len >= end:
-            return None
-        positions = (labels[prefix_len:end] == tid).nonzero(as_tuple=True)[0]
-        if len(positions) == 0:
-            return None
-        pos = prefix_len + positions[-1].item()
-        results.append((pos, tid, rubric_weight_map[tid]))
-
-    return results
-
-
 _CLS_MARKERS = ("\nDeep critic:", "Deep critic:", "\nDeep critique:", "Deep critique:",
                 "\nFast critic:", "Fast critic:", "\nFail rubrics:", "\nNext action:")
 
@@ -523,24 +330,57 @@ def build_target_inference(step: dict) -> str:
 
 _NA_PREFIX   = _re.compile(r"^N/A\s*[—–\-]+\s*", _re.I)
 _FAIL_PREFIX = _re.compile(r"^FAIL\s*[:\-]+\s*", _re.I)
+# critique 원문 안에 이미 포함된 trailing "Verdict: correct/incorrect" 제거
+# (\*{0,2}...\*{0,2} 는 **Verdict: ...** 마크다운 bold 포함)
+_TRAILING_VERDICT = _re.compile(
+    r'(?:\s*\*{0,2}Verdict:\s*(?:correct|incorrect)\*{0,2})+\s*$', _re.I)
 
 
 def _clean_deep_critique(text: str) -> str:
-    """Deep critic 텍스트에서 'N/A — ' 및 'FAIL: / FAIL - ' 접두어 제거."""
+    """Deep critic 텍스트 정규화.
+    - 'N/A — ' / 'FAIL: ' 접두어 제거
+    - 줄바꿈 → 공백 (인라인 텍스트로 변환)
+    - 이미 포함된 trailing 'Verdict: correct/incorrect' 제거
+      (build_target_classification이 authoritative verdict를 다시 붙이므로)
+    """
     text = _strip_newlines(text.strip())
     text = _NA_PREFIX.sub("", text)
     text = _FAIL_PREFIX.sub("", text)
+    text = _TRAILING_VERDICT.sub("", text)
     return text.strip()
+
+
+def _get_incorrect_rubrics(step: dict) -> list[str]:
+    """Deep critic 결과에서 incorrect 판정을 받은 루브릭 이름 목록 반환."""
+    def _v(raw): return "incorrect" if (raw or "").lower() in ("incorrect", "fail") else "correct"
+    dc_list = step.get("prm_deep_critique") or []
+    fc_dict = step.get("prm_fast_critique") or {}
+    rubric_iter = [d.get("rubric", "") for d in dc_list] if dc_list else list(fc_dict.keys())
+    result = []
+    for rubric in rubric_iter:
+        if not rubric:
+            continue
+        dc_entry = next((d for d in dc_list if d.get("rubric") == rubric), {})
+        if dc_entry.get("verdict") is not None:
+            raw = dc_entry.get("verdict") or ""
+        else:
+            raw = (fc_dict.get(rubric) or {}).get("verdict", "correct")
+        if _v(raw) == "incorrect":
+            result.append(rubric)
+    return result
 
 
 def build_target_classification(step: dict, rubric_tokens: dict | None = None,
                                 include_rubrics: bool = True,
-                                include_actions: bool = True) -> str:
+                                include_actions: bool = True,
+                                use_summary: bool = False) -> str:
     """Classification model target: Deep critic (전체 루브릭) + Fail rubrics + Next action
 
     루브릭별 우선순위:
       1. prm_deep_critique verdict != null  → deep critique 텍스트 사용
       2. prm_deep_critique verdict == null  → fast critic에서 correct 받은 것, prm_fast_critique 텍스트로 대체
+
+    use_summary=True: critique 원문 대신 prm_critique_summary dict의 짧은 요약 사용
     """
     parts = []
 
@@ -550,6 +390,7 @@ def build_target_classification(step: dict, rubric_tokens: dict | None = None,
 
     dc_list = step.get("prm_deep_critique") or []
     fc_dict = step.get("prm_fast_critique") or {}
+    critique_summary_map = (step.get("prm_critique_summary") or {}) if use_summary else {}
 
     incorrect_rubrics: list[str] = []
     parts.append("Deep critic:")
@@ -576,6 +417,9 @@ def build_target_classification(step: dict, rubric_tokens: dict | None = None,
                 raw      = fc.get("verdict", "correct")
                 critique = fc.get("critique") or ""
 
+            if use_summary:
+                critique = critique_summary_map.get(rubric) or ""
+
             verdict = _verdict(raw)
             if verdict == "incorrect":
                 incorrect_rubrics.append(rubric)
@@ -589,13 +433,6 @@ def build_target_classification(step: dict, rubric_tokens: dict | None = None,
             line = (f"  {rubric}: {critique_clean} Verdict: {verdict}"
                     if critique_clean else f"  {rubric}: Verdict: {verdict}")
             parts.append(f"\n{line}")
-
-    # fail rubrics — incorrect 루브릭을 special token으로 출력
-    if include_rubrics:
-        _rubric_tokens = rubric_tokens or {}
-        fail_tokens = [_rubric_tokens[r] for r in incorrect_rubrics if r in _rubric_tokens]
-        none_tok = _rubric_tokens.get("None", "<|none|>")
-        parts.append("\n\nFail rubrics:\n" + ("\n".join(fail_tokens) if fail_tokens else none_tok))
 
     # next action — include_actions=True일 때만 포함
     if include_actions:
@@ -683,7 +520,7 @@ def build_target(step: dict, rubric_tokens: dict | None = None) -> str:
 #       {
 #         "step_idx": int, "step": str,
 #         "inference": str, "source": str,
-#         "is_error": bool, "state": str,
+#         "is_fail": bool, "state": str,
 #         "next_gold_action": str,
 #         "does": str,
 #         "PRM_critique_summary": [...],
@@ -700,7 +537,7 @@ class TrajDataset(Dataset):
       input  (loss 제외): build_messages(problem, steps, k)
       target (loss 계산): build_target(steps[k])
 
-    기본적으로 모든 스텝을 학습하되, skip_error=True면 is_error=True 스텝 제외.
+    기본적으로 모든 스텝을 학습하되, skip_error=True면 is_fail=True 스텝 제외.
     """
 
     def __init__(
@@ -734,9 +571,9 @@ class TrajDataset(Dataset):
         skipped = 0
 
         for k, step in enumerate(steps):
-            is_error = step.get("is_error", False)
+            is_fail = step.get("is_fail", False)
 
-            if skip_error and is_error:
+            if skip_error and is_fail:
                 continue
 
             system_str, user_str = build_messages(problem, steps, k,
@@ -760,7 +597,7 @@ class TrajDataset(Dataset):
             labels    = torch.full_like(input_ids, -100)
             labels[prefix_len:] = input_ids[prefix_len:]
 
-            if is_error:
+            if is_fail:
                 mask_inference_for_error(labels, prefix_len, tokenizer, prefix_str, assistant_str)
 
             self.samples.append((input_ids, labels))
@@ -830,7 +667,7 @@ class PreprocessedDataset(Dataset):
     preprocess_sft.py 출력 JSONL로부터 SFT 학습 샘플 생성.
 
     각 줄의 input(system+user 메시지 리스트)과 target을 토크나이징해 학습 샘플 구성.
-    is_error=True 샘플은 skip_error=True 시 제외.
+    is_fail=True 샘플은 skip_error=True 시 제외.
     traj_id 필드가 있으면 TrajectoryOrderedSampler 사용 가능.
     """
 
@@ -840,11 +677,9 @@ class PreprocessedDataset(Dataset):
         tokenizer,
         max_length: int = 3072,
         skip_error: bool = False,
-        action_weight_map: dict | None = None,
-        rubric_weight_map: dict | None = None,
     ):
         self.samples  = []
-        self.traj_ids = []   # traj_id per sample (None if not in data)
+        self.traj_ids = []
 
         raw = [json.loads(l) for l in open(data_path, encoding="utf-8") if l.strip()]
         rank = int(os.environ.get("RANK", 0))
@@ -852,16 +687,14 @@ class PreprocessedDataset(Dataset):
             print(f"[PreprocessedDataset] {len(raw)}개 샘플 로드, 토크나이징 중...")
 
         skipped = 0
-        action_parse_skipped = 0
-        rubric_parse_skipped = 0
         for item in tqdm(raw, desc="Tokenizing", disable=(rank != 0)):
-            is_error = item.get("is_error", False)
+            is_fail = item.get("is_fail", False)
 
-            if skip_error and is_error:
+            if skip_error and is_fail:
                 skipped += 1
                 continue
 
-            msgs       = item["input"]  # [{"role": "system", ...}, {"role": "user", ...}]
+            msgs       = item["input"]
             target_str = item["target"]
 
             full_msgs  = msgs + [{"role": "assistant", "content": target_str}]
@@ -872,8 +705,23 @@ class PreprocessedDataset(Dataset):
             prefix_len = len(tokenizer.encode(prefix_str, add_special_tokens=False))
 
             if len(full_ids) > max_length:
-                skipped += 1
-                continue
+                user_content = msgs[1]["content"]
+                while len(full_ids) > max_length:
+                    trimmed = _trim_oldest_history_step(user_content)
+                    if trimmed is None:
+                        break
+                    user_content = trimmed
+                    trimmed_msgs  = [msgs[0], {"role": "user", "content": user_content}]
+                    full_str      = tokenizer.apply_chat_template(
+                        trimmed_msgs + [{"role": "assistant", "content": target_str}],
+                        tokenize=False, add_generation_prompt=False)
+                    prefix_str    = tokenizer.apply_chat_template(
+                        trimmed_msgs, tokenize=False, add_generation_prompt=True)
+                    full_ids   = tokenizer.encode(full_str,   add_special_tokens=False)
+                    prefix_len = len(tokenizer.encode(prefix_str, add_special_tokens=False))
+                if len(full_ids) > max_length:
+                    skipped += 1
+                    continue
 
             full_ids = full_ids[:max_length]
 
@@ -881,56 +729,14 @@ class PreprocessedDataset(Dataset):
             labels    = torch.full_like(input_ids, -100)
             labels[prefix_len:] = input_ids[prefix_len:]
 
-            if is_error:
+            if is_fail:
                 mask_inference_for_error(labels, prefix_len, tokenizer, prefix_str, target_str)
 
-            # 역빈도 가중치: action(별도 텐서) + rubric(별도 텐서) 독립 처리
-            token_weights  = None   # rubric focal 전용
-            action_weights = None   # action weight 전용
-            if action_weight_map or rubric_weight_map:
-                rubric_tw = torch.ones(len(full_ids), dtype=torch.float32)
-                action_tw = torch.ones(len(full_ids), dtype=torch.float32)
-
-                # action 토큰 위치를 먼저 확정 — rubric 탐색 상한으로 사용
-                na_pos = None
-                if action_weight_map:
-                    result = _find_next_action_pos(target_str, labels, prefix_len,
-                                                   tokenizer, action_weight_map)
-                    if result is None:
-                        action_parse_skipped += 1
-                    else:
-                        pos, tid = result
-                        action_tw[pos] = -action_weight_map[tid]   # action 전용 텐서에 기록
-                        na_pos = pos
-                elif rubric_weight_map:
-                    # action_weight_map 없어도 rubric 탐색 상한을 위해 action 위치 확인
-                    na_pos = _find_action_pos(target_str, labels, prefix_len, tokenizer)
-
-                if rubric_weight_map:
-                    # max_pos=na_pos: "Next action:" 이전 범위만 탐색 → action 토큰과 위치 충돌 방지
-                    rubric_result = _find_rubric_positions(target_str, labels, prefix_len,
-                                                           tokenizer, rubric_weight_map,
-                                                           max_pos=na_pos)
-                    if rubric_result is None:
-                        rubric_parse_skipped += 1
-                    else:
-                        for pos, tid, weight in rubric_result:
-                            rubric_tw[pos] = -weight   # rubric 전용 텐서에 기록
-
-                if not rubric_tw.eq(1.0).all():
-                    token_weights = rubric_tw
-                if not action_tw.eq(1.0).all():
-                    action_weights = action_tw
-
-            self.samples.append((input_ids, labels, token_weights, action_weights))
-            self.traj_ids.append(item.get("traj_id"))   # None if old-format data
+            self.samples.append((input_ids, labels))
+            self.traj_ids.append(item.get("traj_id"))
 
         if rank == 0:
             print(f"[PreprocessedDataset] 학습 샘플: {len(self.samples)}  (제외: {skipped}, max_length={max_length} 초과 포함)")
-            if action_weight_map:
-                print(f"[PreprocessedDataset] Next action 가중치 미적용 (잘림): {action_parse_skipped}개")
-            if rubric_weight_map:
-                print(f"[PreprocessedDataset] Fail rubrics 가중치 미적용 (잘림): {rubric_parse_skipped}개")
 
     @property
     def has_traj_ids(self) -> bool:
@@ -951,7 +757,7 @@ class PreprocessedDataset(Dataset):
 
 
 def _build_samples(data_path: str):
-    """데이터 파일을 읽어 (idx, msgs, target_str, state, is_error, rubric_tokens) 리스트 반환."""
+    """데이터 파일을 읽어 (idx, msgs, inference, target_str, state, is_fail) 리스트 반환."""
     raw = [json.loads(l) for l in open(data_path, encoding="utf-8") if l.strip()]
     first = raw[0] if raw else {}
     is_preprocessed = "input" in first and "target" in first
@@ -959,8 +765,8 @@ def _build_samples(data_path: str):
     if is_preprocessed:
         result = []
         for i, item in enumerate(raw):
-            result.append((i, item["input"], item["target"],
-                           item.get("state"), item.get("is_error"), {}))
+            result.append((i, item["input"], item.get("inference", ""),
+                           item["target"], item.get("state"), item.get("is_fail")))
         return result
     else:
         from preprocess import get_system_prompts, RUBRIC_TOKENS
@@ -975,18 +781,34 @@ def _build_samples(data_path: str):
                 target_str = build_target(step, RUBRIC_TOKENS)
                 msgs = [{"role": "system", "content": system_str},
                         {"role": "user",   "content": user_str}]
-                result.append((idx, msgs, target_str,
-                               step.get("state"), step.get("is_error"), RUBRIC_TOKENS))
+                result.append((idx, msgs, step.get("inference", ""),
+                               target_str, step.get("state"), step.get("is_fail")))
                 idx += 1
         return result
 
 
-def _print_sample(tokenizer, idx, msgs, target_str, state, is_error):
+def _generate_critique(model, tokenizer, msgs: list) -> str:
+    """model에 msgs를 입력해 critique를 생성하고 반환."""
+    import torch
+    input_str = tokenizer.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
+    input_ids = tokenizer.encode(input_str, add_special_tokens=False, return_tensors="pt")
+    input_ids = input_ids.to(next(model.parameters()).device)
+    with torch.no_grad():
+        output_ids = model.generate(
+            input_ids,
+            max_new_tokens=1500,
+            do_sample=False,
+            pad_token_id=tokenizer.pad_token_id,
+        )
+    return tokenizer.decode(output_ids[0][input_ids.shape[1]:], skip_special_tokens=True)
+
+
+def _print_sample(tokenizer, idx, msgs, inference_str, target_str, state, is_fail, model=None):
     sep = "─" * 72
 
-    # raw 내용 먼저 출력 (tokenizer 없이도 보임)
     print(f"\n{'='*72}")
-    print(f"[샘플 {idx}  state={state}  is_error={is_error}]")
+    print(f"[샘플 {idx}  state={state}  is_fail={is_fail}]")
+
     print(f"\n[INPUT]\n{sep}")
     if isinstance(msgs, list):
         for msg in msgs:
@@ -996,10 +818,15 @@ def _print_sample(tokenizer, idx, msgs, target_str, state, is_error):
             print(content)
     else:
         print(msgs)
+
+    if model is not None and tokenizer is not None:
+        print(f"\n[GENERATION]\n{sep}")
+        generated = _generate_critique(model, tokenizer, msgs)
+        print(generated)
+
     print(f"\n[TARGET]\n{sep}")
     print(target_str)
 
-    # 토큰 수는 토크나이저 있을 때만 계산
     if tokenizer is not None:
         try:
             full_msgs  = (msgs if isinstance(msgs, list) else [{"role": "user", "content": msgs}]) \
@@ -1016,25 +843,40 @@ def _print_sample(tokenizer, idx, msgs, target_str, state, is_error):
             print(f"\n[토큰 수 계산 실패: {e}]")
 
 
-def debug(data_path: str, tokenizer, n: int | None = None):
+def debug(data_path: str, tokenizer, n: int | None = None,
+          model_path: str | None = None, cache_dir: str | None = None):
     """
-    n=None : is_error=False 샘플 하나 자동 출력
+    n=None : is_fail=False 샘플 하나 자동 출력
     n=int  : n번째 샘플 출력
+    model_path가 주어지면 모델을 로드해 [GENERATION] 섹션에 실제 inference 출력.
     """
     samples = _build_samples(data_path)
+
+    model = None
+    if model_path is not None and tokenizer is not None:
+        import torch
+        from transformers import AutoModelForCausalLM
+        print(f"[debug] 모델 로드 중: {model_path}")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path, cache_dir=cache_dir,
+            dtype=torch.bfloat16, trust_remote_code=True,
+            device_map="auto", attn_implementation="sdpa",
+        )
+        model.eval()
+        print("[debug] 모델 로드 완료")
 
     if n is not None:
         if n >= len(samples):
             print(f"[debug] 인덱스 {n}이 범위를 초과했습니다. (총 {len(samples)}개)")
             return
-        idx, msgs, target_str, state, is_error, _ = samples[n]
-        _print_sample(tokenizer, idx, msgs, target_str, state, is_error)
+        idx, msgs, inference_str, target_str, state, is_fail = samples[n]
+        _print_sample(tokenizer, idx, msgs, inference_str, target_str, state, is_fail, model=model)
         return
 
-    # 자동 모드: is_error=False 첫 번째 샘플 출력
-    for idx, msgs, target_str, state, is_error, _ in samples:
-        if not is_error:
-            _print_sample(tokenizer, idx, msgs, target_str, state, is_error)
+    # 자동 모드: is_fail=False 첫 번째 샘플 출력
+    for idx, msgs, inference_str, target_str, state, is_fail in samples:
+        if not is_fail:
+            _print_sample(tokenizer, idx, msgs, inference_str, target_str, state, is_fail, model=model)
             return
 
 

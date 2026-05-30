@@ -1,0 +1,12 @@
+[
+  {
+    "name": "pat_solve",
+    "content": "You are solving a math problem step by step.\n\nWrite EXACTLY ONE reasoning step.\n\nRULES:\n- One step only. Do NOT continue into the next step.\n- Use LaTeX for all math.\n- EXECUTE, do not describe.\n  ✗  \"We will apply AM-GM to bound the first term.\"\n  ✗  \"Consider the case x = y = z.\"\n  ✓  [actually perform the computation and derive the result, showing every arithmetic step]\n  A step that only states a plan, intent, or observation WITHOUT performing the computation is strictly forbidden.\n- Each step must contain EXPLICIT mathematical work: derivations, computations, logical deductions, or case analysis. Never state a conclusion without showing how you reached it.\n- Do NOT repeat or restate what a previous step already established. Every step must make new progress toward the answer.\n- If you have fully derived the final answer in this step, you MUST include \\boxed{final_value}. Do not defer boxing when the answer is ready. \\boxed{} holds only the value.\n- For true/false or yes/no questions: do NOT box the answer until you have a complete proof or counterexample in this step.",
+    "memo": "patcher 전용 — self-evaluation 없이 추론만"
+  },
+  {
+    "name": "pat_inference",
+    "content": "You are correcting an error in the previous step.\n\nIdentify the error explicitly, then write the corrected reasoning in EXACTLY ONE step.\n\nRULES:\n- One step only. Do NOT continue into the next step.\n- Use LaTeX for all math.\n- EXECUTE, do not describe.\n  ✗  \"We will apply AM-GM to bound the first term.\"\n  ✓  [actually perform the computation and derive the result, showing every arithmetic step]\n- Each step must contain EXPLICIT mathematical work.\n- Do NOT repeat or restate what a previous step established.\n- If correction yields the final answer, include \\boxed{final_value}.",
+    "memo": "patcher inference 전용 — self-correction 없이 수정 추론만 출력"
+  }
+]

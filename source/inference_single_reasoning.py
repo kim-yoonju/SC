@@ -22,6 +22,7 @@ from datetime import datetime
 from pathlib import Path
 
 os.environ["HF_HUB_CACHE"] = "/mnt/.cache/huggingface"
+os.environ["TORCHDYNAMO_DISABLE"] = "1"
 
 from tqdm import tqdm
 
@@ -39,7 +40,6 @@ from utils import (
 from generate_utils import load_dataset_file
 
 GPUS = CONF["inference"].get("gpus", [0])  # config의 inference.gpus 사용 (여기서 직접 지정 시 override)
-N_SAMPLES = -1     # -1이면 전체 데이터셋 사용, 양수이면 해당 개수만 추출
 MODEL = None # None이면 config의 checkpoint.base 사용, 직접 지정 시 해당 경로 사용
 VLLM_MAX_MODEL_LEN = CONF["vllm"]["max_model_len"]
 API_MAX_WORKERS = 64  # API 병렬 요청 수
@@ -70,7 +70,7 @@ def load_done_ids(out_path: Path) -> set:
     return done
 
 
-def evaluate(dataset_path: str, llm, tokenizer, cfg: dict, system_prompt: str, out_file=None, done_ids: set = None, batch_size: int = None) -> dict:
+def evaluate(dataset_path: str, llm, tokenizer, cfg: dict, system_prompt: str, out_file=None, done_ids: set = None, batch_size: int = None, num_start: int = None, num_end: int = None) -> dict:
     from vllm import SamplingParams
 
     inf_cfg = cfg["inference"]
@@ -79,8 +79,9 @@ def evaluate(dataset_path: str, llm, tokenizer, cfg: dict, system_prompt: str, o
         batch_size = inf_cfg.get("batch_per_gpu", 32) * len(GPUS)
 
     all_items = load_dataset_file(dataset_path)
-    if N_SAMPLES != -1:
-        all_items = all_items[:N_SAMPLES]
+    num_start = num_start if num_start is not None else inf_cfg.get("num_start", 0)
+    num_end   = num_end   if num_end   is not None else inf_cfg.get("num_end")
+    all_items = all_items[num_start:num_end]
     is_gsm8k = "gsm8k" in Path(dataset_path).name.lower()
 
     if done_ids:
@@ -126,15 +127,16 @@ def evaluate(dataset_path: str, llm, tokenizer, cfg: dict, system_prompt: str, o
     }
 
 
-def evaluate_api(dataset_path: str, model_name: str, cfg: dict, system_prompt: str, out_file=None, done_ids: set = None) -> dict:
+def evaluate_api(dataset_path: str, model_name: str, cfg: dict, system_prompt: str, out_file=None, done_ids: set = None, num_start: int = None, num_end: int = None) -> dict:
     inf_cfg = cfg["inference"]
     max_new_tokens = inf_cfg["max_new_tokens"]
     if model_name.lower() in ("o3-mini",) or model_name.lower().startswith("claude-"):
         max_new_tokens = 8192
 
     all_items = load_dataset_file(dataset_path)
-    if N_SAMPLES != -1:
-        all_items = all_items[:N_SAMPLES]
+    num_start = num_start if num_start is not None else inf_cfg.get("num_start", 0)
+    num_end   = num_end   if num_end   is not None else inf_cfg.get("num_end")
+    all_items = all_items[num_start:num_end]
     is_gsm8k = "gsm8k" in Path(dataset_path).name.lower()
 
     if done_ids:
@@ -200,6 +202,8 @@ def parse_args():
     p.add_argument("--dataset", default=None, help="단일 데이터셋 경로 (config 값 override)")
     p.add_argument("--resume", default=None, help="이어서 실행할 이전 출력 폴더 경로 (예: output/evaluate_single_reasoning/20260419_073753)")
     p.add_argument("--gpus", default=None, help="사용할 GPU 번호 (예: 0,1 또는 2,3), config 값 override")
+    p.add_argument("--num_start", type=int, default=None, help="시작 인덱스 (config 값 override)")
+    p.add_argument("--num_end",   type=int, default=None, help="종료 인덱스 exclusive (config 값 override)")
     return p.parse_args()
 
 
@@ -253,7 +257,7 @@ def main():
             model=model_path,
             dtype="bfloat16",
             tensor_parallel_size=len(GPUS),
-            gpu_memory_utilization=0.90,
+            gpu_memory_utilization=0.40,
             max_model_len=None,
             trust_remote_code=True,
             enforce_eager=True,
@@ -296,9 +300,9 @@ def main():
         write_mode = "a" if done_ids else "w"
         with open(out_path, write_mode, encoding="utf-8") as out_file:
             if use_api:
-                result = evaluate_api(dataset_path, model_path, cfg, system_prompt, out_file, done_ids)
+                result = evaluate_api(dataset_path, model_path, cfg, system_prompt, out_file, done_ids, args.num_start, args.num_end)
             else:
-                result = evaluate(dataset_path, llm, tokenizer, cfg, system_prompt, out_file, done_ids, batch_size)
+                result = evaluate(dataset_path, llm, tokenizer, cfg, system_prompt, out_file, done_ids, batch_size, args.num_start, args.num_end)
         print_result(result)
         all_results.append(result)
 

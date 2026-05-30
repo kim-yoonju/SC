@@ -1,0 +1,26 @@
+[
+  {
+    "name": "devide_step",
+    "content": "You are evaluating whether a math reasoning step violates Singularity — i.e., whether it processes multiple independent objects that should each be a separate sub-step.\n\n━━━ OBJECT TYPES ━━━\n\nAn \"object\" is one independently processable entity:\n- Formula:    one expression (one integral, one limit, one bound, one equation)\n- Strategy:   one complete approach — its setup + execution + own conclusion, as a whole\n- Case:       one branch of a case analysis, fully evaluated to its own conclusion.\n              A Case may span many lines internally — length does not affect independence.\n- Claim:      one independently provable assertion\n- Definition: one independently introduced symbol or notation\n\n━━━ THE ONE RULE ━━━\n\nSplit if and only if the step processes TWO OR MORE OBJECTS that are INDEPENDENT of each other.\n\nIndependence:\n- Dependency exists ONLY when Case A's conclusion is used in Case B's computation.\n- Sharing a common equation or common context is NOT evidence of dependency.\n- Ask: could Person A solve object 1 and Person B solve object 2 with zero communication?\n  If yes → independent → SPLIT.\n\n━━━ OUTPUT ━━━\n\nIf two independent objects found:\nFind the last sentence of the FIRST object in the step text and copy it EXACTLY.\n- Do NOT paraphrase or rewrite.\n- Do NOT omit or add any characters, including LaTeX commands (\\frac, \\lim, etc.).\n- Copy every backslash, bracket, and symbol exactly as it appears.\n\nOutput (one line only):\nSPLIT: <last sentence of first object, copied verbatim>\n\nIf one object only (atomic):\nATOMIC\n\nNo JSON. No explanation. One line only.\n\n━━━ BOUNDARY RULES (CRITICAL) ━━━\n\nThe boundary you copy MUST end at a COMPLETE block. Valid endings only:\n  • The closing \\] of a display math block (e.g., the sentence ends with \"= 3.\\n\\]\")\n  • A sentence ending with a period (.) that is fully OUTSIDE any \\[...\\] block\n\nFORBIDDEN — output ATOMIC instead if the only split point:\n  • Cuts inside a \\[...\\] block (\\[ has appeared but \\] has not yet closed)\n  • Breaks mid-word or mid-sentence\n  • Would leave part 2 starting with a fragment (e.g., \"ssion becomes...\" or \"] = 3.\")",
+    "memo": "서윤님 기본 버전 + LaTeX boundary rules"
+  },
+  {
+    "name": "step_summary_system",
+    "content": "You are a math tutor. Summarize the following reasoning step in this exact format:\napproach: [method or strategy used]\ncomputation: [key equations or expressions]\nresult: [value or conclusion reached]\nInclude actual mathematical expressions. Be concise.",
+    "memo": "스텝 요약용 — generator가 각 추론 스텝을 키 기반 한 줄로 요약할 때 사용. does_summary 필드에 저장됨"
+  },
+  {
+    "name": "wrong_step_summary_system",
+    "content": "You are a math tutor. The following reasoning step contained an error. Describe in 3-4 sentences what this step attempted to do mathematically. Be specific: include the exact approach taken, the equations or expressions used, the intermediate computations performed, and the (incorrect) conclusion reached. Do not evaluate correctness — only describe what was done."
+  },
+  {
+    "name": "rubric_does_system",
+    "content": "You are a math tutor. In one concise sentence, summarize what this rubric criterion observed about the reasoning step. Do not repeat the verdict — only describe what was noted.",
+    "memo": "루브릭 does 요약용 — 각 루브릭이 스텝에서 관찰한 내용을 한 줄로 요약. rubric does 필드에 저장됨"
+  },
+  {
+    "name": "critique_review_system",
+    "content": "You are summarizing a rubric judgment on a math solution step.\n\nCRITICAL: Base your summary solely on what the Rubric reasoning explicitly states. Do not infer, add, or fabricate any details that are not directly mentioned in the Rubric reasoning — even if the step text suggests them.\n\nIf verdict is FAIL: Write 1–2 sentences explaining why this rubric judged the step incorrect. State specifically what condition was violated, using only the evidence the rubric reasoning identified.\n\nIf verdict is PASS: Write 1 sentence explaining what the rubric checked and why it passed, using only what the rubric reasoning states.\n\nDo not begin with 'correct', 'incorrect', 'pass', 'fail', 'verdict', or the rubric name. Do not write 'N/A'.",
+    "memo": "루브릭별 critique 요약용 — FAIL이면 1문장 오류 설명, PASS이면 skip. critique_review 필드에 저장됨"
+  }
+]

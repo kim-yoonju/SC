@@ -89,6 +89,7 @@ def load_stats(path: str) -> list[dict]:
                 "n_total":            n_total,
                 "category":           category,
                 "is_right":           is_right,
+                "fail_reason":        fail,
                 "state_counts":       dict(state_counts),
                 "n_gen_solve":        n_gen_solve,
                 "n_gen_rethink":      n_gen_rethink,
@@ -158,6 +159,51 @@ def _cat_pie(ax, group: list[dict], title: str):
               loc="lower center", bbox_to_anchor=(0.5, -0.18), fontsize=8, ncol=2)
 
 
+FAIL_REASON_ORDER  = ["gen_wrong_answer", "patcher_wrong_answer", "patcher_fail", "max_steps", None]
+FAIL_REASON_COLORS = {
+    "gen_wrong_answer":     "#E53935",
+    "patcher_wrong_answer": "#FF7043",
+    "patcher_fail":         "#F44336",
+    "max_steps":            "#9C27B0",
+    None:                   "#78909C",
+}
+FAIL_REASON_LABELS = {
+    "gen_wrong_answer":     "gen_wrong_answer",
+    "patcher_wrong_answer": "patcher_wrong_answer",
+    "patcher_fail":         "patcher_fail",
+    "max_steps":            "max_steps",
+    None:                   "no fail_reason",
+}
+
+
+def _fail_reason_pie(ax, group: list[dict], title: str):
+    counter = Counter(s.get("fail_reason") for s in group)
+    ordered = [(r, counter[r]) for r in FAIL_REASON_ORDER if counter.get(r, 0) > 0]
+    for r, cnt in counter.items():
+        if r not in FAIL_REASON_ORDER and cnt > 0:
+            ordered.append((r, cnt))
+
+    n = len(group)
+    ax.set_title(f"{title}  (n={n})", fontsize=12, fontweight="bold")
+    if not ordered:
+        ax.text(0.5, 0.5, "no data", ha="center", va="center", transform=ax.transAxes)
+        return
+
+    labels = [r for r, _ in ordered]
+    sizes  = [v for _, v in ordered]
+    colors = [FAIL_REASON_COLORS.get(l, "#9E9E9E") for l in labels]
+    disp   = [FAIL_REASON_LABELS.get(l, str(l)) for l in labels]
+
+    wedges, _, autotexts = ax.pie(
+        sizes, labels=None, autopct="%1.1f%%",
+        colors=colors, startangle=140, pctdistance=0.75,
+    )
+    for at in autotexts:
+        at.set_fontsize(8)
+    ax.legend(wedges, [f"{d}  ({v})" for d, v in zip(disp, sizes)],
+              loc="lower center", bbox_to_anchor=(0.5, -0.18), fontsize=8, ncol=2)
+
+
 ACTION_COLORS = {
     "solve":   "#4CAF50",
     "rethink": "#1565C0",
@@ -222,7 +268,7 @@ def _rubric_pie(ax, stats: list[dict], title: str):
 
 
 def plot(stats: list[dict], input_path: str, out_path: str | None,
-         critique_counts: dict | None = None):
+         rethink_stats: tuple[dict, dict, dict] | None = None):
     n = len(stats)
     correct   = [s for s in stats if s["is_right"]]
     incorrect = [s for s in stats if not s["is_right"]]
@@ -243,11 +289,11 @@ def plot(stats: list[dict], input_path: str, out_path: str | None,
     _state_pie(ax2, incorrect, "state distribution  [incorrect]")
 
     # ── 3. trajectory category pie (correct) ─────────────────────────────────
-    ax3 = fig.add_subplot(gs[0, 2])
+    ax3 = fig.add_subplot(gs[1, 0])
     _cat_pie(ax3, correct, "trajectory category  [correct]")
 
     # ── 4. bubble chart (rethink vs patcher) ─────────────────────────────────
-    ax4 = fig.add_subplot(gs[1, 0])
+    ax4 = fig.add_subplot(gs[0, 2])
     bubble_cnt: Counter = Counter((s["n_rethink"], s["n_patcher"]) for s in stats)
     bx     = [k[0] for k in bubble_cnt]
     by     = [k[1] for k in bubble_cnt]
@@ -258,16 +304,16 @@ def plot(stats: list[dict], input_path: str, out_path: str | None,
     for x, y, v in zip(bx, by, bsize):
         if v >= max(2, max_sz * 0.02):
             ax4.text(x, y, str(v), ha="center", va="center", fontsize=7, fontweight="bold")
-    ax4.set_xlabel("# rethink steps", fontsize=10)
+    ax4.set_xlabel("# rethink (G+P) steps", fontsize=10)
     ax4.set_ylabel("# patcher steps", fontsize=10)
     ax4.set_title("Rethink vs Patcher  (bubble size = count)", fontsize=11, fontweight="bold")
     ax4.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax4.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax4.grid(True, linestyle="--", alpha=0.4)
 
-    # ── 5. trajectory category pie (incorrect) ───────────────────────────────
+    # ── 5. fail reason pie (incorrect) ───────────────────────────────────────
     ax5 = fig.add_subplot(gs[1, 1])
-    _cat_pie(ax5, incorrect, "trajectory category  [incorrect]")
+    _fail_reason_pie(ax5, incorrect, "fail reason  [incorrect]")
 
     # ── 6. total steps distribution ───────────────────────────────────────────
     ax6 = fig.add_subplot(gs[1, 2])
@@ -291,9 +337,10 @@ def plot(stats: list[dict], input_path: str, out_path: str | None,
     ax8 = fig.add_subplot(gs[2, 1])
     _rubric_pie(ax8, stats, "gold fail rubrics  [all steps]")
 
-    # ── 9. fast→deep critique transition table ───────────────────────────────
+    # ── 9. rethink success rate by rubric ────────────────────────────────────
     ax9 = fig.add_subplot(gs[2, 2])
-    _critique_table(ax9, critique_counts or {})
+    gen_succ, pat_succ, total_att = rethink_stats if rethink_stats else ({}, {}, {})
+    _rethink_success_bar(ax9, gen_succ, pat_succ, total_att, "Rethink Success Rate by Rubric")
 
     if not out_path:
         out_path = str(Path(input_path).with_suffix(".png"))
@@ -328,6 +375,21 @@ TRANSITION_COLORS = {
     "cor→N/A": "#B0BEC5",
     "cor→inc": "#6A1B9A",
 }
+
+# 수학 루브릭 a-z, 중복/비반복(10번째), atomicity(11번째)
+RETHINK_RUBRIC_ORDER = [
+    "Abstract and Linear Algebra Operations",
+    "Algebraic Manipulation",
+    "Calculus Computation",
+    "Counting and Probability",
+    "Differential Equations",
+    "Function and Limit Analysis",
+    "Geometric Reasoning",
+    "Logical and Discrete Reasoning",
+    "Number Theoretic Reasoning",
+    "Progress and Non-Repetition",
+    "Atomicity",
+]
 
 
 def _compute_critique_transitions(path: str) -> dict:
@@ -413,6 +475,181 @@ def _critique_table(ax, counts: dict):
             tbl[i + 1, keys.index("inc→cor") + 1].set_facecolor("#FFCDD2")
 
 
+def _rethink_success_bar(ax, gen_success: dict, pat_success: dict,
+                          total_attempts: dict, title: str):
+    """루브릭별 rethink 성공률 누적 수평 막대 그래프.
+
+    연주황색: generator가 rethink해서 직접 해결한 비율
+    파란색: generator rethink 실패 후 patcher가 해결한 비율
+    나머지: 실패 (미표시)
+    """
+    rubrics = [r for r in RETHINK_RUBRIC_ORDER if r in total_attempts]
+    if not rubrics:
+        ax.set_title(title, fontsize=11, fontweight="bold")
+        ax.text(0.5, 0.5, "no rethink data", ha="center", va="center", transform=ax.transAxes)
+        return
+
+    total_att = [total_attempts.get(r, 0) for r in rubrics]
+    gen_succ  = [gen_success.get(r, 0)    for r in rubrics]
+    pat_succ  = [pat_success.get(r, 0)    for r in rubrics]
+    gen_rates = [gs / ta if ta > 0 else 0 for gs, ta in zip(gen_succ, total_att)]
+    pat_rates = [ps / ta if ta > 0 else 0 for ps, ta in zip(pat_succ, total_att)]
+    total_rates = [g + p for g, p in zip(gen_rates, pat_rates)]
+
+    short_labels = [RUBRIC_SHORT.get(r, r[:12]) for r in rubrics]
+    n = len(rubrics)
+
+    # generator 성공 (연주황) 먼저, patcher 성공 (파란) 누적
+    ax.barh(range(n), gen_rates, color="#FFCC80", edgecolor="white", height=0.65, label="generator")
+    ax.barh(range(n), pat_rates, left=gen_rates, color="#42A5F5",
+            edgecolor="white", height=0.65, label="patcher")
+
+    for i, (tr, ta, gs, ps) in enumerate(zip(total_rates, total_att, gen_succ, pat_succ)):
+        ax.text(
+            tr + 0.02, i,
+            f"{tr:.0%}  (gen:{gs} pat:{ps} / {ta})",
+            va="center", ha="left", fontsize=7.5,
+        )
+
+    ax.set_yticks(range(n))
+    ax.set_yticklabels(short_labels, fontsize=9)
+    ax.set_xlabel("Success Rate", fontsize=10)
+    ax.set_xlim(0, 1.6)
+    ax.xaxis.set_major_formatter(ticker.PercentFormatter(xmax=1))
+    ax.set_title(title, fontsize=11, fontweight="bold")
+    ax.grid(axis="x", linestyle="--", alpha=0.4)
+    ax.legend(loc="lower right", fontsize=8)
+    ax.invert_yaxis()
+
+
+def _get_fail_rubrics(step: dict) -> set[str]:
+    """스텝의 gold_fail_rubrics를 정규화해서 반환."""
+    rubrics = step.get("gold_fail_rubrics") or []
+    if isinstance(rubrics, str):
+        rubrics = [rubrics]
+    return {r for r in rubrics if isinstance(r, str) and r not in ("<|none|>", "none", "")}
+
+
+def _compute_rethink_rubric_stats(path: str) -> tuple[dict, dict, dict]:
+    """루브릭별 gen_rethink / pat_rethink 시도·성공 횟수 집계.
+
+    반환: (gen_success, pat_success, total_attempts)
+
+    각 gen_rethink / pat_rethink 스텝 i에서:
+        - 이전 평가 스텝의 gold_fail_rubrics = 이 rethink를 유발한 루브릭들 (시도)
+        - 현재 스텝의 gold_fail_rubrics에서 사라진 루브릭 = rethink 성공 (is_fail=False)
+        - 여전히 남아있는 루브릭 = rethink 실패 (is_fail=True)
+
+    total_attempts = gen_attempts + pat_attempts
+    """
+    from collections import defaultdict
+    gen_succ:  dict = defaultdict(int)
+    pat_succ:  dict = defaultdict(int)
+    total_att: dict = defaultdict(int)
+
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            traj = json.loads(line)
+            steps = traj.get("steps", [])
+            n = len(steps)
+
+            for i, step in enumerate(steps):
+                state_i = step.get("state", "")
+                if state_i not in ("gen_rethink", "pat_rethink"):
+                    continue
+
+                is_pat       = state_i == "pat_rethink"
+                current_fail = _get_fail_rubrics(step)
+
+                # 이전 평가 스텝 탐색 (source=rethink 중간 스텝 건너뜀)
+                j = i - 1
+                while j >= 0 and steps[j].get("source", steps[j].get("role", "")) == "rethink":
+                    j -= 1
+                if j < 0:
+                    continue
+
+                prev_fail = _get_fail_rubrics(steps[j])
+
+                for rubric in prev_fail:
+                    total_att[rubric] += 1
+                    if rubric not in current_fail:
+                        # rethink가 이 루브릭을 고침 → 성공 (is_fail=False)
+                        if is_pat:
+                            pat_succ[rubric] += 1
+                        else:
+                            gen_succ[rubric] += 1
+
+    return dict(gen_succ), dict(pat_succ), dict(total_att)
+
+
+def plot_rethink_failure_by_rubric(path: str, out_path: str | None = None):
+    """루브릭별 rethink 실패율 수평 막대 그래프를 생성하고 저장."""
+    gen_succ, pat_succ, total_att = _compute_rethink_rubric_stats(path)
+    attempts = total_att
+    failures = {r: total_att[r] - gen_succ.get(r, 0) - pat_succ.get(r, 0) for r in total_att}
+
+    if not attempts:
+        print("rethink 데이터가 없습니다 (next_gold_action=rethink 스텝 없음).")
+        return
+
+    rubrics = [r for r in RUBRICS if r in attempts]
+    if not rubrics:
+        rubrics = sorted(attempts.keys(), key=lambda r: -attempts[r])
+
+    fail_rates     = [failures.get(r, 0) / attempts[r] for r in rubrics]
+    attempt_counts = [attempts[r] for r in rubrics]
+    fail_counts    = [failures.get(r, 0) for r in rubrics]
+    short_labels   = [RUBRIC_SHORT.get(r, r[:12]) for r in rubrics]
+
+    # 실패율 높은 순 정렬
+    order = sorted(range(len(rubrics)), key=lambda i: -fail_rates[i])
+    rubrics        = [rubrics[i]        for i in order]
+    fail_rates     = [fail_rates[i]     for i in order]
+    attempt_counts = [attempt_counts[i] for i in order]
+    fail_counts    = [fail_counts[i]    for i in order]
+    short_labels   = [short_labels[i]   for i in order]
+
+    n = len(rubrics)
+    cmap   = plt.get_cmap("RdYlGn_r")
+    colors = [cmap(r) for r in fail_rates]
+
+    fig, ax = plt.subplots(figsize=(13, max(5, n * 0.7 + 2)))
+    bars = ax.barh(range(n), fail_rates, color=colors, edgecolor="white", height=0.65)
+
+    for i, (bar, rate, fcnt, acnt) in enumerate(zip(bars, fail_rates, fail_counts, attempt_counts)):
+        ax.text(
+            min(bar.get_width() + 0.015, 1.02), i,
+            f"{rate:.1%}  ({fcnt}/{acnt})",
+            va="center", ha="left", fontsize=9,
+        )
+
+    ax.set_yticks(range(n))
+    ax.set_yticklabels(short_labels, fontsize=10)
+    ax.set_xlabel("Rethink Failure Rate", fontsize=11)
+    ax.set_xlim(0, 1.35)
+    ax.xaxis.set_major_formatter(ticker.PercentFormatter(xmax=1))
+    ax.set_title(
+        f"Rethink Failure Rate by Rubric\n{Path(path).name}",
+        fontsize=13, fontweight="bold",
+    )
+    ax.grid(axis="x", linestyle="--", alpha=0.4)
+    ax.invert_yaxis()
+
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(0, 1))
+    sm.set_array([])
+    fig.colorbar(sm, ax=ax, label="Failure rate", pad=0.01)
+
+    if not out_path:
+        out_path = str(Path(path).with_suffix("")) + "_rethink_failure.png"
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    print(f"저장: {out_path}")
+    plt.close()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", nargs="?", default="output/traj_sft_right_1241.jsonl",
@@ -423,8 +660,8 @@ def main():
     stats = load_stats(args.input)
     n_correct = sum(1 for s in stats if s["is_right"])
     print(f"로드: {len(stats)}개 trajectory  (correct={n_correct}, incorrect={len(stats)-n_correct})")
-    critique_counts = _compute_critique_transitions(args.input)
-    plot(stats, args.input, args.out, critique_counts=critique_counts)
+    rethink_stats = _compute_rethink_rubric_stats(args.input)
+    plot(stats, args.input, args.out, rethink_stats=rethink_stats)
 
 
 if __name__ == "__main__":

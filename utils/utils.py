@@ -183,6 +183,28 @@ def _print_cost_summary() -> None:
     print(f"{'━'*60}\n")
 
 
+def _get_cost_summary() -> dict:
+    """누적 API 비용을 dict로 반환."""
+    total_cost = 0.0
+    cost_by_model = {}
+    for provider, rec in _token_usage.items():
+        p_in, p_out, p_cached = _API_PRICING.get(provider, (0.0, 0.0, 0.0))
+        cached     = rec["cached"]
+        non_cached = rec["input"] - cached
+        cost       = (non_cached  / 1_000_000 * p_in
+                      + cached    / 1_000_000 * p_cached
+                      + rec["output"] / 1_000_000 * p_out)
+        total_cost += cost
+        cost_by_model[provider] = {
+            "model":    rec["model"],
+            "input":    non_cached,
+            "cached":   cached,
+            "output":   rec["output"],
+            "cost_usd": round(cost, 6),
+        }
+    return {"total_cost_usd": round(total_cost, 6), "cost_by_model": cost_by_model}
+
+
 # Generator / checkpoint
 GENERATOR_MODEL_ID       = CONF["checkpoint"]["base"]
 GENERATOR_CACHE_DIR      = CONF["checkpoint"]["cache_dir"]
@@ -346,6 +368,7 @@ def load_generator_vllm(model_path=None, rollout_gpus=None):
         gpu_memory_utilization=0.70,
         seed=42,
         enforce_eager=True,
+        compilation_config=0,  # CompilationMode.NONE: torch.compile 비활성화 → nvcc 불필요
     )
 
     logger.info(f"Generator vLLM 로드 완료 (tensor_parallel={tensor_parallel_size})")

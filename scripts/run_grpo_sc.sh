@@ -16,6 +16,7 @@
 #   --outcome_coef        β 값 override (outcome reward 가중치)
 #   --min_records         학습 1회당 최소 record 수 (기본: config.grpo_sc.min_records_per_update)
 #   --inf_gpu_count       inference 모델에 할당할 GPU 수 (기본: TRAIN_GPUS 절반)
+#   --iter_problems       1 iteration당 랜덤 샘플 문제 수 (기본: config.grpo_sc.iter_problems)
 #   --problem_batch_size  동시 처리 문제 수 (기본: config.grpo_sc.problem_batch_size)
 #   --max_gen_batch_size  GPU 최대 배치 크기 (기본: config.grpo_sc.max_gen_batch_size)
 set -euo pipefail
@@ -38,6 +39,7 @@ while [[ $# -gt 0 ]]; do
         --outcome_coef)                        EXTRA_ARGS="$EXTRA_ARGS --outcome_coef $2";        shift 2 ;;
         --min_records)                         EXTRA_ARGS="$EXTRA_ARGS --min_records $2";          shift 2 ;;
         --inf_gpu_count)                       EXTRA_ARGS="$EXTRA_ARGS --inf_gpu_count $2";       shift 2 ;;
+        --iter_problems)                       EXTRA_ARGS="$EXTRA_ARGS --iter_problems $2";      shift 2 ;;
         --problem_batch_size)                  EXTRA_ARGS="$EXTRA_ARGS --problem_batch_size $2"; shift 2 ;;
         --max_gen_batch_size)                  EXTRA_ARGS="$EXTRA_ARGS --max_gen_batch_size $2"; shift 2 ;;
         --debug)                               EXTRA_ARGS="$EXTRA_ARGS --debug";                  shift 1 ;;

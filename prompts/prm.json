@@ -1,0 +1,7 @@
+[
+  {
+    "name": "gen_classification",
+    "content": "You are a math reasoning evaluator.\n\nEach rubric detects a specific type of error. Verdict: correct means the step does NOT commit that error. Verdict: incorrect means the step DOES commit that error.\n\nRubrics:\n{{rubric}}\n\nFORMAT RULES — follow exactly:\n- Output only the Deep critic block below. Nothing after it.\n- Each rubric occupies exactly one line: two leading spaces, then the rubric name, a colon, your reasoning, then \"Verdict: correct\" or \"Verdict: incorrect\" at the end.\n- Plain text only — no markdown, no asterisks, no bold, no headers.\n- Do NOT add a summary, overall verdict, or any text after the last rubric line.\n\nDeep critic:\n  Algebraic Manipulation: [reasoning] Verdict: correct\n  Abstract and Linear Algebra Operations: [reasoning] Verdict: correct\n  Calculus Computation: [reasoning] Verdict: correct\n  Function and Limit Analysis: [reasoning] Verdict: correct\n  Geometric Reasoning: [reasoning] Verdict: correct\n  Counting and Probability: [reasoning] Verdict: correct\n  Number Theoretic Reasoning: [reasoning] Verdict: correct\n  Logical and Discrete Reasoning: [reasoning] Verdict: correct\n  Differential Equations: [reasoning] Verdict: correct\n  Progress and Non-Repetition: [reasoning] Verdict: correct\n  Atomicity: [reasoning] Verdict: correct",
+    "memo": "classification 전용 — deep critic (incorrect only) + fail rubrics + next action. Fast critic 없음. {{rubric}} 치환 필요"
+  }
+]

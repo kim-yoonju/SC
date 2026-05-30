@@ -7,9 +7,11 @@ classification model이 inference를 입력으로 받아
 fail_rubrics, next_action을 얼마나 잘 예측하는지 평가한다.
 
 실행 예시:
-    python source/eval_sft_classification.py \
-        --data_path /mnt/yoonju/SC/output/sft_trajectory/traj_all_base_400.jsonl \
-        --classification_model /mnt/yoonju/SC/checkpoints/sft/20260518_172258_sft_classification/epoch3
+
+python source/eval_sft_classification.py \
+--data_path /mnt/yoonju/SC/output/sft_trajectory/traj_cls_eval_50_with_history.jsonl \
+--classification_model /mnt/yoonju/SC/checkpoints/sft/20260522_121600_clss_001/epoch3 --gpus 4,5
+
 
 출력 (output/eval_classification/{timestamp}/):
     predictions.jsonl  스텝별 gold vs pred 비교
@@ -21,13 +23,13 @@ import json
 import random
 import re
 import sys
-import tempfile
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
+import os
+
 import torch
-import torch.multiprocessing as mp
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -71,6 +73,7 @@ def load_model(model_path: str, gpu_id: int):
         torch_dtype=torch.bfloat16,
         device_map={"": f"cuda:{gpu_id}"},
         trust_remote_code=True,
+        attn_implementation="sdpa",
     )
     model.eval()
     return model, tokenizer
@@ -80,17 +83,67 @@ def load_model(model_path: str, gpu_id: int):
 # 데이터 로드
 # ─────────────────────────────────────────────────────────────────────────────
 
+_EMPTY_RUBRIC_MARKERS = {"None", "<|none|>", "none", ""}
+
+
+def _normalize_gold_fr(val) -> list[str]:
+    """gold_fail_rubrics 값을 list[str]로 정규화. none 마커는 빈 리스트로."""
+    if not val:
+        return []
+    if isinstance(val, str):
+        val = [val]
+    return [r for r in val if r.strip() not in _EMPTY_RUBRIC_MARKERS]
+
+
 def load_samples(data_path: str, skip_error: bool = True,
                  num_start: int | None = None, num_end: int | None = None) -> list[dict]:
     """traj_all.jsonl 또는 flat 스텝 레코드(k 필드 포함)에서 평가 샘플 추출."""
     raw = [json.loads(l) for l in open(data_path, encoding="utf-8") if l.strip()]
     raw = raw[num_start:num_end]
 
+    # history + flat 현재 스텝 형식 감지 (history 필드가 최상위에 있으면)
+    if raw and "history" in raw[0] and "steps" not in raw[0]:
+        samples = []
+        for rec in raw:
+            gold_fr = _normalize_gold_fr(rec.get("gold_fail_rubrics"))
+            next_action = rec.get("next_gold_action") or TOKEN_SOLVE
+            if not gold_fr and next_action == TOKEN_RETHINK:
+                continue
+            # history(is_fail=False 스텝들) + 현재 스텝으로 steps 재구성
+            current_step = {
+                "step_idx":          rec["step_idx"],
+                "step":              rec.get("step", ""),
+                "inference":         rec.get("inference") or rec.get("text") or "",
+                "source":            rec.get("source", ""),
+                "is_fail":          rec.get("is_fail", False),
+                "state":             rec.get("state", ""),
+                "gold_fail_rubrics": gold_fr,
+                "next_gold_action":  next_action,
+                "does":              rec.get("does", ""),
+                "prm_deep_critique": rec.get("prm_deep_critique"),
+                "prm_critique_summary": rec.get("prm_critique_summary"),
+            }
+            history = rec.get("history") or []
+            steps = history + [current_step]
+            k = len(history)
+            samples.append({
+                "problem":           rec["problem"],
+                "steps":             steps,
+                "k":                 k,
+                "gold_fail_rubrics": gold_fr,
+                "next_gold_action":  next_action,
+                "problem_id":        rec.get("problem_id", ""),
+                "step_idx":          rec["step_idx"],
+                "state":             rec.get("state", ""),
+                "is_right":          rec.get("is_right", None),
+            })
+        return samples
+
     # flat 스텝 레코드 형식 감지 (k 필드가 최상위에 있으면)
     if raw and "k" in raw[0]:
         samples = []
         for rec in raw:
-            gold_fr = rec.get("gold_fail_rubrics") or []
+            gold_fr = _normalize_gold_fr(rec.get("gold_fail_rubrics"))
             next_action = rec.get("next_gold_action") or TOKEN_SOLVE
             if not gold_fr and next_action == TOKEN_RETHINK:
                 continue
@@ -112,16 +165,12 @@ def load_samples(data_path: str, skip_error: bool = True,
         problem = traj["problem"]
         steps   = traj["steps"]
         for k, step in enumerate(steps):
-            if skip_error and step.get("is_error", False):
+            if skip_error and step.get("is_fail", False):
                 continue
             # gold_fail_rubrics가 없으면 건너뜀
             if "gold_fail_rubrics" not in step:
                 continue
-            gold_fr = (
-                [step["gold_fail_rubrics"]]
-                if isinstance(step.get("gold_fail_rubrics"), str)
-                else step.get("gold_fail_rubrics")
-            ) or []
+            gold_fr = _normalize_gold_fr(step.get("gold_fail_rubrics"))
             next_action = step.get("next_gold_action") or TOKEN_SOLVE
             # fail rubric 없는데 rethink인 노이즈 데이터 제거
             if not gold_fr and next_action == TOKEN_RETHINK:
@@ -181,17 +230,24 @@ def build_prompt(tokenizer, system: str, problem: str, steps: list, k: int) -> s
 # 생성
 # ─────────────────────────────────────────────────────────────────────────────
 
+def vllm_generate(llm, prompts: list[str], max_new_tokens: int) -> list[str]:
+    from vllm import SamplingParams
+    sp = SamplingParams(
+        temperature=0.0,
+        max_tokens=max_new_tokens,
+    )
+    outputs = llm.generate(prompts, sp)
+    return [o.outputs[0].text.strip() for o in outputs]
+
+
 @torch.no_grad()
 def batch_generate(model, tokenizer, prompts: list[str],
                    max_new_tokens: int = 1024) -> list[str]:
-    """배치 생성. EOS까지 생성 후 텍스트 리스트 반환.
+    """배치 생성. 길이 내림차순 정렬 후 처리해 padding 낭비를 최소화한다.
     루브릭/액션 special token이 EOS로 처리되어 잘리는 현상을 방지하기 위해
-    model.generation_config에서 custom special token ID를 제외한 EOS ID만 사용."""
-    orig_side = tokenizer.padding_side
-    tokenizer.padding_side = "left"
-    enc = tokenizer(prompts, return_tensors="pt", padding=True).to(model.device)
-    tokenizer.padding_side = orig_side
-    input_len = enc["input_ids"].shape[1]
+    custom special token ID를 EOS에서 명시적으로 제외한다."""
+    if not prompts:
+        return []
 
     # custom special token ID (루브릭/액션) 를 EOS에서 명시적으로 제외
     _custom_ids = {
@@ -205,26 +261,41 @@ def batch_generate(model, tokenizer, prompts: list[str],
     else:
         _eos = [x for x in _raw_eos if x not in _custom_ids] or tokenizer.eos_token_id
 
+    # 길이 내림차순 정렬 (padding 낭비 최소화), 원래 인덱스 보존
+    order = sorted(range(len(prompts)), key=lambda i: len(prompts[i]), reverse=True)
+    sorted_prompts = [prompts[i] for i in order]
+
+    orig_side = tokenizer.padding_side
+    tokenizer.padding_side = "left"
+    enc = tokenizer(sorted_prompts, return_tensors="pt", padding=True).to(model.device)
+    tokenizer.padding_side = orig_side
+    input_len = enc["input_ids"].shape[1]
+
     out = model.generate(
         **enc,
         max_new_tokens=max_new_tokens,
         do_sample=False,
         pad_token_id=tokenizer.eos_token_id,
         eos_token_id=_eos,
+        repetition_penalty=1.3,
     )
-    results = []
-    for i in range(len(prompts)):
+
+    # 원래 순서로 복원
+    sorted_results = []
+    for i in range(len(sorted_prompts)):
         resp = out[i, input_len:]
         text = tokenizer.decode(resp, skip_special_tokens=False).strip()
-        results.append(text)
+        sorted_results.append(text)
+
+    results = [None] * len(prompts)
+    for rank, orig_idx in enumerate(order):
+        results[orig_idx] = sorted_results[rank]
     return results
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 파싱
 # ─────────────────────────────────────────────────────────────────────────────
-
-_EMPTY_RUBRIC_MARKERS = {"None", "<|none|>", "none", ""}
 
 
 def _is_real_rubric(name: str) -> bool:
@@ -264,18 +335,47 @@ def parse_fail_rubrics_from_deep_critique(text: str) -> list[str]:
     if end:
         section = section[:end.start()]
     result = []
-    has_verdict = False
     for line in section.splitlines():
         stripped = line.strip()
         if not stripped:
             continue
-        if re.search(r"verdict:", stripped, re.IGNORECASE):
-            has_verdict = True
-            if re.search(r"verdict:\s*incorrect", stripped, re.IGNORECASE):
-                rubric = re.split(r"\s*:", stripped, maxsplit=1)[0].strip()
-                if rubric and _is_real_rubric(rubric):
-                    result.append(rubric)
+        if re.search(r"verdict:\s*incorrect", stripped, re.IGNORECASE):
+            rubric = re.split(r"\s*:", stripped, maxsplit=1)[0].strip()
+            if rubric and _is_real_rubric(rubric):
+                result.append(rubric)
     return result
+
+
+def parse_per_rubric_verdicts(text: str) -> dict[str, str]:
+    """Deep critic 섹션에서 루브릭별 verdict 파싱. {rubric_name: 'correct'/'incorrect'}"""
+    m = re.search(r"Deep\s+critic\s*:", text, re.IGNORECASE)
+    if not m:
+        return {}
+    section = text[m.end():]
+    end = re.search(r"\n\n(Fail\s+rubrics|Next\s+action)\s*:", section, re.IGNORECASE)
+    if end:
+        section = section[:end.start()]
+    result = {}
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        verdict_m = re.search(r"verdict:\s*(correct|incorrect)", stripped, re.IGNORECASE)
+        if not verdict_m:
+            continue
+        verdict = verdict_m.group(1).lower()
+        rubric = re.split(r"\s*:", stripped, maxsplit=1)[0].strip()
+        if rubric and _is_real_rubric(rubric):
+            result[rubric] = verdict
+    return result
+
+
+def parse_next_action(text: str) -> str | None:
+    """Next action 섹션에서 액션 토큰을 직접 파싱."""
+    m = re.search(r"Next\s+action\s*:\n(.+)", text, re.IGNORECASE)
+    if not m:
+        return None
+    return _ACTION_LABEL.get(m.group(1).strip())
 
 
 def rule_based_action(pred_rubrics: list[str], inference: str) -> str:
@@ -439,6 +539,182 @@ def compute_metrics(records: list[dict], pred_key: str = "pred_rubrics") -> dict
     }
 
 
+def compute_per_rubric_binary_metrics(
+    records: list[dict],
+    all_rubrics: list[str],
+    pred_verdicts_key: str = "pred_verdicts",
+) -> dict:
+    """
+    루브릭별 binary classification metrics (incorrect 클래스 기준).
+    gold: rubric in gold_rubrics → incorrect, 아니면 → correct.
+    pred: pred_verdicts.get(rubric, 'correct').
+    """
+    rubric_tp: Counter = Counter()
+    rubric_fp: Counter = Counter()
+    rubric_tn: Counter = Counter()
+    rubric_fn: Counter = Counter()
+    rubric_missing: Counter = Counter()
+
+    for rec in records:
+        gold_fail = set(rec["gold_rubrics"])
+        pred_verdicts = rec.get(pred_verdicts_key, {})
+        for rubric in all_rubrics:
+            gold = "incorrect" if rubric in gold_fail else "correct"
+            if rubric in pred_verdicts:
+                pred = pred_verdicts[rubric]
+            else:
+                pred = "correct"
+                rubric_missing[rubric] += 1
+            if gold == "incorrect" and pred == "incorrect":
+                rubric_tp[rubric] += 1
+            elif gold == "correct" and pred == "incorrect":
+                rubric_fp[rubric] += 1
+            elif gold == "correct" and pred == "correct":
+                rubric_tn[rubric] += 1
+            else:
+                rubric_fn[rubric] += 1
+
+    n = len(records)
+    rubric_rows = []
+    for rubric in all_rubrics:
+        tp = rubric_tp[rubric]
+        fp = rubric_fp[rubric]
+        tn = rubric_tn[rubric]
+        fn = rubric_fn[rubric]
+        acc  = (tp + tn) / n if n > 0 else 0.0
+        prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        rec_ = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1   = 2 * prec * rec_ / (prec + rec_) if (prec + rec_) > 0 else 0.0
+        rubric_rows.append({
+            "rubric":            rubric,
+            "tp": tp, "fp": fp, "tn": tn, "fn": fn,
+            "accuracy":          acc,
+            "precision":         prec,
+            "recall":            rec_,
+            "f1":                f1,
+            "support_incorrect": tp + fn,
+            "missing":           rubric_missing[rubric],
+            "parsed":            n - rubric_missing[rubric],
+        })
+
+    n_total = n * len(all_rubrics)
+    overall_acc = sum(r["tp"] + r["tn"] for r in rubric_rows) / n_total if n_total > 0 else 0.0
+    macro_f1    = sum(r["f1"] for r in rubric_rows) / len(rubric_rows) if rubric_rows else 0.0
+    coverage    = sum(1 - r["missing"] / n for r in rubric_rows) / len(rubric_rows) if rubric_rows and n > 0 else 0.0
+
+    return {
+        "n_samples":             n,
+        "rubric_binary_rows":    rubric_rows,
+        "overall_binary_accuracy": overall_acc,
+        "binary_macro_f1":       macro_f1,
+        "avg_rubric_coverage":   coverage,
+    }
+
+
+def compute_multiclass_with_none(
+    records: list[dict],
+    all_rubrics: list[str],
+    pred_key: str = "pred_rubrics_critique",
+) -> dict:
+    """11개 루브릭 + None 클래스 포함 multi-class metrics (one-vs-rest 방식).
+    None 클래스: gold_rubrics=[] → gold=None, pred_rubrics=[] → pred=None."""
+    classes = ["None"] + list(all_rubrics)
+    tp_c: Counter = Counter()
+    fp_c: Counter = Counter()
+    fn_c: Counter = Counter()
+    support: Counter = Counter()
+
+    for rec in records:
+        gold_set  = set(rec["gold_rubrics"])
+        pred_set  = set(rec.get(pred_key, []))
+        gold_none = len(gold_set) == 0
+        pred_none = len(pred_set) == 0
+
+        if gold_none:
+            support["None"] += 1
+        if gold_none and pred_none:
+            tp_c["None"] += 1
+        elif not gold_none and pred_none:
+            fp_c["None"] += 1
+        elif gold_none and not pred_none:
+            fn_c["None"] += 1
+
+        for rubric in all_rubrics:
+            in_gold = rubric in gold_set
+            in_pred = rubric in pred_set
+            if in_gold:
+                support[rubric] += 1
+            if in_gold and in_pred:
+                tp_c[rubric] += 1
+            elif in_pred and not in_gold:
+                fp_c[rubric] += 1
+            elif in_gold and not in_pred:
+                fn_c[rubric] += 1
+
+    rows = []
+    for cls in classes:
+        t   = tp_c[cls]; f_p = fp_c[cls]; f_n = fn_c[cls]
+        sup = support[cls]
+        prec = t / (t + f_p) if (t + f_p) > 0 else 0.0
+        rec_ = t / (t + f_n) if (t + f_n) > 0 else 0.0
+        f1   = 2 * prec * rec_ / (prec + rec_) if (prec + rec_) > 0 else 0.0
+        rows.append({"class": cls, "tp": t, "fp": f_p, "fn": f_n,
+                     "precision": prec, "recall": rec_, "f1": f1, "support": sup})
+
+    macro_f1 = sum(r["f1"] for r in rows) / len(rows) if rows else 0.0
+    supported = [r for r in rows if r["support"] > 0]
+    macro_f1_supported = sum(r["f1"] for r in supported) / len(supported) if supported else 0.0
+    return {
+        "n_samples": len(records),
+        "rows": rows,
+        "macro_f1": macro_f1,
+        "macro_f1_supported": macro_f1_supported,
+    }
+
+
+def print_multiclass_with_none(mc_metrics: dict, title: str = "Multi-class (None 포함)"):
+    sep = "=" * 80
+    n = mc_metrics.get("n_samples", 0)
+    print(f"\n{sep}")
+    print(f"  {title}  (총 샘플: {n})")
+    print(sep)
+    print(f"  Macro F1             : {mc_metrics['macro_f1']:.4f}")
+    print(f"  Macro F1 (support>0) : {mc_metrics['macro_f1_supported']:.4f}")
+
+    rows = mc_metrics["rows"]
+    if not rows:
+        return
+    col = max(max(len(r["class"]) for r in rows), 5)
+    print(f"\n  {'class':<{col}}  {'prec':>7}  {'rec':>7}  {'f1':>7}  {'support':>8}  {'tp':>6}  {'fp':>6}  {'fn':>6}")
+    print("  " + "-" * (col + 62))
+    for r in rows:
+        print(f"  {r['class']:<{col}}  {r['precision']:>7.4f}  {r['recall']:>7.4f}  {r['f1']:>7.4f}"
+              f"  {r['support']:>8}  {r['tp']:>6}  {r['fp']:>6}  {r['fn']:>6}")
+
+
+def print_per_rubric_binary_metrics(binary_metrics: dict, title: str = "Per-rubric Binary"):
+    sep = "=" * 80
+    n = binary_metrics.get("n_samples", 0)
+    print(f"\n{sep}")
+    print(f"  {title}  (총 샘플: {n})")
+    print(sep)
+    print(f"  Overall binary accuracy : {binary_metrics['overall_binary_accuracy']:.4f}")
+    print(f"  Macro F1 (incorrect cls): {binary_metrics['binary_macro_f1']:.4f}")
+    print(f"  파싱 비율 (루브릭 커버리지): {binary_metrics['avg_rubric_coverage']:.4f}")
+
+    rows = binary_metrics["rubric_binary_rows"]
+    if not rows:
+        return
+    col = max(max(len(r["rubric"]) for r in rows), 6)
+    print(f"\n  {'rubric':<{col}}  {'acc':>7}  {'prec':>7}  {'rec':>7}  {'f1':>7}  "
+          f"{'support':>8}  {'parsed':>8}  {'missing':>8}")
+    print("  " + "-" * (col + 68))
+    for r in rows:
+        print(f"  {r['rubric']:<{col}}  {r['accuracy']:>7.4f}  {r['precision']:>7.4f}"
+              f"  {r['recall']:>7.4f}  {r['f1']:>7.4f}  {r['support_incorrect']:>8}"
+              f"  {r['parsed']:>8}  {r['missing']:>8}")
+
+
 def confusion_matrix_str(pairs: list[dict], labels: list[str]) -> str:
     idx = {l: i for i, l in enumerate(labels)}
     n   = len(labels)
@@ -512,108 +788,58 @@ def print_rubric_comparison_table(m_token: dict, m_critique: dict):
           + (f"{m_critique['none_step_accuracy']:.4f}" if m_critique['none_step_accuracy'] is not None else "N/A"))
 
 
-def print_metrics(metrics: dict, records: list[dict], title: str = "전체"):
+def compute_action_metrics(records: list[dict], pred_action_key: str = "pred_action_verdict") -> dict:
+    labels = ["solve", "rethink", "end"]
+    tp_c = Counter()
+    fp_c = Counter()
+    fn_c = Counter()
+    for r in records:
+        g = action_label(r["gold_action"]) or "solve"
+        p = action_label(r.get(pred_action_key)) or "solve"
+        if p == g:
+            tp_c[g] += 1
+        else:
+            fn_c[g] += 1
+            fp_c[p] += 1
+    n = len(records)
+    accuracy = sum(tp_c.values()) / n if n else 0.0
+    rows = []
+    for label in labels:
+        support = tp_c[label] + fn_c[label]
+        prec = tp_c[label] / (tp_c[label] + fp_c[label]) if (tp_c[label] + fp_c[label]) > 0 else 0.0
+        rec  = tp_c[label] / (tp_c[label] + fn_c[label]) if (tp_c[label] + fn_c[label]) > 0 else 0.0
+        f1   = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+        rows.append({"label": label, "precision": prec, "recall": rec, "f1": f1, "support": support})
+    macro_f1 = sum(r["f1"] for r in rows) / len(rows) if rows else 0.0
+    return {"n": n, "accuracy": accuracy, "macro_f1": macro_f1, "rows": rows}
+
+
+def print_action_table(action_metrics: dict, title: str = "Next Action (verdict 기반 룰)"):
+    sep = "=" * 64
+    print(f"\n{sep}")
+    print(f"  {title}  (n={action_metrics['n']})")
+    print(sep)
+    print(f"  Accuracy : {action_metrics['accuracy']:.4f}  "
+          f"({int(action_metrics['accuracy'] * action_metrics['n'])}/{action_metrics['n']})")
+    print(f"  Macro F1 : {action_metrics['macro_f1']:.4f}")
+    col = 8
+    print(f"\n  {'label':<{col}}  {'prec':>8}  {'rec':>8}  {'f1':>8}  {'support':>8}")
+    print("  " + "-" * (col + 38))
+    for r in action_metrics["rows"]:
+        print(f"  {r['label']:<{col}}  {r['precision']:>8.4f}  {r['recall']:>8.4f}"
+              f"  {r['f1']:>8.4f}  {r['support']:>8}")
+
+
+def print_metrics(metrics: dict, title: str = "전체"):
     sep = "=" * 64
     print(f"\n{sep}")
     print(f"  {title}  (n={metrics['n_samples']})")
     print(sep)
-
-    print(f"\n── Next Action ──────────────────────────────────────────────")
-    print(f"  Accuracy   : {metrics['action_accuracy']:.4f}"
-          f"  ({int(metrics['action_accuracy'] * metrics['n_samples'])}/{metrics['n_samples']})")
-    print(f"  Macro F1   : {metrics['action_macro_f1']:.4f}")
-    if metrics["action_none_count"]:
-        print(f"  파싱 실패   : {metrics['action_none_count']} 스텝 (solve로 처리)")
-
-    col = 10
-    print(f"\n  {'label':<{col}}  {'prec':>8}  {'rec':>8}  {'f1':>8}  {'support':>8}")
-    print("  " + "-" * (col + 38))
-    for r in metrics["action_rows"]:
-        print(f"  {r['label']:<{col}}  {r['precision']:>8.4f}  {r['recall']:>8.4f}"
-              f"  {r['f1']:>8.4f}  {r['support']:>8}")
-
-    action_pairs = [
-        {"gold": action_label(r["gold_action"]) or "solve",
-         "pred": action_label(r["pred_action"]) or "solve",
-         "state": r.get("state", "")}
-        for r in records
-    ]
-    print("\n  Confusion matrix  (rows=gold, cols=pred):")
-    for line in confusion_matrix_str(action_pairs, ["solve", "rethink", "end"]).splitlines():
-        print("    " + line)
-
-    print(f"\n── Fail Rubrics ─────────────────────────────────────────────")
     print(f"  Exact match  : {metrics['rubric_exact_match']:.4f}")
     print(f"  Avg Jaccard  : {metrics['rubric_avg_jaccard']:.4f}")
-    print(f"  Micro P/R/F1 : {metrics['rubric_micro_prec']:.4f} / "
-          f"{metrics['rubric_micro_rec']:.4f} / {metrics['rubric_micro_f1']:.4f}")
-    print(f"  Macro F1 (support>0) : {metrics['rubric_macro_f1_supported']:.4f}")
-    print(f"  Gold=none    : {metrics['n_none_gold']}  Pred=none: {metrics['n_none_pred']}"
-          + (f"  None-step acc: {metrics['none_step_accuracy']:.4f}"
-             if metrics["none_step_accuracy"] is not None else ""))
-
-    if metrics.get("rubric_rows"):
-        rubric_col = max(len(r["label"]) for r in metrics["rubric_rows"])
-        rubric_col = max(rubric_col, 5)
-        print(f"\n  {'label':<{rubric_col}}  {'prec':>8}  {'rec':>8}  {'f1':>8}  {'support':>8}")
-        print("  " + "-" * (rubric_col + 38))
-        for r in metrics["rubric_rows"]:
-            print(f"  {r['label']:<{rubric_col}}  {r['precision']:>8.4f}  {r['recall']:>8.4f}"
-                  f"  {r['f1']:>8.4f}  {r['support']:>8}")
-        supported = [r for r in metrics["rubric_rows"] if r["support"] > 0]
-        print(f"  {'Macro (support>0)':<{rubric_col}}  {'':>8}  {'':>8}  {metrics['rubric_macro_f1_supported']:>8.4f}  {len(supported):>7}cls")
+    print(f"  Macro F1     : {metrics['rubric_macro_f1_supported']:.4f}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 멀티GPU 워커
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _gpu_worker(gpu_id: int, model_path: str, samples: list[dict],
-                batch_size: int, max_new_tokens: int, system: str,
-                tmp_path: str, show_sample: bool):
-    model, tokenizer = load_model(model_path, gpu_id)
-    records = []
-    for batch_start in tqdm(range(0, len(samples), batch_size),
-                            desc=f"GPU {gpu_id}", position=gpu_id):
-        batch = samples[batch_start: batch_start + batch_size]
-        prompts = [
-            build_prompt(tokenizer, system, s["problem"], s["steps"], s["k"])
-            for s in batch
-        ]
-        generated = batch_generate(model, tokenizer, prompts, max_new_tokens)
-
-        if show_sample and batch_start == 0:
-            sep = "─" * 64
-            lines = [
-                f"\n[GPU {gpu_id} 샘플 출력 예시]\n{sep}",
-                "[PROMPT]\n" + prompts[0],
-                sep,
-                "[GENERATED]\n" + generated[0],
-                sep + "\n",
-            ]
-            tqdm.write("\n".join(lines))
-
-        for s, gen_text in zip(batch, generated):
-            pred_rubrics          = parse_fail_rubrics(gen_text)
-            pred_rubrics_critique = parse_fail_rubrics_from_deep_critique(gen_text)
-            inference    = s["steps"][s["k"]].get("inference") or ""
-            pred_action  = rule_based_action(pred_rubrics, inference)
-            records.append({
-                "problem_id":            s["problem_id"],
-                "step_idx":              s["step_idx"],
-                "state":                 s["state"],
-                "is_right":              s["is_right"],
-                "gold_rubrics":          s["gold_fail_rubrics"],
-                "pred_rubrics":          pred_rubrics,
-                "pred_rubrics_critique": pred_rubrics_critique,
-                "gold_action":           s["next_gold_action"],
-                "pred_action":           pred_action,
-                "generated":             gen_text,
-            })
-
-    with open(tmp_path, "w", encoding="utf-8") as f:
-        for r in records:
-            f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -626,9 +852,9 @@ def main():
     parser.add_argument("--classification_model", required=True, help="모델 경로")
     parser.add_argument("--gpus",        type=str, default="0",  help="GPU 번호 (단일: 0, 다중: 0,1,2,3)")
     parser.add_argument("--batch_size",  type=int, default=8,    help="GPU당 배치 크기")
-    parser.add_argument("--max_new_tokens", type=int, default=512)
+    parser.add_argument("--max_new_tokens", type=int, default=8192)
     parser.add_argument("--output",      type=str, default=None, help="출력 폴더 (기본: output/eval_classification/{ts})")
-    parser.add_argument("--skip_error", action="store_true",  help="is_error=True 스텝 제외")
+    parser.add_argument("--skip_error", action="store_true",  help="is_fail=True 스텝 제외")
     parser.add_argument("--by_state",    action="store_true",    help="state별 breakdown 출력")
     parser.add_argument("--limit",       type=int, default=None, help="평가할 최대 샘플 수 (디버그용)")
     parser.add_argument("--num_start",   type=int, default=None, help="시작 인덱스 (inclusive)")
@@ -659,56 +885,79 @@ def main():
 
     system = get_classification_prompt()
 
-    # ── 멀티GPU 병렬 생성 ────────────────────────────────────────────────────
-    n = len(gpu_list)
-    chunks   = [samples[i::n] for i in range(n)]
-    tmp_files = [tempfile.mktemp(suffix=f"_gpu{g}.jsonl") for g in gpu_list]
+    # ── vLLM 초기화 ──────────────────────────────────────────────────────────
+    os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(str(g) for g in gpu_list)
+    os.environ["NCCL_P2P_DISABLE"]     = "1"
+    os.environ["TORCHDYNAMO_DISABLE"]  = "1"
 
-    if n == 1:
-        _gpu_worker(gpu_list[0], args.classification_model, chunks[0],
-                    args.batch_size, args.max_new_tokens, system,
-                    tmp_files[0], show_sample=True)
-    else:
-        ctx = mp.get_context("spawn")
-        procs = []
-        for i, (gpu_id, chunk, tmp) in enumerate(zip(gpu_list, chunks, tmp_files)):
-            p = ctx.Process(target=_gpu_worker,
-                            args=(gpu_id, args.classification_model, chunk,
-                                  args.batch_size, args.max_new_tokens, system,
-                                  tmp, i == 0))
-            p.start()
-            procs.append(p)
-        for p in procs:
-            p.join()
-        for p in procs:
-            if p.exitcode != 0:
-                raise RuntimeError(f"워커 프로세스 실패 (exitcode={p.exitcode})")
+    from vllm import LLM
+    llm = LLM(
+        model=args.classification_model,
+        dtype="bfloat16",
+        tensor_parallel_size=len(gpu_list),
+        gpu_memory_utilization=0.85,
+        trust_remote_code=True,
+        enforce_eager=True,
+    )
+    tokenizer = setup_tokenizer(args.classification_model)
+
+    # ── 프롬프트 빌드 & 생성 ─────────────────────────────────────────────────
+    prompts = [
+        build_prompt(tokenizer, system, s["problem"], s["steps"], s["k"])
+        for s in tqdm(samples, desc="프롬프트 빌드")
+    ]
+    generated = vllm_generate(llm, prompts, args.max_new_tokens)
 
     # ── 결과 수집 ─────────────────────────────────────────────────────────────
     records = []
-    pred_file = open(out_dir / "predictions.jsonl", "w", encoding="utf-8")
-    for tmp in tmp_files:
-        for line in open(tmp, encoding="utf-8"):
-            rec = json.loads(line)
-            records.append(rec)
-            pred_file.write(line)
-    pred_file.close()
+    with open(out_dir / "predictions.jsonl", "w", encoding="utf-8") as pred_file:
+        for s, gen_text in zip(samples, generated):
+            pred_verdicts         = parse_per_rubric_verdicts(gen_text)
+            pred_rubrics_critique = [r for r, v in pred_verdicts.items() if v == "incorrect"]
+            pred_rubrics          = parse_fail_rubrics(gen_text)
+            inference             = s["steps"][s["k"]].get("inference") or ""
+            direct_action         = parse_next_action(gen_text)
+            pred_action           = direct_action if direct_action is not None else rule_based_action(pred_rubrics_critique, inference)
+            pred_action_verdict   = rule_based_action(pred_rubrics_critique, inference)
+            record = {
+                "problem_id":            s["problem_id"],
+                "step_idx":              s["step_idx"],
+                "state":                 s["state"],
+                "is_right":              s["is_right"],
+                "gold_rubrics":          s["gold_fail_rubrics"],
+                "pred_verdicts":         pred_verdicts,
+                "pred_rubrics":          pred_rubrics_critique,
+                "pred_rubrics_token":    pred_rubrics,
+                "pred_rubrics_critique": pred_rubrics_critique,
+                "gold_action":           s["next_gold_action"],
+                "pred_action":           pred_action,
+                "pred_action_verdict":   pred_action_verdict,
+                "generated":             gen_text,
+            }
+            records.append(record)
+            pred_file.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     # ── 메트릭 ───────────────────────────────────────────────────────────────
-    metrics          = compute_metrics(records, pred_key="pred_rubrics")
-    metrics_critique = compute_metrics(records, pred_key="pred_rubrics_critique")
-    print_metrics(metrics, records)
-    print_rubric_comparison_table(metrics, metrics_critique)
+    all_rubrics = sorted(k for k in RUBRIC_TOKENS.keys() if k != "None")
+    metrics        = compute_metrics(records, pred_key="pred_rubrics")
+    binary_metrics = compute_per_rubric_binary_metrics(records, all_rubrics)
+    mc_metrics     = compute_multiclass_with_none(records, all_rubrics)
+    action_metrics = compute_action_metrics(records, pred_action_key="pred_action_verdict")
+    print_metrics(metrics)
+    print_multiclass_with_none(mc_metrics)
+    print_action_table(action_metrics)
 
     if args.by_state:
         by_state: dict[str, list] = defaultdict(list)
         for r in records:
             by_state[r.get("state", "")].append(r)
         for state, recs in sorted(by_state.items()):
-            m  = compute_metrics(recs, pred_key="pred_rubrics")
-            mc = compute_metrics(recs, pred_key="pred_rubrics_critique")
-            print_metrics(m, recs, title=f"state={state!r}")
-            print_rubric_comparison_table(m, mc)
+            m    = compute_metrics(recs, pred_key="pred_rubrics")
+            mc_s = compute_multiclass_with_none(recs, all_rubrics)
+            am   = compute_action_metrics(recs, pred_action_key="pred_action_verdict")
+            print_metrics(m, title=f"state={state!r}")
+            print_multiclass_with_none(mc_s, title=f"Multi-class  state={state!r}")
+            print_action_table(am, title=f"Next Action  state={state!r}")
 
     # ── 요약 저장 ─────────────────────────────────────────────────────────────
     summary = {
@@ -734,14 +983,28 @@ def main():
             {k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items()}
             for r in metrics["rubric_rows"]
         ],
-        "critique_rubric_exact_match":           round(metrics_critique["rubric_exact_match"],           4),
-        "critique_rubric_micro_f1":              round(metrics_critique["rubric_micro_f1"],              4),
-        "critique_rubric_micro_prec":            round(metrics_critique["rubric_micro_prec"],            4),
-        "critique_rubric_micro_rec":             round(metrics_critique["rubric_micro_rec"],             4),
-        "critique_rubric_macro_f1_supported":    round(metrics_critique["rubric_macro_f1_supported"],    4),
-        "critique_rubric_rows": [
+        # per-rubric binary metrics
+        "overall_binary_accuracy":  round(binary_metrics["overall_binary_accuracy"], 4),
+        "binary_macro_f1":          round(binary_metrics["binary_macro_f1"], 4),
+        "avg_rubric_coverage":      round(binary_metrics["avg_rubric_coverage"], 4),
+        "rubric_binary_rows": [
+            {
+                "rubric":    r["rubric"],
+                "accuracy":  round(r["accuracy"],  4),
+                "precision": round(r["precision"], 4),
+                "recall":    round(r["recall"],    4),
+                "f1":        round(r["f1"],        4),
+                "support_incorrect": r["support_incorrect"],
+                "missing":   r["missing"],
+            }
+            for r in binary_metrics["rubric_binary_rows"]
+        ],
+        # multi-class metrics (None 포함)
+        "multiclass_macro_f1":           round(mc_metrics["macro_f1"], 4),
+        "multiclass_macro_f1_supported": round(mc_metrics["macro_f1_supported"], 4),
+        "multiclass_rows": [
             {k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items()}
-            for r in metrics_critique["rubric_rows"]
+            for r in mc_metrics["rows"]
         ],
         # action per gold_action
         "action_by_gold_action": {

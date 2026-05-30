@@ -28,23 +28,10 @@ def build_solve_user_msg(problem: str, history_steps: list[str]) -> str:
 
 
 def load_prompts() -> dict[str, str]:
-    """action_prompts.jsonl을 로드하고 {{rubric}} 등 변수를 치환해 반환."""
-    rubric_path = _PROMPTS_DIR / "action_prompts_rubric.jsonl"
-    rubric_lines = []
-    with open(rubric_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                entry = json.loads(line)
-                rubric_lines.append(
-                    f"{entry['id']}. {entry['name']}: [pass/fail — {entry['description']}]"
-                )
-    rubric_str = "\n".join(rubric_lines)
-
     prompts: dict[str, str] = {}
-    with open(_PROMPTS_DIR / "action_prompts.json", encoding="utf-8") as f:
+    with open(_PROMPTS_DIR / "generator.json", encoding="utf-8") as f:
         for entry in json.load(f):
-            prompts[entry["name"]] = entry["content"].replace("{{rubric}}", rubric_str)
+            prompts[entry["name"]] = entry["content"]
     return prompts
 
 

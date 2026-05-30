@@ -5,11 +5,23 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 WORK_DIR=$SCRIPT_DIR/..
 CONF=$WORK_DIR/configs/config.yaml
 
+# 인자 파싱
+GPUS_OVERRIDE=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --gpus) GPUS_OVERRIDE="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+
 # config.yaml에서 값 읽기
 py() { python3 -c "import yaml; c=yaml.safe_load(open('$CONF')); print($1)"; }
 
 BASE_MODEL=$(py "c['checkpoint']['base']")
 GPU_IDS=$(py "','.join(map(str, c['grpo_pure']['train_gpus']))")
+if [ -n "$GPUS_OVERRIDE" ]; then
+    GPU_IDS="$GPUS_OVERRIDE"
+fi
 GEN_BATCH=$(py "c['generate_trajectory']['batch_per_gpu']")
 
 # verl 하이퍼파라미터
@@ -45,13 +57,13 @@ if [ -n "$RESUME_FROM" ]; then
     # 이어서 학습: 기존 체크포인트 디렉토리 재사용
     CKPT_DIR=$(dirname "$RESUME_FROM")
     TS=$(basename "$CKPT_DIR")
-    RUN_DIR=$WORK_DIR/output/GRPO/$TS
+    RUN_DIR=$WORK_DIR/output/GRPO_PURE/$TS
     echo "Resuming from checkpoint: $RESUME_FROM"
 else
     # 새로 시작
     TS=$(date +%Y%m%d_%H%M%S)
-    CKPT_DIR=$WORK_DIR/checkpoints/grpo/$TS
-    RUN_DIR=$WORK_DIR/output/GRPO/$TS
+    CKPT_DIR=$WORK_DIR/checkpoints/grpo_pure/$TS
+    RUN_DIR=$WORK_DIR/output/GRPO_PURE/$TS
 fi
 mkdir -p $CKPT_DIR $RUN_DIR
 
@@ -74,14 +86,15 @@ ray job submit --address="http://127.0.0.1:8265" \
         \"VLLM_USE_V1\": \"0\",
         \"VLLM_ATTENTION_BACKEND\": \"XFORMERS\",
         \"PYTHONUNBUFFERED\": \"1\",
-        \"CUDA_VISIBLE_DEVICES\": \"$GPU_IDS\"
+        \"CUDA_VISIBLE_DEVICES\": \"$GPU_IDS\",
+        \"TORCHDYNAMO_DISABLE\": \"1\"
     },
     \"pip\": [\"word2number\", \"timeout_decorator\"]
     }" -- PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     hydra.run.dir=$RUN_DIR \
     data.train_files=$TRAIN_FILE \
     data.val_files=$VAL_FILE \
-    data.prompt_key=problem \
+    data.prompt_key=prompt \
     data.truncation=left \
     +data.rm_system_prompt=False \
     data.train_batch_size=$TRAIN_BSZ \
@@ -124,7 +137,7 @@ ray job submit --address="http://127.0.0.1:8265" \
     actor_rollout_ref.ref.log_prob_use_dynamic_bsz=True \
     actor_rollout_ref.ref.fsdp_config.param_offload=$PARAM_OFF \
     actor_rollout_ref.ref.log_prob_max_token_len_per_gpu=$LP_MAX_TOK \
-    reward.custom_reward_function.path=$WORK_DIR/utils/reward_utils/reward_func_pure.py \
+    reward.custom_reward_function.path=$WORK_DIR/utils/reward_func_pure.py \
     reward.custom_reward_function.name=reward_func \
     trainer.project_name=sc-grpo-pure \
     trainer.experiment_name=sc-grpo-pure-$TS \
